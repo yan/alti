@@ -1,6 +1,6 @@
 [submodule "libopencm3"]
-	path = libopencm3
+	path = firmware/libopencm3
 	url = https://github.com/libopencm3/libopencm3.git
 [submodule "freertos"]
-	path = freertos
+	path = firmware/freertos
 	url = https://github.com/cjlano/freertos.git
