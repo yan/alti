@@ -103,7 +103,7 @@ CXXFLAGS	+= -fno-common -ffunction-sections -fdata-sections
 # C & C++ preprocessor common flags
 
 CPPFLAGS	+= -MD
-CPPFLAGS	+= -Wall -Wundef
+CPPFLAGS	+= -Wall -Wundef -Werror
 CPPFLAGS	+= -I$(INCLUDE_DIR) $(DEFS)
 
 ###############################################################################
@@ -150,24 +150,24 @@ flash: $(OBJ_DIR)/$(BINARY).flash
 size:
 	$(PREFIX)-size $(OBJ_DIR)/$(BINARY).elf
 
-$(OBJ_DIR)/%.images: %.bin %.hex %.srec %.list %.map
+$(OBJ_DIR)/%.images: $(OBJ_DIR)/%.bin $(OBJ_DIR)/%.hex $(OBJ_DIR)/%.srec $(OBJ_DIR)/%.list $(OBJ_DIR)/%.map
 	@#printf "*** $* images generated ***\n"
 
-$(OBJ_DIR)/%.bin: %.elf
+$(OBJ_DIR)/%.bin: $(OBJ_DIR)/%.elf
 	@#printf "  OBJCOPY $(*).bin\n"
-	$(Q)$(OBJCOPY) -Obinary $(*).elf $(*).bin
+	$(Q)$(OBJCOPY) -Obinary $< $@ #$(*).bin
 
-$(OBJ_DIR)/%.hex: %.elf
+$(OBJ_DIR)/%.hex: $(OBJ_DIR)/%.elf
 	@#printf "  OBJCOPY $(*).hex\n"
-	$(Q)$(OBJCOPY) -Oihex $(*).elf $(*).hex
+	$(Q)$(OBJCOPY) -Oihex $< $@ #$(*).hex
 
-$(OBJ_DIR)/%.srec: %.elf
+$(OBJ_DIR)/%.srec: $(OBJ_DIR)/%.elf
 	@#printf "  OBJCOPY $(*).srec\n"
-	$(Q)$(OBJCOPY) -Osrec $(*).elf $(*).srec
+	$(Q)$(OBJCOPY) -Osrec $< $@ #$(*).srec
 
-$(OBJ_DIR)/%.list: %.elf
+$(OBJ_DIR)/%.list: $(OBJ_DIR)/%.elf
 	@#printf "  OBJDUMP $(*).list\n"
-	$(Q)$(OBJDUMP) -S $(*).elf > $(*).list
+	$(Q)$(OBJDUMP) -S $< > $@ #$(*).list
 
 $(OBJ_DIR)/%.elf: $(OBJS) $(LDSCRIPT) $(LIB_DIR)/lib$(LIBNAME).a
 	@#printf "  LD      $(*).elf\n"

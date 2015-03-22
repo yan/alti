@@ -26,17 +26,20 @@ LDLIBS += -lm -lfreertos
 FREERTOS_DIR = freertos/FreeRTOS/Source/
 CPPFLAGS += -Iinclude -I$(FREERTOS_DIR)/include -I$(FREERTOS_DIR)/portable/GCC/ARM_CM3
 
+GDB_CMDS = support/gdb_commands
+OPENOCD_CFG = /usr/local/share/openocd/scripts/board/stm32ldiscovery.cfg
+
 ifeq ($(ENABLE_SEMIHOSTING), 1)
   LDFLAGS += --specs=rdimon.specs
   LDLIBS += lrdimon
   CPPFLAGS += -DENABLE_SEMIHOSTING=1
-  $(shell grep -q semihosting gdb_cmds || echo 'mon arm semihosting enable' >> gdb_cmds)
+  $(shell grep -q semihosting $(GDB_CMDS) || echo 'mon arm semihosting enable' >> $(GDB_CMDS)
 else
-  $(shell [ -f gdb_cmds ] && sed -i '' '/mon arm semihosting/d' gdb_cmds)
+  $(shell [ -f $(GDB_CMDS) ] && sed -i '' '/mon arm semihosting/d' $(GDB_CMDS))
 endif
 
 
-include build/libopencm3.include.mk
+include build/include.mk
 
 $(LIBS:%=$(TOPLEVEL_LIB_DIR)/lib%.a):
 	make -f build/Makefile.$(*F)
@@ -49,3 +52,7 @@ $(TOPLEVEL_LIB_DIR):
 cleanlib:
 	make -f build/Makefile.libfreertos clean
 	make -f build/Makefile.libopencm3 clean
+
+run: elf
+	openocd -f $(OPENOCD_CFG)
+	$(PREFIX)-gdb --command=$(GDB_CMDS) $(BINARY).elf
