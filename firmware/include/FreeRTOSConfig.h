@@ -1,12 +1,10 @@
 #ifndef FREERTOS_CONFIG_H
 #define FREERTOS_CONFIG_H
 
-// #include "aero.h"
-
 /* Here is a good place to include header files that are required across
 your application. */
 
-extern uint32_t rcc_clock_freq;
+#include <globals.h>
 
 #define configUSE_PREEMPTION                    1
 #define configUSE_PORT_OPTIMISED_TASK_SELECTION 0
