@@ -87,7 +87,7 @@ MISC_LIB_DIR = $(OPENCM3_DIR)/../cmsisdsp
 ###############################################################################
 # C flags
 
-CFLAGS		+= -Os -g
+CFLAGS		+= -g # -Os
 CFLAGS		+= -Wextra -Wshadow -Wimplicit-function-declaration
 CFLAGS		+= -Wredundant-decls -Wmissing-prototypes -Wstrict-prototypes
 CFLAGS		+= -fno-common -ffunction-sections -fdata-sections
@@ -95,7 +95,7 @@ CFLAGS		+= -fno-common -ffunction-sections -fdata-sections
 ###############################################################################
 # C++ flags
 
-CXXFLAGS	+= -Os -g
+CXXFLAGS	+= -g #-Os
 CXXFLAGS	+= -Wextra -Wshadow -Wredundant-decls  -Weffc++
 CXXFLAGS	+= -fno-common -ffunction-sections -fdata-sections
 

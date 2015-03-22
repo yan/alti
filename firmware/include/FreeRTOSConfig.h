@@ -102,5 +102,9 @@ your application. */
 #define CONFIG_TASK_MAIN_QUEUE_LEN              32
 #define CONFIG_TASK_MAIN_PRIORITY               ( DEFAULT_TASK_PRIORITY )
 
+#define CONFIG_TASK_STATUS_QUEUE_LEN            4
+#define CONFIG_TASK_STATUS_STACK_DEPTH          configMINIMAL_STACK_SIZE
+#define CONFIG_TASK_STATUS_PRIORITY             ( DEFAULT_TASK_PRIORITY+1 )
+
 #endif /* FREERTOS_CONFIG_H */
 

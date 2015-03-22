@@ -3,6 +3,7 @@
 #include <queue.h>
 
 #include <config.h>
+#include <ble.h>
 #include <events.h>
 #include <task_main.h>
 
@@ -12,6 +13,8 @@ void task_main(void *p)
   portBASE_TYPE status;
   struct global_event_s evt;
   enum global_state_e state = GLOBAL_STATE_RESET;
+
+  config_ble();
 
   for (;;) {
     status = xQueueReceive(mainQueue, &evt, MAIN_EVENT_LOOP_TIMEOUT);
