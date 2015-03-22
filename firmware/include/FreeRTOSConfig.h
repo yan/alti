@@ -97,5 +97,10 @@ your application. */
 #define xPortPendSVHandler                      pend_sv_handler
 #define xPortSysTickHandler                     sys_tick_handler
 
+
+#define CONFIG_TASK_MAIN_STACK_DEPTH            512 // 2k
+#define CONFIG_TASK_MAIN_QUEUE_LEN              32
+#define CONFIG_TASK_MAIN_PRIORITY               ( DEFAULT_TASK_PRIORITY )
+
 #endif /* FREERTOS_CONFIG_H */
 

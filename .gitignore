@@ -1,2 +1,3 @@
 firmware/build/obj/**
 firmware/build/lib/**
+firmware/build/pid/**

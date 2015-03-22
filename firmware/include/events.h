@@ -3,7 +3,7 @@
 /**
  * @brief All possible events that can be pushed to the main "thread"
  */
-typedef enum global_event_e {
+typedef enum event_type_e {
   GLOBAL_EVT_RESET,
 
   GLOBAL_EVT_RCVD_I2C,
@@ -11,4 +11,22 @@ typedef enum global_event_e {
   GLOBAL_EVT_RCVD_SPI,
 
   GLOBAL_EVT_LAST
-} global_event_t;
+} event_type_t;
+
+/**
+ *
+ */
+struct global_event_s {
+  enum event_type_e type;
+  void *payload;
+};
+
+/**
+ *
+ *
+ */
+typedef enum global_state_e {
+  GLOBAL_STATE_RESET,
+  GLOBAL_STATE_BLE_SETUP,
+  GLOBAL_STATE_IDLE
+} global_state_t;
