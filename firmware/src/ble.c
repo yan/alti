@@ -9,10 +9,14 @@
 #include <libopencm3/stm32/l1/nvic.h>
 #include <libopencm3/stm32/exti.h>
 
+#include <FreeRTOS.h>
+#include <queue.h>
+
 #include <pins.h>
 #include <config.h>
 #include <nrf8001.h>
 
+#include <task_status_led.h>
 #include <ble.h>
 
 #define ble_isr exti15_10_isr
@@ -22,7 +26,13 @@ static void config_ble_isr(void);
 
 void ble_isr(void)
 {
+  BaseType_t higher;
+  enum task_status_event_e evt = STATUS_EVENT_BLINK_THRICE;
+
   exti_reset_request(EXTI_PR & EXTI11);
+
+  xQueueSendFromISR(status_queue_g, &evt, &higher);
+  portYIELD_FROM_ISR(higher);
 }
 
 static void config_ble_pins(void)

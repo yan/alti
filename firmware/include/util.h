@@ -8,4 +8,8 @@
 
 void delay_ms(uint32_t ms);
 
+#define DWT_CYCCNT   ((volatile uint32_t *) 0xE0001004)
+
+uint32_t cpu_cycle_count(void);
+
 #endif

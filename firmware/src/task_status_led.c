@@ -7,15 +7,18 @@
 #include <libopencm3/stm32/rcc.h>
 #include <libopencm3/stm32/timer.h>
 
+#include <globals.h>
 #include <pins.h>
+#include <util.h>
 #include <task_status_led.h>
 
-QueueHandle_t status_queue_g;
 static void task_status_config(void);
 static uint32_t easing_f(uint32_t);
 static void step_pulse(void);
 static void enable_pulse(void);
 static void disable_pulse(void);
+
+QueueHandle_t status_queue_g;
 
 static void task_status_config(void)
 {
@@ -23,9 +26,6 @@ static void task_status_config(void)
 
   // Initialize GPIO
   rcc_periph_clock_enable(RCC_GPIOB);
-  gpio_mode_setup(GPIOB, GPIO_MODE_AF, GPIO_PUPD_NONE, BLUE_LED);            
-  gpio_set_output_options(GPIOB, GPIO_OTYPE_PP, GPIO_OSPEED_2MHZ, BLUE_LED);
-  gpio_set_af(GPIOB, BLUE_LED_AF, BLUE_LED);
 
   // Initialize timer
   rcc_peripheral_enable_clock(&RCC_APB1ENR, RCC_APB1ENR_TIM4EN);
@@ -72,12 +72,17 @@ static void step_pulse(void)
 
 static void enable_pulse(void)
 {
+  gpio_mode_setup(GPIOB, GPIO_MODE_AF, GPIO_PUPD_NONE, BLUE_LED);            
+  gpio_set_output_options(GPIOB, GPIO_OTYPE_PP, GPIO_OSPEED_2MHZ, BLUE_LED);
+  gpio_set_af(GPIOB, BLUE_LED_AF, BLUE_LED);
+
   timer_enable_counter(BLUE_LED_TIMER);
 }
 
 static void disable_pulse(void)
 {
   timer_disable_counter(BLUE_LED_TIMER);
+  gpio_mode_setup(GPIOB, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, BLUE_LED);
 }
 
 enum task_status_state_e {
@@ -127,7 +132,23 @@ void task_status_led(void *p)
 
       case STATUS_EVENT_BLINK_ONCE:
       case STATUS_EVENT_BLINK_TWICE:
-      case STATUS_EVENT_BLINK_THRICE:
+      case STATUS_EVENT_BLINK_THRICE: {
+        int blink_count = received_event - STATUS_EVENT_BLINK_ONCE + 1;
+        disable_pulse();
+        while (blink_count-- > 0) {
+          gpio_toggle(GPIOB, BLUE_LED);
+          delay_ms(250);
+          gpio_clear(GPIOB, BLUE_LED);
+          delay_ms(250);
+        }
+        
+        if (state == TASK_STATUS_STATE_ON) {
+          gpio_set(GPIOB, BLUE_LED);
+        } else if (state == TASK_STATUS_STATE_PULSING) {
+          enable_pulse();
+        }
+        // If the status was off, just leave as is since we just turned
+      }
         break;
     }
   }
