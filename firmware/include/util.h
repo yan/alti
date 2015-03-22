@@ -12,4 +12,8 @@ void delay_ms(uint32_t ms);
 
 uint32_t cpu_cycle_count(void);
 
+#define MAX(x, y) ((x) > (y) ? (x) : (y))
+
+#define MIN(x, y) ((x) < (y) ? (x) : (y))
+
 #endif
