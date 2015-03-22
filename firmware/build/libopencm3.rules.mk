@@ -145,6 +145,9 @@ list: $(OBJ_DIR)/$(BINARY).list
 images: $(OBJ_DIR)/$(BINARY).images
 flash: $(OBJ_DIR)/$(BINARY).flash
 
+size:
+	$(PREFIX)-size $(OBJ_DIR)/$(BINARY).elf
+
 $(OBJ_DIR)/%.images: %.bin %.hex %.srec %.list %.map
 	@#printf "*** $* images generated ***\n"
 
@@ -253,6 +256,6 @@ else
 		   $(*).elf
 endif
 
-.PHONY: images clean stylecheck styleclean elf bin hex srec list
+.PHONY: images clean stylecheck styleclean elf bin hex srec list size
 
 -include $(OBJS:.o=.d)
