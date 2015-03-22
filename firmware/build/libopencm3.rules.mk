@@ -51,7 +51,6 @@ LDSCRIPT	?= $(BINARY).ld
 
 OBJ_DIR ?= ./
 
-OBJS		+= $(BINARY).o
 OBJS := $(addprefix $(OBJ_DIR)/, $(OBJS))
 
 #OBJS_WITH_PATH := $(OBJS: %.o=$(OBJ_DIR)/%.o)

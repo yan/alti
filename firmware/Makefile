@@ -14,7 +14,11 @@ LIBS := opencm3 freertos
 OBJ_DIR := build/obj
 SRC_DIR := src/
 
-#OBJS = aero.o
+SRCS = $(wildcard $(SRC_DIR)/*.c)
+OBJS = $(SRCS:$(SRC_DIR)/%.c=%.o)
+
+#$(info [${SRCS}])
+#$(info [${OBJS}])
 
 LDFLAGS += -L$(TOPLEVEL_LIB_DIR)
 LDLIBS += -lm -lfreertos
