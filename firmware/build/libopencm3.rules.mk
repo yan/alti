@@ -35,6 +35,7 @@ CXX		:= $(PREFIX)-g++
 LD		:= $(PREFIX)-gcc
 AR		:= $(PREFIX)-ar
 AS		:= $(PREFIX)-as
+SIZE  := $(PREFIX)-size
 OBJCOPY		:= $(PREFIX)-objcopy
 OBJDUMP		:= $(PREFIX)-objdump
 GDB		:= $(PREFIX)-gdb
@@ -137,6 +138,7 @@ LDLIBS		+= -Wl,--start-group -lc -lgcc -lnosys -Wl,--end-group
 all: elf
 
 elf: $(OBJ_DIR)/$(BINARY).elf
+	$(SIZE) $(OBJ_DIR)/$(BINARY).elf
 bin: $(OBJ_DIR)/$(BINARY).bin
 hex: $(OBJ_DIR)/$(BINARY).hex
 srec: $(OBJ_DIR)/$(BINARY).srec
