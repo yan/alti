@@ -11,6 +11,7 @@ TOPLEVEL_LIB_DIR = build/lib
 
 LIBS := opencm3 freertos
 
+PID_DIR := build/pid
 OBJ_DIR := build/obj
 SRC_DIR := src/
 
@@ -54,5 +55,7 @@ cleanlib:
 	make -f build/Makefile.libopencm3 clean
 
 run: elf
-	openocd -f $(OPENOCD_CFG)
-	$(PREFIX)-gdb --command=$(GDB_CMDS) $(BINARY).elf
+	mkdir -p $(PID_DIR)
+	@openocd -f $(OPENOCD_CFG) -l "${PID_DIR}/openocd.log" & echo "$$!" > "${PID_DIR}/openocd.pid"
+	@$(PREFIX)-gdb --command=$(GDB_CMDS) $(OBJ_DIR)/$(BINARY).elf
+	@kill `cat $(PID_DIR)/openocd.pid`
