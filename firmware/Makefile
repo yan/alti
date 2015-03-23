@@ -45,10 +45,13 @@ include build/include.mk
 $(LIBS:%=$(TOPLEVEL_LIB_DIR)/lib%.a):
 	make -f build/Makefile.$(*F)
 
-libs: $(TOPLEVEL_LIB_DIR) $(LIBS:%=$(TOPLEVEL_LIB_DIR)/lib%.a)
+libs: $(OBJ_DIR) $(TOPLEVEL_LIB_DIR) $(LIBS:%=$(TOPLEVEL_LIB_DIR)/lib%.a)
 
 $(TOPLEVEL_LIB_DIR):
 	mkdir -p $(TOPLEVEL_LIB_DIR)
+
+$(OBJ_DIR):
+	mkdir -p $(OBJ_DIR)
 
 cleanlib:
 	make -f build/Makefile.libfreertos clean

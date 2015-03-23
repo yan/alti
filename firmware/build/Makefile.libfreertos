@@ -57,9 +57,9 @@ clean:
 	$(Q)rm -rf $(LIB_DIR)
 	$(Q)rm -f $(SRCLIBDIR)/$(LIBNAME).ld
 
-output_dirs: ${OBJ_DIR} ${LIB_DIR}
+output_dirs: ${OBJ_DIR} ${LIB_DIR} ${OBJ_DIR}/portable
 
-${OBJ_DIR}:
+${OBJ_DIR}/portable: 
 	mkdir -p ${OBJ_DIR}/portable/{MemMang,GCC/ARM_CM3}
 
 ${LIB_DIR}:
