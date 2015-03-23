@@ -42,14 +42,14 @@ void ble_isr(void)
 static void config_ble_pins(void)
 {
   /* Configure alternate function for SPI pins */
-  gpio_mode_setup(GPIOB, GPIO_MODE_AF, GPIO_PUPD_NONE, NRF8001_PINS);
-  gpio_set_output_options(GPIOB, GPIO_OTYPE_PP, GPIO_OSPEED_10MHZ, NRF8001_PINS);
-  gpio_set_af(GPIOB, GPIO_AF5, NRF8001_PINS);
+  gpio_mode_setup(NRF8001_GPIO, GPIO_MODE_AF, GPIO_PUPD_NONE, NRF8001_PINS);
+  gpio_set_output_options(NRF8001_GPIO, GPIO_OTYPE_PP, GPIO_OSPEED_10MHZ, NRF8001_PINS);
+  gpio_set_af(NRF8001_GPIO, GPIO_AF5, NRF8001_PINS);
 
-  gpio_mode_setup(GPIOB, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE,   NRF8001_REQN);
-  gpio_mode_setup(GPIOB, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE,   NRF8001_RST);
+  gpio_mode_setup(NRF8001_GPIO, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE,   NRF8001_REQN);
+  gpio_mode_setup(NRF8001_GPIO, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE,   NRF8001_RST);
 
-  gpio_set(GPIOB, NRF8001_RST);
+  gpio_set(NRF8001_GPIO, NRF8001_RST);
 
   rcc_periph_clock_enable(RCC_SPI2);
   spi_reset(SPI2);
@@ -70,25 +70,24 @@ static void config_ble_pins(void)
 static void config_ble_isr(void)
 {
   /* We'll use RDYN pin to interrupt*/
-  gpio_mode_setup(GPIOB, GPIO_MODE_INPUT,  GPIO_PUPD_PULLUP, NRF8001_RDYN);
+  gpio_mode_setup(NRF8001_GPIO, GPIO_MODE_INPUT, GPIO_PUPD_PULLUP, NRF8001_RDYN);
 
   nvic_enable_irq(NVIC_EXTI15_10_IRQ);
   nvic_set_priority(NVIC_EXTI15_10_IRQ, BLE_EXTI_ISR_PRIORITY);
 
-  exti_select_source(EXTI11,  GPIOB);
-  exti_set_trigger(EXTI11,    EXTI_TRIGGER_FALLING);
+  exti_select_source(EXTI11, NRF8001_GPIO);
+  exti_set_trigger(EXTI11, EXTI_TRIGGER_FALLING);
   exti_enable_request(EXTI11);
-
 }
 
 static void reset_nrf8001(void)
 {
   int i = 0;
-  gpio_set(GPIOB, NRF8001_RST);
-  gpio_clear(GPIOB, NRF8001_RST);
+  gpio_set(NRF8001_GPIO, NRF8001_RST);
+  gpio_clear(NRF8001_GPIO, NRF8001_RST);
   // Spec calls for the line to be low at least 200ns, set it low and busy wait
   for (; i < 30; i++);
-  gpio_set(GPIOB, NRF8001_RST);
+  gpio_set(NRF8001_GPIO, NRF8001_RST);
 }
 
 void config_ble(void)

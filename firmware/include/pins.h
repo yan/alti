@@ -20,6 +20,7 @@
 #define MS5611_SCL_PIN    GPIO8
 #define MS5611_SDA_PIN    GPIO9
 
+#define NRF8001_GPIO      GPIOB
 #define NRF8001_RST       GPIO10
 #define NRF8001_RDYN      GPIO11
 #define NRF8001_REQN      GPIO12
