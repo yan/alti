@@ -10,6 +10,8 @@ typedef enum event_type_e {
 
   GLOBAL_EVT_RCVD_SPI,
 
+  GLOBAL_EVT_NRF8001_RDY,
+
   GLOBAL_EVT_LAST
 } event_type_t;
 

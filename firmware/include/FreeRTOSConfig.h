@@ -58,15 +58,17 @@ your application. */
         #define configPRIO_BITS                 4        /* 15 priority levels */
 #endif
 
-#define configLIBRARY_LOWEST_INTERRUPT_PRIORITY 0x0f
-#define configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY    10
+#define configLIBRARY_LOWEST_INTERRUPT_PRIORITY         15
+#define configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY    5
 
 #define configKERNEL_INTERRUPT_PRIORITY         ( configLIBRARY_LOWEST_INTERRUPT_PRIORITY << (8 - configPRIO_BITS) )
 #define configMAX_SYSCALL_INTERRUPT_PRIORITY    ( configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY << (8 - configPRIO_BITS) )
 // #define configMAX_API_CALL_INTERRUPT_PRIORITY   [dependent on processor and application]
 
+//#define vAssertCalled(f, l)  __asm("BKPT 0")
+
 /* Define to trap errors during development. */
-#define configASSERT( x )     if( ( x ) == 0 ) for(;;); //vAssertCalled( __FILE__, __LINE__ )
+#define configASSERT( x )     if( ( x ) == 0 ) __asm("BKPT 0")
 
 /* FreeRTOS MPU specific definitions. */
 #define configINCLUDE_APPLICATION_DEFINED_PRIVILEGED_FUNCTIONS 0
@@ -106,5 +108,8 @@ your application. */
 #define CONFIG_TASK_STATUS_STACK_DEPTH          configMINIMAL_STACK_SIZE
 #define CONFIG_TASK_STATUS_PRIORITY             ( DEFAULT_TASK_PRIORITY+1 )
 
+#define CONFIG_TASK_BLE_QUEUE_LEN               4
+#define CONFIG_TASK_BLE_STACK_DEPTH             256
+#define CONFIG_TASK_BLE_PRIORITY                ( DEFAULT_TASK_PRIORITY )
 #endif /* FREERTOS_CONFIG_H */
 

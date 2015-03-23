@@ -56,6 +56,7 @@ cleanlib:
 
 run: elf
 	mkdir -p $(PID_DIR)
+	killall openocd || true
 	@openocd -f $(OPENOCD_CFG) -l "${PID_DIR}/openocd.log" & echo "$$!" > "${PID_DIR}/openocd.pid"
 	@$(PREFIX)-gdb --command=$(GDB_CMDS) $(OBJ_DIR)/$(BINARY).elf
 	@kill `cat $(PID_DIR)/openocd.pid`

@@ -5,9 +5,6 @@
 #include <FreeRTOS.h>
 #include <queue.h>
 
-/** @brief The global queue that status events get pushed to */
-extern QueueHandle_t status_queue_g;
-
 typedef enum task_status_event_e {
   STATUS_EVENT_OFF,
   STATUS_EVENT_ON,

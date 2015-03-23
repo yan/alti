@@ -18,14 +18,12 @@ static void step_pulse(void);
 static void enable_pulse(void);
 static void disable_pulse(void);
 
-QueueHandle_t status_queue_g;
-
 static void task_status_config(void)
 {
   // int ksps = 100, period = 12000/ksps, half_period = period / 2;
 
   // Initialize GPIO
-  rcc_periph_clock_enable(RCC_GPIOB);
+  // rcc_periph_clock_enable(RCC_GPIOB);
 
   // Initialize timer
   rcc_peripheral_enable_clock(&RCC_APB1ENR, RCC_APB1ENR_TIM4EN);
