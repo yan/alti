@@ -38,11 +38,9 @@ static void config_ble_task(void)
   assert(ble_data_g != NULL);
 
   ble_data_g->in  = xQueueCreate(CONFIG_TASK_BLE_QUEUE_LEN, sizeof(void*));
-  ble_data_g->out = xQueueCreate(CONFIG_TASK_BLE_QUEUE_LEN, sizeof(void*));
   ble_data_g->semphr = xSemaphoreCreateBinary();
 
   assert(ble_data_g->in != NULL);
-  assert(ble_data_g->out != NULL);
   assert(ble_data_g->semphr != NULL);
 
   status = xTaskCreate(task_ble,

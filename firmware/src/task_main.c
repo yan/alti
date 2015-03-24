@@ -18,7 +18,6 @@ void task_main(void *p)
   portBASE_TYPE status;
   struct global_event_s evt;
   enum { BLE_START, BLE_INIT, BLE_IDLE, BLE_XFER } ble_state = BLE_START;
-
   enum global_state_e state = GLOBAL_STATE_RESET;
 
   for (;;) {
@@ -59,6 +58,10 @@ void task_main(void *p)
             break;
         }
       }
+      break;
+
+      case GLOBAL_EVT_NRF8001_EVENT:
+        configASSERT(0);
       break;
 
       case GLOBAL_EVT_LAST:

@@ -7,7 +7,7 @@
 #include <queue.h>
 
 typedef struct ble_task_data_s {
-  QueueHandle_t in, out;
+  QueueHandle_t in;
   SemaphoreHandle_t semphr;
 } ble_task_data_t;
 

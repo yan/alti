@@ -5,6 +5,7 @@
 #include <queue.h>
 #include <semphr.h>
 
+#include <events.h>
 #include <pins.h>
 #include <ble.h>
 #include <task_ble.h>
@@ -22,7 +23,8 @@ void task_ble(void *p)
 {
   BaseType_t status;
   ble_data_g = (ble_task_data_t*)p;
-  struct nrf8001_cmd_s outgoing, *incoming, *outgoing_p;
+  /** XXX: outgoign is allocated here, which it probably shouldn't be */
+  struct nrf8001_cmd_s outgoing, *incoming;
 
   config_ble();
 
@@ -50,9 +52,11 @@ void task_ble(void *p)
 
     gpio_set(NRF8001_GPIO, NRF8001_REQN);
 
-    if (outgoing.length > 0 && 0) {
-      outgoing_p = &outgoing;
-      xQueueSend(ble_data_g->out, &outgoing_p, portMAX_DELAY);
+    if (outgoing.length > 0) {
+      struct global_event_s evt;
+      evt.type = GLOBAL_EVT_NRF8001_EVENT;
+      evt.payload = &outgoing;
+      xQueueSend(main_queue_g, &evt, portMAX_DELAY);
     }
   }
 }
