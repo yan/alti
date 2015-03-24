@@ -69,8 +69,18 @@ static void config_ble_pins(void)
 
 static void config_ble_isr(void)
 {
+/* Remove #if block to pulse a pin to detect this on a scope */
+#if 0
+  gpio_mode_setup(GPIOB, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, GPIO2);
+  gpio_clear(GPIOB, GPIO2);
+  gpio_set(GPIOB, GPIO2);
+  gpio_clear(GPIOB, GPIO2);
+#endif
+
+  rcc_peripheral_enable_clock(&RCC_APB2ENR, RCC_APB2ENR_SYSCFGEN);
+
   /* We'll use RDYN pin to interrupt*/
-  gpio_mode_setup(NRF8001_GPIO, GPIO_MODE_INPUT, GPIO_PUPD_PULLUP, NRF8001_RDYN);
+  gpio_mode_setup(NRF8001_GPIO, GPIO_MODE_INPUT, GPIO_PUPD_NONE, NRF8001_RDYN);
 
   nvic_enable_irq(NVIC_EXTI15_10_IRQ);
   nvic_set_priority(NVIC_EXTI15_10_IRQ, BLE_EXTI_ISR_PRIORITY);
