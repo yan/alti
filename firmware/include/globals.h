@@ -10,4 +10,6 @@ extern void *main_queue_g;
 
 extern void *status_queue_g;
 
+extern struct ble_task_data_s *ble_data_g;
+
 #endif

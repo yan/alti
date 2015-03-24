@@ -20,13 +20,17 @@
 #include <events.h>
 
 #include <task_status_led.h>
+#include <task_ble.h>
 #include <ble.h>
+#include <services.h>
 
 #define ble_isr exti15_10_isr
 
 static void config_ble_pins(void);
 static void config_ble_isr(void);
-static void reset_nrf8001(void);
+static void nrf8001_reset(void);
+
+int g_isr_hit = 0;
 
 void ble_isr(void)
 {
@@ -34,8 +38,10 @@ void ble_isr(void)
   enum event_type_e evt = GLOBAL_EVT_NRF8001_RDY;
 
   exti_reset_request(EXTI_PR & EXTI11);
+  g_isr_hit++;
 
   xQueueSendFromISR(main_queue_g, &evt, &higher);
+
   portYIELD_FROM_ISR(higher);
 }
 
@@ -50,6 +56,7 @@ static void config_ble_pins(void)
   gpio_mode_setup(NRF8001_GPIO, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE,   NRF8001_RST);
 
   gpio_set(NRF8001_GPIO, NRF8001_RST);
+  //gpio_clear(NRF8001_GPIO, NRF8001_REQN);
 
   rcc_periph_clock_enable(RCC_SPI2);
   spi_reset(SPI2);
@@ -90,7 +97,7 @@ static void config_ble_isr(void)
   exti_enable_request(EXTI11);
 }
 
-static void reset_nrf8001(void)
+static void nrf8001_reset(void)
 {
   int i = 0;
   gpio_set(NRF8001_GPIO, NRF8001_RST);
@@ -100,9 +107,34 @@ static void reset_nrf8001(void)
   gpio_set(NRF8001_GPIO, NRF8001_RST);
 }
 
+int g_sent = 0;
+
+/**
+ *
+ */
+void nrf8001_setup(void)
+{
+  int i = 0;
+
+  static struct {
+    uint8_t status;
+    uint8_t cmd[32];
+  } init_cmds[NB_SETUP_MESSAGES] = SETUP_MESSAGES_CONTENT;
+
+  for (i = 0; i < NB_SETUP_MESSAGES; i++) {
+    g_sent++;
+    uint8_t *to_send = init_cmds[i].cmd;
+    xQueueSend(ble_data_g->in, &to_send, portMAX_DELAY);
+  }
+
+}
+
+/**
+ *
+ */
 void config_ble(void)
 {
   config_ble_pins();
   config_ble_isr();
-  reset_nrf8001();
+  nrf8001_reset();
 }

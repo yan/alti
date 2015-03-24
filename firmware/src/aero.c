@@ -7,7 +7,6 @@
 #include <semphr.h>
 
 #include <events.h>
-#include <ble.h>
 #include <util.h>
 #include <config.h>
 #include <task_main.h>
@@ -34,26 +33,27 @@ static void config_ble_task(void)
 {
   BaseType_t status;
   TaskHandle_t ble_handle;
-  struct ble_task_data_s *args = pvPortMalloc(sizeof(struct ble_task_data_s));
+  ble_data_g = pvPortMalloc(sizeof(struct ble_task_data_s));
 
-  assert(args != NULL);
+  assert(ble_data_g != NULL);
 
-  args->in  = xQueueCreate(CONFIG_TASK_BLE_QUEUE_LEN, sizeof(void*));
-  args->out = xQueueCreate(CONFIG_TASK_BLE_QUEUE_LEN, sizeof(void*));
-  args->semphr = xSemaphoreCreateBinary();
+  ble_data_g->in  = xQueueCreate(CONFIG_TASK_BLE_QUEUE_LEN, sizeof(void*));
+  ble_data_g->out = xQueueCreate(CONFIG_TASK_BLE_QUEUE_LEN, sizeof(void*));
+  ble_data_g->semphr = xSemaphoreCreateBinary();
 
-  assert(args->in != NULL);
-  assert(args->out != NULL);
-  assert(args->semphr != NULL);
+  assert(ble_data_g->in != NULL);
+  assert(ble_data_g->out != NULL);
+  assert(ble_data_g->semphr != NULL);
 
   status = xTaskCreate(task_ble,
                        "task_ble",
                        CONFIG_TASK_BLE_STACK_DEPTH,
-                       (void*) args,
+                       (void*) ble_data_g,
                        CONFIG_TASK_BLE_PRIORITY,
                        &ble_handle);
 
   assert(status == pdPASS);
+
 
 }
 static void config_status_task(void)
@@ -102,7 +102,6 @@ main(void)
 
   config_clock();
   config_tasks();
-  config_ble();
   
   vTaskStartScheduler();
 
