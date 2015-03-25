@@ -1,5 +1,6 @@
 
 #include <libopencm3/stm32/rcc.h>
+#include <libopencm3/cm3/scb.h>
 
 #include <FreeRTOS.h>
 #include <task.h>
@@ -20,6 +21,7 @@ extern void initialise_monitor_handles(void);
 static void config_main_task(void);
 static void config_status_task(void);
 static void config_ble_task(void);
+
 void config_tasks(void);
 
 void config_tasks(void)
@@ -28,6 +30,7 @@ void config_tasks(void)
   config_status_task();
   config_ble_task();
 }
+
 
 static void config_ble_task(void)
 {
@@ -98,6 +101,7 @@ main(void)
   initialise_monitor_handles();
 #endif
 
+  config_nvic();
   config_clock();
   config_tasks();
   
