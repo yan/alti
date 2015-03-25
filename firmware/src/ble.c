@@ -4,6 +4,8 @@
  *
  */
 
+#include <stdio.h>
+
 #include <libopencm3/stm32/spi.h>
 #include <libopencm3/stm32/rcc.h>
 #include <libopencm3/stm32/l1/nvic.h>
@@ -12,6 +14,7 @@
 
 #include <FreeRTOS.h>
 #include <queue.h>
+#include <task.h>
 
 #include <pins.h>
 #include <config.h>
@@ -34,13 +37,18 @@ int g_isr_hit = 0;
 
 void ble_isr(void)
 {
-  BaseType_t higher;
+  BaseType_t higher = pdFALSE;
   enum event_type_e evt = GLOBAL_EVT_NRF8001_RDY;
 
   exti_reset_request(EXTI_PR & EXTI11);
-  g_isr_hit++;
 
-  xQueueSendFromISR(main_queue_g, &evt, &higher);
+#if defined(ENABLE_SEMIHOSTING) && ENABLE_SEMIHOSTING
+  printf("Hit %p %p\n", main_queue_g, &evt);
+#endif
+
+  ++g_isr_hit;
+
+  xQueueSendToFrontFromISR(main_queue_g, &evt, &higher);
 
   portYIELD_FROM_ISR(higher);
 }
@@ -108,26 +116,6 @@ static void nrf8001_reset(void)
 }
 
 int g_sent = 0;
-
-/**
- *
- */
-void nrf8001_setup(void)
-{
-  int i = 0;
-
-  static struct {
-    uint8_t status;
-    uint8_t cmd[32];
-  } init_cmds[NB_SETUP_MESSAGES] = SETUP_MESSAGES_CONTENT;
-
-  for (i = 0; i < NB_SETUP_MESSAGES; i++) {
-    g_sent++;
-    uint8_t *to_send = init_cmds[i].cmd;
-    xQueueSend(ble_data_g->in, &to_send, portMAX_DELAY);
-  }
-
-}
 
 /**
  *

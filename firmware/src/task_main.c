@@ -1,4 +1,6 @@
 
+#include <stdio.h>
+
 #include <FreeRTOS.h>
 #include <queue.h>
 #include <semphr.h>
@@ -10,23 +12,26 @@
 #include <task_ble.h>
 #include <task_status_led.h>
 
-int g_given = 0;
+int g_given = 0, g_events_received = 0, g_events_processed = 0;
 
 void task_main(void *p)
 {
-  QueueHandle_t main_queue = (QueueHandle_t) p;
+  // QueueHandle_t main_queue = (QueueHandle_t) p;
+  (void) p;
   portBASE_TYPE status;
   struct global_event_s evt;
   enum { BLE_START, BLE_INIT, BLE_IDLE, BLE_XFER } ble_state = BLE_START;
   enum global_state_e state = GLOBAL_STATE_RESET;
 
   for (;;) {
-    status = xQueueReceive(main_queue, &evt, MAIN_EVENT_LOOP_TIMEOUT);
+    status = xQueueReceive(main_queue_g, &evt, MAIN_EVENT_LOOP_TIMEOUT);
 
     if (status == pdFAIL) {
       // ??
       continue;
     }
+
+    g_events_received++;
 
     switch (evt.type) {
       case GLOBAL_EVT_RESET:
@@ -40,16 +45,19 @@ void task_main(void *p)
       break;
 
       case GLOBAL_EVT_NRF8001_RDY: {
+#if ENABLE_SEMIHOSTING == 1
+        printf("Giving semaphore\n");
+#endif
         xSemaphoreGive(ble_data_g->semphr);
         g_given++;
 
         switch (ble_state) {
           case BLE_START: {
-            enum task_status_event_e status_event = STATUS_EVENT_BLINK_ONCE;
-            xQueueSend(status_queue_g, &status_event, portMAX_DELAY);
+            //enum task_status_event_e status_event = STATUS_EVENT_BLINK_ONCE;
+            //xQueueSend(status_queue_g, &status_event, portMAX_DELAY);
 
-            nrf8001_setup();
-            ble_state = BLE_INIT;
+            // nrf8001_setup();
+            //ble_state = BLE_INIT;
             break;
           }
 
@@ -71,6 +79,8 @@ void task_main(void *p)
       state = GLOBAL_STATE_RESET;
       break;
     }
+
+    g_events_processed++;
   }
 
   (void) state; // XXX Remove me once we start using this
