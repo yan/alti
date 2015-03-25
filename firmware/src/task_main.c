@@ -10,7 +10,7 @@
 #include <task_ble.h>
 #include <task_status_led.h>
 
-int g_given = 0;
+int g_given = 0, g_events_recvd = 0;
 
 void task_main(void *p)
 {
@@ -27,6 +27,8 @@ void task_main(void *p)
       // ??
       continue;
     }
+
+    g_events_recvd++;
 
     switch (evt.type) {
       case GLOBAL_EVT_RESET:
@@ -48,7 +50,7 @@ void task_main(void *p)
             enum task_status_event_e status_event = STATUS_EVENT_BLINK_ONCE;
             xQueueSend(status_queue_g, &status_event, portMAX_DELAY);
 
-            nrf8001_setup();
+            //nrf8001_setup();
             ble_state = BLE_INIT;
             break;
           }

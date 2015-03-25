@@ -1,6 +1,7 @@
 #include <config.h>
 #include <globals.h>
 
+#include <libopencm3/cm3/scb.h>
 #include <libopencm3/stm32/rcc.h>
 
 void config_clock(void)
@@ -12,4 +13,9 @@ void config_clock(void)
   rcc_peripheral_enable_clock(&RCC_AHBENR, RCC_AHBENR_GPIOBEN);
 
   rcc_clock_freq = rcc_apb2_frequency;
+}
+
+void config_nvic(void)
+{
+  scb_set_priority_grouping(SCB_AIRCR_PRIGROUP_GROUP16_NOSUB);
 }
