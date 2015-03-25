@@ -8,6 +8,8 @@
 #include <config.h>
 #include <ble.h>
 #include <events.h>
+#include <util.h>
+
 #include <task_main.h>
 #include <task_ble.h>
 #include <task_status_led.h>
@@ -45,9 +47,7 @@ void task_main(void *p)
       break;
 
       case GLOBAL_EVT_NRF8001_RDY: {
-#if ENABLE_SEMIHOSTING == 1
-        printf("Giving semaphore\n");
-#endif
+        dbg_print("Giving semaphore\n");
         xSemaphoreGive(ble_data_g->semphr);
         g_given++;
 

@@ -16,4 +16,10 @@ uint32_t cpu_cycle_count(void);
 
 #define MIN(x, y) ((x) < (y) ? (x) : (y))
 
+#if defined(ENABLE_SEMIHOSTING) && ENABLE_SEMIHOSTING
+#  define dbg_print(args...) printf(args)
+#else
+#  define dbg_print(args...)
+#endif
+
 #endif

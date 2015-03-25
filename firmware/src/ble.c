@@ -21,6 +21,7 @@
 #include <nrf8001.h>
 #include <globals.h>
 #include <events.h>
+#include <util.h>
 
 #include <task_status_led.h>
 #include <task_ble.h>
@@ -42,9 +43,7 @@ void ble_isr(void)
 
   exti_reset_request(EXTI_PR & EXTI11);
 
-#if defined(ENABLE_SEMIHOSTING) && ENABLE_SEMIHOSTING
-  printf("Hit %p %p\n", main_queue_g, &evt);
-#endif
+  dbg_print("Hit %p %p\n", main_queue_g, &evt);
 
   ++g_isr_hit;
 

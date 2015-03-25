@@ -7,6 +7,7 @@
 #include <queue.h>
 #include <semphr.h>
 
+#include <util.h>
 #include <events.h>
 #include <pins.h>
 #include <ble.h>
@@ -22,7 +23,6 @@ int g_received = 0, g_gotsemphrs = 0;
 static void nrf8001_setup(struct nrf8001_cmd_s *outgoing_buf);
 static void exchange_commands(struct nrf8001_cmd_s *incoming, struct nrf8001_cmd_s *outgoing);
 
-
 /**
  *
  */
@@ -30,21 +30,20 @@ static void nrf8001_setup(struct nrf8001_cmd_s *outgoing_buf)
 {
   int i = 0;
 
+  /**
+   * This adds 1388 bytes to the image
+   */
   static struct {
     uint8_t status;
     uint8_t cmd[32];
   } init_cmds[NB_SETUP_MESSAGES] = SETUP_MESSAGES_CONTENT;
 
-#if ENABLE_SEMIHOSTING == 1
-  printf("Starting setup\n");
-#endif
+  dbg_print("Starting setup\n");
 
   for (i = 0; i < NB_SETUP_MESSAGES; i++) {
     xSemaphoreTake(ble_data_g->semphr, portMAX_DELAY);
 
-#if ENABLE_SEMIHOSTING == 1
-    printf("Sending message %d\n", i);
-#endif
+    dbg_print("Sending message %d\n", i);
 
     g_gotsemphrs++;
 
@@ -52,7 +51,6 @@ static void nrf8001_setup(struct nrf8001_cmd_s *outgoing_buf)
     exchange_commands(to_send, outgoing_buf);
     //xQueueSend(ble_data_g->in, &to_send, portMAX_DELAY);
   }
-
 }
 
 static void exchange_commands(struct nrf8001_cmd_s *incoming, struct nrf8001_cmd_s *outgoing)
@@ -104,9 +102,9 @@ void task_ble(void *p)
       continue;
     }
 
-    exchange_commands(incoming, outgoing);
-
     g_received++;
+
+    exchange_commands(incoming, outgoing);
   }
 
   /* NOTREACHED */
