@@ -1,6 +1,5 @@
 
 BINARY = aero
-
 OPENCM3_DIR = ./libopencm3
 
 LDSCRIPT = $(OPENCM3_DIR)/lib/stm32/l1/stm32l15xxb.ld
@@ -32,9 +31,9 @@ OPENOCD_CFG = /usr/local/share/openocd/scripts/board/stm32ldiscovery.cfg
 
 ifeq ($(ENABLE_SEMIHOSTING), 1)
   LDFLAGS += --specs=rdimon.specs
-  LDLIBS += lrdimon
+  LDLIBS += -lrdimon
   CPPFLAGS += -DENABLE_SEMIHOSTING=1
-  $(shell grep -q semihosting $(GDB_CMDS) || echo 'mon arm semihosting enable' >> $(GDB_CMDS)
+  $(shell grep -q semihosting $(GDB_CMDS) || echo 'mon arm semihosting enable' >> $(GDB_CMDS))
 else
   $(shell [ -f $(GDB_CMDS) ] && sed -i '' '/mon arm semihosting/d' $(GDB_CMDS))
 endif
