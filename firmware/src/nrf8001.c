@@ -8,9 +8,41 @@
 
 #include <util.h>
 #include <nrf8001.h>
+#include <task_ble.h>
 #include <pins.h>
 
+static void nrf8001_connect(void);
+
+enum nrf8001_state_e {
+  STATE_IDLE,
+  STATE_SETUP,
+  STATE_STANDBY,
+  STATE_ERROR
+} state = STATE_IDLE;
+
+
 int g_nrf_events_received = 0;
+
+struct nrf8001_state_s {
+  enum nrf8001_state_e state;
+  uint32_t events_received;
+} s_nrf8001_state = {
+  .state = STATE_IDLE,
+  .events_received = 0
+};
+
+struct nrf8001_cmd_s cmd_buf;
+
+static void nrf8001_connect(void) {
+  uint16_t *args = (uint16_t*) cmd_buf.data;
+  cmd_buf.opcode = NRF8001_CMD_CONNECT;
+  cmd_buf.length = 5;
+
+  args[0] = 20; // timeout, in seconds
+  args[1] = 0x100; // interval, 160ms (256 * 0.625ms)
+  ble_send_cmd(&cmd_buf);
+}
+
 /**
  *
  *
@@ -19,11 +51,30 @@ void nrf8001_handle_event(struct nrf8001_cmd_s *event)
 {
   configASSERT(event != NULL);
 
+  //dbg_print("Event = %x, response opcode: %d, status = %d\n", event->opcode, event->data[0], event->data[1]);
+
   switch (event->opcode) {
     case NRF8001_EVT_CMD_RSP:
       /* NOP */
-      g_nrf_events_received++;
-      dbg_print("Response opcode: %d, status = %d\n",  event->data[0], event->data[1]);
+      s_nrf8001_state.events_received++;
+      break;
+
+    case NRF8001_EVT_DEVICE_STARTED:
+      if (event->data[0] == 2) {
+        s_nrf8001_state.state = STATE_SETUP;
+      } else if (event->data[0] == 3) {
+        s_nrf8001_state.state = STATE_STANDBY;
+        nrf8001_connect();
+        dbg_print("Sent connection.\n");
+      }
+      break;
+
+    case NRF8001_EVT_DISCONNECTED:
+      if (event->data[0] == 0x93) {
+        dbg_print("Timeout while advertising\n");
+      }
+
+      s_nrf8001_state.state = STATE_STANDBY;
       break;
 
     default:

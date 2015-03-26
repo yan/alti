@@ -48,7 +48,6 @@ void task_main(void *p)
       break;
 
       case GLOBAL_EVT_NRF8001_RDY: {
-        dbg_print("Giving semaphore\n");
         xSemaphoreGive(ble_data_g->semphr);
         g_given++;
       }

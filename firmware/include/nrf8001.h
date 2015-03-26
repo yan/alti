@@ -17,7 +17,12 @@ struct nrf8001_cmd_s {
 void nrf8001_exchange_cmds(struct nrf8001_cmd_s *out, struct nrf8001_cmd_s *in);
 void nrf8001_handle_event(struct nrf8001_cmd_s *event);
 
-typedef enum nrf8001_opcode_e {
+typedef enum nrf8001_cmd_e {
+  NRF8001_CMD_CONNECT                     = 0x0f
+
+} nrf8001_cmd_t;
+
+typedef enum nrf8001_evt_type_e {
   /** Invalid event code */
   NRF8001_EVT_INVALID                     = 0x00,
 
@@ -66,6 +71,6 @@ typedef enum nrf8001_opcode_e {
   /** Security Key request */
   NRF8001_EVT_KEY_REQUEST                 = 0x8F
 
-} nrf8001_opcode_t;
+} nrf8001_evt_type_t;
 
 #endif

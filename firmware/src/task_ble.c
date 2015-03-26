@@ -75,10 +75,7 @@ static void exchange_commands(struct nrf8001_cmd_s *outgoing, struct nrf8001_cmd
 
   g_gotsemphrs++;
 
-
   nrf8001_exchange_cmds(outgoing, incoming);
-
-  //gpio_set(NRF8001_GPIO, NRF8001_REQN);
 
   if (incoming->length > 0) {
     struct global_event_s evt;
@@ -88,6 +85,13 @@ static void exchange_commands(struct nrf8001_cmd_s *outgoing, struct nrf8001_cmd
   }
 }
 
+void ble_send_cmd(struct nrf8001_cmd_s *cmd)
+{
+  struct nrf8001_cmd_s *ptr_to_send = cmd;
+  gpio_clear(NRF8001_GPIO, NRF8001_REQN);
+
+  xQueueSend(ble_data_g->in, &ptr_to_send, portMAX_DELAY);
+}
 /**
  * @brief This task does nothing but send and receive messages between us and 
  * the nrf8001. Actual logic is elsewhere.
