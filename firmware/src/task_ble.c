@@ -17,16 +17,22 @@
 #include <services.h>
 
 struct ble_task_data_s *ble_data_g;
+static struct nrf8001_cmd_s s_null_cmd = {
+  .length = 0,
+  .opcode = 0,
+  .data = { 0 }
+};
+
 
 int g_received = 0, g_gotsemphrs = 0;
 
-static void nrf8001_setup(struct nrf8001_cmd_s *outgoing_buf);
+static void nrf8001_setup(struct nrf8001_cmd_s *incoming_buf);
 static void exchange_commands(struct nrf8001_cmd_s *incoming, struct nrf8001_cmd_s *outgoing);
 
 /**
  *
  */
-static void nrf8001_setup(struct nrf8001_cmd_s *outgoing_buf)
+static void nrf8001_setup(struct nrf8001_cmd_s *incoming_buf)
 {
   int i = 0;
 
@@ -42,31 +48,42 @@ static void nrf8001_setup(struct nrf8001_cmd_s *outgoing_buf)
 
   for (i = 0; i < NB_SETUP_MESSAGES; i++) {
     struct nrf8001_cmd_s *to_send = (struct nrf8001_cmd_s*) init_cmds[i].cmd;
-    exchange_commands(to_send, outgoing_buf);
+    exchange_commands(to_send, incoming_buf);
   }
 }
 
-static void exchange_commands(struct nrf8001_cmd_s *incoming, struct nrf8001_cmd_s *outgoing)
+static void exchange_commands(struct nrf8001_cmd_s *outgoing, struct nrf8001_cmd_s *incoming)
 {
   BaseType_t status;
 
-  gpio_clear(NRF8001_GPIO, NRF8001_REQN);
 
   status = xSemaphoreTake(ble_data_g->semphr, portMAX_DELAY);
   if (status != pdPASS) {
     return;
   }
 
+  /**
+   * Try receiving an outgoing command, if we don't have one, send 0's to get
+   * an event
+   */
+  if (outgoing == NULL) {
+    status = xQueueReceive(ble_data_g->in, &outgoing, 0);
+    if (status == pdFAIL) {
+      outgoing = &s_null_cmd;
+    }
+  }
+
   g_gotsemphrs++;
 
-  nrf8001_exchange_cmds(incoming, outgoing);
 
-  gpio_set(NRF8001_GPIO, NRF8001_REQN);
+  nrf8001_exchange_cmds(outgoing, incoming);
 
-  if (outgoing->length > 0) {
+  //gpio_set(NRF8001_GPIO, NRF8001_REQN);
+
+  if (incoming->length > 0) {
     struct global_event_s evt;
     evt.type = GLOBAL_EVT_NRF8001_EVENT;
-    evt.payload = outgoing;
+    evt.payload = incoming;
     xQueueSend(main_queue_g, &evt, portMAX_DELAY);
   }
 }
@@ -77,27 +94,18 @@ static void exchange_commands(struct nrf8001_cmd_s *incoming, struct nrf8001_cmd
  */
 void task_ble(void *p)
 {
-  BaseType_t status;
   ble_data_g = (ble_task_data_t*)p;
   /** XXX: outgoing should not be ever freed. */
-  struct nrf8001_cmd_s *outgoing = pvPortMalloc(sizeof(struct nrf8001_cmd_s));
-  struct nrf8001_cmd_s *incoming;
+  struct nrf8001_cmd_s *incoming = pvPortMalloc(sizeof(struct nrf8001_cmd_s));
 
   config_ble();
-  nrf8001_setup(outgoing);
+  nrf8001_setup(incoming);
 
   for (;;) {
 
-
-    status = xQueueReceive(ble_data_g->in, &incoming, portMAX_DELAY);
-    if (status != pdPASS) {
-      xSemaphoreGive(ble_data_g->semphr);
-      continue;
-    }
-
     g_received++;
 
-    exchange_commands(incoming, outgoing);
+    exchange_commands(NULL, incoming);
   }
 
   /* NOTREACHED */

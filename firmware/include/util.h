@@ -3,6 +3,9 @@
 #define __UTIL_H
 
 #include <stdint.h>
+#if defined(ENABLE_SEMIHOSTING) && ENABLE_SEMIHOSTING
+#  include <stdio.h>
+#endif
 
 #define assert(x) {if ((x) == 0) __asm("BKPT 0");}
 
