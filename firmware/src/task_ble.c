@@ -41,15 +41,8 @@ static void nrf8001_setup(struct nrf8001_cmd_s *outgoing_buf)
   dbg_print("Starting setup\n");
 
   for (i = 0; i < NB_SETUP_MESSAGES; i++) {
-    xSemaphoreTake(ble_data_g->semphr, portMAX_DELAY);
-
-    dbg_print("Sending message %d\n", i);
-
-    g_gotsemphrs++;
-
     struct nrf8001_cmd_s *to_send = (struct nrf8001_cmd_s*) init_cmds[i].cmd;
     exchange_commands(to_send, outgoing_buf);
-    //xQueueSend(ble_data_g->in, &to_send, portMAX_DELAY);
   }
 }
 

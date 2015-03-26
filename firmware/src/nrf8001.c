@@ -2,12 +2,33 @@
 #include <stdint.h>
 #include <string.h>
 
+#include <FreeRTOS.h>
+
 #include <libopencm3/stm32/spi.h>
 
 #include <util.h>
 #include <nrf8001.h>
 #include <pins.h>
 
+int g_nrf_events_received = 0;
+/**
+ *
+ *
+ */
+void nrf8001_handle_event(struct nrf8001_cmd_s *event)
+{
+  configASSERT(event != NULL);
+
+  switch (event->opcode) {
+    case NRF8001_EVT_CMD_RSP:
+      /* NOP */
+      g_nrf_events_received++;
+      break;
+
+    default:
+      break;
+  }
+}
 
 /**
  * @brief Perform a SPI exchange of NRF8001 commands. Calling code must set
@@ -16,7 +37,7 @@
 void nrf8001_exchange_cmds(struct nrf8001_cmd_s *out, struct nrf8001_cmd_s *in)
 {
   assert(out != NULL && in != NULL);
-  assert(out->length < NRF8001_MAX_CMD_LENGTH);
+  assert(out->length <= NRF8001_MAX_CMD_LENGTH);
 
   int bytes_to_xfer = 0, i;
   uint8_t *out_ptr = (uint8_t*) out;

@@ -43,8 +43,6 @@ void ble_isr(void)
 
   exti_reset_request(EXTI_PR & EXTI11);
 
-  dbg_print("Hit %p %p\n", main_queue_g, &evt);
-
   ++g_isr_hit;
 
   xQueueSendToFrontFromISR(main_queue_g, &evt, &higher);

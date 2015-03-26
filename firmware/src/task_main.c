@@ -6,6 +6,7 @@
 #include <semphr.h>
 
 #include <config.h>
+#include <nrf8001.h>
 #include <ble.h>
 #include <events.h>
 #include <util.h>
@@ -22,7 +23,7 @@ void task_main(void *p)
   (void) p;
   portBASE_TYPE status;
   struct global_event_s evt;
-  enum { BLE_START, BLE_INIT, BLE_IDLE, BLE_XFER } ble_state = BLE_START;
+  //enum { BLE_START, BLE_INIT, BLE_IDLE, BLE_XFER } ble_state = BLE_START;
   enum global_state_e state = GLOBAL_STATE_RESET;
 
   for (;;) {
@@ -50,26 +51,13 @@ void task_main(void *p)
         dbg_print("Giving semaphore\n");
         xSemaphoreGive(ble_data_g->semphr);
         g_given++;
-
-        switch (ble_state) {
-          case BLE_START: {
-            //enum task_status_event_e status_event = STATUS_EVENT_BLINK_ONCE;
-            //xQueueSend(status_queue_g, &status_event, portMAX_DELAY);
-
-            // nrf8001_setup();
-            //ble_state = BLE_INIT;
-            break;
-          }
-
-          default:
-            // XXX
-            break;
-        }
       }
       break;
 
-      case GLOBAL_EVT_NRF8001_EVENT:
-        configASSERT(0);
+      case GLOBAL_EVT_NRF8001_EVENT: {
+        struct nrf8001_cmd_s *cmd = evt.payload;
+        nrf8001_handle_event(cmd);
+      }
       break;
 
       case GLOBAL_EVT_LAST:
