@@ -61,7 +61,7 @@ static void config_ble_pins(void)
   gpio_mode_setup(NRF8001_GPIO, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE,   NRF8001_RST);
 
   gpio_set(NRF8001_GPIO, NRF8001_RST);
-  //gpio_clear(NRF8001_GPIO, NRF8001_REQN);
+  gpio_set(NRF8001_GPIO, NRF8001_REQN);
 
   rcc_periph_clock_enable(RCC_SPI2);
   spi_reset(SPI2);

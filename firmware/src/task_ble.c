@@ -62,9 +62,11 @@ static void exchange_commands(struct nrf8001_cmd_s *outgoing, struct nrf8001_cmd
 void ble_send_cmd(struct nrf8001_cmd_s *cmd)
 {
   struct nrf8001_cmd_s *ptr_to_send = cmd;
-  gpio_clear(NRF8001_GPIO, NRF8001_REQN);
+  //gpio_clear(NRF8001_GPIO, NRF8001_REQN);
 
-  xQueueSend(ble_data_g->in, &ptr_to_send, portMAX_DELAY);
+  if (xQueueSend(ble_data_g->in, &ptr_to_send, portMAX_DELAY)) {
+    gpio_clear(NRF8001_GPIO, NRF8001_REQN);
+  }
 }
 /**
  * @brief This task does nothing but send and receive messages between us and 
