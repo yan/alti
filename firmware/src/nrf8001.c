@@ -11,12 +11,13 @@
 #include <task_ble.h>
 #include <pins.h>
 
+/** The order of includes is important */
+#include <aci_cmds.h>
+#include <aci_evts.h>
 #include <services.h>
 
-/**
- * Set to 1 to enable nRF8001-related debugging output
- */
-#define NRF8001_DEBUG  (0)
+/** Set to 1 to enable nRF8001-related debugging output */
+#define NRF8001_DEBUG  ( 0 )
 
 static void nrf8001_connect(void);
 static void nrf8001_setup(void);
@@ -43,7 +44,7 @@ struct nrf8001_cmd_s cmd_buf;
 
 static void nrf8001_connect(void) {
   uint16_t *args = (uint16_t*) cmd_buf.data;
-  cmd_buf.opcode = NRF8001_CMD_CONNECT;
+  cmd_buf.opcode = ACI_CMD_CONNECT;
   cmd_buf.length = 5;
 
   args[0] = 20; // timeout, in seconds
@@ -58,7 +59,7 @@ static void nrf8001_connect(void) {
 static void nrf8001_setup(void)
 {
   static int i = 0;
-  struct nrf8001_cmd_s *to_send ;
+  struct nrf8001_cmd_s *to_send;
 
   /**
    * This adds 1388 bytes to the image
@@ -89,9 +90,9 @@ void nrf8001_handle_event(struct nrf8001_cmd_s *event)
 #endif
 
   switch (event->opcode) {
-    case NRF8001_EVT_CMD_RSP:
-      if (event->data[0] == NRF8001_CMD_SETUP) {
-        if (event->data[1] == 0x01) {
+    case ACI_EVT_CMD_RSP:
+      if (event->data[0] == ACI_CMD_SETUP) {
+        if (event->data[1] == ACI_STATUS_TRANSACTION_CONTINUE) {
           nrf8001_setup();
         }
       }
@@ -99,11 +100,12 @@ void nrf8001_handle_event(struct nrf8001_cmd_s *event)
       s_nrf8001_state.events_received++;
       break;
 
-    case NRF8001_EVT_DEVICE_STARTED:
-      if (event->data[0] == 2) {
+    case ACI_EVT_DEVICE_STARTED:
+
+      if (event->data[0] == ACI_DEVICE_SETUP) {
         s_nrf8001_state.state = STATE_SETUP;
         nrf8001_setup();
-      } else if (event->data[0] == 3) {
+      } else if (event->data[0] == ACI_DEVICE_STANDBY) {
         s_nrf8001_state.state = STATE_STANDBY;
         nrf8001_connect();
 #if NRF8001_DEBUG == 1
@@ -112,8 +114,8 @@ void nrf8001_handle_event(struct nrf8001_cmd_s *event)
       }
       break;
 
-    case NRF8001_EVT_DISCONNECTED:
-      if (event->data[0] == 0x93) {
+    case ACI_EVT_DISCONNECTED:
+      if (event->data[0] == ACI_STATUS_ERROR_ADVT_TIMEOUT) {
 #if NRF8001_DEBUG == 1
         dbg_print("Timeout while advertising\n");
 #endif
