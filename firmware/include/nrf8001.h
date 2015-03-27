@@ -18,6 +18,7 @@ void nrf8001_exchange_cmds(struct nrf8001_cmd_s *out, struct nrf8001_cmd_s *in);
 void nrf8001_handle_event(struct nrf8001_cmd_s *event);
 
 typedef enum nrf8001_cmd_e {
+  NRF8001_CMD_SETUP                       = 0x06,
   NRF8001_CMD_CONNECT                     = 0x0f
 
 } nrf8001_cmd_t;

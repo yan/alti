@@ -122,4 +122,6 @@ void config_ble(void)
   config_ble_pins();
   config_ble_isr();
   nrf8001_reset();
+
+  //gpio_clear(NRF8001_GPIO, NRF8001_REQN);
 }

@@ -11,7 +11,15 @@
 #include <task_ble.h>
 #include <pins.h>
 
+#include <services.h>
+
+/**
+ * Set to 1 to enable nRF8001-related debugging output
+ */
+#define NRF8001_DEBUG  (0)
+
 static void nrf8001_connect(void);
+static void nrf8001_setup(void);
 
 enum nrf8001_state_e {
   STATE_IDLE,
@@ -43,6 +51,31 @@ static void nrf8001_connect(void) {
   ble_send_cmd(&cmd_buf);
 }
 
+
+/**
+ *
+ */
+static void nrf8001_setup(void)
+{
+  static int i = 0;
+  struct nrf8001_cmd_s *to_send ;
+
+  /**
+   * This adds 1388 bytes to the image
+   */
+  static const struct {
+    uint8_t status;
+    uint8_t cmd[32];
+  } init_cmds[NB_SETUP_MESSAGES] = SETUP_MESSAGES_CONTENT;
+
+#if NRF8001_DEBUG == 1
+  dbg_print("Sending %d\n", i);
+#endif
+
+  to_send = (struct nrf8001_cmd_s*) init_cmds[i].cmd;
+  ble_send_cmd(to_send);
+  i++;
+}
 /**
  *
  *
@@ -51,10 +84,17 @@ void nrf8001_handle_event(struct nrf8001_cmd_s *event)
 {
   configASSERT(event != NULL);
 
-  //dbg_print("Event = %x, response opcode: %d, status = %d\n", event->opcode, event->data[0], event->data[1]);
+#if NRF8001_DEBUG == 1
+  dbg_print("Event = %x, response opcode: %d, status = %d\n", event->opcode, event->data[0], event->data[1]);
+#endif
 
   switch (event->opcode) {
     case NRF8001_EVT_CMD_RSP:
+      if (event->data[0] == NRF8001_CMD_SETUP) {
+        if (event->data[1] == 0x01) {
+          nrf8001_setup();
+        }
+      }
       /* NOP */
       s_nrf8001_state.events_received++;
       break;
@@ -62,16 +102,21 @@ void nrf8001_handle_event(struct nrf8001_cmd_s *event)
     case NRF8001_EVT_DEVICE_STARTED:
       if (event->data[0] == 2) {
         s_nrf8001_state.state = STATE_SETUP;
+        nrf8001_setup();
       } else if (event->data[0] == 3) {
         s_nrf8001_state.state = STATE_STANDBY;
         nrf8001_connect();
+#if NRF8001_DEBUG == 1
         dbg_print("Sent connection.\n");
+#endif
       }
       break;
 
     case NRF8001_EVT_DISCONNECTED:
       if (event->data[0] == 0x93) {
+#if NRF8001_DEBUG == 1
         dbg_print("Timeout while advertising\n");
+#endif
       }
 
       s_nrf8001_state.state = STATE_STANDBY;

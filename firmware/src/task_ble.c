@@ -14,8 +14,6 @@
 #include <task_ble.h>
 #include <nrf8001.h>
 
-#include <services.h>
-
 struct ble_task_data_s *ble_data_g;
 static struct nrf8001_cmd_s s_null_cmd = {
   .length = 0,
@@ -26,31 +24,7 @@ static struct nrf8001_cmd_s s_null_cmd = {
 
 int g_received = 0, g_gotsemphrs = 0;
 
-static void nrf8001_setup(struct nrf8001_cmd_s *incoming_buf);
 static void exchange_commands(struct nrf8001_cmd_s *incoming, struct nrf8001_cmd_s *outgoing);
-
-/**
- *
- */
-static void nrf8001_setup(struct nrf8001_cmd_s *incoming_buf)
-{
-  int i = 0;
-
-  /**
-   * This adds 1388 bytes to the image
-   */
-  static struct {
-    uint8_t status;
-    uint8_t cmd[32];
-  } init_cmds[NB_SETUP_MESSAGES] = SETUP_MESSAGES_CONTENT;
-
-  dbg_print("Starting setup\n");
-
-  for (i = 0; i < NB_SETUP_MESSAGES; i++) {
-    struct nrf8001_cmd_s *to_send = (struct nrf8001_cmd_s*) init_cmds[i].cmd;
-    exchange_commands(to_send, incoming_buf);
-  }
-}
 
 static void exchange_commands(struct nrf8001_cmd_s *outgoing, struct nrf8001_cmd_s *incoming)
 {
@@ -103,7 +77,7 @@ void task_ble(void *p)
   struct nrf8001_cmd_s *incoming = pvPortMalloc(sizeof(struct nrf8001_cmd_s));
 
   config_ble();
-  nrf8001_setup(incoming);
+  //nrf8001_setup(incoming);
 
   for (;;) {
 
