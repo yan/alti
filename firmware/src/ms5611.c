@@ -78,7 +78,7 @@ uint16_t ms5611_verify_prom(void)
  */
 void ms5611_reset(uint32_t i2c)
 {
-  i2c_send_cmd(i2c, MS5611_CMD_RESET);
+  i2c_send_cmd(i2c, MS5611_ADDR, MS5611_CMD_RESET);
 
   /* Give it 3ms to start */
   delay_ms(3);
@@ -101,13 +101,13 @@ void ms5611_init(uint32_t i2c)
   for ( cmd  = MS5611_CMD_PROM_READ_BASE, idx = 0;
         cmd <= MS5611_CMD_PROM_READ_LAST;
         cmd += sizeof(coefficient_t), idx++) {
-    i2c_send_cmd(i2c, cmd);
-    C._C[idx] = i2c_read16(i2c);
+    i2c_send_cmd(i2c, MS5611_ADDR, cmd);
+    C._C[idx] = i2c_read16(i2c, MS5611_ADDR);
   }
 
 #if MS5611_VERIFY_RECVD == 1
-  i2c_send_cmd(i2c, MS5611_CMD_PROM_READ_LAST);
-  crc4_dword = i2c_read16(i2c);
+  i2c_send_cmd(i2c, MS5611_ADDR, MS5611_CMD_PROM_READ_LAST);
+  crc4_dword = i2c_read16(i2c, MS5611_ADDR);
 
   crc = ms5611_verify_prom();
   
@@ -123,10 +123,10 @@ void ms5611_init(uint32_t i2c)
  */
 static uint32_t ms5611_read_adc(uint32_t i2c, uint8_t cmd)
 {
-  i2c_send_cmd(i2c, cmd);
+  i2c_send_cmd(i2c, MS5611_ADDR, cmd);
   delay_ms((cmd&0x0F) * 2 + 1);
-  i2c_send_cmd(i2c, MS5611_CMD_ADC_READ);
-  return i2c_read24(i2c);
+  i2c_send_cmd(i2c, MS5611_ADDR, MS5611_CMD_ADC_READ);
+  return i2c_read24(i2c, MS5611_ADDR);
 }
 
 /**

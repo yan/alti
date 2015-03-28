@@ -17,7 +17,7 @@
 #include "pins.h"
 
 
-static void i2c_prepare_to_read(uint32_t i2c);
+static void i2c_prepare_to_read(uint32_t i2c, uint8_t address);
 
 
 /** @brief ...
@@ -64,15 +64,15 @@ void i2c_disable(void)
 /**
  * @brief
  */
-void i2c_send_cmd(uint32_t i2c, uint8_t cmd)
+void i2c_send_cmd(uint32_t i2c, uint8_t address, uint8_t cmd)
 {
-  i2c_send_buf(i2c, &cmd, sizeof(cmd));
+  i2c_send_buf(i2c, address, &cmd, sizeof(cmd));
 }
 
 /**
  * @brief
  */
-void i2c_send_buf(uint32_t i2c, uint8_t *buf, uint32_t length)
+void i2c_send_buf(uint32_t i2c, uint8_t address, uint8_t *buf, uint32_t length)
 {
   while ((I2C_SR2(i2c) & I2C_SR2_BUSY));
 
@@ -82,7 +82,7 @@ void i2c_send_buf(uint32_t i2c, uint8_t *buf, uint32_t length)
   while (!((I2C_SR1(i2c) & I2C_SR1_SB)
     & (I2C_SR2(i2c) & (I2C_SR2_MSL | I2C_SR2_BUSY))));
 
-  i2c_send_7bit_address(i2c, MS5611_ADDR, I2C_WRITE);
+  i2c_send_7bit_address(i2c, address, I2C_WRITE);
 
   /* Waiting for address is transferred. */
   while (!(I2C_SR1(i2c) & I2C_SR1_ADDR));
@@ -103,7 +103,7 @@ void i2c_send_buf(uint32_t i2c, uint8_t *buf, uint32_t length)
 /**
  * @brief
  */
-static void i2c_prepare_to_read(uint32_t i2c) {
+static void i2c_prepare_to_read(uint32_t i2c, uint8_t address) {
   i2c_send_start(i2c);
   i2c_enable_ack(i2c);
 
@@ -111,7 +111,7 @@ static void i2c_prepare_to_read(uint32_t i2c) {
   while (!((I2C_SR1(i2c) & I2C_SR1_SB)
     & (I2C_SR2(i2c) & (I2C_SR2_MSL | I2C_SR2_BUSY))));
 
-  i2c_send_7bit_address(i2c, MS5611_ADDR, I2C_READ);
+  i2c_send_7bit_address(i2c, address, I2C_READ);
 
   /* Waiting for address is transferred. */
   while (!(I2C_SR1(i2c) & I2C_SR1_ADDR));
@@ -123,9 +123,9 @@ static void i2c_prepare_to_read(uint32_t i2c) {
 /**
  * @brief
  */
-void i2c_read_data(uint32_t i2c, uint8_t *data, uint32_t length)
+void i2c_read_data(uint32_t i2c, uint8_t address, uint8_t *data, uint32_t length)
 {
-  i2c_prepare_to_read(i2c);
+  i2c_prepare_to_read(i2c, address);
 
   uint32_t i = 0;
   for (i = 0; i < length; ++i) {
@@ -142,13 +142,13 @@ void i2c_read_data(uint32_t i2c, uint8_t *data, uint32_t length)
 /**
  * @brief
  */
-uint32_t i2c_read_octets(uint32_t i2c, unsigned octets)
+uint32_t i2c_read_octets(uint32_t i2c, uint8_t address, unsigned octets)
 {
   uint32_t value = 0;
 
   assert(octets > 0 && octets <= 4);
 
-  i2c_prepare_to_read(i2c);
+  i2c_prepare_to_read(i2c, address);
 
   do {
     if (--octets == 0) {
@@ -164,5 +164,4 @@ uint32_t i2c_read_octets(uint32_t i2c, unsigned octets)
 
   return value;
 }
-
 

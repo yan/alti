@@ -78,7 +78,6 @@ void task_ble(void *p)
   struct nrf8001_cmd_s *incoming = pvPortMalloc(sizeof(struct nrf8001_cmd_s));
 
   config_ble();
-  //nrf8001_setup(incoming);
 
   for (;;) {
 
