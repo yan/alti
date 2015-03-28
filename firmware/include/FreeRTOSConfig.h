@@ -100,7 +100,7 @@ your application. */
 #define xPortSysTickHandler                     sys_tick_handler
 
 
-#define CONFIG_TASK_MAIN_STACK_DEPTH            256 // 1k
+#define CONFIG_TASK_MAIN_STACK_DEPTH            768 // 3k
 #define CONFIG_TASK_MAIN_QUEUE_LEN              32
 #define CONFIG_TASK_MAIN_PRIORITY               ( DEFAULT_TASK_PRIORITY )
 

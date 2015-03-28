@@ -17,10 +17,17 @@
 #include <services.h>
 
 /** Set to 1 to enable nRF8001-related debugging output */
-#define NRF8001_DEBUG  ( 0 )
+#define NRF8001_DEBUG  ( 1 )
+
+#if NRF8001_DEBUG != 1
+#  undef dbg_print
+#  define dbg_print(x...)
+#endif
 
 static void nrf8001_connect(void);
 static void nrf8001_setup(void);
+static void handle_pipe_status(struct nrf8001_cmd_s *evt);
+static void handle_connected(struct nrf8001_cmd_s *evt);
 
 enum nrf8001_state_e {
   STATE_IDLE,
@@ -69,13 +76,56 @@ static void nrf8001_setup(void)
     uint8_t cmd[32];
   } init_cmds[NB_SETUP_MESSAGES] = SETUP_MESSAGES_CONTENT;
 
-#if NRF8001_DEBUG == 1
-  dbg_print("Sending %d\n", i);
-#endif
-
   to_send = (struct nrf8001_cmd_s*) init_cmds[i].cmd;
   ble_send_cmd(to_send);
   i++;
+}
+
+static void handle_pipe_status(struct nrf8001_cmd_s *evt)
+{
+#if NRF8001_DEBUG
+    dbg_print("Pipe status: \n");
+    dbg_print("  pipes open: %x%x%x%x%x%x%x%x\n", evt->data[0], evt->data[1],
+        evt->data[2], evt->data[3], evt->data[4], evt->data[5], evt->data[6],
+        evt->data[7]);
+    dbg_print("  pipes closed: %x%x%x%x%x%x%x%x\n", evt->data[8], evt->data[9],
+        evt->data[10], evt->data[11], evt->data[12], evt->data[13], evt->data[14],
+        evt->data[15]);
+#endif
+
+#define PIPE_OPEN(evt, pipe) (evt->data[(pipe)/8] & (1 << (pipe % 8)))
+
+    /** Service discovery is not yet completed if bit 1 is not set */
+    if (PIPE_OPEN(evt, 0)) {
+    }
+
+    if (PIPE_OPEN(evt, PIPE_AERO_PRESSURE_BAROMETRIC_PRESSURE_SET )) {
+      dbg_print("PIPE_AERO_PRESSURE_BAROMETRIC_PRESSURE_SET is open\n");
+    }
+
+#undef PIPE_OPEN
+
+}
+
+static void handle_connected(struct nrf8001_cmd_s *evt)
+{
+#if NRF8001_DEBUG == 1
+    uint16_t interval = evt->data[7] | (evt->data[8] << 8);
+    uint16_t latency = evt->data[9] | (evt->data[10] << 8);
+    uint16_t sup_timeout = evt->data[11] | (evt->data[12] << 8);
+
+    (void) interval; (void) latency; (void) sup_timeout;
+
+    dbg_print("Device connected:\n");
+    dbg_print("  type: %x\n", evt->data[0]);
+    dbg_print("  peer addr: %x:%x:%x:%x:%x:%x\n", evt->data[1],
+        evt->data[2], evt->data[3], evt->data[4], evt->data[5],
+        evt->data[6]);
+    dbg_print("  interval: %x\n", interval);
+    dbg_print("  latency: %x\n", latency);
+    dbg_print("  supervision timeout: %x\n", sup_timeout);
+    dbg_print("  master clock accuracy: %x\n", evt->data[13]);
+#endif
 }
 /**
  *
@@ -85,9 +135,7 @@ void nrf8001_handle_event(struct nrf8001_cmd_s *event)
 {
   configASSERT(event != NULL);
 
-#if NRF8001_DEBUG == 1
-  dbg_print("Event = %x, response opcode: %d, status = %d\n", event->opcode, event->data[0], event->data[1]);
-#endif
+  dbg_print("Event = %x, response opcode: %x, status = %x\n", event->opcode, event->data[0], event->data[1]);
 
   switch (event->opcode) {
     case ACI_EVT_CMD_RSP:
@@ -108,20 +156,24 @@ void nrf8001_handle_event(struct nrf8001_cmd_s *event)
       } else if (event->data[0] == ACI_DEVICE_STANDBY) {
         s_nrf8001_state.state = STATE_STANDBY;
         nrf8001_connect();
-#if NRF8001_DEBUG == 1
         dbg_print("Sent connection.\n");
-#endif
       }
       break;
 
     case ACI_EVT_DISCONNECTED:
       if (event->data[0] == ACI_STATUS_ERROR_ADVT_TIMEOUT) {
-#if NRF8001_DEBUG == 1
         dbg_print("Timeout while advertising\n");
-#endif
       }
 
       s_nrf8001_state.state = STATE_STANDBY;
+      break;
+
+    case ACI_EVT_CONNECTED: 
+      handle_connected(event);
+      break;
+
+    case ACI_EVT_PIPE_STATUS:
+      handle_pipe_status(event);
       break;
 
     default:
