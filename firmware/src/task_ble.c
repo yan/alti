@@ -24,7 +24,7 @@ static struct nrf8001_cmd_s s_null_cmd = {
 
 int g_received = 0, g_gotsemphrs = 0;
 
-static void exchange_commands(struct nrf8001_cmd_s *incoming, struct nrf8001_cmd_s *outgoing);
+static void exchange_commands(struct nrf8001_cmd_s *outgoing, struct nrf8001_cmd_s *incoming);
 
 static void exchange_commands(struct nrf8001_cmd_s *outgoing, struct nrf8001_cmd_s *incoming)
 {
@@ -62,9 +62,8 @@ static void exchange_commands(struct nrf8001_cmd_s *outgoing, struct nrf8001_cmd
 void ble_send_cmd(struct nrf8001_cmd_s *cmd)
 {
   struct nrf8001_cmd_s *ptr_to_send = cmd;
-  //gpio_clear(NRF8001_GPIO, NRF8001_REQN);
 
-  if (xQueueSend(ble_data_g->in, &ptr_to_send, portMAX_DELAY)) {
+  if (xQueueSend(ble_data_g->in, &ptr_to_send, portMAX_DELAY) == pdPASS) {
     gpio_clear(NRF8001_GPIO, NRF8001_REQN);
   }
 }
