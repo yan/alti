@@ -19,6 +19,13 @@ uint32_t cpu_cycle_count(void);
 
 #define MIN(x, y) ((x) < (y) ? (x) : (y))
 
+#define swap_endian(x)     \
+  (((x>>24) & 0xff)     |  \
+   ((x<<8 ) & 0xff0000) |  \
+   ((x>>8)  & 0xff00)   |  \
+   ((x<<24) & 0xff000000))  
+    
+
 #if defined(ENABLE_SEMIHOSTING) && ENABLE_SEMIHOSTING
 #  define dbg_print(args...) printf(args)
 #else

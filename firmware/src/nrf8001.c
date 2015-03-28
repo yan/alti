@@ -24,6 +24,8 @@
 #  define dbg_print(x...)
 #endif
 
+extern int g_should_send;
+
 static void nrf8001_connect(void);
 static void nrf8001_setup(void);
 static void handle_pipe_status(struct nrf8001_cmd_s *evt);
@@ -54,7 +56,7 @@ static void nrf8001_connect(void) {
   cmd_buf.opcode = ACI_CMD_CONNECT;
   cmd_buf.length = 5;
 
-  args[0] = 20; // timeout, in seconds
+  args[0] = 60; // timeout, in seconds
   args[1] = 0x100; // interval, 160ms (256 * 0.625ms)
   ble_send_cmd(&cmd_buf);
 }
@@ -99,8 +101,11 @@ static void handle_pipe_status(struct nrf8001_cmd_s *evt)
     if (PIPE_OPEN(evt, 0)) {
     }
 
-    if (PIPE_OPEN(evt, PIPE_AERO_PRESSURE_BAROMETRIC_PRESSURE_SET )) {
-      dbg_print("PIPE_AERO_PRESSURE_BAROMETRIC_PRESSURE_SET is open\n");
+    if (PIPE_OPEN(evt, PIPE_AERO_PRESSURE_BAROMETRIC_PRESSURE_TX )) {
+      dbg_print("PIPE_AERO_PRESSURE_BAROMETRIC_PRESSURE_TX is open\n");
+      g_should_send++;
+    } else {
+      g_should_send = 0;
     }
 
 #undef PIPE_OPEN

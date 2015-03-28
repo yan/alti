@@ -15,7 +15,11 @@
 #include <task_ble.h>
 #include <task_status_led.h>
 
+#include <services.h> // delete me after debugging ble updates
+#include <string.h> // delete me after debugging ble updates
+
 int g_given = 0, g_events_received = 0, g_events_processed = 0;
+int g_should_send = 0;
 
 void task_main(void *p)
 {
@@ -23,14 +27,32 @@ void task_main(void *p)
   (void) p;
   portBASE_TYPE status;
   struct global_event_s evt;
-  //enum { BLE_START, BLE_INIT, BLE_IDLE, BLE_XFER } ble_state = BLE_START;
+  struct nrf8001_cmd_s cmd;
   enum global_state_e state = GLOBAL_STATE_RESET;
+  unsigned int i = 0;
+
+  memset(&cmd, '\0', sizeof(cmd));
 
   for (;;) {
     status = xQueueReceive(main_queue_g, &evt, MAIN_EVENT_LOOP_TIMEOUT);
 
     if (status == pdFAIL) {
-      // ??
+      if (g_should_send) {
+        cmd.opcode = 0x15;
+        cmd.length = 5;
+        cmd.data[0] = PIPE_AERO_PRESSURE_BAROMETRIC_PRESSURE_TX;
+        
+        //int x = swap_endian(i);
+
+
+        cmd.data[1] = i;// swap_endian(i);
+
+        printf("sending: %x\n", i);
+        i++;
+
+        ble_send_cmd(&cmd);
+      }
+
       continue;
     }
 
@@ -54,8 +76,8 @@ void task_main(void *p)
       break;
 
       case GLOBAL_EVT_NRF8001_EVENT: {
-        struct nrf8001_cmd_s *cmd = evt.payload;
-        nrf8001_handle_event(cmd);
+        //struct nrf8001_cmd_s *evt = evt.payload;
+        nrf8001_handle_event(evt.payload);
       }
       break;
 
