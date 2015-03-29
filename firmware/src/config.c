@@ -12,7 +12,7 @@ void config_clock(void)
   rcc_periph_clock_enable(RCC_GPIOB);
   rcc_peripheral_enable_clock(&RCC_AHBENR, RCC_AHBENR_GPIOBEN);
 
-  rcc_clock_freq = rcc_apb2_frequency;
+  g.rcc_clock_freq = rcc_apb2_frequency;
 }
 
 void config_nvic(void)

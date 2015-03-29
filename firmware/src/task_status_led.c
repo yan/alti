@@ -101,7 +101,7 @@ void task_status_led(void *p)
   task_status_config();
 
   for (;;) {
-    status = xQueueReceive(status_queue_g, &received_event, delay);
+    status = xQueueReceive(g.status_queue_g, &received_event, delay);
 
     if (status != pdPASS) {
       if (state == TASK_STATUS_STATE_PULSING) {

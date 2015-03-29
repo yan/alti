@@ -21,8 +21,8 @@ uint32_t cpu_cycle_count(void);
 
 #define swap_endian(x)     \
   (((x>>24) & 0xff)     |  \
-   ((x<<8 ) & 0xff0000) |  \
    ((x>>8)  & 0xff00)   |  \
+   ((x<<8 ) & 0xff0000) |  \
    ((x<<24) & 0xff000000))  
     
 

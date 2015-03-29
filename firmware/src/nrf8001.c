@@ -85,31 +85,22 @@ static void nrf8001_setup(void)
 
 static void handle_pipe_status(struct nrf8001_cmd_s *evt)
 {
+  int i = 0;
+
 #if NRF8001_DEBUG
-    dbg_print("Pipe status: \n");
-    dbg_print("  pipes open: %x%x%x%x%x%x%x%x\n", evt->data[0], evt->data[1],
-        evt->data[2], evt->data[3], evt->data[4], evt->data[5], evt->data[6],
-        evt->data[7]);
-    dbg_print("  pipes closed: %x%x%x%x%x%x%x%x\n", evt->data[8], evt->data[9],
-        evt->data[10], evt->data[11], evt->data[12], evt->data[13], evt->data[14],
-        evt->data[15]);
+  dbg_print("Pipe status: \n");
+  dbg_print("  pipes open: %x%x%x%x%x%x%x%x\n", evt->data[0], evt->data[1],
+      evt->data[2], evt->data[3], evt->data[4], evt->data[5], evt->data[6],
+      evt->data[7]);
+  dbg_print("  pipes closed: %x%x%x%x%x%x%x%x\n", evt->data[8], evt->data[9],
+      evt->data[10], evt->data[11], evt->data[12], evt->data[13], evt->data[14],
+      evt->data[15]);
 #endif
 
-#define PIPE_OPEN(evt, pipe) (evt->data[(pipe)/8] & (1 << (pipe % 8)))
-
-    /** Service discovery is not yet completed if bit 1 is not set */
-    if (PIPE_OPEN(evt, 0)) {
-    }
-
-    if (PIPE_OPEN(evt, PIPE_AERO_PRESSURE_BAROMETRIC_PRESSURE_TX )) {
-      dbg_print("PIPE_AERO_PRESSURE_BAROMETRIC_PRESSURE_TX is open\n");
-      g_should_send++;
-    } else {
-      g_should_send = 0;
-    }
-
-#undef PIPE_OPEN
-
+  for (i = 0; i < 8; i++) {
+    g.pipes_open[i] = evt->data[i];
+    g.pipes_closed[i] = evt->data[i+8];
+  }
 }
 
 static void handle_connected(struct nrf8001_cmd_s *evt)
