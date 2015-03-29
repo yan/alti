@@ -1,4 +1,6 @@
 
+#ifndef __EVENTS_H
+#define __EVENTS_H
 
 /**
  * @brief All possible events that can be pushed to the main "thread"
@@ -37,3 +39,5 @@ typedef enum global_state_e {
   GLOBAL_STATE_BLE_SETUP,
   GLOBAL_STATE_IDLE
 } global_state_t;
+
+#endif

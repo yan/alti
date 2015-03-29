@@ -45,7 +45,7 @@ void ble_isr(void)
 
   ++g_isr_hit;
 
-  xQueueSendToFrontFromISR(main_queue_g, &evt, &higher);
+  xQueueSendToFrontFromISR(g.main_queue_g, &evt, &higher);
 
   portYIELD_FROM_ISR(higher);
 }

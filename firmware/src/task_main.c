@@ -6,6 +6,7 @@
 #include <semphr.h>
 
 #include <config.h>
+#include <globals.h>
 #include <nrf8001.h>
 #include <ble.h>
 #include <events.h>
@@ -16,6 +17,7 @@
 #include <task_status_led.h>
 
 #include <services.h> // delete me after debugging ble updates
+#include <aci_cmds.h> // delete me after debugging ble updates
 #include <string.h> // delete me after debugging ble updates
 
 int g_given = 0, g_events_received = 0, g_events_processed = 0;
@@ -23,7 +25,6 @@ int g_should_send = 0;
 
 void task_main(void *p)
 {
-  // QueueHandle_t main_queue = (QueueHandle_t) p;
   (void) p;
   portBASE_TYPE status;
   struct global_event_s evt;
@@ -34,20 +35,21 @@ void task_main(void *p)
   memset(&cmd, '\0', sizeof(cmd));
 
   for (;;) {
-    status = xQueueReceive(main_queue_g, &evt, MAIN_EVENT_LOOP_TIMEOUT);
+    status = xQueueReceive(g.main_queue_g, &evt, MAIN_EVENT_LOOP_TIMEOUT);
 
     if (status == pdFAIL) {
       if (g_should_send) {
-        cmd.opcode = 0x15;
-        cmd.length = 5;
+        cmd.opcode = ACI_CMD_SEND_DATA;
+        cmd.length = 2 + PIPE_AERO_PRESSURE_BAROMETRIC_PRESSURE_TX_MAX_SIZE;
         cmd.data[0] = PIPE_AERO_PRESSURE_BAROMETRIC_PRESSURE_TX;
         
         //int x = swap_endian(i);
 
 
-        cmd.data[1] = i;// swap_endian(i);
+        cmd.data[4] = i;
+        //*(unsigned int *)&cmd.data[1] = swap_endian(i);
 
-        printf("sending: %x\n", i);
+        dbg_print("sending: %08x\n", *(unsigned int*)&cmd.data[1]);
         i++;
 
         ble_send_cmd(&cmd);
@@ -70,7 +72,7 @@ void task_main(void *p)
       break;
 
       case GLOBAL_EVT_NRF8001_RDY: {
-        xSemaphoreGive(ble_data_g->semphr);
+        xSemaphoreGive(g.ble_data_g->semphr);
         g_given++;
       }
       break;
