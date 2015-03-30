@@ -15,7 +15,7 @@ struct globals {
   void *main_queue_g;
   
   /** @brief XXX */
-  void *status_queue_g;
+  void *alert_queue_g;
 
   /** @brief */
   void *baro_queue_g;

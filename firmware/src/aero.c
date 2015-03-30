@@ -14,7 +14,7 @@
 
 #include <task_main.h>
 #include <task_ble.h>
-#include <task_status_led.h>
+#include <task_alert.h>
 #include <task_baro.h>
 
 #if defined(ENABLE_SEMIHOSTING) && ENABLE_SEMIHOSTING
@@ -23,14 +23,14 @@ extern void initialise_monitor_handles(void);
 
 static void config_tasks(void);
 static void config_main_task(void);
-static void config_status_task(void);
+static void config_alert_task(void);
 static void config_ble_task(void);
 static void config_baro_task(void);
 
 static void config_tasks(void)
 {
   config_main_task();
-  config_status_task();
+  config_alert_task();
   config_ble_task();
   config_baro_task();
 }
@@ -57,17 +57,17 @@ static void config_ble_task(void)
 
 
 }
-static void config_status_task(void)
+static void config_alert_task(void)
 {
   BaseType_t status;
-  TaskHandle_t status_handle;
+  TaskHandle_t alert_handle;
 
-  g.status_queue_g = xQueueCreate(CONFIG_TASK_STATUS_QUEUE_LEN,
-                                sizeof(enum task_status_event_e));
-  assert(g.status_queue_g != NULL);
+  g.alert_queue_g = xQueueCreate(CONFIG_TASK_ALERT_QUEUE_LEN,
+                                sizeof(enum task_alert_event_e));
+  assert(g.alert_queue_g != NULL);
 
-  status = xTaskCreate(task_status_led, "status", CONFIG_TASK_STATUS_STACK_DEPTH,
-                       g.status_queue_g, CONFIG_TASK_STATUS_PRIORITY, &status_handle);
+  status = xTaskCreate(task_alert_led, "alert", CONFIG_TASK_ALERT_STACK_DEPTH,
+                       g.alert_queue_g, CONFIG_TASK_ALERT_PRIORITY, &alert_handle);
   assert(status == pdPASS);
 }
 

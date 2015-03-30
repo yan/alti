@@ -15,6 +15,8 @@
 #include <nrf8001.h>
 #include <aci_cmds.h>
 
+static void exchange_commands(struct nrf8001_cmd_s *outgoing, struct nrf8001_cmd_s *incoming);
+
 static struct nrf8001_cmd_s s_null_cmd = {
   .length = 0,
   .opcode = 0,
@@ -24,12 +26,9 @@ static struct nrf8001_cmd_s s_null_cmd = {
 
 int g_received = 0, g_gotsemphrs = 0;
 
-static void exchange_commands(struct nrf8001_cmd_s *outgoing, struct nrf8001_cmd_s *incoming);
-
 static void exchange_commands(struct nrf8001_cmd_s *outgoing, struct nrf8001_cmd_s *incoming)
 {
   BaseType_t status;
-
 
   status = xSemaphoreTake(g.ble_data_g->semphr, portMAX_DELAY);
   if (status != pdPASS) {
@@ -59,6 +58,9 @@ static void exchange_commands(struct nrf8001_cmd_s *outgoing, struct nrf8001_cmd
   }
 }
 
+/**
+ * @brief Send a command (by reference) to the nRF8001
+ */
 void ble_send_cmd(struct nrf8001_cmd_s *cmd)
 {
   if (xQueueSend(g.ble_data_g->in, &cmd, portMAX_DELAY) == pdPASS) {
@@ -66,12 +68,16 @@ void ble_send_cmd(struct nrf8001_cmd_s *cmd)
   }
 }
 
+/**
+ * @brief Transmit some data on an open pipe
+ */
 void ble_tx(uint8_t pipe, uint8_t *data, size_t length)
 {
   static struct nrf8001_cmd_s cmd;
   size_t i;
 
   configASSERT(length < (NRF8001_MAX_CMD_LENGTH - 1));
+  configASSERT(PIPE_OPEN(pipe));
 
   cmd.opcode = ACI_CMD_SEND_DATA;
   cmd.length = 1 + length;
@@ -79,6 +85,11 @@ void ble_tx(uint8_t pipe, uint8_t *data, size_t length)
   cmd.data[0] = pipe;
   for (i = 0; i < length; i++) {
     cmd.data[i+1] = data[i];
+  }
+
+  // Not necessary, but leaving it in.
+  for (i = i + 1; i < NRF8001_MAX_CMD_LENGTH; i++) {
+    cmd.data[i+1] = 0;
   }
 
   ble_send_cmd(&cmd);

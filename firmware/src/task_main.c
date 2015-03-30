@@ -14,7 +14,7 @@
 
 #include <task_main.h>
 #include <task_ble.h>
-#include <task_status_led.h>
+#include <task_alert.h>
 
 #include <services.h> // delete me after debugging ble updates
 #include <aci_cmds.h> // delete me after debugging ble updates
