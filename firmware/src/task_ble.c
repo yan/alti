@@ -13,6 +13,7 @@
 #include <ble.h>
 #include <task_ble.h>
 #include <nrf8001.h>
+#include <aci_cmds.h>
 
 static struct nrf8001_cmd_s s_null_cmd = {
   .length = 0,
@@ -63,6 +64,24 @@ void ble_send_cmd(struct nrf8001_cmd_s *cmd)
   if (xQueueSend(g.ble_data_g->in, &cmd, portMAX_DELAY) == pdPASS) {
     gpio_clear(NRF8001_GPIO, NRF8001_REQN);
   }
+}
+
+void ble_tx(uint8_t pipe, uint8_t *data, size_t length)
+{
+  static struct nrf8001_cmd_s cmd;
+  size_t i;
+
+  configASSERT(length < (NRF8001_MAX_CMD_LENGTH - 1));
+
+  cmd.opcode = ACI_CMD_SEND_DATA;
+  cmd.length = 1 + length;
+
+  cmd.data[0] = pipe;
+  for (i = 0; i < length; i++) {
+    cmd.data[i+1] = data[i];
+  }
+
+  ble_send_cmd(&cmd);
 }
 /**
  * @brief This task does nothing but send and receive messages between us and 

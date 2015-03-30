@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include <FreeRTOS.h>
+#include <queue.h>
 
 #include <libopencm3/stm32/spi.h>
 
@@ -10,6 +11,7 @@
 #include <nrf8001.h>
 #include <task_ble.h>
 #include <pins.h>
+#include <events.h>
 
 /** The order of includes is important */
 #include <aci_cmds.h>
@@ -83,11 +85,15 @@ static void nrf8001_setup(void)
   i++;
 }
 
+/**
+ * XXX: move sending main event out to util funcs
+ */
 static void handle_pipe_status(struct nrf8001_cmd_s *evt)
 {
+  struct global_event_s response_evt;
   int i = 0;
 
-#if NRF8001_DEBUG
+#if NRF8001_DEBUG == 1
   dbg_print("Pipe status: \n");
   dbg_print("  pipes open: %x%x%x%x%x%x%x%x\n", evt->data[0], evt->data[1],
       evt->data[2], evt->data[3], evt->data[4], evt->data[5], evt->data[6],
@@ -97,10 +103,17 @@ static void handle_pipe_status(struct nrf8001_cmd_s *evt)
       evt->data[15]);
 #endif
 
+  (void) evt;
+
   for (i = 0; i < 8; i++) {
     g.pipes_open[i] = evt->data[i];
     g.pipes_closed[i] = evt->data[i+8];
   }
+
+  response_evt.type = GLOBAL_EVT_NRF8001_PIPES_CHANGED;
+  response_evt.payload = NULL;
+
+  xQueueSend(g.main_queue_g, &response_evt, 0);
 }
 
 static void handle_connected(struct nrf8001_cmd_s *evt)

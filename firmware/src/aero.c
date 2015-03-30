@@ -87,6 +87,18 @@ static void config_main_task(void)
 
 static void config_baro_task(void)
 {
+  BaseType_t status;
+  TaskHandle_t baro_handle;
+
+  g.baro_queue_g = xQueueCreate(CONFIG_TASK_BARO_QUEUE_LEN,
+      sizeof(BaseType_t));
+
+  configASSERT(g.baro_queue_g != NULL);
+
+  status = xTaskCreate(task_baro, "baro", CONFIG_TASK_BARO_STACK_DEPTH,
+      g.baro_queue_g, CONFIG_TASK_BARO_PRIORITY, &baro_handle);
+
+  configASSERT(status == pdPASS);
 }
 
 int
