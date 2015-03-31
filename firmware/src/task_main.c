@@ -16,9 +16,7 @@
 #include <task_ble.h>
 #include <task_alert.h>
 
-#include <services.h> // delete me after debugging ble updates
-#include <aci_cmds.h> // delete me after debugging ble updates
-#include <string.h> // delete me after debugging ble updates
+#include <services.h>
 
 int g_given = 0, g_events_received = 0, g_events_processed = 0;
 
@@ -27,10 +25,7 @@ void task_main(void *p)
   (void) p;
   portBASE_TYPE status;
   struct global_event_s evt;
-  struct nrf8001_cmd_s cmd;
   enum global_state_e state = GLOBAL_STATE_RESET;
-
-  memset(&cmd, '\0', sizeof(cmd));
 
   for (;;) {
     status = xQueueReceive(g.main_queue_g, &evt, MAIN_EVENT_LOOP_TIMEOUT);
