@@ -21,7 +21,6 @@
 #include <string.h> // delete me after debugging ble updates
 
 int g_given = 0, g_events_received = 0, g_events_processed = 0;
-int g_should_send = 0;
 
 void task_main(void *p)
 {

@@ -26,8 +26,6 @@
 #  define dbg_print(x...)
 #endif
 
-extern int g_should_send;
-
 static void nrf8001_connect(void);
 static void nrf8001_setup(void);
 static void handle_pipe_status(struct nrf8001_cmd_s *evt);
@@ -46,9 +44,11 @@ int g_nrf_events_received = 0;
 struct nrf8001_state_s {
   enum nrf8001_state_e state;
   uint32_t events_received;
+  unsigned int setup_msg_idx;
 } s_nrf8001_state = {
   .state = STATE_IDLE,
-  .events_received = 0
+  .events_received = 0,
+  .setup_msg_idx = 0
 };
 
 struct nrf8001_cmd_s cmd_buf;
@@ -65,11 +65,10 @@ static void nrf8001_connect(void) {
 
 
 /**
- *
+ * @brief 
  */
 static void nrf8001_setup(void)
 {
-  static int i = 0;
   struct nrf8001_cmd_s *to_send;
 
   /**
@@ -80,13 +79,15 @@ static void nrf8001_setup(void)
     uint8_t cmd[32];
   } init_cmds[NB_SETUP_MESSAGES] = SETUP_MESSAGES_CONTENT;
 
-  to_send = (struct nrf8001_cmd_s*) init_cmds[i].cmd;
+  to_send = (struct nrf8001_cmd_s*) init_cmds[s_nrf8001_state.setup_msg_idx].cmd;
   ble_send_cmd(to_send);
-  i++;
+  s_nrf8001_state.setup_msg_idx++;
 }
 
 /**
- * XXX: move sending main event out to util funcs
+ * @brief Gets invoked when the state of tx/rx pipes is changed. Write pipe 
+ * status to global state, then notify the main event loop that we received an
+ * update.
  */
 static void handle_pipe_status(struct nrf8001_cmd_s *evt)
 {
@@ -148,10 +149,9 @@ void nrf8001_handle_event(struct nrf8001_cmd_s *event)
 
   switch (event->opcode) {
     case ACI_EVT_CMD_RSP:
-      if (event->data[0] == ACI_CMD_SETUP) {
-        if (event->data[1] == ACI_STATUS_TRANSACTION_CONTINUE) {
-          nrf8001_setup();
-        }
+      if (event->data[0] == ACI_CMD_SETUP &&
+          event->data[1] == ACI_STATUS_TRANSACTION_CONTINUE) {
+        nrf8001_setup();
       }
       /* NOP */
       s_nrf8001_state.events_received++;
