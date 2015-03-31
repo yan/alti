@@ -16,7 +16,8 @@
  */
 void config_baro(void)
 {
-  i2c_config();
+  ms5611_config_i2c();
+  i2c_config(I2C1);
   ms5611_init(I2C1);
 }
 

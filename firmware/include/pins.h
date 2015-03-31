@@ -17,9 +17,13 @@
 #define BLUE_LED_CHANNEL  TIM_OC1
 #define BLUE_LED_AF       GPIO_AF2
 
+/** MS5611 barometric sensor */
+#define MS5611_GPIO       GPIOB
 #define MS5611_SCL_PIN    GPIO8
 #define MS5611_SDA_PIN    GPIO9
+#define MS5611_PINS       (MS5611_SDA_PIN | MS5611_SCL_PIN)
 
+/** nRF8001 BLE */
 #define NRF8001_GPIO      GPIOB
 #define NRF8001_RST       GPIO10
 #define NRF8001_RDYN      GPIO11
@@ -27,9 +31,11 @@
 #define NRF8001_SCK       GPIO13
 #define NRF8001_MISO      GPIO14
 #define NRF8001_MOSI      GPIO15
-
-#define MS5611_PINS       (MS5611_SDA_PIN | MS5611_SCL_PIN)
 #define NRF8001_PINS      (NRF8001_SCK | NRF8001_REQN | NRF8001_MOSI | NRF8001_MISO)
+
+/** Fre-fall alert LEDs */
+#define ALERT_HIGH_SELECT
+#define ALERT_HIGH_ENABLE
 
 
 #endif // __PINS_H

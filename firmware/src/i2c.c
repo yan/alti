@@ -22,33 +22,28 @@ static void i2c_prepare_to_read(uint32_t i2c);
 
 /** @brief ...
  */
-void i2c_config(void)
+void i2c_config(uint32_t i2c)
 {
-  gpio_mode_setup(GPIOB, GPIO_MODE_AF, GPIO_PUPD_NONE, MS5611_PINS);
-  gpio_set_output_options(GPIOB, GPIO_OTYPE_OD, GPIO_OSPEED_10MHZ, MS5611_PINS);
-  gpio_set_af(GPIOB, GPIO_AF4, MS5611_PINS);
-
   rcc_periph_clock_enable(RCC_I2C1);
 
-  i2c_reset(I2C1);
-  i2c_peripheral_disable(I2C1);
+  i2c_reset(i2c);
+  i2c_peripheral_disable(i2c);
 
-  // i2c_enable_ack(I2C1);
-  i2c_set_dutycycle(I2C1, I2C_CCR_DUTY_DIV2); /* Default */
+  // i2c_enable_ack(i2c);
+  i2c_set_dutycycle(i2c, I2C_CCR_DUTY_DIV2); /* Default */
 
 #define FREQ (I2C_CR2_FREQ_12MHZ)
-  i2c_set_clock_frequency(I2C1, FREQ);
-  i2c_set_ccr(I2C1, (FREQ*1000000) / (100000 * 2)); /* clock / (100khz * 2) */
-  i2c_set_trise(I2C1, 25);
+  i2c_set_clock_frequency(i2c, FREQ);
+  i2c_set_ccr(i2c, (FREQ*1000000) / (100000 * 2)); /* clock / (100khz * 2) */
+  i2c_set_trise(i2c, 25);
 #undef FREQ
 
-  i2c_peripheral_enable(I2C1);
+  i2c_peripheral_enable(i2c);
 }
 
 
 void i2c_enable(void)
 {
-  // rcc_periph_clock_enable(RCC_GPIOB);
   rcc_periph_clock_enable(RCC_I2C1);
   i2c_peripheral_enable(I2C1);
 }

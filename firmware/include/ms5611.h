@@ -45,6 +45,11 @@ void ms5611_init(uint32_t i2c);
 /**
  * @brief
  */
+void ms5611_config_i2c(void);
+
+/**
+ * @brief
+ */
 uint32_t ms5611_get_temp(uint32_t i2c, uint8_t precision);
 
 /**

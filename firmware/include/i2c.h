@@ -4,9 +4,7 @@
 
 
 void     i2c_enable(void);
-void     i2c_config(void);
-// void     i2c_take(uint8_t i2c);
-// void     i2c_give(uint8_t i2c);
+void     i2c_config(uint32_t i2c);
 void     i2c_disable(void);
 void     i2c_send_buf(uint32_t i2c, uint8_t *buf, uint32_t length);
 void     i2c_read_data(uint32_t i2c, uint8_t *data, uint32_t length);
