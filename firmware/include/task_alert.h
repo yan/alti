@@ -6,13 +6,21 @@
 #include <queue.h>
 
 typedef enum task_alert_event_e {
-  ALERT_EVENT_OFF,
-  ALERT_EVENT_ON,
-  ALERT_EVENT_BEGIN_PULSING,
-  ALERT_EVENT_BLINK_ONCE,
-  ALERT_EVENT_BLINK_TWICE,
-  ALERT_EVENT_BLINK_THRICE,
+  ALERT_VIBRATE,
+
+  ALERT_HIGH_INCREASING,
+  ALERT_HIGH_DECREASING,
+
+  ALERT_LOW_BLINK,
+  ALERT_LOW_PULSE,
+  ALERT_LOW_OFF,
+  ALERT_LOW_ON,
+
+  ALERT_BUZZ
 } task_alert_event_t;
+
+
+void send_alert(uint16_t type, uint16_t argument);
 
 void task_alert_led(void *p);
 

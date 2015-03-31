@@ -1,3 +1,8 @@
+/**
+ *
+ *
+ *
+ */
 
 #include <FreeRTOS.h>
 #include <task.h>
@@ -47,7 +52,7 @@ static void task_alert_config(void)
 
 static uint32_t easing_f(uint32_t offset)
 {
-  uint32_t x = offset >> 5;
+  const uint32_t x = offset >> 5;
   return x * x;
 }
 
@@ -90,6 +95,14 @@ enum task_alert_state_e {
   TASK_ALERT_STATE_PULSING
 };
 
+void send_alert(uint16_t type, uint16_t argument)
+{
+  uint32_t to_send = argument;
+  to_send |= type << 16;
+
+  xQueueSend(g.alert_queue_g, &to_send, portMAX_DELAY);
+}
+
 void task_alert_led(void *p)
 {
   (void) p;
@@ -97,11 +110,13 @@ void task_alert_led(void *p)
              state = TASK_ALERT_STATE_PULSING,
              delay = 10 / portTICK_PERIOD_MS;
   enum task_alert_event_e received_event;
+  uint32_t received;
+  uint16_t argument;
 
   task_alert_config();
 
   for (;;) {
-    status = xQueueReceive(g.alert_queue_g, &received_event, delay);
+    status = xQueueReceive(g.alert_queue_g, &received, delay);
 
     if (status != pdPASS) {
       if (state == TASK_ALERT_STATE_PULSING) {
@@ -110,30 +125,30 @@ void task_alert_led(void *p)
       continue;
     }
 
+    received_event = (received >> 16) & 0xFFFF;
+    argument = received & 0xFFFF;
+
     switch (received_event) {
-      case ALERT_EVENT_OFF:
+      case ALERT_LOW_OFF:
         disable_pulse();
         gpio_clear(GPIOB, BLUE_LED);
         state = TASK_ALERT_STATE_OFF;
         break;
         
-      case ALERT_EVENT_ON:
+      case ALERT_LOW_ON:
         disable_pulse();
         gpio_set(GPIOB, BLUE_LED);
         state = TASK_ALERT_STATE_ON;
         break;
 
-      case ALERT_EVENT_BEGIN_PULSING:
+      case ALERT_LOW_PULSE:
         enable_pulse();
         state = TASK_ALERT_STATE_PULSING;
         break;
 
-      case ALERT_EVENT_BLINK_ONCE:
-      case ALERT_EVENT_BLINK_TWICE:
-      case ALERT_EVENT_BLINK_THRICE: {
-        int blink_count = received_event - ALERT_EVENT_BLINK_ONCE + 1;
+      case ALERT_LOW_BLINK: {
         disable_pulse();
-        while (blink_count-- > 0) {
+        while (argument-- > 0) {
           gpio_toggle(GPIOB, BLUE_LED);
           delay_ms(250);
           gpio_clear(GPIOB, BLUE_LED);
@@ -147,6 +162,22 @@ void task_alert_led(void *p)
         }
         // If the status was off, just leave as is since we just turned
       }
+        break;
+
+      case ALERT_VIBRATE: 
+        /** TODO **/
+        break;
+
+      case ALERT_HIGH_INCREASING:
+        /** TODO **/
+        break;
+
+      case ALERT_HIGH_DECREASING:
+        /** TODO **/
+        break;
+
+      case ALERT_BUZZ:
+        /** TODO **/
         break;
     }
   }
