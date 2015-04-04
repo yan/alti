@@ -1,3 +1,8 @@
+/**
+ *
+ *
+ *
+ */
 
 #include <FreeRTOS.h>
 #include <task.h>
@@ -10,15 +15,15 @@
 #include <globals.h>
 #include <pins.h>
 #include <util.h>
-#include <task_status_led.h>
+#include <task_alert.h>
 
-static void task_status_config(void);
+static void task_alert_config(void);
 static uint32_t easing_f(uint32_t);
 static void step_pulse(void);
 static void enable_pulse(void);
 static void disable_pulse(void);
 
-static void task_status_config(void)
+static void task_alert_config(void)
 {
   // int ksps = 100, period = 12000/ksps, half_period = period / 2;
 
@@ -47,7 +52,7 @@ static void task_status_config(void)
 
 static uint32_t easing_f(uint32_t offset)
 {
-  uint32_t x = offset >> 5;
+  const uint32_t x = offset >> 5;
   return x * x;
 }
 
@@ -83,70 +88,96 @@ static void disable_pulse(void)
   gpio_mode_setup(GPIOB, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, BLUE_LED);
 }
 
-enum task_status_state_e {
-  TASK_STATUS_STATE_OFF,
-  TASK_STATUS_STATE_ON,
-  TASK_STATUS_STATE_BLINKING,
-  TASK_STATUS_STATE_PULSING
+enum task_alert_state_e {
+  TASK_ALERT_STATE_OFF,
+  TASK_ALERT_STATE_ON,
+  TASK_ALERT_STATE_BLINKING,
+  TASK_ALERT_STATE_PULSING
 };
 
-void task_status_led(void *p)
+void send_alert(uint16_t type, uint16_t argument)
+{
+  uint32_t to_send = argument;
+  to_send |= type << 16;
+
+  xQueueSend(g.alert_queue_g, &to_send, portMAX_DELAY);
+}
+
+void task_alert_led(void *p)
 {
   (void) p;
   BaseType_t status = 0,
-             state = TASK_STATUS_STATE_PULSING,
+             state = TASK_ALERT_STATE_PULSING,
              delay = 10 / portTICK_PERIOD_MS;
-  enum task_status_event_e received_event;
+  enum task_alert_event_e received_event;
+  uint32_t received;
+  uint16_t argument;
 
-  task_status_config();
+  task_alert_config();
 
   for (;;) {
-    status = xQueueReceive(g.status_queue_g, &received_event, delay);
+    status = xQueueReceive(g.alert_queue_g, &received, delay);
 
     if (status != pdPASS) {
-      if (state == TASK_STATUS_STATE_PULSING) {
+      if (state == TASK_ALERT_STATE_PULSING) {
         step_pulse();
       }
       continue;
     }
 
+    received_event = (received >> 16) & 0xFFFF;
+    argument = received & 0xFFFF;
+
     switch (received_event) {
-      case STATUS_EVENT_OFF:
+      case ALERT_LOW_OFF:
         disable_pulse();
         gpio_clear(GPIOB, BLUE_LED);
-        state = TASK_STATUS_STATE_OFF;
+        state = TASK_ALERT_STATE_OFF;
         break;
         
-      case STATUS_EVENT_ON:
+      case ALERT_LOW_ON:
         disable_pulse();
         gpio_set(GPIOB, BLUE_LED);
-        state = TASK_STATUS_STATE_ON;
+        state = TASK_ALERT_STATE_ON;
         break;
 
-      case STATUS_EVENT_BEGIN_PULSING:
+      case ALERT_LOW_PULSE:
         enable_pulse();
-        state = TASK_STATUS_STATE_PULSING;
+        state = TASK_ALERT_STATE_PULSING;
         break;
 
-      case STATUS_EVENT_BLINK_ONCE:
-      case STATUS_EVENT_BLINK_TWICE:
-      case STATUS_EVENT_BLINK_THRICE: {
-        int blink_count = received_event - STATUS_EVENT_BLINK_ONCE + 1;
+      case ALERT_LOW_BLINK: {
         disable_pulse();
-        while (blink_count-- > 0) {
+        while (argument-- > 0) {
           gpio_toggle(GPIOB, BLUE_LED);
           delay_ms(250);
           gpio_clear(GPIOB, BLUE_LED);
           delay_ms(250);
         }
         
-        if (state == TASK_STATUS_STATE_ON) {
+        if (state == TASK_ALERT_STATE_ON) {
           gpio_set(GPIOB, BLUE_LED);
-        } else if (state == TASK_STATUS_STATE_PULSING) {
+        } else if (state == TASK_ALERT_STATE_PULSING) {
           enable_pulse();
         }
         // If the status was off, just leave as is since we just turned
       }
+        break;
+
+      case ALERT_VIBRATE: 
+        /** TODO **/
+        break;
+
+      case ALERT_HIGH_INCREASING:
+        /** TODO **/
+        break;
+
+      case ALERT_HIGH_DECREASING:
+        /** TODO **/
+        break;
+
+      case ALERT_BUZZ:
+        /** TODO **/
         break;
     }
   }

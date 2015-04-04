@@ -2,9 +2,13 @@
 #include <stdint.h>
 #include <math.h>
 
-#include "i2c.h"
-#include "ms5611.h"
-#include "util.h"
+#include <libopencm3/stm32/i2c.h>
+#include <libopencm3/stm32/gpio.h>
+
+#include <i2c.h>
+#include <ms5611.h>
+#include <util.h>
+#include <pins.h>
 
 /**
  * @brief PROM
@@ -33,6 +37,13 @@ struct ms5611_C_s {
 static int32_t _temp;
 
 static uint32_t ms5611_read_adc(uint32_t i2c, uint8_t cmd);
+
+void ms5611_config_i2c(void)
+{
+  gpio_mode_setup(MS5611_GPIO, GPIO_MODE_AF, GPIO_PUPD_NONE, MS5611_PINS);
+  gpio_set_output_options(MS5611_GPIO, GPIO_OTYPE_OD, GPIO_OSPEED_10MHZ, MS5611_PINS);
+  gpio_set_af(MS5611_GPIO, GPIO_AF4, MS5611_PINS);
+}
 
 #if MS5611_VERIFY_RECVD == 1
 
