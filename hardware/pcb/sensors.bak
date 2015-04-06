@@ -1,0 +1,170 @@
+EESchema Schematic File Version 2
+LIBS:aero
+LIBS:power
+LIBS:device
+LIBS:transistors
+LIBS:conn
+LIBS:linear
+LIBS:regul
+LIBS:74xx
+LIBS:cmos4000
+LIBS:adc-dac
+LIBS:memory
+LIBS:xilinx
+LIBS:special
+LIBS:microcontrollers
+LIBS:dsp
+LIBS:microchip
+LIBS:analog_switches
+LIBS:motorola
+LIBS:texas
+LIBS:intel
+LIBS:audio
+LIBS:interface
+LIBS:digital-audio
+LIBS:philips
+LIBS:display
+LIBS:cypress
+LIBS:siliconi
+LIBS:opto
+LIBS:atmel
+LIBS:contrib
+LIBS:valves
+LIBS:aero-cache
+EELAYER 25 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 3 3
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L ms5611 U2
+U 1 1 551EEE6D
+P 5350 3550
+F 0 "U2" H 5550 3350 60  0000 C CNN
+F 1 "ms5611" H 5300 4000 60  0000 C CNN
+F 2 "aero:ms5611" H 5350 3550 60  0001 C CNN
+F 3 "" H 5350 3550 60  0000 C CNN
+	1    5350 3550
+	1    0    0    1   
+$EndComp
+$Comp
+L C C14
+U 1 1 551EEEE9
+P 4500 3700
+F 0 "C14" H 4525 3800 50  0000 L CNN
+F 1 "C" H 4525 3600 50  0000 L CNN
+F 2 "Capacitors_SMD:C_0402" H 4538 3550 30  0001 C CNN
+F 3 "" H 4500 3700 60  0000 C CNN
+	1    4500 3700
+	-1   0    0    1   
+$EndComp
+$Comp
+L GND #PWR018
+U 1 1 551EEF1B
+P 4300 3450
+F 0 "#PWR018" H 4300 3200 50  0001 C CNN
+F 1 "GND" H 4300 3300 50  0000 C CNN
+F 2 "" H 4300 3450 60  0000 C CNN
+F 3 "" H 4300 3450 60  0000 C CNN
+	1    4300 3450
+	1    0    0    -1  
+$EndComp
+$Comp
+L VCC #PWR019
+U 1 1 551EEF4B
+P 4250 3950
+F 0 "#PWR019" H 4250 3800 50  0001 C CNN
+F 1 "VCC" H 4100 4100 50  0000 C CNN
+F 2 "" H 4250 3950 60  0000 C CNN
+F 3 "" H 4250 3950 60  0000 C CNN
+	1    4250 3950
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4250 3950 4500 3950
+Wire Wire Line
+	4500 3950 4500 3850
+Wire Wire Line
+	4500 3550 4500 3400
+Wire Wire Line
+	4500 3400 4300 3400
+Wire Wire Line
+	4300 3400 4300 3450
+Wire Wire Line
+	4700 3650 4900 3650
+Wire Wire Line
+	4700 3150 4700 3650
+Wire Wire Line
+	4700 3500 4500 3500
+Connection ~ 4500 3500
+Wire Wire Line
+	4900 3850 4700 3850
+Wire Wire Line
+	4700 3750 4700 3900
+Wire Wire Line
+	4700 3900 4500 3900
+Connection ~ 4500 3900
+Wire Wire Line
+	4900 3550 4700 3550
+Connection ~ 4700 3550
+Wire Wire Line
+	5850 3550 5850 3150
+Wire Wire Line
+	5850 3150 4700 3150
+Connection ~ 4700 3500
+Wire Wire Line
+	4900 3750 4700 3750
+Connection ~ 4700 3850
+NoConn ~ 5850 3650
+Text HLabel 6300 3750 2    60   Input ~ 0
+SDA
+Text HLabel 6300 3850 2    60   Input ~ 0
+SCLK
+Wire Wire Line
+	5850 3850 6300 3850
+Wire Wire Line
+	6300 3750 5850 3750
+Text GLabel 6600 2700 0    60   Input ~ 0
+VCC
+Text GLabel 6600 2900 0    60   Input ~ 0
+GND
+$Comp
+L VCC #PWR020
+U 1 1 551F14C2
+P 6800 2600
+F 0 "#PWR020" H 6800 2450 50  0001 C CNN
+F 1 "VCC" H 6800 2750 50  0000 C CNN
+F 2 "" H 6800 2600 60  0000 C CNN
+F 3 "" H 6800 2600 60  0000 C CNN
+	1    6800 2600
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR021
+U 1 1 551F14DA
+P 6800 2950
+F 0 "#PWR021" H 6800 2700 50  0001 C CNN
+F 1 "GND" H 6800 2800 50  0000 C CNN
+F 2 "" H 6800 2950 60  0000 C CNN
+F 3 "" H 6800 2950 60  0000 C CNN
+	1    6800 2950
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6600 2900 6800 2900
+Wire Wire Line
+	6800 2900 6800 2950
+Wire Wire Line
+	6800 2600 6800 2700
+Wire Wire Line
+	6800 2700 6600 2700
+$EndSCHEMATC
