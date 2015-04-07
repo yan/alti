@@ -35,7 +35,7 @@ EELAYER 25 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 2 2
+Sheet 2 3
 Title ""
 Date ""
 Rev ""
@@ -642,40 +642,6 @@ Wire Wire Line
 Wire Wire Line
 	6950 3750 6950 2900
 Connection ~ 6950 2900
-Text HLabel 2050 1200 0    60   Input ~ 0
-Vcc
-Text HLabel 2050 1350 0    60   Input ~ 0
-Gnd
-$Comp
-L VCC #PWR018
-U 1 1 551C2314
-P 2350 1100
-F 0 "#PWR018" H 2350 950 50  0001 C CNN
-F 1 "VCC" H 2350 1250 50  0000 C CNN
-F 2 "" H 2350 1100 60  0000 C CNN
-F 3 "" H 2350 1100 60  0000 C CNN
-	1    2350 1100
-	1    0    0    -1  
-$EndComp
-$Comp
-L GND #PWR019
-U 1 1 551C2350
-P 2350 1400
-F 0 "#PWR019" H 2350 1150 50  0001 C CNN
-F 1 "GND" H 2350 1250 50  0000 C CNN
-F 2 "" H 2350 1400 60  0000 C CNN
-F 3 "" H 2350 1400 60  0000 C CNN
-	1    2350 1400
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	2050 1350 2350 1350
-Wire Wire Line
-	2350 1350 2350 1400
-Wire Wire Line
-	2350 1100 2350 1200
-Wire Wire Line
-	2350 1200 2050 1200
 Text HLabel 5400 5350 3    60   Input ~ 0
 RXD
 Wire Wire Line
