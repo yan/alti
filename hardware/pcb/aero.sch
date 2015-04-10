@@ -68,7 +68,7 @@ F 3 "" H 6000 3250 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Sheet
-S 8000 1150 1950 1350
+S 8000 1150 950  1150
 U 551C09E8
 F0 "nRF8001" 60
 F1 "nrf8001.sch" 60
@@ -93,7 +93,7 @@ F4 "MOSI" I R 3500 1450 60
 F5 "MISO" I R 3500 1550 60 
 $EndSheet
 Text GLabel 6900 3050 2    60   Input ~ 0
-VCC
++3V
 Text GLabel 6900 3250 2    60   Input ~ 0
 GND
 Wire Wire Line

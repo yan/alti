@@ -1,211 +1,178 @@
-Cmp-Mod V01 Genere par PcbNew le Friday, April 03, 2015 'PMt' 06:28:39 PM
+Cmp-Mod V01 Created by Cvpcb (2015-03-22 BZR 5530)-product   date = Friday, April 10, 2015 'PMt' 02:47:01 PM
 
 BeginCmp
-TimeStamp = 551C24A4
-Path = /551C09E8/551C0AC5
+TimeStamp = /551C09E8/551C0AC5;
 Reference = C1;
 ValeurCmp = 100nF;
 IdModule  = Capacitors_SMD:C_0402;
 EndCmp
 
 BeginCmp
-TimeStamp = 551C24B0
-Path = /551C09E8/551C0AEF
+TimeStamp = /551C09E8/551C0AEF;
 Reference = C2;
 ValeurCmp = 100nF;
 IdModule  = Capacitors_SMD:C_0402;
 EndCmp
 
 BeginCmp
-TimeStamp = 551C24BC
-Path = /551C09E8/551C1027
+TimeStamp = /551C09E8/551C1027;
 Reference = C3;
 ValeurCmp = 15pF;
 IdModule  = Capacitors_SMD:C_0402;
 EndCmp
 
 BeginCmp
-TimeStamp = 551C24C8
-Path = /551C09E8/551C108E
+TimeStamp = /551C09E8/551C108E;
 Reference = C4;
 ValeurCmp = 15pF;
 IdModule  = Capacitors_SMD:C_0402;
 EndCmp
 
 BeginCmp
-TimeStamp = 551C24D4
-Path = /551C09E8/551C0B13
+TimeStamp = /551C09E8/551C0B13;
 Reference = C5;
 ValeurCmp = 33nF;
 IdModule  = Capacitors_SMD:C_0402;
 EndCmp
 
 BeginCmp
-TimeStamp = 551C24E0
-Path = /551C09E8/551C140C
+TimeStamp = /551C09E8/551C140C;
 Reference = C6;
 ValeurCmp = 100nF;
 IdModule  = Capacitors_SMD:C_0402;
 EndCmp
 
 BeginCmp
-TimeStamp = 551C24EC
-Path = /551C09E8/551C17DD
+TimeStamp = /551C09E8/551C17DD;
 Reference = C7;
 ValeurCmp = 12pF;
 IdModule  = Capacitors_SMD:C_0402;
 EndCmp
 
 BeginCmp
-TimeStamp = 551C24F8
-Path = /551C09E8/551C1811
+TimeStamp = /551C09E8/551C1811;
 Reference = C8;
 ValeurCmp = 12pF;
 IdModule  = Capacitors_SMD:C_0402;
 EndCmp
 
 BeginCmp
-TimeStamp = 551C2504
-Path = /551C09E8/551C2016
+TimeStamp = /551C09E8/551C2016;
 Reference = C9;
 ValeurCmp = 1.0nF;
 IdModule  = Capacitors_SMD:C_0402;
 EndCmp
 
 BeginCmp
-TimeStamp = 551C2510
-Path = /551C09E8/551C277F
+TimeStamp = /551C09E8/551C277F;
 Reference = C10;
 ValeurCmp = 2.2nF;
 IdModule  = Capacitors_SMD:C_0402;
 EndCmp
 
 BeginCmp
-TimeStamp = 551C2528
-Path = /551C09E8/551C2C8B
+TimeStamp = /551C09E8/551C27BB;
+Reference = C11;
+ValeurCmp = NC;
+IdModule  = Capacitors_SMD:C_0402;
+EndCmp
+
+BeginCmp
+TimeStamp = /551C09E8/551C2C8B;
 Reference = C12;
 ValeurCmp = 1.8pF;
 IdModule  = Capacitors_SMD:C_0402;
 EndCmp
 
 BeginCmp
-TimeStamp = 551C2534
-Path = /551C09E8/551C3165
+TimeStamp = /551C09E8/551C3165;
 Reference = C13;
 ValeurCmp = 1.2pF;
 IdModule  = Capacitors_SMD:C_0402;
 EndCmp
 
 BeginCmp
-TimeStamp = 551C2551
-Path = /551C09E8/551C2AF7
-Reference = L1;
-ValeurCmp = 8.2nH;
-IdModule  = Capacitors_SMD:C_0402;
-EndCmp
-
-BeginCmp
-TimeStamp = 551C255D
-Path = /551C09E8/551C2B7C
-Reference = L2;
-ValeurCmp = 3.9nH;
-IdModule  = Capacitors_SMD:C_0402;
-EndCmp
-
-BeginCmp
-TimeStamp = 551C2569
-Path = /551C09E8/551C2C27
-Reference = L3;
-ValeurCmp = 5.6nH;
-IdModule  = Capacitors_SMD:C_0402;
-EndCmp
-
-BeginCmp
-TimeStamp = 551C258D
-Path = /551C09E8/551C1DE2
-Reference = R1;
-ValeurCmp = 22k;
-IdModule  = Resistors_SMD:R_0402;
-EndCmp
-
-BeginCmp
-TimeStamp = 551C25C0
-Path = /551C09E8/551C0A1A
-Reference = U1;
-ValeurCmp = nRF8001;
-IdModule  = Housings_DFN_QFN:QFN-32-1EP_5x5mm_Pitch0.5mm;
-EndCmp
-
-BeginCmp
-TimeStamp = 551C25C8
-Path = /551C09E8/551C0F7F
-Reference = Y1;
-ValeurCmp = 32.768KHz;
-IdModule  = aero:FC-135R;
-EndCmp
-
-BeginCmp
-TimeStamp = 551C25D2
-Path = /551C09E8/551C1703
-Reference = Y2;
-ValeurCmp = 16MHz;
-IdModule  = aero:crystal_SMD_3225;
-EndCmp
-
-BeginCmp
-TimeStamp = 551C9293
-Path = 
-Reference = PCB_IF_ANT_2.4G;
-ValeurCmp = VAL**;
-IdModule  = aero:PCB_IF_ANT_2.4G;
-EndCmp
-
-BeginCmp
-TimeStamp = 551EF211
-Path = /551EEA41/551EEEE9
+TimeStamp = /551EEA41/551EEEE9;
 Reference = C14;
 ValeurCmp = C;
 IdModule  = Capacitors_SMD:C_0402;
 EndCmp
 
 BeginCmp
-TimeStamp = 551EF22F
-Path = /551EEA41/551EEE6D
-Reference = U2;
-ValeurCmp = ms5611;
-IdModule  = aero:ms5611;
-EndCmp
-
-BeginCmp
-TimeStamp = 551EF4CA
-Path = /551C5F7E
+TimeStamp = /551C5F7E;
 Reference = H1;
 ValeurCmp = Vreg_Header;
 IdModule  = Pin_Headers:Pin_Header_Straight_1x02;
 EndCmp
 
 BeginCmp
-TimeStamp = 551EF4CF
-Path = /551EFD46
-Reference = P1;
-ValeurCmp = CONN_01X02;
-IdModule  = Pin_Headers:Pin_Header_Straight_1x02;
+TimeStamp = /551C09E8/551C2AF7;
+Reference = L1;
+ValeurCmp = 8.2nH;
+IdModule  = Capacitors_SMD:C_0402;
 EndCmp
 
 BeginCmp
-TimeStamp = 551EF4D4
-Path = /551C5BBD
+TimeStamp = /551C09E8/551C2B7C;
+Reference = L2;
+ValeurCmp = 3.9nH;
+IdModule  = Capacitors_SMD:C_0402;
+EndCmp
+
+BeginCmp
+TimeStamp = /551C09E8/551C2C27;
+Reference = L3;
+ValeurCmp = 5.6nH;
+IdModule  = Capacitors_SMD:C_0402;
+EndCmp
+
+BeginCmp
+TimeStamp = /551C5BBD;
 Reference = P2;
 ValeurCmp = CONN_01X09;
 IdModule  = Pin_Headers:Pin_Header_Straight_1x09;
 EndCmp
 
 BeginCmp
-TimeStamp = 551F1582
-Path = /551C09E8/551C27BB
-Reference = C11;
-ValeurCmp = NC;
-IdModule  = Capacitors_SMD:C_0402;
+TimeStamp = /551C09E8/551C1DE2;
+Reference = R1;
+ValeurCmp = 22k;
+IdModule  = Resistors_SMD:R_0402;
+EndCmp
+
+BeginCmp
+TimeStamp = /551C09E8/551C0A1A;
+Reference = U1;
+ValeurCmp = nRF8001;
+IdModule  = Housings_DFN_QFN:QFN-32-1EP_5x5mm_Pitch0.5mm;
+EndCmp
+
+BeginCmp
+TimeStamp = /551EEA41/551EEE6D;
+Reference = U2;
+ValeurCmp = ms5611;
+IdModule  = aero:ms5611;
+EndCmp
+
+BeginCmp
+TimeStamp = /5527E8E0/5527EBA6;
+Reference = U3;
+ValeurCmp = BMX055;
+IdModule  = aero:BMX055;
+EndCmp
+
+BeginCmp
+TimeStamp = /551C09E8/551C0F7F;
+Reference = Y1;
+ValeurCmp = 32.768KHz;
+IdModule  = aero:FC-135R;
+EndCmp
+
+BeginCmp
+TimeStamp = /551C09E8/551C1703;
+Reference = Y2;
+ValeurCmp = 16MHz;
+IdModule  = aero:crystal_SMD_3225;
 EndCmp
 
 EndListe
