@@ -35,7 +35,7 @@ EELAYER 25 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 1 3
+Sheet 1 4
 Title ""
 Date ""
 Rev ""
@@ -83,28 +83,19 @@ F9 "TXD" I L 8000 1350 60
 F10 "RXD" I L 8000 1450 60 
 $EndSheet
 $Sheet
-S 2800 1050 1400 1200
+S 2800 1050 700  650 
 U 551EEA41
-F0 "sensors" 60
-F1 "sensors.sch" 60
-F2 "SDA" I R 4200 1250 60 
-F3 "SCLK" I R 4200 1400 60 
+F0 "ms5611" 60
+F1 "ms5611.sch" 60
+F2 "EN" I R 3500 1350 60 
+F3 "SCLK" I R 3500 1650 60 
+F4 "MOSI" I R 3500 1450 60 
+F5 "MISO" I R 3500 1550 60 
 $EndSheet
 Text GLabel 6900 3050 2    60   Input ~ 0
 VCC
 Text GLabel 6900 3250 2    60   Input ~ 0
 GND
-$Comp
-L CONN_01X02 P1
-U 1 1 551EFD46
-P 4700 1300
-F 0 "P1" H 4700 1450 50  0000 C CNN
-F 1 "CONN_01X02" V 4800 1300 50  0000 C CNN
-F 2 "Pin_Headers:Pin_Header_Straight_1x02" H 4700 1300 60  0001 C CNN
-F 3 "" H 4700 1300 60  0000 C CNN
-	1    4700 1300
-	1    0    0    -1  
-$EndComp
 Wire Wire Line
 	7750 1250 8000 1250
 Wire Wire Line
@@ -131,10 +122,10 @@ Wire Wire Line
 	6250 3100 6900 3100
 Wire Wire Line
 	6900 3100 6900 3050
-Wire Wire Line
-	4200 1250 4500 1250
-Wire Wire Line
-	4200 1400 4500 1400
-Wire Wire Line
-	4500 1400 4500 1350
+$Sheet
+S 2600 2450 650  500 
+U 5527E8E0
+F0 "bmx055" 60
+F1 "bmx055.sch" 60
+$EndSheet
 $EndSCHEMATC

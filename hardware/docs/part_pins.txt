@@ -3,20 +3,20 @@ This file contains a list of all the ICs that the STM32L151 talks to
 and their respective pins.
 
 nRF8001 (BLE, SPI, 7 pins: 3 SPI, 3 GPIO, 1 EN)
-  SCK
-  MISO
-  MOSI
+  SCK  \
+  MISO  |
+  MOSIA | 
+  EN   /
   REQN
   RDYN
   RST
-  EN
 AT45DB321E (32Mb memory, SPI)
   SCK  \
-  MISO | - can be shared with BLE?
-  MOSI /
+  MISO  | - can be shared with BLE?
+  MOSI  |
+  EN/CS/
   RST
   WP (not sure if needed, write protect)
-  EN/CS
 ms5611 (Pressure, I2C, 3 pins)
   SDA*
   SCLK*
@@ -37,7 +37,5 @@ Other
   USB pins?
   SWD pins
   xtal pins
-
-
 
 

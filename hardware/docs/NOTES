@@ -1,0 +1,2 @@
+
+ * Section 5.6.9 of BMX055 data sheet mentions a low-g interrupt, that can warn of a freefall condition. Might be worth looking into.
