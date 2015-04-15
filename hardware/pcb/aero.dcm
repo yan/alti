@@ -1,3 +1,8 @@
 EESchema-DOCLIB  Version 2.0
 #
+$CMP BQ24040DSQ
+D BQ24040DSQ
+K 32Mb Flash 
+$ENDCMP
+#
 #End Doc Library
