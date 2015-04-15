@@ -1,0 +1,189 @@
+EESchema Schematic File Version 2
+LIBS:aero
+LIBS:power
+LIBS:device
+LIBS:transistors
+LIBS:conn
+LIBS:linear
+LIBS:regul
+LIBS:74xx
+LIBS:cmos4000
+LIBS:adc-dac
+LIBS:memory
+LIBS:xilinx
+LIBS:special
+LIBS:microcontrollers
+LIBS:dsp
+LIBS:microchip
+LIBS:analog_switches
+LIBS:motorola
+LIBS:texas
+LIBS:intel
+LIBS:audio
+LIBS:interface
+LIBS:digital-audio
+LIBS:philips
+LIBS:display
+LIBS:cypress
+LIBS:siliconi
+LIBS:opto
+LIBS:atmel
+LIBS:contrib
+LIBS:valves
+LIBS:aero-cache
+EELAYER 25 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 6 6
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L USB-MICRO-B CON?
+U 1 1 552EDA5A
+P 3550 2850
+F 0 "CON?" H 3250 3200 50  0000 C CNN
+F 1 "USB-MICRO-B" H 3400 2500 50  0000 C CNN
+F 2 "" H 3550 2750 50  0000 C CNN
+F 3 "" H 3550 2750 50  0000 C CNN
+	1    3550 2850
+	1    0    0    -1  
+$EndComp
+$Comp
+L BQ24040DSQ U?
+U 1 1 552EDAA5
+P 3550 4400
+F 0 "U?" H 3300 4950 60  0000 C CNN
+F 1 "BQ24040DSQ" H 3600 4250 60  0000 C CNN
+F 2 "" H 3400 4400 60  0000 C CNN
+F 3 "" H 3400 4400 60  0000 C CNN
+	1    3550 4400
+	1    0    0    -1  
+$EndComp
+$Comp
+L TPS783 U?
+U 1 1 552EDEA7
+P 3600 5800
+F 0 "U?" H 3450 6050 60  0000 C CNN
+F 1 "TPS783" H 3750 5550 60  0000 C CNN
+F 2 "" H 3450 5750 60  0000 C CNN
+F 3 "" H 3450 5750 60  0000 C CNN
+	1    3600 5800
+	1    0    0    -1  
+$EndComp
+Text HLabel 4600 5700 2    60   Input ~ 0
++3V
+$Comp
+L GND #PWR?
+U 1 1 552EE044
+P 3600 6300
+F 0 "#PWR?" H 3600 6050 50  0001 C CNN
+F 1 "GND" H 3600 6150 50  0000 C CNN
+F 2 "" H 3600 6300 60  0000 C CNN
+F 3 "" H 3600 6300 60  0000 C CNN
+	1    3600 6300
+	1    0    0    -1  
+$EndComp
+$Comp
+L C C?
+U 1 1 552EE08E
+P 2950 5850
+F 0 "C?" H 2975 5950 50  0000 L CNN
+F 1 "C" H 2975 5750 50  0000 L CNN
+F 2 "" H 2988 5700 30  0000 C CNN
+F 3 "" H 2950 5850 60  0000 C CNN
+	1    2950 5850
+	1    0    0    -1  
+$EndComp
+$Comp
+L C C?
+U 1 1 552EE0AE
+P 4200 5850
+F 0 "C?" H 4225 5950 50  0000 L CNN
+F 1 "C" H 4225 5750 50  0000 L CNN
+F 2 "" H 4238 5700 30  0000 C CNN
+F 3 "" H 4200 5850 60  0000 C CNN
+	1    4200 5850
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3600 6200 3600 6300
+Connection ~ 3600 6200
+Wire Wire Line
+	2950 5700 3150 5700
+Wire Wire Line
+	3150 5800 3100 5800
+Wire Wire Line
+	3100 5800 3100 6200
+Wire Wire Line
+	3100 6200 4000 6200
+Wire Wire Line
+	4000 5700 4600 5700
+Connection ~ 4200 5700
+Wire Wire Line
+	4000 6200 4000 5800
+Wire Wire Line
+	4200 6000 4000 6000
+Connection ~ 4000 6000
+Wire Wire Line
+	2950 6000 3100 6000
+Connection ~ 3100 6000
+Wire Wire Line
+	2350 2650 3050 2650
+Wire Wire Line
+	2700 2650 2700 4000
+Wire Wire Line
+	2700 4000 3000 4000
+$Comp
+L C 1uF
+U 1 1 552EE372
+P 2350 2800
+F 0 "1uF" H 2375 2900 50  0000 L CNN
+F 1 "C" H 2375 2700 50  0000 L CNN
+F 2 "" H 2388 2650 30  0000 C CNN
+F 3 "" H 2350 2800 60  0000 C CNN
+	1    2350 2800
+	1    0    0    -1  
+$EndComp
+Connection ~ 2700 2650
+$Comp
+L GND #PWR?
+U 1 1 552EE3B1
+P 2350 3100
+F 0 "#PWR?" H 2350 2850 50  0001 C CNN
+F 1 "GND" H 2350 2950 50  0000 C CNN
+F 2 "" H 2350 3100 60  0000 C CNN
+F 3 "" H 2350 3100 60  0000 C CNN
+	1    2350 3100
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2350 2950 2350 3100
+Text HLabel 2800 1850 1    60   Input ~ 0
+USB_D-
+Text HLabel 2950 1850 1    60   Input ~ 0
+USB_D+
+Wire Wire Line
+	2800 1850 2800 2750
+Wire Wire Line
+	2800 2750 3050 2750
+Wire Wire Line
+	2950 1850 2950 2850
+Wire Wire Line
+	2950 2850 3050 2850
+Wire Wire Line
+	3050 3050 2350 3050
+Connection ~ 2350 3050
+NoConn ~ 4050 2650
+NoConn ~ 4050 2750
+NoConn ~ 4050 2950
+NoConn ~ 4050 3050
+NoConn ~ 4050 4400
+$EndSCHEMATC
