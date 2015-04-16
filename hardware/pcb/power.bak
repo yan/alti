@@ -375,38 +375,15 @@ Connection ~ 4950 4000
 Wire Wire Line
 	4850 5600 4850 4000
 Connection ~ 4850 4000
-$Comp
-L LED D?
-U 1 1 5530138B
-P 4550 4200
-F 0 "D?" H 4550 4300 50  0000 C CNN
-F 1 "LED" H 4550 4100 50  0000 C CNN
-F 2 "" H 4550 4200 60  0000 C CNN
-F 3 "" H 4550 4200 60  0000 C CNN
-	1    4550 4200
-	-1   0    0    1   
-$EndComp
-$Comp
-L R R?
-U 1 1 5530144D
-P 4600 3850
-F 0 "R?" V 4680 3850 50  0000 C CNN
-F 1 "1.5k" V 4600 3850 50  0000 C CNN
-F 2 "" V 4530 3850 30  0000 C CNN
-F 3 "" H 4600 3850 30  0000 C CNN
-	1    4600 3850
-	0    1    1    0   
-$EndComp
-Wire Wire Line
-	4450 3850 4450 4000
-Connection ~ 4450 4000
-Wire Wire Line
-	4750 3850 4750 4200
-Wire Wire Line
-	4350 4200 4050 4200
 Text Notes 2950 4850 0    60   ~ 0
 Use CHG as a signal to the MCU?
 NoConn ~ 4050 4300
 Text Notes 2950 5200 0    60   ~ 0
 ISET2 is left floating to have ISET \ndetermine charge current\n
+Text HLabel 4700 1800 1    60   Input ~ 0
+~CHG
+Wire Wire Line
+	4050 4200 4700 4200
+Wire Wire Line
+	4700 4200 4700 1800
 $EndSCHEMATC
