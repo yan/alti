@@ -286,6 +286,19 @@ X OUT 5 400 100 200 L 50 50 1 1 I
 ENDDRAW
 ENDDEF
 #
+# Test_Point
+#
+DEF ~Test_Point TP 0 40 Y Y 1 F N
+F0 "TP" 0 -100 60 H V C CNN
+F1 "Test_Point" 0 150 60 H I C CNN
+F2 "" 0 0 60 H V C CNN
+F3 "" 0 0 60 H V C CNN
+DRAW
+C 0 0 50 0 1 0 N
+X ~ ~ 0 0 0 R 50 50 1 1 I
+ENDDRAW
+ENDDEF
+#
 # Vreg_Header
 #
 DEF Vreg_Header H 0 40 Y Y 1 F N
