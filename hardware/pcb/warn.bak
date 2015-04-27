@@ -49,10 +49,10 @@ Text HLabel 2450 6200 0    60   Input ~ 0
 PIEZO_EN
 Text HLabel 6850 5650 0    60   Input ~ 0
 PIEZO_OUT
-Text HLabel 9400 2400 2    60   Input ~ 0
-WARN_LED_SELECT
-Text HLabel 9400 2600 2    60   Input ~ 0
-WARN_LED_EN
+Text HLabel 7350 2400 0    60   Input ~ 0
+WARN_LED_A
+Text HLabel 7350 3550 0    60   Input ~ 0
+WARN_LED_B
 Text HLabel 1700 2800 0    60   Input ~ 0
 STATUS_LED
 $Comp
@@ -104,7 +104,7 @@ L R R?
 U 1 1 55381462
 P 7300 5650
 F 0 "R?" V 7380 5650 50  0000 C CNN
-F 1 "R" V 7300 5650 50  0000 C CNN
+F 1 "1k" V 7300 5650 50  0000 C CNN
 F 2 "" V 7230 5650 30  0000 C CNN
 F 3 "" H 7300 5650 30  0000 C CNN
 	1    7300 5650
@@ -231,6 +231,89 @@ F 3 "" H 7850 6050 60  0000 C CNN
 	1    7850 6050
 	1    0    0    -1  
 $EndComp
+$Comp
+L LED D?
+U 1 1 55381AF7
+P 2150 2800
+F 0 "D?" H 2150 2900 50  0000 C CNN
+F 1 "LED" H 2150 2700 50  0000 C CNN
+F 2 "" H 2150 2800 60  0000 C CNN
+F 3 "" H 2150 2800 60  0000 C CNN
+	1    2150 2800
+	-1   0    0    1   
+$EndComp
+$Comp
+L R R?
+U 1 1 55381B8F
+P 2850 2800
+F 0 "R?" V 2930 2800 50  0000 C CNN
+F 1 "R" V 2850 2800 50  0000 C CNN
+F 2 "" V 2780 2800 30  0000 C CNN
+F 3 "" H 2850 2800 30  0000 C CNN
+	1    2850 2800
+	0    1    1    0   
+$EndComp
+$Comp
+L GND #PWR?
+U 1 1 55381C08
+P 3400 3000
+F 0 "#PWR?" H 3400 2750 50  0001 C CNN
+F 1 "GND" H 3400 2850 50  0000 C CNN
+F 2 "" H 3400 3000 60  0000 C CNN
+F 3 "" H 3400 3000 60  0000 C CNN
+	1    3400 3000
+	1    0    0    -1  
+$EndComp
+$Comp
+L R 1k
+U 1 1 55387943
+P 7600 5150
+F 0 "1k" V 7680 5150 50  0000 C CNN
+F 1 "R" V 7600 5150 50  0000 C CNN
+F 2 "" V 7530 5150 30  0000 C CNN
+F 3 "" H 7600 5150 30  0000 C CNN
+	1    7600 5150
+	1    0    0    -1  
+$EndComp
+Text Notes 1800 6500 0    60   ~ 0
+EN needs to be at least\n1.2v
+Text Notes 2500 2600 0    60   ~ 0
+NOTE: Update R when LED is picked out
+Text Notes 6700 4800 0    60   ~ 0
+Add a flyback diode?
+$Comp
+L ZXMHC6A07N8 U?
+U 1 1 553EC5C4
+P 8350 3050
+F 0 "U?" H 8220 3300 60  0000 C CNN
+F 1 "ZXMHC6A07N8" H 8720 2790 60  0000 C CNN
+F 2 "" H 8480 2900 60  0000 C CNN
+F 3 "" H 8480 2900 60  0000 C CNN
+	1    8350 3050
+	1    0    0    -1  
+$EndComp
+$Comp
+L +VBATT P?
+U 1 1 553ECE83
+P 8350 1900
+F 0 "P?" H 8450 1900 60  0001 C CNN
+F 1 "+VBATT" H 8350 2200 60  0000 C CNN
+F 2 "" H 8350 1900 60  0000 C CNN
+F 3 "" H 8350 1900 60  0000 C CNN
+	1    8350 1900
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR?
+U 1 1 553ECF4B
+P 8350 3700
+F 0 "#PWR?" H 8350 3450 50  0001 C CNN
+F 1 "GND" H 8350 3550 50  0000 C CNN
+F 2 "" H 8350 3700 60  0000 C CNN
+F 3 "" H 8350 3700 60  0000 C CNN
+	1    8350 3700
+	1    0    0    -1  
+$EndComp
 Wire Wire Line
 	2450 6200 2750 6200
 Wire Wire Line
@@ -293,39 +376,6 @@ Wire Wire Line
 Connection ~ 4950 5450
 Wire Wire Line
 	7850 6050 7850 5850
-$Comp
-L LED D?
-U 1 1 55381AF7
-P 2150 2800
-F 0 "D?" H 2150 2900 50  0000 C CNN
-F 1 "LED" H 2150 2700 50  0000 C CNN
-F 2 "" H 2150 2800 60  0000 C CNN
-F 3 "" H 2150 2800 60  0000 C CNN
-	1    2150 2800
-	-1   0    0    1   
-$EndComp
-$Comp
-L R R?
-U 1 1 55381B8F
-P 2850 2800
-F 0 "R?" V 2930 2800 50  0000 C CNN
-F 1 "R" V 2850 2800 50  0000 C CNN
-F 2 "" V 2780 2800 30  0000 C CNN
-F 3 "" H 2850 2800 30  0000 C CNN
-	1    2850 2800
-	0    1    1    0   
-$EndComp
-$Comp
-L GND #PWR?
-U 1 1 55381C08
-P 3400 3000
-F 0 "#PWR?" H 3400 2750 50  0001 C CNN
-F 1 "GND" H 3400 2850 50  0000 C CNN
-F 2 "" H 3400 3000 60  0000 C CNN
-F 3 "" H 3400 3000 60  0000 C CNN
-	1    3400 3000
-	1    0    0    -1  
-$EndComp
 Wire Wire Line
 	1700 2800 1950 2800
 Wire Wire Line
@@ -334,17 +384,6 @@ Wire Wire Line
 	3000 2800 3400 2800
 Wire Wire Line
 	3400 2800 3400 3000
-$Comp
-L R 1k
-U 1 1 55387943
-P 7600 5150
-F 0 "1k" V 7680 5150 50  0000 C CNN
-F 1 "R" V 7600 5150 50  0000 C CNN
-F 2 "" V 7530 5150 30  0000 C CNN
-F 3 "" H 7600 5150 30  0000 C CNN
-	1    7600 5150
-	1    0    0    -1  
-$EndComp
 Wire Wire Line
 	7600 5000 7600 4850
 Wire Wire Line
@@ -355,10 +394,44 @@ Wire Wire Line
 Wire Wire Line
 	7600 5350 7600 5300
 Connection ~ 7850 5350
-Text Notes 1800 6500 0    60   ~ 0
-EN needs to be at least\n1.2v
-Text Notes 2500 2600 0    60   ~ 0
-NOTE: Update R when LED is picked out
-Text Notes 6700 4800 0    60   ~ 0
-Add a flyback diode?
+Wire Wire Line
+	8350 3700 8350 3450
+Wire Wire Line
+	8350 1900 8350 2650
+Wire Wire Line
+	7350 2400 9000 2400
+Wire Wire Line
+	9000 2400 9000 3150
+Wire Wire Line
+	9000 3150 8700 3150
+Wire Wire Line
+	8700 2950 9000 2950
+Wire Wire Line
+	9000 2950 9000 2900
+Connection ~ 9000 2900
+Wire Wire Line
+	7350 3550 7750 3550
+Wire Wire Line
+	7750 3550 7750 2950
+Wire Wire Line
+	7750 2950 8000 2950
+Wire Wire Line
+	8000 3150 7750 3150
+Connection ~ 7750 3150
+Wire Wire Line
+	8000 3050 7900 3050
+Wire Wire Line
+	7900 3050 7900 2550
+Wire Wire Line
+	7900 2550 9650 2550
+Wire Wire Line
+	8700 3050 9200 3050
+Wire Wire Line
+	9200 3050 9200 2650
+Wire Wire Line
+	9200 2650 9650 2650
+Text Notes 8650 1850 0    60   ~ 0
+Using VBATT here is probably a bad idea
+Text Notes 9800 2600 0    60   ~ 0
+Conn to SMA
 $EndSCHEMATC
