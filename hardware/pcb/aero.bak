@@ -297,7 +297,6 @@ Text GLabel 3450 5300 0    60   Input ~ 0
 NRF8001_ENABLE
 Text GLabel 9950 4050 0    60   Input ~ 0
 NRF8001_ENABLE
-NoConn ~ 1550 5200
 Text GLabel 4100 3050 0    60   Input ~ 0
 ~NRST
 Text GLabel 8050 6050 0    60   Input ~ 0
@@ -943,4 +942,8 @@ Wire Wire Line
 	3100 1050 3100 850 
 Wire Wire Line
 	3100 1350 3100 3950
+Text GLabel 1600 5200 2    60   Input ~ 0
+ACC_INT
+Wire Wire Line
+	1600 5200 1550 5200
 $EndSCHEMATC
