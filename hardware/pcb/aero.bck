@@ -10,6 +10,10 @@ D TI TPS783 LDO
 K Vreg LDO 
 $ENDCMP
 #
+$CMP Test_Point
+D Test point in the size of 0603
+$ENDCMP
+#
 $CMP ZXMHC6A07N8
 D ZXMHC6A07N8 FET H-Bridge
 $ENDCMP
