@@ -16,6 +16,7 @@ $ENDCMP
 #
 $CMP ZXMHC6A07N8
 D ZXMHC6A07N8 FET H-Bridge
+F http://www.diodes.com/datasheets/ZXMHC6A07N8.pdf
 $ENDCMP
 #
 #End Doc Library
