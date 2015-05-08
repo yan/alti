@@ -1,4 +1,5 @@
 EESchema Schematic File Version 2
+LIBS:aero-rescue
 LIBS:aero
 LIBS:power
 LIBS:device
@@ -11,7 +12,6 @@ LIBS:cmos4000
 LIBS:adc-dac
 LIBS:memory
 LIBS:xilinx
-LIBS:special
 LIBS:microcontrollers
 LIBS:dsp
 LIBS:microchip
@@ -67,9 +67,11 @@ F 3 "" H 3200 6200 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L +24V #PWR053
+L +24V-RESCUE-aero #PWR053
 U 1 1 553813E6
 P 7850 4750
+AR Path="/553813E6" Ref="#PWR053"  Part="1" 
+AR Path="/55359120/553813E6" Ref="#PWR053"  Part="1" 
 F 0 "#PWR053" H 7850 4600 50  0001 C CNN
 F 1 "+24V" H 7850 4890 50  0000 C CNN
 F 2 "" H 7850 4750 60  0000 C CNN
@@ -142,7 +144,7 @@ F 1 "D_Schottky" H 3750 5350 50  0000 C CNN
 F 2 "Diodes_SMD:SOD-123" H 3750 5450 60  0001 C CNN
 F 3 "" H 3750 5450 60  0000 C CNN
 	1    3750 5450
-	1    0    0    -1  
+	-1   0    0    1   
 $EndComp
 $Comp
 L R R13
@@ -189,9 +191,11 @@ F 3 "" H 4950 5750 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L +24V #PWR056
+L +24V-RESCUE-aero #PWR056
 U 1 1 55381C1E
 P 5500 5350
+AR Path="/55381C1E" Ref="#PWR056"  Part="1" 
+AR Path="/55359120/55381C1E" Ref="#PWR056"  Part="1" 
 F 0 "#PWR056" H 5500 5200 50  0001 C CNN
 F 1 "+24V" H 5500 5490 50  0000 C CNN
 F 2 "" H 5500 5350 60  0000 C CNN
