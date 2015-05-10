@@ -1,0 +1,205 @@
+EESchema Schematic File Version 2
+LIBS:aero-rescue
+LIBS:aero
+LIBS:power
+LIBS:device
+LIBS:transistors
+LIBS:conn
+LIBS:linear
+LIBS:regul
+LIBS:74xx
+LIBS:cmos4000
+LIBS:adc-dac
+LIBS:memory
+LIBS:xilinx
+LIBS:microcontrollers
+LIBS:dsp
+LIBS:microchip
+LIBS:analog_switches
+LIBS:motorola
+LIBS:texas
+LIBS:intel
+LIBS:audio
+LIBS:interface
+LIBS:digital-audio
+LIBS:philips
+LIBS:display
+LIBS:cypress
+LIBS:siliconi
+LIBS:opto
+LIBS:atmel
+LIBS:contrib
+LIBS:valves
+LIBS:aero-cache
+EELAYER 25 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 4 7
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L BMX055 U4
+U 1 1 5527EBA6
+P 5600 3000
+F 0 "U4" H 5900 2150 60  0000 C CNN
+F 1 "BMX055" H 5150 2150 60  0000 C CNN
+F 2 "aero:BMX055" H 5600 3000 60  0001 C CNN
+F 3 "" H 5600 3000 60  0000 C CNN
+	1    5600 3000
+	1    0    0    -1  
+$EndComp
+NoConn ~ 6150 3650
+NoConn ~ 6150 3550
+$Comp
+L +3V #PWR036
+U 1 1 552EACA4
+P 6900 2000
+F 0 "#PWR036" H 6900 1900 60  0001 C CNN
+F 1 "+3V" H 6750 2150 60  0000 C CNN
+F 2 "" H 6900 2000 60  0000 C CNN
+F 3 "" H 6900 2000 60  0000 C CNN
+	1    6900 2000
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR037
+U 1 1 552EACBF
+P 6900 4050
+F 0 "#PWR037" H 6900 3800 50  0001 C CNN
+F 1 "GND" H 6900 3900 50  0000 C CNN
+F 2 "" H 6900 4050 60  0000 C CNN
+F 3 "" H 6900 4050 60  0000 C CNN
+	1    6900 4050
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR038
+U 1 1 552EACD5
+P 4500 4100
+F 0 "#PWR038" H 4500 3850 50  0001 C CNN
+F 1 "GND" H 4500 3950 50  0000 C CNN
+F 2 "" H 4500 4100 60  0000 C CNN
+F 3 "" H 4500 4100 60  0000 C CNN
+	1    4500 4100
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4500 3650 5050 3650
+Wire Wire Line
+	5050 3550 4500 3550
+Connection ~ 4500 3650
+Connection ~ 4500 3550
+Text HLabel 4950 2450 0    60   Input ~ 0
+ACC_SEL
+Text HLabel 4950 2550 0    60   Input ~ 0
+GYRO_SEL
+Text HLabel 4950 2650 0    60   Input ~ 0
+MAG_SEL
+Wire Wire Line
+	4950 2450 5050 2450
+Wire Wire Line
+	5050 2550 4950 2550
+Wire Wire Line
+	4950 2650 5050 2650
+Text HLabel 4950 2750 0    60   Input ~ 0
+ACC_INT
+Wire Wire Line
+	4950 2750 5050 2750
+NoConn ~ 5050 2850
+NoConn ~ 5050 2950
+NoConn ~ 5050 3050
+NoConn ~ 5050 3150
+NoConn ~ 6150 2600
+Text HLabel 6400 2750 2    60   Input ~ 0
+MISO
+Wire Wire Line
+	6150 2750 6400 2750
+Wire Wire Line
+	6150 2850 6300 2850
+Wire Wire Line
+	6300 2850 6300 2750
+Connection ~ 6300 2750
+Text HLabel 6400 3150 2    60   Input ~ 0
+MOSI
+Wire Wire Line
+	6400 3150 6150 3150
+Text HLabel 6400 3050 2    60   Input ~ 0
+SCK
+Wire Wire Line
+	6400 3050 6150 3050
+Wire Wire Line
+	6150 2950 6900 2950
+Wire Wire Line
+	6900 2950 6900 4050
+$Comp
+L +3V #PWR039
+U 1 1 552EBBB1
+P 7900 2450
+F 0 "#PWR039" H 7900 2350 60  0001 C CNN
+F 1 "+3V" H 7750 2600 60  0000 C CNN
+F 2 "" H 7900 2450 60  0000 C CNN
+F 3 "" H 7900 2450 60  0000 C CNN
+	1    7900 2450
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR040
+U 1 1 552EBBC7
+P 7900 3050
+F 0 "#PWR040" H 7900 2800 50  0001 C CNN
+F 1 "GND" H 7900 2900 50  0000 C CNN
+F 2 "" H 7900 3050 60  0000 C CNN
+F 3 "" H 7900 3050 60  0000 C CNN
+	1    7900 3050
+	1    0    0    -1  
+$EndComp
+$Comp
+L C C25
+U 1 1 552EBBDD
+P 7700 2750
+F 0 "C25" H 7725 2850 50  0000 L CNN
+F 1 "100nF" H 7725 2650 50  0000 L CNN
+F 2 "Capacitors_SMD:C_0603" H 7738 2600 30  0001 C CNN
+F 3 "" H 7700 2750 60  0000 C CNN
+	1    7700 2750
+	1    0    0    -1  
+$EndComp
+$Comp
+L C C26
+U 1 1 552EBBFD
+P 8050 2750
+F 0 "C26" H 8075 2850 50  0000 L CNN
+F 1 "100nF" H 8075 2650 50  0000 L CNN
+F 2 "Capacitors_SMD:C_0603" H 8088 2600 30  0001 C CNN
+F 3 "" H 8050 2750 60  0000 C CNN
+	1    8050 2750
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	7700 2900 8050 2900
+Wire Wire Line
+	7900 2900 7900 3050
+Connection ~ 7900 2900
+Wire Wire Line
+	7700 2600 8050 2600
+Wire Wire Line
+	7900 2600 7900 2450
+Connection ~ 7900 2600
+Wire Wire Line
+	4500 3550 4500 4100
+Wire Wire Line
+	6150 2350 6900 2350
+Wire Wire Line
+	6900 2000 6900 2450
+Wire Wire Line
+	6900 2450 6150 2450
+Connection ~ 6900 2350
+$EndSCHEMATC

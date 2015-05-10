@@ -1,0 +1,41 @@
+
+This file contains a list of all the ICs that the STM32L151 talks to
+and their respective pins.
+
+nRF8001 (BLE, SPI, 7 pins: 3 SPI, 3 GPIO, 1 EN)
+  SCK  \
+  MISO  |
+  MOSIA | 
+  EN   /
+  REQN
+  RDYN
+  RST
+AT45DB321E (32Mb memory, SPI)
+  SCK  \
+  MISO  | - can be shared with BLE?
+  MOSI  |
+  EN/CS/
+  RST
+  WP (not sure if needed, write protect)
+ms5611 (Pressure, I2C, 3 pins)
+  SDA*
+  SCLK*
+  EN
+BMX055 (accelerometer, magnetometer, gyro, I2C, 3 pins (1 new pin))
+  SDA*
+  SCLK*
+  EN
+Status LED (1 pin, proof of life/BLE/low power indicator)
+  EN
+Warning LEDs (2 pins, the fall rate/alarm LEDs, 1 pin select, 1 pin enable, need to be timer-compatible)
+  SELECT
+  EN
+Piezo (2 pin, audio alarm + DC/DC converter enable, OUT needs to be timer-compatible)
+  SELECT
+  OUT
+Other
+  USB pins?
+  SWD pins
+  xtal pins
+
+

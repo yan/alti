@@ -1,3 +1,22 @@
 EESchema-DOCLIB  Version 2.0
 #
+$CMP BQ24040DSQ
+D BQ24040DSQ
+K 32Mb Flash 
+$ENDCMP
+#
+$CMP TPS783
+D TI TPS783 LDO
+K Vreg LDO 
+$ENDCMP
+#
+$CMP Test_Point
+D Test point in the size of 0603
+$ENDCMP
+#
+$CMP ZXMHC6A07N8
+D ZXMHC6A07N8 FET H-Bridge
+F http://www.diodes.com/datasheets/ZXMHC6A07N8.pdf
+$ENDCMP
+#
 #End Doc Library
