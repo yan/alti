@@ -27,7 +27,8 @@ FREERTOS_DIR = freertos/FreeRTOS/Source/
 CPPFLAGS += -Iinclude -I$(FREERTOS_DIR)/include -I$(FREERTOS_DIR)/portable/GCC/ARM_CM3
 
 GDB_CMDS = support/gdb_commands
-OPENOCD_CFG = /usr/local/share/openocd/scripts/board/stm32ldiscovery.cfg
+OPENOCD_CFG = -f /usr/local/share/openocd/scripts/interface/stlink-v2.cfg    \
+              -f /usr/local/share/openocd/scripts/target/stm32lx_stlink.cfg
 
 ifeq ($(ENABLE_SEMIHOSTING), 1)
   LDFLAGS += --specs=rdimon.specs
@@ -59,6 +60,6 @@ cleanlib:
 run: elf
 	mkdir -p $(PID_DIR)
 	killall openocd || true
-	@openocd -f $(OPENOCD_CFG) -l "${PID_DIR}/openocd.log" & echo "$$!" > "${PID_DIR}/openocd.pid"
-	@$(PREFIX)-gdb --command=$(GDB_CMDS) $(OBJ_DIR)/$(BINARY).elf
+	openocd $(OPENOCD_CFG) -l "${PID_DIR}/openocd.log" & echo "$$!" > "${PID_DIR}/openocd.pid"
+	$(PREFIX)-gdb --command=$(GDB_CMDS) $(OBJ_DIR)/$(BINARY).elf
 	@kill `cat $(PID_DIR)/openocd.pid`

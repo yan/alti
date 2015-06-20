@@ -5,10 +5,27 @@
 #include <libopencm3/stm32/i2c.h>
 #include <libopencm3/stm32/gpio.h>
 
-#include <i2c.h>
 #include <ms5611.h>
 #include <util.h>
 #include <pins.h>
+
+#define USE_SPI
+
+#if defined(USE_SPI)
+#  include <libopencm3/stm32/spi.h>
+#  include <spi.h>
+#  define send_byte(b) spi_send_byte(MS5611_PORT, b)
+#  define read16() (uint16_t)spi_read_octets(MS5611_PORT, 2);
+#  define read24() (uint32_t)spi_read_octets(MS5611_PORT, 3);
+#  define read32() (uint32_t)spi_read_octets(MS5611_PORT, 4);
+#else
+#  include <libopencm3/stm32/i2c.h>
+#  include <i2c.h>
+#  define send_byte(b) i2c_send_byte(MS5611_PORT, b)
+#  define read16() (uint16_t)i2c_read_octets(MS5611_PORT, 2);
+#  define read24() (uint32_t)i2c_read_octets(MS5611_PORT, 3);
+#  define read32() (uint32_t)i2c_read_octets(MS5611_PORT, 4);
+#endif
 
 /**
  * @brief PROM
@@ -36,14 +53,8 @@ struct ms5611_C_s {
 
 static int32_t _temp;
 
-static uint32_t ms5611_read_adc(uint32_t i2c, uint8_t cmd);
+static uint32_t ms5611_read_adc(uint8_t cmd);
 
-void ms5611_config_i2c(void)
-{
-  gpio_mode_setup(MS5611_GPIO, GPIO_MODE_AF, GPIO_PUPD_NONE, MS5611_PINS);
-  gpio_set_output_options(MS5611_GPIO, GPIO_OTYPE_OD, GPIO_OSPEED_10MHZ, MS5611_PINS);
-  gpio_set_af(MS5611_GPIO, GPIO_AF4, MS5611_PINS);
-}
 
 #if MS5611_VERIFY_RECVD == 1
 
@@ -87,18 +98,40 @@ uint16_t ms5611_verify_prom(void)
 /**
  * @brief Reset the MS5611.
  */
-void ms5611_reset(uint32_t i2c)
+void ms5611_reset(void)
 {
-  i2c_send_cmd(i2c, MS5611_CMD_RESET);
+  gpio_clear(MS5611_GPIO, MS5611_EN);
+
+  send_byte(MS5611_CMD_RESET);
 
   /* Give it 3ms to start */
   delay_ms(3);
+
+  gpio_set(MS5611_GPIO, MS5611_EN);
+
+}
+
+static uint16_t ms5611_get16(uint8_t cmd)
+{
+  uint16_t val;
+
+  //gpio_clear(MS5611_GPIO, MS5611_EN);
+  gpio_clear(GPIOB, GPIO12);
+
+  send_byte(cmd);
+
+  val = read16();
+
+  //gpio_set(MS5611_GPIO, MS5611_EN);
+  gpio_set(GPIOB, GPIO12);
+
+  return val;
 }
 
 /**
  * @brief Initialize the MS5611 sensor, get its PROM contents.
  */
-void ms5611_init(uint32_t i2c)
+void ms5611_init(void)
 {
   uint8_t cmd, idx;
 #if MS5611_VERIFY_RECVD == 1
@@ -106,19 +139,18 @@ void ms5611_init(uint32_t i2c)
   uint8_t crc;
 #endif
 
-  ms5611_reset(i2c);
+  ms5611_reset();
 
   /* Skip over the reserved */
   for ( cmd  = MS5611_CMD_PROM_READ_BASE, idx = 0;
         cmd <= MS5611_CMD_PROM_READ_LAST;
         cmd += sizeof(coefficient_t), idx++) {
-    i2c_send_cmd(i2c, cmd);
-    C._C[idx] = i2c_read16(i2c);
+    C._C[idx] = ms5611_get16(cmd);
   }
 
 #if MS5611_VERIFY_RECVD == 1
-  i2c_send_cmd(i2c, MS5611_CMD_PROM_READ_LAST);
-  crc4_dword = i2c_read16(i2c);
+  send_byte(MS5611_CMD_PROM_READ_LAST);
+  crc4_dword = read16();
 
   crc = ms5611_verify_prom();
   
@@ -132,12 +164,24 @@ void ms5611_init(uint32_t i2c)
  * @brief Get the value from one of two MS5611's ADCs. The first is temperature,
  * second is pressure.
  */
-static uint32_t ms5611_read_adc(uint32_t i2c, uint8_t cmd)
+static uint32_t ms5611_read_adc(uint8_t cmd)
 {
-  i2c_send_cmd(i2c, cmd);
+  uint32_t val;
+
+  /* Warn that we're about to read, and wait a period of time depending on the
+   * precision required*/
+  gpio_clear(MS5611_GPIO, MS5611_EN);
+  send_byte(cmd);
   delay_ms((cmd&0x0F) * 2 + 1);
-  i2c_send_cmd(i2c, MS5611_CMD_ADC_READ);
-  return i2c_read24(i2c);
+  gpio_set(MS5611_GPIO, MS5611_EN);
+
+  /* Read back the ADC result */
+  gpio_clear(MS5611_GPIO, MS5611_EN);
+  send_byte(MS5611_CMD_ADC_READ);
+  val = read24();
+  gpio_set(MS5611_GPIO, MS5611_EN);
+
+  return val;
 }
 
 /**
@@ -145,13 +189,13 @@ static uint32_t ms5611_read_adc(uint32_t i2c, uint8_t cmd)
  * used on its own as it reads the ADC an extra time. Use ms5611_get_last_temp()
  * if also getting pressure.
  */
-uint32_t ms5611_get_temp(uint32_t i2c, uint8_t precision)
+uint32_t ms5611_get_temp(uint8_t precision)
 {
   int64_t dT, D2, T;
 
   assert(precision <= 4);
 
-  D2 = ms5611_read_adc(i2c, MS5611_CMD_D2_BASE + precision * 2);
+  D2 = ms5611_read_adc(MS5611_CMD_D2_BASE + precision * 2);
   dT = D2 - (C.C5_ref_temp << 8);
   T = 2000 + ((dT * C.C6_temp_coefficient_temp) >> 23);
 
@@ -175,7 +219,7 @@ uint32_t ms5611_get_last_temp()
 /**
  * @brief Return the pressure from MS5611 as (mbar * 100).
  */
-uint32_t ms5611_get_mbarc(uint32_t i2c, uint8_t precision)
+uint32_t ms5611_get_mbarc(uint8_t precision)
 {
   uint32_t D1, D2;
   int64_t dT, P, off, sens;
@@ -184,8 +228,8 @@ uint32_t ms5611_get_mbarc(uint32_t i2c, uint8_t precision)
 
   assert(precision <= 4);
 
-  D1 = ms5611_read_adc(i2c, MS5611_CMD_D1_BASE + precision * 2);
-  D2 = ms5611_read_adc(i2c, MS5611_CMD_D2_BASE + precision * 2);
+  D1 = ms5611_read_adc(MS5611_CMD_D1_BASE + precision * 2);
+  D2 = ms5611_read_adc(MS5611_CMD_D2_BASE + precision * 2);
 
   dT = D2 - ((i64)C.C5_ref_temp << 8);
   off =  ((i64)C.C2_pressure_offset      << 16) + ((dT * (i64)C.C4_temp_press_offset) >> 7);

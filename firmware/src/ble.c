@@ -27,8 +27,9 @@
 #include <task_ble.h>
 #include <ble.h>
 #include <services.h>
+#include <spi.h>
 
-#define ble_isr exti15_10_isr
+#define ble_isr exti3_isr
 
 static void config_ble_pins(void);
 static void config_ble_isr(void);
@@ -41,7 +42,7 @@ void ble_isr(void)
   BaseType_t higher = pdFALSE;
   enum event_type_e evt = GLOBAL_EVT_NRF8001_RDY;
 
-  exti_reset_request(EXTI_PR & EXTI11);
+  exti_reset_request(EXTI_PR & EXTI3);
 
   ++g_isr_hit;
 
@@ -52,31 +53,11 @@ void ble_isr(void)
 
 static void config_ble_pins(void)
 {
-  /* Configure alternate function for SPI pins */
-  gpio_mode_setup(NRF8001_GPIO, GPIO_MODE_AF, GPIO_PUPD_NONE, NRF8001_PINS);
-  gpio_set_output_options(NRF8001_GPIO, GPIO_OTYPE_PP, GPIO_OSPEED_10MHZ, NRF8001_PINS);
-  gpio_set_af(NRF8001_GPIO, GPIO_AF5, NRF8001_PINS);
-
   gpio_mode_setup(NRF8001_GPIO, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE,   NRF8001_REQN);
   gpio_mode_setup(NRF8001_GPIO, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE,   NRF8001_RST);
 
-  gpio_set(NRF8001_GPIO, NRF8001_RST);
   gpio_set(NRF8001_GPIO, NRF8001_REQN);
-
-  rcc_periph_clock_enable(RCC_SPI2);
-  spi_reset(SPI2);
-  spi_init_master(SPI2,
-                  SPI_CR1_BAUDRATE_FPCLK_DIV_16,
-                  SPI_CR1_CPOL_CLK_TO_0_WHEN_IDLE,
-                  SPI_CR1_CPHA_CLK_TRANSITION_1,
-                  SPI_CR1_DFF_8BIT,
-                  SPI_CR1_LSBFIRST);
-  spi_enable_software_slave_management(SPI2);
-  spi_enable_ss_output(SPI2);
-  // spi_set_nss_high(SPI2);
-
-  spi_enable(SPI2);
-
+  gpio_set(NRF8001_GPIO, NRF8001_RST);
 }
 
 static void config_ble_isr(void)
@@ -94,12 +75,12 @@ static void config_ble_isr(void)
   /* We'll use RDYN pin to interrupt*/
   gpio_mode_setup(NRF8001_GPIO, GPIO_MODE_INPUT, GPIO_PUPD_NONE, NRF8001_RDYN);
 
-  nvic_enable_irq(NVIC_EXTI15_10_IRQ);
-  nvic_set_priority(NVIC_EXTI15_10_IRQ, BLE_EXTI_ISR_PRIORITY);
+  nvic_enable_irq(NVIC_EXTI3_IRQ);
+  nvic_set_priority(NVIC_EXTI3_IRQ, BLE_EXTI_ISR_PRIORITY);
 
-  exti_select_source(EXTI11, NRF8001_GPIO);
-  exti_set_trigger(EXTI11, EXTI_TRIGGER_FALLING);
-  exti_enable_request(EXTI11);
+  exti_select_source(EXTI3, NRF8001_GPIO);
+  exti_set_trigger(EXTI3, EXTI_TRIGGER_FALLING);
+  exti_enable_request(EXTI3);
 }
 
 static void nrf8001_reset(void)

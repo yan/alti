@@ -59,7 +59,7 @@ void i2c_disable(void)
 /**
  * @brief
  */
-void i2c_send_cmd(uint32_t i2c, uint8_t cmd)
+void i2c_send_byte(uint32_t i2c, uint8_t cmd)
 {
   i2c_send_buf(i2c, &cmd, sizeof(cmd));
 }

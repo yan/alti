@@ -16,9 +16,8 @@
  */
 void config_baro(void)
 {
-  ms5611_config_i2c();
-  i2c_config(I2C1);
-  ms5611_init(I2C1);
+  ms5611_init();
+
 }
 
 /**
@@ -43,7 +42,7 @@ void task_baro(void *p)
       //
     }
 
-    pressure = ms5611_get_mbarc(I2C1, 4);
+    pressure = ms5611_get_mbarc(4);
 
     evt.type = GLOBAL_EVT_AIR_PRESSURE;
     evt.payload = (void*) pressure;
