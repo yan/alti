@@ -1,0 +1,2 @@
+ * BQ24040's nCHG line goes to ground, where as it should go to Vbatt
+ * Status LED is backwards
