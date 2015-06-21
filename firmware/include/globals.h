@@ -20,6 +20,12 @@ struct globals {
   /** @brief */
   void *baro_queue_g;
 
+  /** @brief Byte order of SPI links.
+   *    Bit 1 set = MSB for SPI1
+   *    Bit 2 set = MSB for SPI2
+   */
+  uint8_t spi_endian;
+
   /** @brief Data local to the BLE task */
   struct ble_task_data_s *ble_data_g;
 

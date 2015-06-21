@@ -101,7 +101,6 @@ uint16_t ms5611_verify_prom(void)
 void ms5611_reset(void)
 {
   gpio_clear(MS5611_GPIO, MS5611_EN);
-
   send_byte(MS5611_CMD_RESET);
 
   /* Give it 3ms to start */
@@ -115,15 +114,10 @@ static uint16_t ms5611_get16(uint8_t cmd)
 {
   uint16_t val;
 
-  //gpio_clear(MS5611_GPIO, MS5611_EN);
-  gpio_clear(GPIOB, GPIO12);
-
+  gpio_clear(MS5611_GPIO, MS5611_EN);
   send_byte(cmd);
-
   val = read16();
-
-  //gpio_set(MS5611_GPIO, MS5611_EN);
-  gpio_set(GPIOB, GPIO12);
+  gpio_set(MS5611_GPIO, MS5611_EN);
 
   return val;
 }
