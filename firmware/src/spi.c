@@ -9,7 +9,12 @@
 
 
 
-/** @brief ...
+/**
+ * @brief Configure and enable SPI1 or SPI2. Initialize it with a default
+ * byte order, although this can change on a per-message basis.
+ *
+ * @param port 1 for SPI1 or 2 for SPI2
+ * @param byte_order 0 for LSB first, 1 for MSB first
  */
 void aero_spi_config(uint32_t port, uint16_t byte_order)
 {
@@ -25,8 +30,6 @@ void aero_spi_config(uint32_t port, uint16_t byte_order)
                   SPI_CR1_DFF_8BIT,
                   byte_order ? SPI_CR1_MSBFIRST : SPI_CR1_LSBFIRST);
 
-  g.spi_endian |= byte_order << (port - 1);
-
   spi_enable_software_slave_management(port);
   spi_disable_ss_output(port);
   spi_set_nss_high(port);
@@ -34,7 +37,11 @@ void aero_spi_config(uint32_t port, uint16_t byte_order)
   spi_enable(port);
 }
 
-
+/**
+ * @brief Enable the SPI peripheral.
+ *
+ * @param port 1 for SPI1, 2 for SPI2
+ */
 void aero_spi_enable(uint32_t port)
 {
   rcc_periph_clock_enable((port == 2) ? RCC_SPI2 : RCC_SPI1);
@@ -43,7 +50,10 @@ void aero_spi_enable(uint32_t port)
   spi_enable(port);
 }
 
-/** @brief
+/**
+ * @brief Disaable the SPI peripheral and its clock.
+ *
+ * @param port 1 for SPI1, 2 for SPI2
  */
 void aero_spi_disable(uint32_t port)
 {
@@ -90,18 +100,19 @@ void spi_read_data(uint32_t port, uint8_t *data, uint32_t length)
 /**
  * @brief
  */
-uint32_t spi_read_octets(uint32_t port, unsigned octets)
+uint32_t spi_read_octets(uint32_t port, unsigned octets, uint32_t byte_order)
 {
 
   uint32_t value = 0, offset = 0;
   uint8_t byte;
-  assert(octets > 0 && octets <= 4);
 
+  assert(octets > 0 && octets <= 4);
+  assert(byte_order == 0 && byte_order == 1);
 
   do {
     octets--;
     byte = spi_xfer(port, 0);
-    if (g.spi_endian << port) {
+    if (byte_order) {
       value |= byte << offset;
       offset += 8;
     } else {
