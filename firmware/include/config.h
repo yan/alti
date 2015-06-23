@@ -21,4 +21,9 @@ void config_nvic(void);
  */
 void config_io(void);
 
+/**
+ * @brief Initialize all global values
+ */
+void config_globals(void);
+
 #endif

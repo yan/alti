@@ -9,23 +9,12 @@
 #include <util.h>
 #include <pins.h>
 
+#define SPI_PORT MS5611_PORT
+#define BYTEORDER BYTEORDER_MSB
+
 #define USE_SPI
 
-#if defined(USE_SPI)
-#  include <libopencm3/stm32/spi.h>
-#  include <spi.h>
-#  define send_byte(b) spi_send_byte(MS5611_PORT, b)
-#  define read16() (uint16_t)spi_read_octets(MS5611_PORT, 2);
-#  define read24() (uint32_t)spi_read_octets(MS5611_PORT, 3);
-#  define read32() (uint32_t)spi_read_octets(MS5611_PORT, 4);
-#else
-#  include <libopencm3/stm32/i2c.h>
-#  include <i2c.h>
-#  define send_byte(b) i2c_send_byte(MS5611_PORT, b)
-#  define read16() (uint16_t)i2c_read_octets(MS5611_PORT, 2);
-#  define read24() (uint32_t)i2c_read_octets(MS5611_PORT, 3);
-#  define read32() (uint32_t)i2c_read_octets(MS5611_PORT, 4);
-#endif
+#include <transfer_macros.h>
 
 /**
  * @brief PROM
@@ -100,6 +89,10 @@ uint16_t ms5611_verify_prom(void)
  */
 void ms5611_reset(void)
 {
+#if defined(USE_SPI)
+  spi_send_msb_first(MS5611_PORT);
+#endif
+
   gpio_clear(MS5611_GPIO, MS5611_EN);
   send_byte(MS5611_CMD_RESET);
 
@@ -113,6 +106,10 @@ void ms5611_reset(void)
 static uint16_t ms5611_get16(uint8_t cmd)
 {
   uint16_t val;
+
+#if defined(USE_SPI)
+  spi_send_msb_first(MS5611_PORT);
+#endif
 
   gpio_clear(MS5611_GPIO, MS5611_EN);
   send_byte(cmd);
@@ -161,6 +158,10 @@ void ms5611_init(void)
 static uint32_t ms5611_read_adc(uint8_t cmd)
 {
   uint32_t val;
+
+#if defined(USE_SPI)
+  spi_send_msb_first(MS5611_PORT);
+#endif
 
   /* Warn that we're about to read, and wait a period of time depending on the
    * precision required*/

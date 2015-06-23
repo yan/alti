@@ -112,6 +112,7 @@ main(void)
 
   config_nvic();
   config_clock();
+  config_globals();
   config_io();
   config_tasks();
   

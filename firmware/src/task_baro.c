@@ -2,22 +2,20 @@
 #include <FreeRTOS.h>
 #include <queue.h>
 
-#include <libopencm3/stm32/i2c.h>
-
-#include <i2c.h>
 #include <events.h>
-#include <ms5611.h>
 #include <globals.h>
 #include <task_baro.h>
 #include <util.h>
 
+#include <ms5611.h>
+#include <bmx055.h>
 /**
  *
  */
 void config_baro(void)
 {
+  // bmx055_init();
   ms5611_init();
-
 }
 
 /**

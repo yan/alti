@@ -6,6 +6,11 @@
 #include <task_ble.h>
 #include <ble.h>
 
+struct protected_buffer_s {
+  void *lock;
+  uint8_t data[512];
+};
+
 struct globals {
 
   /** @brief FreeRTOSConfig.h uses this to refer to the clock rate */
@@ -28,6 +33,9 @@ struct globals {
 
   /** @brief Data local to the BLE task */
   struct ble_task_data_s *ble_data_g;
+
+  /** @brief Flash read/write buffer */
+  struct protected_buffer_s flash_buffer;
 
   /** @brief Bitmasks of open and closed nRF8001 pipes */
   uint8_t pipes_open[8], pipes_closed[8];

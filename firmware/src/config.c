@@ -5,6 +5,9 @@
 #include <libopencm3/stm32/rcc.h>
 #include <libopencm3/stm32/gpio.h>
 
+#include <FreeRTOS.h>
+#include <semphr.h>
+
 #include <pins.h>
 #include <spi.h>
 
@@ -45,29 +48,30 @@ void config_io(void)
 {
 
   /* Configure SPI for nrf8001 and flash */
+  rcc_periph_clock_enable(RCC_SPI1);
   gpio_mode_setup(SPI1_GPIO, GPIO_MODE_AF, GPIO_PUPD_NONE, SPI1_PINS);
   gpio_set_output_options(SPI1_GPIO, GPIO_OTYPE_PP, GPIO_OSPEED_10MHZ, SPI1_PINS);
   gpio_set_af(SPI1_GPIO, GPIO_AF5, SPI1_PINS);
-
-  rcc_periph_clock_enable(RCC_SPI1);
-
   aero_spi_config(1, BYTEORDER_LSB);
 
   /* Configure SPI for ms5611 and bmx055 */
+  rcc_periph_clock_enable(RCC_SPI2);
   gpio_mode_setup(SPI2_GPIO, GPIO_MODE_AF, GPIO_PUPD_NONE, SPI2_PINS);
   gpio_set_output_options(SPI2_GPIO, GPIO_OTYPE_PP, GPIO_OSPEED_10MHZ, SPI2_PINS);
   gpio_set_af(SPI2_GPIO, GPIO_AF5, SPI2_PINS);
-
-  rcc_periph_clock_enable(RCC_SPI2);
-
   aero_spi_config(2, BYTEORDER_MSB);
 
   /* Configure all enable pins */
   gpio_mode_setup(MS5611_GPIO, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, MS5611_EN);
-  // gpio_set_output_options(MS5611_GPIO, GPIO_OTYPE_PP, GPIO_OSPEED_10MHZ, MS5611_EN);
+  gpio_set_output_options(MS5611_GPIO, GPIO_OTYPE_PP, GPIO_OSPEED_10MHZ, MS5611_EN);
   gpio_set(MS5611_GPIO, MS5611_EN);
 
   gpio_mode_setup(BMX055_EN_GPIO, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, BMX055_EN_PINS);
   gpio_set_output_options(BMX055_EN_GPIO, GPIO_OTYPE_PP, GPIO_OSPEED_10MHZ, BMX055_EN_PINS);
   gpio_set(BMX055_EN_GPIO, BMX055_EN_PINS);
+}
+
+void config_globals(void)
+{
+  g.flash_buffer.lock = (SemaphoreHandle_t) xSemaphoreCreateMutex();
 }

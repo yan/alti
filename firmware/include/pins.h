@@ -21,10 +21,10 @@
 #define NRF8001_PORT   SPI1
 #define FLASH_PORT     SPI1
 #define SPI1_GPIO      GPIOA
-#define FLASH_nRESET   GPIO0
-#define FLASH_nCS      GPIO1
 #define NRF8001_GPIO   SPI1_GPIO
 #define FLASH_GPIO     SPI1_GPIO
+#define FLASH_nRESET   GPIO0
+#define FLASH_nCS      GPIO1
 #define NRF8001_RST    GPIO2
 #define NRF8001_RDYN   GPIO3
 #define NRF8001_REQN   GPIO4
@@ -34,6 +34,12 @@
 #define SPI1_PINS      (SPI1_SCK |  SPI1_MOSI | SPI1_MISO) // NRF8001_REQN
 
 /** MS5611 barometric sensor and bmx055 9-axis */
+#define BMX055_EN_GPIO GPIOA
+#define BMX055_EN_MAG  GPIO8
+#define BMX055_EN_ACC  GPIO9
+#define BMX055_EN_GYR  GPIO10
+#define BMX055_EN_PINS (BMX055_EN_MAG | BMX055_EN_ACC | BMX055_EN_GYR)
+
 #define MS5611_PORT   SPI2
 #define BMX055_PORT   SPI2
 #define SPI2_GPIO     GPIOB
@@ -45,11 +51,8 @@
 #define SPI2_MOSI     GPIO15
 #define SPI2_PINS    (SPI2_SCK | SPI2_MOSI | SPI2_MISO)
 
-#define BMX055_EN_GPIO GPIOA
-#define BMX055_EN_MAG  GPIO8
-#define BMX055_EN_ACC  GPIO9
-#define BMX055_EN_GYR  GPIO10
-#define BMX055_EN_PINS (BMX055_EN_MAG | BMX055_EN_ACC | BMX055_EN_GYR)
+#define BMX055_INT_GPIO   GPIOB
+#define BMX055_INT_ACC    GPIO4
 
 /** Fre-fall alert LEDs */
 #define ALERT_HIGH_SELECT
