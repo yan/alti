@@ -12,7 +12,7 @@ struct nrf8001_cmd_s {
 
 #define NRF8001_MAX_CMD_LENGTH  (sizeof(((struct nrf8001_cmd_s*)0)->data) + 1)
 
-#define NRF8001_SPI    SPI2
+#define NRF8001_SPI    SPI1
 
 void nrf8001_exchange_cmds(struct nrf8001_cmd_s *out, struct nrf8001_cmd_s *in);
 

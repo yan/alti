@@ -40,17 +40,12 @@
 /**
  * @brief
  */
-void ms5611_init(uint32_t i2c);
+void ms5611_init(void);
 
 /**
  * @brief
  */
-void ms5611_config_i2c(void);
-
-/**
- * @brief
- */
-uint32_t ms5611_get_temp(uint32_t i2c, uint8_t precision);
+uint32_t ms5611_get_temp(uint8_t precision);
 
 /**
  * @brief
@@ -60,12 +55,12 @@ uint32_t ms5611_get_last_temp(void);
 /**
  * @brief
  */
-uint32_t ms5611_get_mbarc(uint32_t i2c, uint8_t precision);
+uint32_t ms5611_get_mbarc(uint8_t precision);
 
 /**
  * @brief
  */
-void ms5611_reset(uint32_t i2c);
+void ms5611_reset(void);
 
 
 #if MS5611_VERIFY_RECVD == 1

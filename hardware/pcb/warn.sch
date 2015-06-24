@@ -313,7 +313,7 @@ $EndComp
 Text Notes 8050 6050 0    60   ~ 0
 Confirm pin assignments of NPN
 $Comp
-L Q_NPN_BEC Q1
+L Q_NPN_BEC-RESCUE-aero Q1
 U 1 1 5546CD30
 P 7750 5650
 F 0 "Q1" H 8050 5700 50  0000 R CNN

@@ -1,6 +1,7 @@
 
 #include <stdint.h>
 #include <string.h>
+#include <stdio.h>
 
 #include <FreeRTOS.h>
 #include <queue.h>
