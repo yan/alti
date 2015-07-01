@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include <task_ble.h>
 #include <ble.h>
+#include <filter.h>
 
 struct protected_buffer_s {
   void *lock;
@@ -24,6 +25,9 @@ struct globals {
 
   /** @brief */
   void *baro_queue_g;
+
+  /** @brief The filter state for baro readings */
+  filter_state_t baro_filter_state;
 
   /** @brief Byte order of SPI links.
    *    Bit 1 set = MSB for SPI1

@@ -6,6 +6,8 @@
 #include <libopencm3/stm32/gpio.h>
 
 #include <ms5611.h>
+#include <globals.h>
+#include <filter.h>
 #include <util.h>
 #include <pins.h>
 
@@ -139,6 +141,8 @@ void ms5611_init(void)
     C._C[idx] = ms5611_get16(cmd);
   }
 
+  filter_init_state(&g.baro_filter_state);
+
 #if MS5611_VERIFY_RECVD == 1
   send_byte(MS5611_CMD_PROM_READ_LAST);
   crc4_dword = read16();
@@ -255,9 +259,10 @@ uint32_t ms5611_get_mbarc(uint8_t precision)
     sens -= sens2;
   }
 #endif
+
   
   P = ((D1 * (sens >> 21) - off) >> 15);
 
-  return P;
+  return filter_add_value(&g.baro_filter_state, P);
 }
 

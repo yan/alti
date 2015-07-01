@@ -59,8 +59,9 @@ static void nrf8001_connect(void) {
   cmd_buf.opcode = ACI_CMD_CONNECT;
   cmd_buf.length = 5;
 
-  args[0] = 60; // timeout, in seconds
+  args[0] = 0;//60; // timeout, in seconds
   args[1] = 0x100; // interval, 160ms (256 * 0.625ms)
+
   ble_send_cmd(&cmd_buf);
 }
 
@@ -176,6 +177,7 @@ void nrf8001_handle_event(struct nrf8001_cmd_s *event)
       }
 
       s_nrf8001_state.state = STATE_STANDBY;
+      nrf8001_connect();
       break;
 
     case ACI_EVT_CONNECTED: 

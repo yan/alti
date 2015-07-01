@@ -14,12 +14,11 @@
 void config_clock(void)
 {
   rcc_clock_setup_pll(&clock_config[CLOCK_VRANGE1_HSI_PLL_24MHZ]);
+  // rcc_clock_setup_pll(&clock_config[CLOCK_VRANGE1_MSI_RAW_4MHZ]);
 
   rcc_periph_clock_enable(RCC_PWR);
   pwr_disable_backup_domain_write_protect();
 
-  //RCC_CSR |= RCC_CSR_RTCRST;
-  //RCC_CSR &= ~RCC_CSR_RTCRST;
 
   rcc_osc_on(LSE);
   rcc_wait_for_osc_ready(LSE);
@@ -32,8 +31,9 @@ void config_clock(void)
 
   // Initialize GPIO
   rcc_periph_clock_enable(RCC_GPIOA);
-  rcc_periph_clock_enable(RCC_GPIOB);
   rcc_peripheral_enable_clock(&RCC_AHBENR, RCC_AHBENR_GPIOAEN);
+
+  rcc_periph_clock_enable(RCC_GPIOB);
   rcc_peripheral_enable_clock(&RCC_AHBENR, RCC_AHBENR_GPIOBEN);
 
   g.rcc_clock_freq = rcc_apb2_frequency;
@@ -69,6 +69,10 @@ void config_io(void)
   gpio_mode_setup(BMX055_EN_GPIO, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, BMX055_EN_PINS);
   gpio_set_output_options(BMX055_EN_GPIO, GPIO_OTYPE_PP, GPIO_OSPEED_10MHZ, BMX055_EN_PINS);
   gpio_set(BMX055_EN_GPIO, BMX055_EN_PINS);
+
+  gpio_mode_setup(STATUS_GPIO, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, STATUS_LED);
+  gpio_set_output_options(STATUS_GPIO, GPIO_OTYPE_PP, GPIO_OSPEED_2MHZ, STATUS_LED);
+  gpio_set(STATUS_GPIO, STATUS_LED);
 }
 
 void config_globals(void)

@@ -8,6 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		CE41C00F1B3CB3340038BD8A /* SettingsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE41C00E1B3CB3340038BD8A /* SettingsController.swift */; };
+		CE41C0211B3CB5B80038BD8A /* BlueCapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE41C01E1B3CB5AB0038BD8A /* BlueCapKit.framework */; };
+		CE41C0221B3CB5B80038BD8A /* BlueCapKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CE41C01E1B3CB5AB0038BD8A /* BlueCapKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		CE41C0271B3CB61B0038BD8A /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE41C0261B3CB61B0038BD8A /* CoreBluetooth.framework */; };
+		CE41C0291B3CB6250038BD8A /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE41C0281B3CB6250038BD8A /* CoreLocation.framework */; };
+		CE41C02D1B3CBF480038BD8A /* AltiHardware.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE41C02C1B3CBF480038BD8A /* AltiHardware.swift */; };
 		CEBC61131B3CB00400DBF1C4 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEBC61121B3CB00400DBF1C4 /* AppDelegate.swift */; };
 		CEBC61151B3CB00400DBF1C4 /* FirstViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEBC61141B3CB00400DBF1C4 /* FirstViewController.swift */; };
 		CEBC61171B3CB00400DBF1C4 /* SecondViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEBC61161B3CB00400DBF1C4 /* SecondViewController.swift */; };
@@ -15,9 +20,32 @@
 		CEBC611C1B3CB00400DBF1C4 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CEBC611B1B3CB00400DBF1C4 /* Images.xcassets */; };
 		CEBC611F1B3CB00400DBF1C4 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEBC611D1B3CB00400DBF1C4 /* LaunchScreen.xib */; };
 		CEBC612B1B3CB00400DBF1C4 /* AltiTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEBC612A1B3CB00400DBF1C4 /* AltiTests.swift */; };
+		CECC0DAD1B3F8EA7005029E7 /* Charts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CECC0DAC1B3F8E94005029E7 /* Charts.framework */; };
+		CECC0DAE1B3F8EA7005029E7 /* Charts.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CECC0DAC1B3F8E94005029E7 /* Charts.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		CE41C01D1B3CB5AB0038BD8A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CE41C0181B3CB5AB0038BD8A /* BlueCapKit.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 0551208219F5506000ED3B74;
+			remoteInfo = BlueCapKit;
+		};
+		CE41C01F1B3CB5AB0038BD8A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CE41C0181B3CB5AB0038BD8A /* BlueCapKit.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 0551208D19F5506000ED3B74;
+			remoteInfo = BlueCapKitTests;
+		};
+		CE41C0231B3CB5B80038BD8A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CE41C0181B3CB5AB0038BD8A /* BlueCapKit.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 0551208119F5506000ED3B74;
+			remoteInfo = BlueCapKit;
+		};
 		CEBC61251B3CB00400DBF1C4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = CEBC61051B3CB00400DBF1C4 /* Project object */;
@@ -25,10 +53,43 @@
 			remoteGlobalIDString = CEBC610C1B3CB00400DBF1C4;
 			remoteInfo = Alti;
 		};
+		CECC0DAB1B3F8E94005029E7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CECC0DA61B3F8E94005029E7 /* Charts.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 5BA8EC401A9D14DC00CE82E1;
+			remoteInfo = Charts;
+		};
+		CECC0DAF1B3F8EA7005029E7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CECC0DA61B3F8E94005029E7 /* Charts.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 5BA8EC3F1A9D14DC00CE82E1;
+			remoteInfo = Charts;
+		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		CE41C0251B3CB5B80038BD8A /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				CE41C0221B3CB5B80038BD8A /* BlueCapKit.framework in Embed Frameworks */,
+				CECC0DAE1B3F8EA7005029E7 /* Charts.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		CE41C00E1B3CB3340038BD8A /* SettingsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsController.swift; sourceTree = "<group>"; };
+		CE41C0181B3CB5AB0038BD8A /* BlueCapKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = BlueCapKit.xcodeproj; path = BlueCap/BlueCapKit.xcodeproj; sourceTree = "<group>"; };
+		CE41C0261B3CB61B0038BD8A /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
+		CE41C0281B3CB6250038BD8A /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		CE41C02C1B3CBF480038BD8A /* AltiHardware.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AltiHardware.swift; sourceTree = "<group>"; };
 		CEBC610D1B3CB00400DBF1C4 /* Alti.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Alti.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CEBC61111B3CB00400DBF1C4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CEBC61121B3CB00400DBF1C4 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -40,6 +101,7 @@
 		CEBC61241B3CB00400DBF1C4 /* AltiTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AltiTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CEBC61291B3CB00400DBF1C4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CEBC612A1B3CB00400DBF1C4 /* AltiTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AltiTests.swift; sourceTree = "<group>"; };
+		CECC0DA61B3F8E94005029E7 /* Charts.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Charts.xcodeproj; path = Charts/Charts/Charts.xcodeproj; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -47,6 +109,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CE41C0291B3CB6250038BD8A /* CoreLocation.framework in Frameworks */,
+				CECC0DAD1B3F8EA7005029E7 /* Charts.framework in Frameworks */,
+				CE41C0271B3CB61B0038BD8A /* CoreBluetooth.framework in Frameworks */,
+				CE41C0211B3CB5B80038BD8A /* BlueCapKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -60,12 +126,33 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		CE41C0191B3CB5AB0038BD8A /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				CE41C01E1B3CB5AB0038BD8A /* BlueCapKit.framework */,
+				CE41C0201B3CB5AB0038BD8A /* BlueCapKitTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		CE41C02B1B3CBF350038BD8A /* Alti Hardware */ = {
+			isa = PBXGroup;
+			children = (
+				CE41C02C1B3CBF480038BD8A /* AltiHardware.swift */,
+			);
+			name = "Alti Hardware";
+			sourceTree = "<group>";
+		};
 		CEBC61041B3CB00400DBF1C4 = {
 			isa = PBXGroup;
 			children = (
+				CE41C0281B3CB6250038BD8A /* CoreLocation.framework */,
+				CE41C0261B3CB61B0038BD8A /* CoreBluetooth.framework */,
 				CEBC610F1B3CB00400DBF1C4 /* Alti */,
 				CEBC61271B3CB00400DBF1C4 /* AltiTests */,
 				CEBC610E1B3CB00400DBF1C4 /* Products */,
+				CE41C0181B3CB5AB0038BD8A /* BlueCapKit.xcodeproj */,
+				CECC0DA61B3F8E94005029E7 /* Charts.xcodeproj */,
 			);
 			sourceTree = "<group>";
 		};
@@ -81,6 +168,7 @@
 		CEBC610F1B3CB00400DBF1C4 /* Alti */ = {
 			isa = PBXGroup;
 			children = (
+				CE41C02B1B3CBF350038BD8A /* Alti Hardware */,
 				CEBC61121B3CB00400DBF1C4 /* AppDelegate.swift */,
 				CEBC61141B3CB00400DBF1C4 /* FirstViewController.swift */,
 				CEBC61161B3CB00400DBF1C4 /* SecondViewController.swift */,
@@ -118,6 +206,14 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		CECC0DA71B3F8E94005029E7 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				CECC0DAC1B3F8E94005029E7 /* Charts.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -128,10 +224,13 @@
 				CEBC61091B3CB00400DBF1C4 /* Sources */,
 				CEBC610A1B3CB00400DBF1C4 /* Frameworks */,
 				CEBC610B1B3CB00400DBF1C4 /* Resources */,
+				CE41C0251B3CB5B80038BD8A /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				CE41C0241B3CB5B80038BD8A /* PBXTargetDependency */,
+				CECC0DB01B3F8EA7005029E7 /* PBXTargetDependency */,
 			);
 			name = Alti;
 			productName = Alti;
@@ -185,6 +284,16 @@
 			mainGroup = CEBC61041B3CB00400DBF1C4;
 			productRefGroup = CEBC610E1B3CB00400DBF1C4 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = CE41C0191B3CB5AB0038BD8A /* Products */;
+					ProjectRef = CE41C0181B3CB5AB0038BD8A /* BlueCapKit.xcodeproj */;
+				},
+				{
+					ProductGroup = CECC0DA71B3F8E94005029E7 /* Products */;
+					ProjectRef = CECC0DA61B3F8E94005029E7 /* Charts.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				CEBC610C1B3CB00400DBF1C4 /* Alti */,
@@ -192,6 +301,30 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		CE41C01E1B3CB5AB0038BD8A /* BlueCapKit.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = BlueCapKit.framework;
+			remoteRef = CE41C01D1B3CB5AB0038BD8A /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		CE41C0201B3CB5AB0038BD8A /* BlueCapKitTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = BlueCapKitTests.xctest;
+			remoteRef = CE41C01F1B3CB5AB0038BD8A /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		CECC0DAC1B3F8E94005029E7 /* Charts.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = Charts.framework;
+			remoteRef = CECC0DAB1B3F8E94005029E7 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		CEBC610B1B3CB00400DBF1C4 /* Resources */ = {
@@ -220,6 +353,7 @@
 			files = (
 				CE41C00F1B3CB3340038BD8A /* SettingsController.swift in Sources */,
 				CEBC61171B3CB00400DBF1C4 /* SecondViewController.swift in Sources */,
+				CE41C02D1B3CBF480038BD8A /* AltiHardware.swift in Sources */,
 				CEBC61131B3CB00400DBF1C4 /* AppDelegate.swift in Sources */,
 				CEBC61151B3CB00400DBF1C4 /* FirstViewController.swift in Sources */,
 			);
@@ -236,10 +370,20 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		CE41C0241B3CB5B80038BD8A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = BlueCapKit;
+			targetProxy = CE41C0231B3CB5B80038BD8A /* PBXContainerItemProxy */;
+		};
 		CEBC61261B3CB00400DBF1C4 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = CEBC610C1B3CB00400DBF1C4 /* Alti */;
 			targetProxy = CEBC61251B3CB00400DBF1C4 /* PBXContainerItemProxy */;
+		};
+		CECC0DB01B3F8EA7005029E7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = Charts;
+			targetProxy = CECC0DAF1B3F8EA7005029E7 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 

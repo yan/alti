@@ -2,6 +2,7 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14D136" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="49e-Tb-3d3">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
         <!--First-->
@@ -42,9 +43,9 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="W5J-7L-Pyd" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="750" y="-320"/>
+            <point key="canvasLocation" x="728" y="-654"/>
         </scene>
-        <!--Settings-->
+        <!--Settings Controller-->
         <scene sceneID="kYX-Kz-KBQ">
             <objects>
                 <viewController id="Twi-aX-DtV" customClass="SettingsController" customModule="Alti" customModuleProvider="target" sceneMemberID="viewController">
@@ -56,30 +57,56 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8ZP-6V-Kxm" userLabel="labelAltitude">
-                                <rect key="frame" x="207" y="94" width="186" height="70"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="42"/>
-                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="---" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8ZP-6V-Kxm" userLabel="labelAltitude">
+                                <rect key="frame" x="131" y="87" width="338" height="136"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="338" id="tQT-fN-Xyb"/>
+                                    <constraint firstAttribute="height" constant="136" id="vfT-6P-ddj"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="56"/>
+                                <color key="textColor" red="0.53523516414141414" green="0.12135014952304206" blue="0.17230818356065811" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bnT-WI-O8G" userLabel="labelPressure">
-                                <rect key="frame" x="243" y="391" width="114" height="21"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Disconnected" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Mfb-xU-0Bg">
+                                <rect key="frame" x="236" y="58" width="128" height="21"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="128" id="oCY-Gh-9T5"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bnT-WI-O8G" userLabel="labelPressure">
+                                <rect key="frame" x="65" y="426" width="471" height="70"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="70" id="sbg-jr-Vt9"/>
+                                </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="bnT-WI-O8G" firstAttribute="centerX" secondItem="8ZP-6V-Kxm" secondAttribute="centerX" id="Ej3-QZ-SQp"/>
+                            <constraint firstItem="8ZP-6V-Kxm" firstAttribute="top" secondItem="Mfb-xU-0Bg" secondAttribute="bottom" constant="8" symbolic="YES" id="JC2-7N-8U8"/>
+                            <constraint firstItem="8ZP-6V-Kxm" firstAttribute="centerX" secondItem="Mfb-xU-0Bg" secondAttribute="centerX" id="Qyt-Fn-xxu"/>
+                            <constraint firstItem="Mfb-xU-0Bg" firstAttribute="top" secondItem="fmx-6D-L9Y" secondAttribute="bottom" constant="38" id="Vx1-Ju-9rk"/>
+                            <constraint firstItem="o8E-2Z-6S0" firstAttribute="top" secondItem="bnT-WI-O8G" secondAttribute="bottom" constant="104" id="WbG-l5-9RK"/>
+                            <constraint firstItem="bnT-WI-O8G" firstAttribute="leading" secondItem="9hl-4h-e5q" secondAttribute="leadingMargin" constant="49" id="eN7-BH-OBL"/>
+                            <constraint firstItem="bnT-WI-O8G" firstAttribute="centerX" secondItem="9hl-4h-e5q" secondAttribute="centerX" id="ujA-qj-kBE"/>
+                        </constraints>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Settings" id="mPK-W1-EQP"/>
+                    <tabBarItem key="tabBarItem" systemItem="more" id="mPK-W1-EQP"/>
                     <connections>
                         <outlet property="labelAltitude" destination="8ZP-6V-Kxm" id="Mqw-4A-4hd"/>
                         <outlet property="labelPressure" destination="bnT-WI-O8G" id="F9o-eV-czb"/>
+                        <outlet property="labelStatus" destination="Mfb-xU-0Bg" id="IWm-rd-5k1"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="wIS-Zi-1uJ" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="707" y="482"/>
+            <point key="canvasLocation" x="767" y="958"/>
         </scene>
         <!--Second-->
         <scene sceneID="wg7-f3-ORb">
@@ -119,7 +146,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4Nw-L8-lE0" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1360" y="116"/>
+            <point key="canvasLocation" x="718" y="116"/>
         </scene>
         <!--Tab Bar Controller-->
         <scene sceneID="yl2-sM-qoP">
