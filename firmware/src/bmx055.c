@@ -3,8 +3,7 @@
  *
  */
 #include <bmx055.h>
-
-#include <libopencm3/stm32/gpio.h>
+#include <hal.h>
 
 #include <pins.h>
 #include <util.h>
@@ -26,13 +25,13 @@ void bmx055_reset(void)
 
   spi_send_msb_first(BMX055_PORT);
 
-  gpio_clear(BMX055_EN_GPIO, BMX055_EN_GYR);
+  pin_clear(BMX055_EN_GPIO, BMX055_EN_GYR);
 
   send_byte(0x00); // BMX055_ACC_WHOAMI
 
   response = read8();
 
-  gpio_set(BMX055_EN_GPIO, BMX055_EN_ACC);
+  pin_set(BMX055_EN_GPIO, BMX055_EN_ACC);
 
   dbg_print("WHOAMI? %d\n", response);
   (void) response;

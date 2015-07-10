@@ -49,5 +49,7 @@
 #define ADESTO_AUX_STATUS_REGISTER_READ             0xD7
 #define ADESTO_AUX_MFGR_DEVICE_READ                 0x9F
 
+void config_flash(void);
+
 
 #endif /* __ADESTO_FLASH_H */

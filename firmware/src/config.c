@@ -1,6 +1,8 @@
 #include <config.h>
 #include <globals.h>
 
+#include <hal.h>
+
 #include <libopencm3/cm3/scb.h>
 #include <libopencm3/stm32/rcc.h>
 #include <libopencm3/stm32/gpio.h>
@@ -64,15 +66,15 @@ void config_io(void)
   /* Configure all enable pins */
   gpio_mode_setup(MS5611_GPIO, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, MS5611_EN);
   gpio_set_output_options(MS5611_GPIO, GPIO_OTYPE_PP, GPIO_OSPEED_10MHZ, MS5611_EN);
-  gpio_set(MS5611_GPIO, MS5611_EN);
+  pin_set(MS5611_GPIO, MS5611_EN);
 
   gpio_mode_setup(BMX055_EN_GPIO, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, BMX055_EN_PINS);
   gpio_set_output_options(BMX055_EN_GPIO, GPIO_OTYPE_PP, GPIO_OSPEED_10MHZ, BMX055_EN_PINS);
-  gpio_set(BMX055_EN_GPIO, BMX055_EN_PINS);
+  pin_set(BMX055_EN_GPIO, BMX055_EN_PINS);
 
   gpio_mode_setup(STATUS_GPIO, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, STATUS_LED);
   gpio_set_output_options(STATUS_GPIO, GPIO_OTYPE_PP, GPIO_OSPEED_2MHZ, STATUS_LED);
-  gpio_set(STATUS_GPIO, STATUS_LED);
+  pin_set(STATUS_GPIO, STATUS_LED);
 }
 
 void config_globals(void)

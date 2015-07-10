@@ -1,9 +1,7 @@
 
 #include <stdint.h>
 #include <math.h>
-
-#include <libopencm3/stm32/i2c.h>
-#include <libopencm3/stm32/gpio.h>
+#include <hal.h>
 
 #include <ms5611.h>
 #include <globals.h>
@@ -95,13 +93,13 @@ void ms5611_reset(void)
   spi_send_msb_first(MS5611_PORT);
 #endif
 
-  gpio_clear(MS5611_GPIO, MS5611_EN);
+  pin_clear(MS5611_GPIO, MS5611_EN);
   send_byte(MS5611_CMD_RESET);
 
   /* Give it 3ms to start */
   delay_ms(3);
 
-  gpio_set(MS5611_GPIO, MS5611_EN);
+  pin_set(MS5611_GPIO, MS5611_EN);
 
 }
 
@@ -113,10 +111,10 @@ static uint16_t ms5611_get16(uint8_t cmd)
   spi_send_msb_first(MS5611_PORT);
 #endif
 
-  gpio_clear(MS5611_GPIO, MS5611_EN);
+  pin_clear(MS5611_GPIO, MS5611_EN);
   send_byte(cmd);
   val = read16();
-  gpio_set(MS5611_GPIO, MS5611_EN);
+  pin_set(MS5611_GPIO, MS5611_EN);
 
   return val;
 }
@@ -169,16 +167,16 @@ static uint32_t ms5611_read_adc(uint8_t cmd)
 
   /* Warn that we're about to read, and wait a period of time depending on the
    * precision required*/
-  gpio_clear(MS5611_GPIO, MS5611_EN);
+  pin_clear(MS5611_GPIO, MS5611_EN);
   send_byte(cmd);
   delay_ms((cmd&0x0F) * 2 + 1);
-  gpio_set(MS5611_GPIO, MS5611_EN);
+  pin_set(MS5611_GPIO, MS5611_EN);
 
   /* Read back the ADC result */
-  gpio_clear(MS5611_GPIO, MS5611_EN);
+  pin_clear(MS5611_GPIO, MS5611_EN);
   send_byte(MS5611_CMD_ADC_READ);
   val = read24();
-  gpio_set(MS5611_GPIO, MS5611_EN);
+  pin_set(MS5611_GPIO, MS5611_EN);
 
   return val;
 }

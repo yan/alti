@@ -123,4 +123,12 @@ uint32_t spi_read_octets(uint32_t port, unsigned octets, uint32_t byte_order)
   return value;
 }
 
+void spi_set_msb(uint32_t port)
+{
+  spi_set_msb_first(port);
+}
 
+void spi_set_lsb(uint32_t port)
+{
+  spi_set_lsb_first(port);
+}

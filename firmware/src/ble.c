@@ -6,11 +6,11 @@
 
 #include <stdio.h>
 
+#include <hal.h>
 #include <libopencm3/stm32/spi.h>
 #include <libopencm3/stm32/rcc.h>
 #include <libopencm3/stm32/l1/nvic.h>
 #include <libopencm3/stm32/exti.h>
-#include <libopencm3/stm32/gpio.h>
 
 #include <FreeRTOS.h>
 #include <queue.h>
@@ -53,27 +53,27 @@ void ble_isr(void)
 
 static void config_ble_pins(void)
 {
-  gpio_mode_setup(NRF8001_GPIO, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE,   NRF8001_REQN);
-  gpio_mode_setup(NRF8001_GPIO, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE,   NRF8001_RST);
+  pin_config(NRF8001_GPIO, NRF8001_REQN, PINMODE_OUTPUT);
+  pin_config(NRF8001_GPIO, NRF8001_RST, PINMODE_OUTPUT);
 
-  gpio_set(NRF8001_GPIO, NRF8001_REQN);
-  gpio_set(NRF8001_GPIO, NRF8001_RST);
+  pin_set(NRF8001_GPIO, NRF8001_REQN);
+  pin_set(NRF8001_GPIO, NRF8001_RST);
 }
 
 static void config_ble_isr(void)
 {
 /* Remove #if block to pulse a pin to detect this on a scope */
 #if 0
-  gpio_mode_setup(GPIOB, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, GPIO2);
-  gpio_clear(GPIOB, GPIO2);
-  gpio_set(GPIOB, GPIO2);
-  gpio_clear(GPIOB, GPIO2);
+  pin_config(GPIOB, GPIO_MODE_OUTPUT, PINMODE_OUTPUT);
+  pin_clear(GPIOB, GPIO2);
+  pin_set(GPIOB, GPIO2);
+  pin_clear(GPIOB, GPIO2);
 #endif
 
   rcc_peripheral_enable_clock(&RCC_APB2ENR, RCC_APB2ENR_SYSCFGEN);
 
   /* We'll use RDYN pin to interrupt*/
-  gpio_mode_setup(NRF8001_GPIO, GPIO_MODE_INPUT, GPIO_PUPD_NONE, NRF8001_RDYN);
+  pin_config(NRF8001_GPIO, NRF8001_RDYN, PINMODE_INPUT);
 
   nvic_enable_irq(NVIC_EXTI3_IRQ);
   nvic_set_priority(NVIC_EXTI3_IRQ, BLE_EXTI_ISR_PRIORITY);
@@ -86,11 +86,11 @@ static void config_ble_isr(void)
 static void nrf8001_reset(void)
 {
   int i = 0;
-  gpio_set(NRF8001_GPIO, NRF8001_RST);
-  gpio_clear(NRF8001_GPIO, NRF8001_RST);
+  pin_set(NRF8001_GPIO, NRF8001_RST);
+  pin_clear(NRF8001_GPIO, NRF8001_RST);
   // Spec calls for the line to be low at least 200ns, set it low and busy wait
   for (; i < 30; i++);
-  gpio_set(NRF8001_GPIO, NRF8001_RST);
+  pin_set(NRF8001_GPIO, NRF8001_RST);
 }
 
 int g_sent = 0;
@@ -104,5 +104,5 @@ void config_ble(void)
   config_ble_isr();
   nrf8001_reset();
 
-  //gpio_clear(NRF8001_GPIO, NRF8001_REQN);
+  //pin_clear(NRF8001_GPIO, NRF8001_REQN);
 }

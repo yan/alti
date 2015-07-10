@@ -15,6 +15,8 @@ void     spi_send_buf(uint32_t port, uint8_t *buf, uint32_t length);
 void     spi_read_data(uint32_t port, uint8_t *data, uint32_t length);
 uint32_t spi_read_octets(uint32_t port, unsigned octets, uint32_t byte_order);
 void     spi_send_byte(uint32_t port, uint8_t cmd);
+void     spi_set_msb(uint32_t port);
+void     spi_set_lsb(uint32_t port);
 
 #define spi_read16(port) (uint16_t)spi_read_octets(port, 2);
 #define spi_read24(port) (uint32_t)spi_read_octets(port, 3);

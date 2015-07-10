@@ -1,8 +1,4 @@
 
-#include <libopencm3/stm32/rcc.h>
-#include <libopencm3/stm32/rtc.h>
-#include <libopencm3/cm3/scb.h>
-
 #include <FreeRTOS.h>
 #include <task.h>
 #include <queue.h>
