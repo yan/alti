@@ -57,7 +57,7 @@ void task_main(void *p)
           dbg_print("Stopping to send pressure\n");
         }
           
-        xQueueSend(g.baro_queue_g, &new_rate, 0);
+        xQueueSend(g.sensor_queue_g, &new_rate, 0);
       }
         break;
 

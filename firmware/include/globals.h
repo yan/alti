@@ -24,7 +24,7 @@ struct globals {
   void *alert_queue_g;
 
   /** @brief */
-  void *baro_queue_g;
+  void *sensor_queue_g;
 
   /** @brief The filter state for baro readings */
   filter_state_t baro_filter_state;

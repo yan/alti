@@ -1,5 +1,3 @@
-
- 
 #include "util.h"
 #include "spi.h"
 #include "globals.h"
@@ -125,10 +123,10 @@ uint32_t spi_read_octets(uint32_t port, unsigned octets, uint32_t byte_order)
 
 void spi_set_msb(uint32_t port)
 {
-  spi_set_msb_first(port);
+  spi_send_msb_first(port);
 }
 
 void spi_set_lsb(uint32_t port)
 {
-  spi_set_lsb_first(port);
+  spi_send_lsb_first(port);
 }
