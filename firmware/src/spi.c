@@ -79,7 +79,7 @@ void spi_send_buf(uint32_t port, uint8_t *buf, uint32_t length)
   unsigned int i = 0;
 
   for (i = 0; i < length; i++) {
-    spi_write(port, buf[i]);
+    spi_send_byte(port, buf[i]);
   }
 }
 
@@ -91,7 +91,7 @@ void spi_read_data(uint32_t port, uint8_t *data, uint32_t length)
   unsigned int i;
 
   for (i = 0; i < length; ++i) {
-    data[i] = spi_read(port);
+    data[i] = spi_xfer(port, 0);
   }
 }
 

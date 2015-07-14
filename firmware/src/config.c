@@ -21,7 +21,6 @@ void config_clock(void)
   rcc_periph_clock_enable(RCC_PWR);
   pwr_disable_backup_domain_write_protect();
 
-
   rcc_osc_on(LSE);
   rcc_wait_for_osc_ready(LSE);
 

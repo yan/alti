@@ -15,6 +15,9 @@
 #include <nrf8001.h>
 #include <aci_cmds.h>
 
+// todo: remove me after testing flash
+#include <flash.h>
+
 static void exchange_commands(struct nrf8001_cmd_s *outgoing, struct nrf8001_cmd_s *incoming);
 
 static struct nrf8001_cmd_s s_null_cmd = {
@@ -105,6 +108,7 @@ void task_ble(void *p)
   struct nrf8001_cmd_s *incoming = pvPortMalloc(sizeof(struct nrf8001_cmd_s));
 
   config_ble();
+  config_flash();
   //nrf8001_setup(incoming);
 
   for (;;) {
