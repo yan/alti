@@ -27,22 +27,16 @@
 static void config_ble_pins(void);
 static void config_ble_isr(void);
 static void nrf8001_reset(void);
-void ble_isr(void);
 
 int g_isr_hit = 0;
 
-void ble_isr(void)
+void ble_isr(BaseType_t *higher)
 {
-  BaseType_t higher = pdFALSE;
   enum event_type_e evt = GLOBAL_EVT_NRF8001_RDY;
-
-  isr_reset();
 
   ++g_isr_hit;
 
-  xQueueSendToFrontFromISR(g.main_queue_g, &evt, &higher);
-
-  portYIELD_FROM_ISR(higher);
+  xQueueSendToFrontFromISR(g.main_queue_g, &evt, higher);
 }
 
 static void config_ble_pins(void)

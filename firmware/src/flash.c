@@ -103,6 +103,7 @@ void flash_read(uint32_t addr, uint8_t *data, size_t size)
   spi_send_byte(FLASH_PORT, addr & 0xFF0000 >> 16);
   spi_send_byte(FLASH_PORT, addr & 0xFF00 >> 8);
   spi_send_byte(FLASH_PORT, addr & 0xFF);
+
   /* Then read as much as we asked for */
   spi_read_data(FLASH_PORT, data, size);
 

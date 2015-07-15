@@ -4,7 +4,7 @@
 
 #include <stdint.h>
 #include <task_ble.h>
-#include <ble.h>
+// #include <ble.h>
 #include <filter.h>
 
 struct protected_buffer_s {

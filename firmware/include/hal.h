@@ -12,7 +12,6 @@ enum pinmode_e {
 /** XXX move this to a arch-specific header */
 #ifdef STM32L1
 #  include <libopencm3/stm32/spi.h>
-#  define ble_isr exti3_isr
 #endif
 
 void pin_set(int port, int pin);
@@ -29,4 +28,8 @@ void config_isr(int port);
 
 void arch_config_ble(void);
 
-void isr_reset(void);
+void arch_config_clocks(void);
+
+void arch_config_io(void);
+
+void arch_config_nvic(void);

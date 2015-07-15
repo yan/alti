@@ -4,6 +4,7 @@
 #include <queue.h>
 #include <semphr.h>
 
+#include <hal.h>
 #include <events.h>
 #include <util.h>
 #include <config.h>
@@ -106,10 +107,10 @@ main(void)
   initialise_monitor_handles();
 #endif
 
-  config_nvic();
-  config_clock();
+  arch_config_nvic();
+  arch_config_clocks();
   config_globals();
-  config_io();
+  arch_config_io();
   config_tasks();
   
   vTaskStartScheduler();
