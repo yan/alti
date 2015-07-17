@@ -67,8 +67,6 @@ static void nrf8001_reset(void)
   pin_set(NRF8001_GPIO, NRF8001_RST);
 }
 
-int g_sent = 0;
-
 /**
  *
  */

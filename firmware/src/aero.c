@@ -107,11 +107,13 @@ main(void)
   initialise_monitor_handles();
 #endif
 
+  config_globals();
+  config_tasks();
+
   arch_config_nvic();
   arch_config_clocks();
-  config_globals();
   arch_config_io();
-  config_tasks();
+
   
   vTaskStartScheduler();
 

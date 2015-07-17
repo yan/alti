@@ -24,10 +24,10 @@ struct status_register_s {
 };
 
 inline static void flash_reset(void);
+static void busy_wait_for_ready(void);
 static void flash_write_buffer(uint8_t *data, size_t size);
 static void flash_commit_buffer(uint32_t address);
 static void flash_read_status(struct status_register_s *dest);
-static void flash_do_write_test(void);
 
 inline static void flash_reset(void)
 {
@@ -45,12 +45,12 @@ static void flash_write_buffer(uint8_t *data, size_t size)
   pin_clear(FLASH_GPIO, FLASH_nCS);
 
   /* First, write it to the flash buffer */
-  spi_send_byte(FLASH_PORT, ADESTO_WRITE_BUFFER_1);
+  arch_spi_xfer(FLASH_PORT, ADESTO_WRITE_BUFFER_2);
 
   /* Send 15 dummy bits, then 9 intra-sector offset. */
-  spi_send_byte(FLASH_PORT, 0);
-  spi_send_byte(FLASH_PORT, 0);
-  spi_send_byte(FLASH_PORT, 0);
+  arch_spi_xfer(FLASH_PORT, 0);
+  arch_spi_xfer(FLASH_PORT, 0);
+  arch_spi_xfer(FLASH_PORT, 0);
 
   /* Then, clock in the actual data */
   spi_send_buf(FLASH_PORT, data, size);
@@ -63,10 +63,10 @@ static void flash_commit_buffer(uint32_t address)
 {
   pin_clear(FLASH_GPIO, FLASH_nCS);
 
-  spi_send_byte(FLASH_PORT, ADESTO_WRITE_BUFFER_1_TO_MEM_W_ER);
-  spi_send_byte(FLASH_PORT, address & 0xFF0000 >> 16);
-  spi_send_byte(FLASH_PORT, address & 0xFF00 >> 8);
-  spi_send_byte(FLASH_PORT, address & 0xFF);
+  arch_spi_xfer(FLASH_PORT, ADESTO_WRITE_BUFFER_2_TO_MEM_W_ER);
+  arch_spi_xfer(FLASH_PORT, (address & 0xFF0000) >> 16);
+  arch_spi_xfer(FLASH_PORT, (address & 0xFF00) >> 8);
+  arch_spi_xfer(FLASH_PORT,  address & 0xFF);
   
   pin_set(FLASH_GPIO, FLASH_nCS);
 }
@@ -79,7 +79,7 @@ static void flash_read_status(struct status_register_s *dest)
 
   uint16_t returned;
 
-  spi_send_byte(FLASH_PORT, ADESTO_AUX_STATUS_REGISTER_READ);
+  arch_spi_xfer(FLASH_PORT, ADESTO_AUX_STATUS_REGISTER_READ);
 
   returned = spi_read_octets(FLASH_PORT, sizeof(*dest), BYTEORDER_MSB);
 
@@ -97,12 +97,12 @@ void flash_read(uint32_t addr, uint8_t *data, size_t size)
   pin_clear(FLASH_GPIO, FLASH_nCS);
 
   /* Read memory in low power mode */
-  spi_send_byte(FLASH_PORT, ADESTO_READ_CONTINUOUS_ARR_READ_LP);
+  arch_spi_xfer(FLASH_PORT, ADESTO_READ_CONTINUOUS_ARR_READ_LP);
 
   /* Send the address */
-  spi_send_byte(FLASH_PORT, addr & 0xFF0000 >> 16);
-  spi_send_byte(FLASH_PORT, addr & 0xFF00 >> 8);
-  spi_send_byte(FLASH_PORT, addr & 0xFF);
+  arch_spi_xfer(FLASH_PORT, (addr & 0xFF0000) >> 16);
+  arch_spi_xfer(FLASH_PORT, (addr & 0xFF00) >> 8);
+  arch_spi_xfer(FLASH_PORT,  addr & 0xFF);
 
   /* Then read as much as we asked for */
   spi_read_data(FLASH_PORT, data, size);
@@ -110,35 +110,52 @@ void flash_read(uint32_t addr, uint8_t *data, size_t size)
   pin_set(FLASH_GPIO, FLASH_nCS);
 }
 
-static void flash_do_write_test(void)
-{
-  int i;
-
-  for (i = 0; i < 512; i++) {
-    g.flash_buffer.data[i] = i;
-  }
-
-  flash_write(0, g.flash_buffer.data, 512);
-  memset(g.flash_buffer.data, '\0', 512);
-  flash_read(0, g.flash_buffer.data, 512);
-}
-
 void flash_write(uint32_t addr, uint8_t *data, size_t size)
 {
-  spi_set_msb(FLASH_PORT);
-
   // Make sure that the address is sector-aligned
   assert((addr & 0x1FF) == 0);
 
+  spi_set_msb(FLASH_PORT);
+
   flash_write_buffer(data, size);
   flash_commit_buffer(addr);
+  busy_wait_for_ready();
+}
+
+int test_flash(void)
+{
+  int i = 0;
+  for (i = 0; i < 512; i++) {
+    g.flash_buffer.data[i] = 3;// i % 256;
+  }
+
+  flash_write(512, g.flash_buffer.data, 512);
+
+  memset(g.flash_buffer.data, '\0', 512);
+
+  flash_read(0, g.flash_buffer.data, 512);
+
+  for (i = 0; i < 512; i++) {
+    if (g.flash_buffer.data[i] != i % 256) {
+      return 1;
+    }
+  }
+  return 0;
+}
+
+static void busy_wait_for_ready(void)
+{
+  struct status_register_s status_reg;
+
+  status_reg.ready = 0;
+
+  while (!status_reg.ready) {
+    flash_read_status(&status_reg);
+  }
 }
 
 void config_flash(void)
 {
-  struct status_register_s status_reg;
-  memset(&status_reg, '\0', sizeof(status_reg));
-
 
   pin_config(FLASH_GPIO, FLASH_nRESET, PINMODE_OUTPUT);
   pin_config(FLASH_GPIO, FLASH_nCS, PINMODE_OUTPUT);
@@ -148,9 +165,9 @@ void config_flash(void)
 
   /* Reset the flash memory and wait until it's ready */
   flash_reset();
-  while (!status_reg.ready) {
-    flash_read_status(&status_reg);
-  }
+  busy_wait_for_ready();
+
+  assert(test_flash() == 0);
   
-  dbg_print("Finished configuring flash memory.");
+  dbg_print("Finished configuring flash memory.\n");
 }

@@ -103,12 +103,13 @@ void ble_tx(uint8_t pipe, uint8_t *data, size_t length)
  */
 void task_ble(void *p)
 {
-  g.ble_data_g = (ble_task_data_t*)p;
+  (void) p;
+
   /** XXX: outgoing should not be ever freed. */
   struct nrf8001_cmd_s *incoming = pvPortMalloc(sizeof(struct nrf8001_cmd_s));
 
-  config_ble();
   config_flash();
+  config_ble();
   //nrf8001_setup(incoming);
 
   for (;;) {

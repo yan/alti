@@ -54,6 +54,7 @@
 
 
 void config_flash(void);
+int test_flash(void);
 void flash_read(uint32_t addr, uint8_t *data, size_t size);
 void flash_write(uint32_t addr, uint8_t *data, size_t size);
 

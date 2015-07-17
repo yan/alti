@@ -107,14 +107,14 @@ void arch_config_io(void)
   gpio_mode_setup(SPI1_GPIO, GPIO_MODE_AF, GPIO_PUPD_NONE, SPI1_PINS);
   gpio_set_output_options(SPI1_GPIO, GPIO_OTYPE_PP, GPIO_OSPEED_10MHZ, SPI1_PINS);
   gpio_set_af(SPI1_GPIO, GPIO_AF5, SPI1_PINS);
-  aero_spi_config(1, BYTEORDER_LSB);
+  arch_spi_config(1, BYTEORDER_LSB);
 
   /* Configure SPI for ms5611 and bmx055 */
   rcc_periph_clock_enable(RCC_SPI2);
   gpio_mode_setup(SPI2_GPIO, GPIO_MODE_AF, GPIO_PUPD_NONE, SPI2_PINS);
   gpio_set_output_options(SPI2_GPIO, GPIO_OTYPE_PP, GPIO_OSPEED_10MHZ, SPI2_PINS);
   gpio_set_af(SPI2_GPIO, GPIO_AF5, SPI2_PINS);
-  aero_spi_config(2, BYTEORDER_MSB);
+  arch_spi_config(2, BYTEORDER_MSB);
 
   /* Configure all enable pins */
   gpio_mode_setup(MS5611_GPIO, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, MS5611_EN);
@@ -144,6 +144,7 @@ void arch_config_nvic(void)
 void exti3_isr(void)
 {
   BaseType_t higher = pdFALSE;
+
   exti_reset_request(EXTI_PR & EXTI3);
 
   ble_isr(&higher);
