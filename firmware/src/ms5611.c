@@ -1,3 +1,7 @@
+/**
+ * Copyright 2015 Yan Ivnitskiy
+ */
+
 
 #include <stdint.h>
 #include <math.h>

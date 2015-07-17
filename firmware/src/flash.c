@@ -1,3 +1,7 @@
+/**
+ * Copyright 2015 Yan Ivnitskiy
+ */
+
 #include <string.h>
 
 #include <flash.h>

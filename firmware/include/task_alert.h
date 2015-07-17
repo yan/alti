@@ -1,3 +1,7 @@
+/**
+ * Copyright 2015 Yan Ivnitskiy
+ */
+
 
 #ifndef __TASK_ALERT_LED_H
 #define __TASK_ALERT_LED_H

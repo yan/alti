@@ -1,8 +1,7 @@
 /**
- *
- *
- *
+ * Copyright 2015 Yan Ivnitskiy
  */
+
 
 #ifndef __MS5611_H
 #define __MS5611_H

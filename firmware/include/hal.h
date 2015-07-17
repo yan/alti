@@ -1,5 +1,8 @@
 /**
  * The hardware abstraction layer functions for micros
+ * 
+ *
+ * Copyright 2015 Yan Ivnitskiy
  */
 
 #include <spi.h>

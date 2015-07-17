@@ -1,3 +1,7 @@
+/**
+ * Copyright 2015 Yan Ivnitskiy
+ */
+
 
 #ifndef __ADESTO_FLASH_H
 #define __ADESTO_FLASH_H

@@ -1,3 +1,7 @@
+/**
+ * Copyright 2015 Yan Ivnitskiy
+ */
+
 
 #ifndef __NRF8001_H
 #define __NRF8001_H

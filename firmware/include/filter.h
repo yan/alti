@@ -1,7 +1,5 @@
-
 /**
- *
- *
+ * Copyright 2015 Yan Ivnitskiy
  */
 
 #ifndef __FILTER_H

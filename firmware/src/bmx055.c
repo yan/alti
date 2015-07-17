@@ -1,6 +1,5 @@
 /**
- *
- *
+ * Copyright 2015 Yan Ivnitskiy
  */
 #include <bmx055.h>
 #include <hal.h>

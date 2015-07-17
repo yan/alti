@@ -1,6 +1,5 @@
 /**
- *
- *
+ * Copyright 2015 Yan Ivnitskiy
  */
 
 void bmx055_reset(void);

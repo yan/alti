@@ -1,3 +1,6 @@
+/**
+ * Copyright 2015 Yan Ivnitskiy
+ */
 
 void mem_manage_handler(void) __attribute__ (( naked ));
 void bus_fault_handler(void) __attribute__ (( naked ));

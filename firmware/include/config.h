@@ -1,3 +1,7 @@
+/**
+ * Copyright 2015 Yan Ivnitskiy
+ */
+
 
 #ifndef __CONFIG_H
 #define __CONFIG_H

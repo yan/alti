@@ -1,5 +1,7 @@
 
 /**
+ * Copyright 2015 Yan Ivnitskiy
+ *
  * Implements the communication to the nrf8001 BLE ic.
  *
  */

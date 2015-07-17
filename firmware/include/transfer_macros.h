@@ -1,3 +1,7 @@
+/**
+ * Copyright 2015 Yan Ivnitskiy
+ */
+
 
 #ifndef __TRANSFER_MACROS_H
 #define __TRANSFER_MACROS_H

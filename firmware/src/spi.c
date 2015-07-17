@@ -1,3 +1,7 @@
+/**
+ * Copyright 2015 Yan Ivnitskiy
+ */
+
 #include "util.h"
 #include "spi.h"
 #include "globals.h"
