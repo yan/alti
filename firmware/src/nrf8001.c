@@ -1,3 +1,7 @@
+/**
+ * Copyright 2015 Yan Ivnitskiy
+ */
+
 
 #include <stdint.h>
 #include <string.h>
@@ -6,9 +10,9 @@
 #include <FreeRTOS.h>
 #include <queue.h>
 
-#include <libopencm3/stm32/spi.h>
 
 #include <util.h>
+#include <hal.h>
 #include <nrf8001.h>
 #include <task_ble.h>
 #include <pins.h>
@@ -59,8 +63,9 @@ static void nrf8001_connect(void) {
   cmd_buf.opcode = ACI_CMD_CONNECT;
   cmd_buf.length = 5;
 
-  args[0] = 60; // timeout, in seconds
+  args[0] = 0;//60; // timeout, in seconds
   args[1] = 0x100; // interval, 160ms (256 * 0.625ms)
+
   ble_send_cmd(&cmd_buf);
 }
 
@@ -176,6 +181,7 @@ void nrf8001_handle_event(struct nrf8001_cmd_s *event)
       }
 
       s_nrf8001_state.state = STATE_STANDBY;
+      nrf8001_connect();
       break;
 
     case ACI_EVT_CONNECTED: 
@@ -212,16 +218,18 @@ void nrf8001_exchange_cmds(struct nrf8001_cmd_s *out, struct nrf8001_cmd_s *in)
    */
   memset(out_ptr + out->length + 1, '\0', NRF8001_MAX_CMD_LENGTH-out->length);
 
-  /* Send length, receive and ignore debug byte */
-  spi_xfer(NRF8001_SPI, out->length);
+  spi_set_lsb(NRF8001_SPI);
 
-  in->length = spi_xfer(NRF8001_SPI, out->opcode);
-  in->opcode = spi_xfer(NRF8001_SPI, out->data[0]);
+  /* Send length, receive and ignore debug byte */
+  arch_spi_xfer(NRF8001_SPI, out->length);
+
+  in->length = arch_spi_xfer(NRF8001_SPI, out->opcode);
+  in->opcode = arch_spi_xfer(NRF8001_SPI, out->data[0]);
 
   bytes_to_xfer = MAX(in->length, out->length - 1) - 1;
 
   for (i = 0; i < bytes_to_xfer; i++) {
-    in->data[i] = spi_xfer(NRF8001_SPI, out->data[i + 1]);
+    in->data[i] = arch_spi_xfer(NRF8001_SPI, out->data[i + 1]);
   }
 
   gpio_set(NRF8001_GPIO, NRF8001_REQN);

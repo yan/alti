@@ -1,3 +1,7 @@
+/**
+ * Copyright 2015 Yan Ivnitskiy
+ */
+
 
 #ifndef __TRANSFER_MACROS_H
 #define __TRANSFER_MACROS_H
@@ -18,7 +22,7 @@
 #if defined(USE_SPI)
 #  include <libopencm3/stm32/spi.h>
 #  include <spi.h>
-#  define send_byte(b) spi_send_byte(SPI_PORT, b)
+#  define send_byte(b) arch_spi_xfer(SPI_PORT, b)
 #  define read8()  (uint8_t)spi_read_octets(SPI_PORT, 1, BYTEORDER);
 #  define read16() (uint16_t)spi_read_octets(SPI_PORT, 2, BYTEORDER);
 #  define read24() (uint32_t)spi_read_octets(SPI_PORT, 3, BYTEORDER);

@@ -1,6 +1,13 @@
+/**
+ * Copyright 2015 Yan Ivnitskiy
+ */
+
 
 #ifndef __ADESTO_FLASH_H
 #define __ADESTO_FLASH_H
+
+#include <stdint.h>
+#include <stddef.h>
 
 /* Read commands, Table 15-1 in specs */
 #define ADESTO_READ_MAIN_MEM_PAGE                   0xD2
@@ -48,6 +55,12 @@
 #define ADESTO_AUX_ULTRA_DEEP_POWER_DOWN            0x79
 #define ADESTO_AUX_STATUS_REGISTER_READ             0xD7
 #define ADESTO_AUX_MFGR_DEVICE_READ                 0x9F
+
+
+void config_flash(void);
+int test_flash(void);
+void flash_read(uint32_t addr, uint8_t *data, size_t size);
+void flash_write(uint32_t addr, uint8_t *data, size_t size);
 
 
 #endif /* __ADESTO_FLASH_H */

@@ -1,10 +1,14 @@
+/**
+ * Copyright 2015 Yan Ivnitskiy
+ */
+
 
 #include <FreeRTOS.h>
 #include <queue.h>
 
 #include <events.h>
 #include <globals.h>
-#include <task_baro.h>
+#include <task_sensor.h>
 #include <util.h>
 
 #include <ms5611.h>
@@ -12,7 +16,7 @@
 /**
  *
  */
-void config_baro(void)
+void config_sensor(void)
 {
   // bmx055_init();
   ms5611_init();
@@ -21,19 +25,19 @@ void config_baro(void)
 /**
  *
  */
-void task_baro(void *p)
+void task_sensor(void *p)
 {
   (void) p;
   uint32_t pressure;
   struct global_event_s evt;
   BaseType_t sleep_period = portMAX_DELAY, status;
 
-  config_baro();
+  config_sensor();
 
   dbg_print("Baro: started\n");
 
   for (;;) {
-    status = xQueueReceive(g.baro_queue_g, &sleep_period, sleep_period);
+    status = xQueueReceive(g.sensor_queue_g, &sleep_period, sleep_period);
     dbg_print("Baro: got status: %d\n", (int)status);
 
     if (status != pdPASS) {

@@ -112,8 +112,8 @@ your application. */
 #define CONFIG_TASK_BLE_STACK_DEPTH             256
 #define CONFIG_TASK_BLE_PRIORITY                ( DEFAULT_TASK_PRIORITY )
 
-#define CONFIG_TASK_BARO_QUEUE_LEN               4
-#define CONFIG_TASK_BARO_STACK_DEPTH             256
-#define CONFIG_TASK_BARO_PRIORITY                ( DEFAULT_TASK_PRIORITY )
+#define CONFIG_TASK_SENSOR_QUEUE_LEN               4
+#define CONFIG_TASK_SENSOR_STACK_DEPTH             256
+#define CONFIG_TASK_SENSOR_PRIORITY                ( DEFAULT_TASK_PRIORITY )
 #endif /* FREERTOS_CONFIG_H */
 

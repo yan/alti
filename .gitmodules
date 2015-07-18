@@ -4,3 +4,9 @@
 [submodule "freertos"]
 	path = firmware/freertos
 	url = https://github.com/cjlano/freertos.git
+[submodule "client/ios/Alti/BlueCap"]
+	path = client/ios/Alti/BlueCap
+	url = https://github.com/troystribling/BlueCap.git
+[submodule "client/ios/Alti/Charts"]
+	path = client/ios/Alti/Charts
+	url = https://github.com/danielgindi/ios-charts.git

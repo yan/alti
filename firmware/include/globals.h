@@ -1,10 +1,15 @@
+/**
+ * Copyright 2015 Yan Ivnitskiy
+ */
+
 
 #ifndef __GLOBALS_H
 #define __GLOBALS_H
 
 #include <stdint.h>
 #include <task_ble.h>
-#include <ble.h>
+// #include <ble.h>
+#include <filter.h>
 
 struct protected_buffer_s {
   void *lock;
@@ -23,7 +28,10 @@ struct globals {
   void *alert_queue_g;
 
   /** @brief */
-  void *baro_queue_g;
+  void *sensor_queue_g;
+
+  /** @brief The filter state for baro readings */
+  filter_state_t baro_filter_state;
 
   /** @brief Byte order of SPI links.
    *    Bit 1 set = MSB for SPI1

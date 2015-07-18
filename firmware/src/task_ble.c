@@ -1,3 +1,7 @@
+/**
+ * Copyright 2015 Yan Ivnitskiy
+ */
+
 
 #include <stdio.h>
 
@@ -14,6 +18,9 @@
 #include <task_ble.h>
 #include <nrf8001.h>
 #include <aci_cmds.h>
+
+// todo: remove me after testing flash
+#include <flash.h>
 
 static void exchange_commands(struct nrf8001_cmd_s *outgoing, struct nrf8001_cmd_s *incoming);
 
@@ -100,10 +107,12 @@ void ble_tx(uint8_t pipe, uint8_t *data, size_t length)
  */
 void task_ble(void *p)
 {
-  g.ble_data_g = (ble_task_data_t*)p;
+  (void) p;
+
   /** XXX: outgoing should not be ever freed. */
   struct nrf8001_cmd_s *incoming = pvPortMalloc(sizeof(struct nrf8001_cmd_s));
 
+  config_flash();
   config_ble();
 
   for (;;) {

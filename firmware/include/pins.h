@@ -1,6 +1,5 @@
 /**
- *
- *
+ * Copyright 2015 Yan Ivnitskiy
  */
 
 #ifndef __PINS_H
@@ -9,13 +8,25 @@
 #include <libopencm3/stm32/gpio.h>
 #include <libopencm3/stm32/timer.h>
 
-/** GPIOB */
-#define BLUE_LED          GPIO6
-#define GREEN_LED         GPIO7
+/** Status LED */
+#define STATUS_LED          GPIO11
+#define STATUS_GPIO         GPIOB
 
-#define BLUE_LED_TIMER    TIM4
-#define BLUE_LED_CHANNEL  TIM_OC1
-#define BLUE_LED_AF       GPIO_AF2
+/** Piezo enable and out pinz */
+#define PIEZO_GPIO          GPIOB
+#define PIEZO_EN            GPIO6
+#define PIEZO_OUT           GPIO7
+
+#define PIEZO_OUT_TIMER     TIM4
+#define PIEZO_OUT_CHANNEL   TIM_OC2
+#define PIEZO_OUT_AF        GPIO_AF2
+
+#define STATUS_LED_TIMER    TIM2
+#define STATUS_LED_CHANNEL  TIM_OC4
+#define STATUS_LED_AF       GPIO_AF1
+
+#define LSE_TIMER           TIM9
+#define LSE_TIMER_CHANNEL   TIM_OC1
 
 /** nRF8001 BLE and adesto flash memory */
 #define NRF8001_PORT   SPI1

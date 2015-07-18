@@ -90,6 +90,7 @@ MISC_LIB_DIR = $(OPENCM3_DIR)/../cmsisdsp
 CFLAGS		+= -g # -Os
 CFLAGS		+= -Wextra -Wshadow -Wimplicit-function-declaration
 CFLAGS		+= -Wredundant-decls -Wmissing-prototypes -Wstrict-prototypes
+CFLAGS          += -Wno-unused-function
 CFLAGS		+= -fno-common -ffunction-sections -fdata-sections
 
 ###############################################################################

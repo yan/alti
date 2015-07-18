@@ -1,13 +1,13 @@
-
-#include <libopencm3/stm32/rcc.h>
-#include <libopencm3/stm32/rtc.h>
-#include <libopencm3/cm3/scb.h>
+/**
+ * Copyright 2015 Yan Ivnitskiy
+ */
 
 #include <FreeRTOS.h>
 #include <task.h>
 #include <queue.h>
 #include <semphr.h>
 
+#include <hal.h>
 #include <events.h>
 #include <util.h>
 #include <config.h>
@@ -16,7 +16,7 @@
 #include <task_main.h>
 #include <task_ble.h>
 #include <task_alert.h>
-#include <task_baro.h>
+#include <task_sensor.h>
 
 #if defined(ENABLE_SEMIHOSTING) && ENABLE_SEMIHOSTING
 extern void initialise_monitor_handles(void);
@@ -26,14 +26,14 @@ static void config_tasks(void);
 static void config_main_task(void);
 static void config_alert_task(void);
 static void config_ble_task(void);
-static void config_baro_task(void);
+static void config_sensor_task(void);
 
 static void config_tasks(void)
 {
   config_main_task();
   config_alert_task();
   config_ble_task();
-  config_baro_task();
+  config_sensor_task();
 }
 
 
@@ -86,18 +86,18 @@ static void config_main_task(void)
   assert(status == pdPASS);
 }
 
-static void config_baro_task(void)
+static void config_sensor_task(void)
 {
   BaseType_t status;
-  TaskHandle_t baro_handle;
+  TaskHandle_t sensor_handle;
 
-  g.baro_queue_g = xQueueCreate(CONFIG_TASK_BARO_QUEUE_LEN,
+  g.sensor_queue_g = xQueueCreate(CONFIG_TASK_SENSOR_QUEUE_LEN,
       sizeof(BaseType_t));
 
-  configASSERT(g.baro_queue_g != NULL);
+  configASSERT(g.sensor_queue_g != NULL);
 
-  status = xTaskCreate(task_baro, "baro", CONFIG_TASK_BARO_STACK_DEPTH,
-      g.baro_queue_g, CONFIG_TASK_BARO_PRIORITY, &baro_handle);
+  status = xTaskCreate(task_sensor, "sensor", CONFIG_TASK_SENSOR_STACK_DEPTH,
+      g.sensor_queue_g, CONFIG_TASK_SENSOR_PRIORITY, &sensor_handle);
 
   configASSERT(status == pdPASS);
 }
@@ -110,11 +110,13 @@ main(void)
   initialise_monitor_handles();
 #endif
 
-  config_nvic();
-  config_clock();
   config_globals();
-  config_io();
   config_tasks();
+
+  arch_config_nvic();
+  arch_config_clocks();
+  arch_config_io();
+
   
   vTaskStartScheduler();
 
