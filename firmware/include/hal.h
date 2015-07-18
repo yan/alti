@@ -36,3 +36,7 @@ void arch_config_clocks(void);
 void arch_config_io(void);
 
 void arch_config_nvic(void);
+
+void arch_init_timer(uint32_t timer, uint32_t channel, uint32_t prescaler, uint32_t period);
+
+void arch_timer_set(uint32_t timer, uint32_t channel, uint32_t value);

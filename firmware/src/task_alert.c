@@ -8,8 +8,8 @@
 
 #include <libopencm3/stm32/gpio.h>
 #include <libopencm3/stm32/rcc.h>
-#include <libopencm3/stm32/timer.h>
 
+#include <hal.h>
 #include <globals.h>
 #include <pins.h>
 #include <util.h>
@@ -22,48 +22,9 @@ static void enable_pulse(void);
 static void disable_pulse(void);
 static void enable_piezo(void);
 static void disable_piezo(void);
-static void init_status_timer(void);
-static void init_piezo_timer(void);
 
 
-static void init_status_timer(void)
-{
-  rcc_peripheral_enable_clock(&RCC_APB1ENR, RCC_APB1ENR_TIM2EN);
 
-  timer_reset(STATUS_LED_TIMER);
-
-  timer_set_mode(STATUS_LED_TIMER, TIM_CR1_CKD_CK_INT,
-                 TIM_CR1_CMS_EDGE, TIM_CR1_DIR_UP);
-
-  timer_direction_up(STATUS_LED_TIMER);
-  timer_continuous_mode(STATUS_LED_TIMER);
-  timer_set_prescaler(STATUS_LED_TIMER, 11);
-  timer_set_oc_mode(STATUS_LED_TIMER, STATUS_LED_CHANNEL, TIM_OCM_PWM1);
-  timer_enable_oc_output(STATUS_LED_TIMER, STATUS_LED_CHANNEL);
-  timer_set_oc_value(STATUS_LED_TIMER, STATUS_LED_CHANNEL, 0);
-  timer_set_oc_idle_state_set(STATUS_LED_TIMER, STATUS_LED_CHANNEL);
-  timer_set_period(STATUS_LED_TIMER, 1000);
-}
-
-static void init_piezo_timer(void)
-{
-  rcc_peripheral_enable_clock(&RCC_APB1ENR, RCC_APB1ENR_TIM4EN);
-
-  timer_reset(PIEZO_OUT_TIMER);
-
-  timer_set_mode(PIEZO_OUT_TIMER, TIM_CR1_CKD_CK_INT,
-                 TIM_CR1_CMS_EDGE, TIM_CR1_DIR_UP);
-
-  timer_direction_up(PIEZO_OUT_TIMER);
-  timer_continuous_mode(PIEZO_OUT_TIMER);
-  timer_set_prescaler(PIEZO_OUT_TIMER, 5);
-  timer_set_oc_mode(PIEZO_OUT_TIMER, PIEZO_OUT_CHANNEL, TIM_OCM_PWM1);
-  timer_enable_oc_output(PIEZO_OUT_TIMER, PIEZO_OUT_CHANNEL);
-  timer_set_period(PIEZO_OUT_TIMER, 1000);
-  timer_set_oc_idle_state_set(PIEZO_OUT_TIMER, PIEZO_OUT_CHANNEL);
-
-  timer_set_oc_value(PIEZO_OUT_TIMER, PIEZO_OUT_CHANNEL, 500);
-}
 
 static void task_alert_config(void)
 {
@@ -71,11 +32,11 @@ static void task_alert_config(void)
   const int USE_PIEZO = 0;
 
   // Initialize timer
-  init_status_timer();
+  arch_init_timer(STATUS_LED_TIMER, STATUS_LED_CHANNEL, 11, 1000);
   enable_pulse();
 
   if (USE_PIEZO) {
-    init_piezo_timer();
+    arch_init_timer(PIEZO_OUT_TIMER, PIEZO_OUT_CHANNEL, 5, 1000);
     enable_piezo();
   } else {
     disable_piezo();
@@ -103,7 +64,7 @@ static void step_pulse(void)
   value += direction;
   res = easing_f(value);
 
-  timer_set_oc_value(STATUS_LED_TIMER, STATUS_LED_CHANNEL, res);
+  arch_timer_set(STATUS_LED_TIMER, STATUS_LED_CHANNEL, res);
 }
 
 static void enable_pulse(void)
@@ -119,13 +80,13 @@ static void enable_piezo(void)
 {
   gpio_mode_setup(PIEZO_GPIO, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, PIEZO_EN);
   gpio_set_output_options(PIEZO_GPIO, GPIO_OTYPE_PP, GPIO_OSPEED_2MHZ, PIEZO_EN);
-  gpio_set(PIEZO_GPIO, PIEZO_EN);
+  pin_set(PIEZO_GPIO, PIEZO_EN);
 
   gpio_mode_setup(PIEZO_GPIO, GPIO_MODE_AF, GPIO_PUPD_NONE, PIEZO_OUT);
   gpio_set_output_options(PIEZO_GPIO, GPIO_OTYPE_PP, GPIO_OSPEED_2MHZ, PIEZO_OUT);
   //gpio_set_af(PIEZO_GPIO, PIEZO_OUT_AF, PIEZO_OUT);
 
-  gpio_clear(PIEZO_GPIO, PIEZO_OUT);
+  pin_clear(PIEZO_GPIO, PIEZO_OUT);
 
   //timer_enable_counter(PIEZO_OUT_TIMER);
 }
@@ -137,9 +98,9 @@ static void disable_piezo(void)
 
   gpio_mode_setup(PIEZO_GPIO, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, PIEZO_EN);
   gpio_set_output_options(PIEZO_GPIO, GPIO_OTYPE_PP, GPIO_OSPEED_2MHZ, PIEZO_EN);
-  gpio_clear(PIEZO_GPIO, PIEZO_EN);
+  pin_clear(PIEZO_GPIO, PIEZO_EN);
 
-  gpio_clear(PIEZO_GPIO, PIEZO_OUT);
+  pin_clear(PIEZO_GPIO, PIEZO_OUT);
 }
 
 static void disable_pulse(void)
@@ -175,16 +136,6 @@ void task_alert_led(void *p)
 
   task_alert_config();
 
-#if 0
-  for (;;) {
-    status = xQueueReceive(g.alert_queue_g, &received, delay);
-
-    gpio_toggle(STATUS_GPIO, STATUS_LED);
-    delay_ms(50);
-    gpio_toggle(STATUS_GPIO, STATUS_LED);
-  }
-#endif
-
   for (;;) {
     status = xQueueReceive(g.alert_queue_g, &received, delay);
 
@@ -201,13 +152,13 @@ void task_alert_led(void *p)
     switch (received_event) {
       case ALERT_LOW_OFF:
         disable_pulse();
-        gpio_clear(STATUS_GPIO, STATUS_LED);
+        pin_clear(STATUS_GPIO, STATUS_LED);
         state = TASK_ALERT_STATE_OFF;
         break;
         
       case ALERT_LOW_ON:
         disable_pulse();
-        gpio_set(STATUS_GPIO, STATUS_LED);
+        pin_set(STATUS_GPIO, STATUS_LED);
         state = TASK_ALERT_STATE_ON;
         break;
 
@@ -221,12 +172,12 @@ void task_alert_led(void *p)
         while (argument-- > 0) {
           gpio_toggle(STATUS_GPIO, STATUS_LED);
           delay_ms(250);
-          gpio_clear(STATUS_GPIO, STATUS_LED);
+          pin_clear(STATUS_GPIO, STATUS_LED);
           delay_ms(250);
         }
         
         if (state == TASK_ALERT_STATE_ON) {
-          gpio_set(STATUS_GPIO, STATUS_LED);
+          pin_set(STATUS_GPIO, STATUS_LED);
         } else if (state == TASK_ALERT_STATE_PULSING) {
           enable_pulse();
         }

@@ -130,10 +130,10 @@ int test_flash(void)
 {
   int i = 0;
   for (i = 0; i < 512; i++) {
-    g.flash_buffer.data[i] = 3;// i % 256;
+    g.flash_buffer.data[i] = i % 256;
   }
 
-  flash_write(512, g.flash_buffer.data, 512);
+  flash_write(0, g.flash_buffer.data, 512);
 
   memset(g.flash_buffer.data, '\0', 512);
 

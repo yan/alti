@@ -41,6 +41,7 @@ void pin_config(int port, int pin, int options)
   } else if (options == PINMODE_OUTPUT) {
     mode = GPIO_MODE_OUTPUT;
   } else {
+    mode = 0;
     assert(0);
   }
 
@@ -74,15 +75,18 @@ void arch_config_ble(void)
 
 void arch_config_clocks(void)
 {
+  /* Configure main system clock */
   rcc_clock_setup_pll(&clock_config[CLOCK_VRANGE1_HSI_PLL_24MHZ]);
   // rcc_clock_setup_pll(&clock_config[CLOCK_VRANGE1_MSI_RAW_4MHZ]);
 
   rcc_periph_clock_enable(RCC_PWR);
   pwr_disable_backup_domain_write_protect();
 
+  /* Enable LSE xtal */
   rcc_osc_on(LSE);
   rcc_wait_for_osc_ready(LSE);
 
+  /* Make the RTC use the LSE */
   rcc_rtc_select_clock(RCC_CSR_RTCSEL_LSE);
 
   //RCC_CSR |= RCC_CSR_RTCEN;
@@ -151,3 +155,28 @@ void exti3_isr(void)
   portYIELD_FROM_ISR(higher);
 }
 
+void arch_init_timer(uint32_t timer, uint32_t channel, uint32_t prescaler, uint32_t period)
+{
+  rcc_peripheral_enable_clock(&RCC_APB1ENR, RCC_APB1ENR_TIM2EN);
+
+  timer_reset(timer);
+
+  timer_set_mode(timer, TIM_CR1_CKD_CK_INT,
+                 TIM_CR1_CMS_EDGE, TIM_CR1_DIR_UP);
+
+  timer_direction_up(timer);
+  timer_continuous_mode(timer);
+  timer_set_prescaler(timer, prescaler);
+  timer_set_oc_mode(timer, channel, TIM_OCM_PWM1);
+  timer_enable_oc_output(timer, channel);
+  timer_set_oc_value(timer, channel, 0);
+  timer_set_oc_idle_state_set(timer, channel);
+  timer_set_period(timer, period);
+
+}
+
+void arch_timer_set(uint32_t timer, uint32_t channel, uint32_t value)
+{
+  /** TODO: move this to HAL */
+  timer_set_oc_value(timer, channel, value);
+}

@@ -25,6 +25,9 @@
 #define STATUS_LED_CHANNEL  TIM_OC4
 #define STATUS_LED_AF       GPIO_AF1
 
+#define LSE_TIMER           TIM9
+#define LSE_TIMER_CHANNEL   TIM_OC1
+
 /** nRF8001 BLE and adesto flash memory */
 #define NRF8001_PORT   SPI1
 #define FLASH_PORT     SPI1
