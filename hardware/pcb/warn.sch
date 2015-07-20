@@ -252,7 +252,7 @@ L R R16
 U 1 1 55387943
 P 7600 5150
 F 0 "R16" V 7680 5150 50  0000 C CNN
-F 1 "2k" V 7600 5150 50  0000 C CNN
+F 1 "3k" V 7600 5150 50  0000 C CNN
 F 2 "Resistors_SMD:R_0603" V 7530 5150 30  0001 C CNN
 F 3 "" H 7600 5150 30  0000 C CNN
 	1    7600 5150
@@ -262,7 +262,7 @@ Text Notes 1800 6500 0    60   ~ 0
 EN needs to be at least\n1.2v
 Text Notes 2500 2600 0    60   ~ 0
 NOTE: Update R when LED is picked out
-Text Notes 8700 6250 0    60   ~ 0
+Text Notes 8950 6250 0    60   ~ 0
 Add a flyback diode?
 $Comp
 L ZXMHC6A07N8 U9
@@ -310,7 +310,7 @@ F 3 "" H 9900 2650 60  0000 C CNN
 	1    9900 2650
 	1    0    0    -1  
 $EndComp
-Text Notes 8050 6050 0    60   ~ 0
+Text Notes 8750 6000 0    60   ~ 0
 Confirm pin assignments of NPN
 $Comp
 L Q_NPN_BEC-RESCUE-aero Q1
