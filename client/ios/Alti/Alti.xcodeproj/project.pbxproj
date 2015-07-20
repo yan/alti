@@ -13,6 +13,7 @@
 		CE41C0271B3CB61B0038BD8A /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE41C0261B3CB61B0038BD8A /* CoreBluetooth.framework */; };
 		CE41C0291B3CB6250038BD8A /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE41C0281B3CB6250038BD8A /* CoreLocation.framework */; };
 		CE41C02D1B3CBF480038BD8A /* AltiHardware.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE41C02C1B3CBF480038BD8A /* AltiHardware.swift */; };
+		CE8866421B5C872E006E147C /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE8866411B5C872E006E147C /* SettingsViewController.swift */; };
 		CEBC61131B3CB00400DBF1C4 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEBC61121B3CB00400DBF1C4 /* AppDelegate.swift */; };
 		CEBC61151B3CB00400DBF1C4 /* FirstViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEBC61141B3CB00400DBF1C4 /* FirstViewController.swift */; };
 		CEBC61171B3CB00400DBF1C4 /* SecondViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEBC61161B3CB00400DBF1C4 /* SecondViewController.swift */; };
@@ -90,6 +91,7 @@
 		CE41C0261B3CB61B0038BD8A /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
 		CE41C0281B3CB6250038BD8A /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		CE41C02C1B3CBF480038BD8A /* AltiHardware.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AltiHardware.swift; sourceTree = "<group>"; };
+		CE8866411B5C872E006E147C /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		CEBC610D1B3CB00400DBF1C4 /* Alti.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Alti.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CEBC61111B3CB00400DBF1C4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CEBC61121B3CB00400DBF1C4 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -168,6 +170,7 @@
 		CEBC610F1B3CB00400DBF1C4 /* Alti */ = {
 			isa = PBXGroup;
 			children = (
+				CE8866411B5C872E006E147C /* SettingsViewController.swift */,
 				CE41C02B1B3CBF350038BD8A /* Alti Hardware */,
 				CEBC61121B3CB00400DBF1C4 /* AppDelegate.swift */,
 				CEBC61141B3CB00400DBF1C4 /* FirstViewController.swift */,
@@ -356,6 +359,7 @@
 				CE41C02D1B3CBF480038BD8A /* AltiHardware.swift in Sources */,
 				CEBC61131B3CB00400DBF1C4 /* AppDelegate.swift in Sources */,
 				CEBC61151B3CB00400DBF1C4 /* FirstViewController.swift in Sources */,
+				CE8866421B5C872E006E147C /* SettingsViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
