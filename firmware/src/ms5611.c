@@ -6,6 +6,7 @@
 #include <stdint.h>
 #include <math.h>
 #include <hal.h>
+#include <spi.h>
 
 #include <ms5611.h>
 #include <globals.h>
@@ -13,12 +14,7 @@
 #include <util.h>
 #include <pins.h>
 
-//#define SPI_PORT MS5611_PORT
-//#define BYTEORDER BYTEORDER_MSB
-
 #define USE_SPI
-
-//#include <transfer_macros.h>
 
 /**
  * @brief PROM

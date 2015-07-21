@@ -3,15 +3,8 @@
  */
 #include <bmx055.h>
 #include <hal.h>
-
 #include <pins.h>
 #include <util.h>
-
-#define SPI_PORT   BMX055_PORT
-#define BYTEORDER BYTEORDER_MSB
-#define USE_SPI
-
-// #include <transfer_macros.h>
 
 
 /**

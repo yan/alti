@@ -8,9 +8,6 @@
 #include <unistd.h>
 #include <stdint.h>
 
-#define BYTEORDER_LSB   0
-#define BYTEORDER_MSB   1
-
 void     spi_send_buf(uint32_t port, uint8_t *buf, uint32_t length);
 void     spi_read_data(uint32_t port, uint8_t *data, uint32_t length);
 uint32_t spi_read_octets(uint32_t port, unsigned octets, uint32_t byte_order);

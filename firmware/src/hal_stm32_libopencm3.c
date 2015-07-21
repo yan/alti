@@ -9,6 +9,7 @@
 #include <config.h>
 #include <globals.h>
 #include <pins.h>
+#include <spi.h>
 
 #include <FreeRTOS.h>
 #include <queue.h>
@@ -21,6 +22,9 @@
 #include <libopencm3/stm32/spi.h>
 #include <libopencm3/stm32/i2c.h>
 #include <libopencm3/stm32/rcc.h>
+
+#define BYTEORDER_LSB   0
+#define BYTEORDER_MSB   1
 
 void pin_set(int port, int pin)
 {

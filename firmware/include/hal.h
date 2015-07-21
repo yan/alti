@@ -12,10 +12,9 @@ enum pinmode_e {
   PINMODE_INPUT,
 };
 
-/** XXX move this to a arch-specific header */
-#ifdef STM32L1
-//#  include <libopencm3/stm32/spi.h>
-#endif
+
+#define BYTEORDER_LSB   0
+#define BYTEORDER_MSB   1
 
 /** GPIO functions */
 void pin_set(int port, int pin);

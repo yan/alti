@@ -9,6 +9,7 @@
 #include <hal.h>
 #include <globals.h>
 #include <util.h>
+#include <spi.h>
 
 struct status_register_s {
   uint8_t page_size_config : 1;
