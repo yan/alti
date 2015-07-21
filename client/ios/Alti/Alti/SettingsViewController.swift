@@ -32,14 +32,36 @@ class SettingsViewController: UITableViewController {
         // Dispose of any resources that can be recreated.
     }
 
+    private enum CellType : String {
+        case Feature = "feature"
+        case Alarm = "alarm"
+        
+    }
+    private enum AlarmType : String {
+        case Airplane = "airplane"
+        case Freefall = "freefall"
+        case Canopy = "canopy"
+    }
     // MARK: - Table view data source
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell
     {
-        func getAndSetCell(title: String) -> UITableViewCell {
+        let formatter = NSNumberFormatter()
+        formatter.numberStyle = NSNumberFormatterStyle.DecimalStyle
+        
+        func getAndSetAlarm(when: AlarmType, altitude: Int) -> UITableViewCell {
             let tvc = tableView.dequeueReusableCellWithIdentifier("alarm") as! UITableViewCell
+            (tvc.contentView.viewWithTag(1) as! UILabel).text = formatter.stringFromNumber(altitude)! + "\""
+            (tvc.contentView.viewWithTag(1) as! UILabel).sizeToFit()
+            (tvc.contentView.viewWithTag(2) as! UILabel).text = when.rawValue;
+            return tvc;
+
+        }
+        func getAndSetCell(title: String) -> UITableViewCell {
+            let tvc = tableView.dequeueReusableCellWithIdentifier("feature") as! UITableViewCell
             (tvc.contentView.viewWithTag(1) as! UILabel).text = title
             (tvc.contentView.viewWithTag(2) as! UISwitch).enabled = false;
             return tvc
+        
         }
         switch indexPath.section {
         case 0:
@@ -50,14 +72,13 @@ class SettingsViewController: UITableViewController {
             }
         case 1:
             switch indexPath.item {
-            case 0: return getAndSetCell("1,000\"")
-            case 1: return getAndSetCell("10,000\"")
+            case 0: return getAndSetAlarm(AlarmType.Airplane, 1000)
+            case 1: return getAndSetAlarm(AlarmType.Airplane, 10000)
+            case 2: return getAndSetAlarm(AlarmType.Freefall, 5500)
+            case 3: return getAndSetAlarm(AlarmType.Freefall, 4500)
+            case 4: return getAndSetAlarm(AlarmType.Freefall, 4000)
             default: assert(false, "")
             }
-        case 2:
-            return getAndSetCell("One")
-        case 3:
-            return getAndSetCell("One")
         default:
             assert(false, "")
         }
@@ -72,8 +93,10 @@ class SettingsViewController: UITableViewController {
         
         
         switch section {
-        case 0 ..< 2:
+        case 0:
             return 2;
+        case 1:
+            return 4;
         case 2:
             return 3;
         default:
@@ -81,16 +104,14 @@ class SettingsViewController: UITableViewController {
         }
     }
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 4;
+        return 2;
     }
     
     
     override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         switch section {
-        case 0: return "Logging"
-        case 1: return "Airplane Alarms"
-        case 2: return "Freefall Alarms"
-        case 3: return "Canopy Alarms"
+        case 0: return "Features"
+        case 1: return "Alarms"
         default:
             assert(false, "Bad section number")
         }
