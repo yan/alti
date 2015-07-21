@@ -180,3 +180,77 @@ void arch_timer_set(uint32_t timer, uint32_t channel, uint32_t value)
   /** TODO: move this to HAL */
   timer_set_oc_value(timer, channel, value);
 }
+
+/**
+ * @brief Configure and enable SPI1 or SPI2. Initialize it with a default
+ * byte order, although this can change on a per-message basis.
+ *
+ * @param port 1 for SPI1 or 2 for SPI2
+ * @param byte_order 0 for LSB first, 1 for MSB first
+ */
+void arch_spi_config(uint32_t port, uint16_t byte_order)
+{
+  port = ((port == 1) ? SPI1 : SPI2);
+
+  byte_order = !!byte_order;
+
+  spi_reset(port);
+  spi_init_master(port,
+                  SPI_CR1_BAUDRATE_FPCLK_DIV_8,
+                  SPI_CR1_CPOL_CLK_TO_0_WHEN_IDLE,
+                  SPI_CR1_CPHA_CLK_TRANSITION_1,
+                  SPI_CR1_DFF_8BIT,
+                  byte_order ? SPI_CR1_MSBFIRST : SPI_CR1_LSBFIRST);
+
+  spi_enable_software_slave_management(port);
+  spi_disable_ss_output(port);
+  spi_set_nss_high(port);
+
+  spi_enable(port);
+}
+
+
+void spi_set_msb(uint32_t port)
+{
+  spi_send_msb_first(port);
+}
+
+void spi_set_lsb(uint32_t port)
+{
+  spi_send_lsb_first(port);
+}
+
+/**
+ * @brief
+ */
+uint8_t arch_spi_xfer(uint32_t port, uint8_t cmd)
+{
+  return spi_xfer(port, cmd);
+}
+
+/**
+ * @brief Enable the SPI peripheral.
+ *
+ * @param port 1 for SPI1, 2 for SPI2
+ */
+void arch_spi_enable(uint32_t port)
+{
+  rcc_periph_clock_enable((port == 2) ? RCC_SPI2 : RCC_SPI1);
+
+  port = ((port == 2) ? SPI2 : SPI1);
+  spi_enable(port);
+}
+
+/**
+ * @brief Disaable the SPI peripheral and its clock.
+ *
+ * @param port 1 for SPI1, 2 for SPI2
+ */
+void arch_spi_disable(uint32_t port)
+{
+  port -= 1;
+
+  rcc_periph_clock_disable((port == 2) ? RCC_SPI2 : RCC_SPI1);
+  spi_disable(SPI1 + port);
+}
+

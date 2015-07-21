@@ -8,8 +8,6 @@
 
 #include <stdint.h>
 
-#include "i2c.h"
-
 #define MS5611_CMD_RESET          0x1E
 #define MS5611_CMD_D1_BASE        0x40
 #define MS5611_CMD_D2_BASE        0x50
