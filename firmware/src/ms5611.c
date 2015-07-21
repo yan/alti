@@ -6,6 +6,7 @@
 #include <stdint.h>
 #include <math.h>
 #include <hal.h>
+#include <spi.h>
 
 #include <ms5611.h>
 #include <globals.h>
@@ -13,12 +14,7 @@
 #include <util.h>
 #include <pins.h>
 
-#define SPI_PORT MS5611_PORT
-#define BYTEORDER BYTEORDER_MSB
-
 #define USE_SPI
-
-#include <transfer_macros.h>
 
 /**
  * @brief PROM
@@ -98,7 +94,7 @@ void ms5611_reset(void)
 #endif
 
   pin_clear(MS5611_GPIO, MS5611_EN);
-  send_byte(MS5611_CMD_RESET);
+  arch_spi_xfer(MS5611_PORT, MS5611_CMD_RESET);
 
   /* Give it 3ms to start */
   delay_ms(3);
@@ -116,8 +112,8 @@ static uint16_t ms5611_get16(uint8_t cmd)
 #endif
 
   pin_clear(MS5611_GPIO, MS5611_EN);
-  send_byte(cmd);
-  val = read16();
+  arch_spi_xfer(MS5611_PORT, cmd);
+  val = spi_read_octets(MS5611_PORT, 2, BYTEORDER_MSB);
   pin_set(MS5611_GPIO, MS5611_EN);
 
   return val;
@@ -146,8 +142,8 @@ void ms5611_init(void)
   filter_init_state(&g.baro_filter_state);
 
 #if MS5611_VERIFY_RECVD == 1
-  send_byte(MS5611_CMD_PROM_READ_LAST);
-  crc4_dword = read16();
+  arch_spi_xfer(MS5611_PORT, MS5611_CMD_PROM_READ_LAST);
+  crc4_dword = spi_read_octets(MS5611_PORT, 2, BYTEORDER_MSB);
 
   crc = ms5611_verify_prom();
   
@@ -172,14 +168,14 @@ static uint32_t ms5611_read_adc(uint8_t cmd)
   /* Warn that we're about to read, and wait a period of time depending on the
    * precision required*/
   pin_clear(MS5611_GPIO, MS5611_EN);
-  send_byte(cmd);
+  arch_spi_xfer(MS5611_PORT, cmd);
   delay_ms((cmd&0x0F) * 2 + 1);
   pin_set(MS5611_GPIO, MS5611_EN);
 
   /* Read back the ADC result */
   pin_clear(MS5611_GPIO, MS5611_EN);
-  send_byte(MS5611_CMD_ADC_READ);
-  val = read24();
+  arch_spi_xfer(MS5611_PORT, MS5611_CMD_ADC_READ);
+  val = spi_read_octets(MS5611_PORT, 3, BYTEORDER_MSB);
   pin_set(MS5611_GPIO, MS5611_EN);
 
   return val;

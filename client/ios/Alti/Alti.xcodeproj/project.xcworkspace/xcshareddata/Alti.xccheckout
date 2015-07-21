@@ -22,11 +22,11 @@
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
 		<key>1B46E2EB4238C0978F01FFF9E8C1390836A3DFD9</key>
-		<string>../../../../..client/ios/Alti/BlueCap/</string>
+		<string>../../../../..client/ios/Alti/BlueCap</string>
 		<key>2C0DD26E457C9466813EF975EF0E97FB7C0E9460</key>
 		<string>../../../../..</string>
 		<key>9025163822AAEA7A2D8AC9210D0874A56F62B462</key>
-		<string>../../../../..client/ios/Alti/Charts/</string>
+		<string>../../../../..client/ios/Alti/Charts</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
 	<string>bitbucket.org:yan_i/alti.git</string>

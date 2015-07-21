@@ -2,10 +2,14 @@
  * Copyright 2015 Yan Ivnitskiy
  */
 
+#include "hal.h"
+
+
 void mem_manage_handler(void) __attribute__ (( naked ));
 void bus_fault_handler(void) __attribute__ (( naked ));
 void hard_fault_handler(void) __attribute__ (( naked ));
 void usage_fault_handler(void) __attribute__ (( naked ));
+
 void  __attribute__ ((noinline)) pop_registers_from_fault_stack(unsigned int * hardfault_args);
 
 /* Uncomment if GCC complains about set but not used variables */

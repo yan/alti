@@ -20,7 +20,6 @@
  */
 
 #if defined(USE_SPI)
-#  include <libopencm3/stm32/spi.h>
 #  include <spi.h>
 #  define send_byte(b) arch_spi_xfer(SPI_PORT, b)
 #  define read8()  (uint8_t)spi_read_octets(SPI_PORT, 1, BYTEORDER);
@@ -28,13 +27,7 @@
 #  define read24() (uint32_t)spi_read_octets(SPI_PORT, 3, BYTEORDER);
 #  define read32() (uint32_t)spi_read_octets(SPI_PORT, 4, BYTEORDER);
 #else
-#  include <libopencm3/stm32/i2c.h>
-#  include <i2c.h>
-#  define send_byte(b) i2c_send_byte(SPI_PORT, b)
-#  define read8()  (uint8_t)i2c_read_octets(SPI_PORT, 1);
-#  define read16() (uint16_t)i2c_read_octets(SPI_PORT, 2);
-#  define read24() (uint32_t)i2c_read_octets(SPI_PORT, 3);
-#  define read32() (uint32_t)i2c_read_octets(SPI_PORT, 4);
+#  error "USE_SPI must be defined"
 #endif
 
 

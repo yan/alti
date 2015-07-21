@@ -10,3 +10,6 @@
 [submodule "client/ios/Alti/Charts"]
 	path = client/ios/Alti/Charts
 	url = https://github.com/danielgindi/ios-charts.git
+[submodule "firmware/stm32l1_stdperiphlib"]
+	path = firmware/stm32l1_stdperiphlib
+	url = git@bitbucket.org:yan_i/stm32l1_stdperiphlib.git
