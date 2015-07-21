@@ -16,6 +16,12 @@ enum pinmode_e {
 #define BYTEORDER_LSB   0
 #define BYTEORDER_MSB   1
 
+#if defined(STM32L1)
+#  include "hal_stm32_libopencm3.h"
+#else
+#  error "Unsupported architecture"
+#endif
+
 /** GPIO functions */
 void pin_set(int port, int pin);
 
