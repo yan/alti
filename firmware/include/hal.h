@@ -27,6 +27,8 @@ void pin_set(int port, int pin);
 
 void pin_clear(int port, int pin);
 
+void pin_toggle(int port, int pin);
+
 void pin_config(int port, int pin, int options);
 
 
@@ -62,3 +64,12 @@ uint8_t arch_spi_xfer(uint32_t port, uint8_t cmd);
 void arch_spi_enable(uint32_t port);
 
 void arch_spi_disable(uint32_t port);
+
+/** Device-specific */
+void enable_piezo(void);
+
+void disable_piezo(void);
+
+void enable_pulse(void);
+
+void disable_pulse(void);

@@ -5,12 +5,11 @@
 
 #include <stdio.h>
 
-#include <libopencm3/stm32/gpio.h>
-
 #include <FreeRTOS.h>
 #include <queue.h>
 #include <semphr.h>
 
+#include <hal.h>
 #include <util.h>
 #include <events.h>
 #include <pins.h>
@@ -71,7 +70,7 @@ static void exchange_commands(struct nrf8001_cmd_s *outgoing, struct nrf8001_cmd
 void ble_send_cmd(struct nrf8001_cmd_s *cmd)
 {
   if (xQueueSend(g.ble_data_g->in, &cmd, portMAX_DELAY) == pdPASS) {
-    gpio_clear(NRF8001_GPIO, NRF8001_REQN);
+    pin_clear(NRF8001_GPIO, NRF8001_REQN);
   }
 }
 

@@ -23,9 +23,6 @@
 #include <libopencm3/stm32/i2c.h>
 #include <libopencm3/stm32/rcc.h>
 
-#define BYTEORDER_LSB   0
-#define BYTEORDER_MSB   1
-
 void pin_set(int port, int pin)
 {
   gpio_set(port, pin);
@@ -34,6 +31,11 @@ void pin_set(int port, int pin)
 void pin_clear(int port, int pin)
 {
   gpio_clear(port, pin);
+}
+
+void pin_toggle(int port, int pin)
+{
+  gpio_toggle(port, pin);
 }
 
 void pin_config(int port, int pin, int options)
@@ -257,4 +259,48 @@ void arch_spi_disable(uint32_t port)
   rcc_periph_clock_disable((port == 2) ? RCC_SPI2 : RCC_SPI1);
   spi_disable(SPI1 + port);
 }
+
+void enable_piezo(void)
+{
+  gpio_mode_setup(PIEZO_GPIO, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, PIEZO_EN);
+  gpio_set_output_options(PIEZO_GPIO, GPIO_OTYPE_PP, GPIO_OSPEED_2MHZ, PIEZO_EN);
+  pin_set(PIEZO_GPIO, PIEZO_EN);
+
+  gpio_mode_setup(PIEZO_GPIO, GPIO_MODE_AF, GPIO_PUPD_NONE, PIEZO_OUT);
+  gpio_set_output_options(PIEZO_GPIO, GPIO_OTYPE_PP, GPIO_OSPEED_2MHZ, PIEZO_OUT);
+  //gpio_set_af(PIEZO_GPIO, PIEZO_OUT_AF, PIEZO_OUT);
+
+  pin_clear(PIEZO_GPIO, PIEZO_OUT);
+
+  //timer_enable_counter(PIEZO_OUT_TIMER);
+}
+
+void disable_piezo(void)
+{
+  rcc_peripheral_disable_clock(&RCC_APB1ENR, RCC_APB1ENR_TIM4EN);
+  timer_disable_counter(PIEZO_OUT_TIMER);
+
+  gpio_mode_setup(PIEZO_GPIO, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, PIEZO_EN);
+  gpio_set_output_options(PIEZO_GPIO, GPIO_OTYPE_PP, GPIO_OSPEED_2MHZ, PIEZO_EN);
+  pin_clear(PIEZO_GPIO, PIEZO_EN);
+
+  pin_clear(PIEZO_GPIO, PIEZO_OUT);
+}
+
+void enable_pulse(void)
+{
+  gpio_mode_setup(STATUS_GPIO, GPIO_MODE_AF, GPIO_PUPD_NONE, STATUS_LED);
+  gpio_set_output_options(STATUS_GPIO, GPIO_OTYPE_PP, GPIO_OSPEED_2MHZ, STATUS_LED);
+  gpio_set_af(STATUS_GPIO, STATUS_LED_AF, STATUS_LED);
+
+  timer_enable_counter(STATUS_LED_TIMER);
+}
+
+
+void disable_pulse(void)
+{
+  timer_disable_counter(STATUS_LED_TIMER);
+  gpio_mode_setup(STATUS_GPIO, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, STATUS_LED);
+}
+
 
