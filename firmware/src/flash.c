@@ -175,7 +175,12 @@ void config_flash(void)
   flash_reset();
   busy_wait_for_ready();
 
-  assert(test_flash() == 0);
+  /**
+   * XXX: Only uncomment below in testing ; this blows away the entire first
+   * sector.
+   *
+   * assert(test_flash() == 0);
+   */
   
   dbg_print("Finished configuring flash memory.\n");
 }

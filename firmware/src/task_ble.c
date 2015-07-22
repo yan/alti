@@ -111,7 +111,6 @@ void task_ble(void *p)
   /** XXX: outgoing should not be ever freed. */
   struct nrf8001_cmd_s *incoming = pvPortMalloc(sizeof(struct nrf8001_cmd_s));
 
-  config_flash();
   config_ble();
 
   for (;;) {

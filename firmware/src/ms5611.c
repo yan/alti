@@ -222,6 +222,7 @@ ms5611_mbarc_t ms5611_get_mbarc(uint8_t precision)
   int64_t dT, P, off, sens;
   typedef int64_t i64;
   int32_t saved_temp;
+  ms5611_mbarc_t filtered_val;
 
   assert(precision <= 4);
 
@@ -261,8 +262,8 @@ ms5611_mbarc_t ms5611_get_mbarc(uint8_t precision)
   
   P = ((D1 * (sens >> 21) - off) >> 15);
 
-  filter_add_value(&g.baro_filter_state, P);
+  filtered_val = filter_add_value(&g.baro_filter_state, P);
 
-  return (ms5611_mbarc_t) P;
+  return filtered_val;
 }
 

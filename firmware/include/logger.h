@@ -6,7 +6,7 @@
 
 #include <FreeRTOS.h>
 #include <task.h>
-#include "ms5611.h"
+#include <ms5611.h>
 
 struct sensor_packet_s {
   uint32_t ticks;

@@ -30,4 +30,14 @@ void config_io(void);
  */
 void config_globals(void);
 
+/**
+ * @brief Load the running config from flash
+ */
+void config_load_persistent(void);
+
+/**
+ * @brief Store the running config to flash
+ */
+void config_store_persistent(void);
+
 #endif

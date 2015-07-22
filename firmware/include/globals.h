@@ -18,6 +18,16 @@ struct protected_buffer_s {
   uint8_t data[WRITE_BUFFER_LEN];
 };
 
+struct persisted_config_s {
+  char name[16];
+  uint32_t logged_jumps;
+  struct alarm_s {
+    uint32_t state : 3;
+    uint32_t mbarc : 29;
+  } alarms[16];
+  uint32_t last_written_jump;
+} __attribute__((packed));
+
 struct globals {
 
   /** @brief FreeRTOSConfig.h uses this to refer to the clock rate */
@@ -46,6 +56,9 @@ struct globals {
 
   /** @brief Flash read/write buffer */
   struct protected_buffer_s flash_buffer;
+
+  /** @brief Persisted config */
+  struct persisted_config_s persisted_config;
 
   /** @brief Bitmasks of open and closed nRF8001 pipes */
   uint8_t pipes_open[8], pipes_closed[8];

@@ -1,6 +1,7 @@
 /**
  * Copyright 2015 Yan Ivnitskiy
  */
+#include <string.h>
 
 #include <FreeRTOS.h>
 #include <task.h>
@@ -12,6 +13,7 @@
 #include <util.h>
 #include <config.h>
 #include <globals.h>
+#include <flash.h>
 
 #include <task_main.h>
 #include <task_ble.h>
@@ -110,14 +112,16 @@ main(void)
   initialise_monitor_handles();
 #endif
 
-  config_globals();
-  config_tasks();
 
   arch_config_nvic();
   arch_config_clocks();
   arch_config_io();
 
-  
+  config_globals();
+  config_tasks();
+  config_flash();
+  config_load_persistent();
+
   vTaskStartScheduler();
 
   /* NOTREACHED */

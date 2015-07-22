@@ -9,6 +9,10 @@
 #include <stdint.h>
 #include <stddef.h>
 
+/** Magic values */
+#define CONFIG_ADDR                                 0x0000
+
+/** Commands */
 /* Read commands, Table 15-1 in specs */
 #define ADESTO_READ_MAIN_MEM_PAGE                   0xD2
 #define ADESTO_READ_CONTINUOUS_ARR_READ_LP          0x01
