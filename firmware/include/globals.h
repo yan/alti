@@ -8,12 +8,14 @@
 
 #include <stdint.h>
 #include <task_ble.h>
-// #include <ble.h>
 #include <filter.h>
+
+#define WRITE_BUFFER_LEN  512
 
 struct protected_buffer_s {
   void *lock;
-  uint8_t data[512];
+  unsigned int write_offset;
+  uint8_t data[WRITE_BUFFER_LEN];
 };
 
 struct globals {

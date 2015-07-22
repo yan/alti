@@ -130,6 +130,9 @@ void flash_write(uint32_t addr, uint8_t *data, size_t size)
 int test_flash(void)
 {
   int i = 0;
+
+  flash_read(0, g.flash_buffer.data, 512);
+
   for (i = 0; i < 512; i++) {
     g.flash_buffer.data[i] = i % 256;
   }

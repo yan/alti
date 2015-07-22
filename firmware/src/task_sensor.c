@@ -10,6 +10,7 @@
 #include <globals.h>
 #include <task_sensor.h>
 #include <util.h>
+#include <logger.h>
 
 #include <ms5611.h>
 #include <bmx055.h>
@@ -34,11 +35,8 @@ void task_sensor(void *p)
 
   config_sensor();
 
-  dbg_print("Baro: started\n");
-
   for (;;) {
     status = xQueueReceive(g.sensor_queue_g, &sleep_period, sleep_period);
-    dbg_print("Baro: got status: %d\n", (int)status);
 
     if (status != pdPASS) {
       //

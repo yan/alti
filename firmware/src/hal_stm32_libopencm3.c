@@ -202,7 +202,7 @@ void arch_spi_config(uint32_t port, uint16_t byte_order)
 
   spi_reset(port);
   spi_init_master(port,
-                  SPI_CR1_BAUDRATE_FPCLK_DIV_8,
+                  SPI_CR1_BAUDRATE_FPCLK_DIV_4,
                   SPI_CR1_CPOL_CLK_TO_0_WHEN_IDLE,
                   SPI_CR1_CPHA_CLK_TRANSITION_1,
                   SPI_CR1_DFF_8BIT,

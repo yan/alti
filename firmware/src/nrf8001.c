@@ -24,7 +24,7 @@
 #include <services.h>
 
 /** Set to 1 to enable nRF8001-related debugging output */
-#define NRF8001_DEBUG  ( 1 )
+#define NRF8001_DEBUG  ( 0 )
 
 #if NRF8001_DEBUG != 1
 #  undef dbg_print
@@ -141,6 +141,8 @@ static void handle_connected(struct nrf8001_cmd_s *evt)
     dbg_print("  latency: %x\n", latency);
     dbg_print("  supervision timeout: %x\n", sup_timeout);
     dbg_print("  master clock accuracy: %x\n", evt->data[13]);
+#else
+    (void) evt;
 #endif
 }
 /**

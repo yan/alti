@@ -15,6 +15,7 @@
 #include <ble.h>
 #include <events.h>
 #include <util.h>
+#include <logger.h>
 
 #include <task_main.h>
 #include <task_ble.h>
@@ -69,6 +70,15 @@ void task_main(void *p)
         unsigned int pressure = (unsigned int) evt.payload;
         const uint8_t tx_pipe = PIPE_AERO_PRESSURE_BAROMETRIC_PRESSURE_TX;
 
+        // log othe data
+        {
+          struct sensor_packet_s packet;
+          packet.pressure = (ms5611_mbarc_t) pressure;
+          packet.ticks = xTaskGetTickCount();
+          write_sensor_packet(&packet);
+        }
+
+        // Send the data via ble
         if (PIPE_OPEN(tx_pipe)) {
           ble_tx(tx_pipe, (void*)&pressure, sizeof(pressure));
         }

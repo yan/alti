@@ -216,7 +216,7 @@ uint32_t ms5611_get_last_temp()
 /**
  * @brief Return the pressure from MS5611 as (mbar * 100).
  */
-uint32_t ms5611_get_mbarc(uint8_t precision)
+ms5611_mbarc_t ms5611_get_mbarc(uint8_t precision)
 {
   uint32_t D1, D2;
   int64_t dT, P, off, sens;
@@ -261,6 +261,8 @@ uint32_t ms5611_get_mbarc(uint8_t precision)
   
   P = ((D1 * (sens >> 21) - off) >> 15);
 
-  return filter_add_value(&g.baro_filter_state, P);
+  filter_add_value(&g.baro_filter_state, P);
+
+  return (ms5611_mbarc_t) P;
 }
 

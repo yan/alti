@@ -27,6 +27,10 @@ LIB_DIR = build/lib
 OBJ_DIR = build/obj
 OBJS = $(SRC:%.c=%.o)
 
+ifeq ($(ENABLE_SEMIHOSTING), 1)
+  CFLAGS += -DENABLE_SEMIHOSTING=1
+endif
+
 # VPATH = portable portable/GCC/ARM_CM3
 
 

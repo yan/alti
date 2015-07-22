@@ -14,4 +14,5 @@
 void config_globals(void)
 {
   g.flash_buffer.lock = (SemaphoreHandle_t) xSemaphoreCreateMutex();
+  g.flash_buffer.write_offset = 0;
 }

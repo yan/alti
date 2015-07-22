@@ -35,6 +35,11 @@
 #define MS5611_PROM_CRC_MASK      0x0F
 
 /**
+ *
+ */
+typedef uint32_t ms5611_mbarc_t;
+
+/**
  * @brief
  */
 void ms5611_init(void);
@@ -52,7 +57,7 @@ uint32_t ms5611_get_last_temp(void);
 /**
  * @brief
  */
-uint32_t ms5611_get_mbarc(uint8_t precision);
+ms5611_mbarc_t ms5611_get_mbarc(uint8_t precision);
 
 /**
  * @brief
