@@ -1,0 +1,299 @@
+EESchema Schematic File Version 2
+LIBS:aero-rescue
+LIBS:aero
+LIBS:power
+LIBS:device
+LIBS:transistors
+LIBS:conn
+LIBS:linear
+LIBS:regul
+LIBS:74xx
+LIBS:cmos4000
+LIBS:adc-dac
+LIBS:memory
+LIBS:xilinx
+LIBS:microcontrollers
+LIBS:dsp
+LIBS:microchip
+LIBS:analog_switches
+LIBS:motorola
+LIBS:texas
+LIBS:intel
+LIBS:audio
+LIBS:interface
+LIBS:digital-audio
+LIBS:philips
+LIBS:display
+LIBS:cypress
+LIBS:siliconi
+LIBS:opto
+LIBS:atmel
+LIBS:contrib
+LIBS:valves
+LIBS:aero-cache
+EELAYER 25 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 8 8
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L u-blox_max-7c/q U14
+U 1 1 55B552AC
+P 5600 3850
+F 0 "U14" H 5575 4275 60  0000 C CNN
+F 1 "u-blox_max-7c/q" H 5700 3475 60  0000 C CNN
+F 2 "aero:ublox_MAX7" H 5525 3875 60  0001 C CNN
+F 3 "" H 5525 3875 60  0000 C CNN
+	1    5600 3850
+	1    0    0    -1  
+$EndComp
+$Comp
+L MAX2659 U13
+U 1 1 55B6C335
+P 5375 2425
+F 0 "U13" H 5175 2700 60  0000 C CNN
+F 1 "MAX2659" H 5500 2125 60  0000 C CNN
+F 2 "aero:6-µDFN" H 5325 2125 60  0001 C CNN
+F 3 "" H 5325 2125 60  0000 C CNN
+	1    5375 2425
+	1    0    0    -1  
+$EndComp
+$Comp
+L C C32
+U 1 1 55B6C37F
+P 4625 2550
+F 0 "C32" H 4650 2650 50  0000 L CNN
+F 1 "470pF" H 4650 2450 50  0000 L CNN
+F 2 "" H 4663 2400 30  0001 C CNN
+F 3 "" H 4625 2550 60  0000 C CNN
+	1    4625 2550
+	0    1    1    0   
+$EndComp
+$Comp
+L INDUCTOR L2
+U 1 1 55B6C3BB
+P 4075 2550
+F 0 "L2" V 4025 2550 50  0000 C CNN
+F 1 "6.8nH" V 4175 2550 50  0000 C CNN
+F 2 "" H 4075 2550 60  0001 C CNN
+F 3 "" H 4075 2550 60  0000 C CNN
+	1    4075 2550
+	0    1    1    0   
+$EndComp
+$Comp
+L U.FL_Antenna A2
+U 1 1 55B6C93F
+P 3175 2475
+F 0 "A2" H 3025 2675 60  0000 C CNN
+F 1 "U.FL_Antenna" V 3300 2775 60  0000 C CNN
+F 2 "aero:U.FL" H 3175 2475 60  0001 C CNN
+F 3 "" H 3175 2475 60  0000 C CNN
+	1    3175 2475
+	1    0    0    -1  
+$EndComp
+$Comp
+L C C33
+U 1 1 55B6CB58
+P 6175 2750
+F 0 "C33" H 6200 2850 50  0000 L CNN
+F 1 "33nF" H 6200 2650 50  0000 L CNN
+F 2 "" H 6213 2600 30  0001 C CNN
+F 3 "" H 6175 2750 60  0000 C CNN
+	1    6175 2750
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR054
+U 1 1 55B6CB94
+P 6175 2975
+F 0 "#PWR054" H 6175 2725 50  0001 C CNN
+F 1 "GND" H 6175 2825 50  0000 C CNN
+F 2 "" H 6175 2975 60  0000 C CNN
+F 3 "" H 6175 2975 60  0000 C CNN
+	1    6175 2975
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR055
+U 1 1 55B6CBCD
+P 4600 2075
+F 0 "#PWR055" H 4600 1825 50  0001 C CNN
+F 1 "GND" H 4600 1925 50  0000 C CNN
+F 2 "" H 4600 2075 60  0000 C CNN
+F 3 "" H 4600 2075 60  0000 C CNN
+	1    4600 2075
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4775 2550 4850 2550
+Wire Wire Line
+	4475 2550 4375 2550
+Wire Wire Line
+	3775 2550 3175 2550
+Wire Wire Line
+	3175 2550 3175 2475
+Wire Wire Line
+	6175 2900 6175 2975
+Wire Wire Line
+	6175 2175 6175 2600
+Wire Wire Line
+	6175 2550 5875 2550
+Wire Wire Line
+	4850 2425 4750 2425
+Wire Wire Line
+	4750 2425 4750 2075
+Wire Wire Line
+	4750 2075 4600 2075
+Wire Wire Line
+	4850 2300 4750 2300
+Connection ~ 4750 2300
+Wire Wire Line
+	5875 2300 6675 2300
+Wire Wire Line
+	6675 2300 6675 3600
+Wire Wire Line
+	6675 3600 6175 3600
+$Comp
+L GND #PWR056
+U 1 1 55B7085D
+P 6425 3350
+F 0 "#PWR056" H 6425 3100 50  0001 C CNN
+F 1 "GND" H 6425 3200 50  0000 C CNN
+F 2 "" H 6425 3350 60  0000 C CNN
+F 3 "" H 6425 3350 60  0000 C CNN
+	1    6425 3350
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5000 3525 5000 3300
+Wire Wire Line
+	5000 3300 6425 3300
+Wire Wire Line
+	6425 3300 6425 3350
+Wire Wire Line
+	6175 3300 6175 3675
+Connection ~ 6175 3300
+$Comp
+L +3V #PWR057
+U 1 1 55B708B7
+P 4750 3400
+F 0 "#PWR057" H 4750 3300 60  0001 C CNN
+F 1 "+3V" H 4600 3550 60  0000 C CNN
+F 2 "" H 4750 3400 60  0000 C CNN
+F 3 "" H 4750 3400 60  0000 C CNN
+	1    4750 3400
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5000 3900 4750 3900
+Wire Wire Line
+	4750 3400 4750 4050
+Connection ~ 4750 3900
+Wire Wire Line
+	4750 4050 5000 4050
+Connection ~ 4750 3975
+Wire Wire Line
+	6175 3750 6850 3750
+Wire Wire Line
+	6850 2425 6850 3800
+Wire Wire Line
+	6850 2425 5875 2425
+$Comp
+L GND #PWR058
+U 1 1 55B7095D
+P 6850 4150
+F 0 "#PWR058" H 6850 3900 50  0001 C CNN
+F 1 "GND" H 6850 4000 50  0000 C CNN
+F 2 "" H 6850 4150 60  0000 C CNN
+F 3 "" H 6850 4150 60  0000 C CNN
+	1    6850 4150
+	1    0    0    -1  
+$EndComp
+$Comp
+L R R15
+U 1 1 55B7097D
+P 6850 3950
+F 0 "R15" V 6930 3950 50  0000 C CNN
+F 1 "10k" V 6850 3950 50  0000 C CNN
+F 2 "Resistors_SMD:R_0402" V 6780 3950 30  0001 C CNN
+F 3 "" H 6850 3950 30  0000 C CNN
+	1    6850 3950
+	1    0    0    -1  
+$EndComp
+Connection ~ 6850 3750
+Wire Wire Line
+	6850 4100 6850 4150
+Connection ~ 6175 3525
+Wire Wire Line
+	5000 3975 4750 3975
+NoConn ~ 6175 3825
+Text HLabel 4050 3750 0    60   Input ~ 0
+TIMEPULSE
+Text HLabel 4050 3600 0    60   Input ~ 0
+TxD
+Text HLabel 4050 3675 0    60   Input ~ 0
+RxD
+Text HLabel 4050 4050 0    60   Input ~ 0
+SDA
+Text HLabel 4050 3975 0    60   Input ~ 0
+SCL
+Wire Wire Line
+	4050 3600 5000 3600
+Wire Wire Line
+	5000 3675 4050 3675
+Wire Wire Line
+	4050 3750 5000 3750
+Text HLabel 4050 3825 0    60   Input ~ 0
+EXT_INT
+Text HLabel 4050 3900 0    60   Input ~ 0
+RESET
+Wire Wire Line
+	4050 3825 5000 3825
+Wire Wire Line
+	5000 4125 4675 4125
+Wire Wire Line
+	4675 4125 4675 3900
+Wire Wire Line
+	4675 3900 4050 3900
+Wire Wire Line
+	6175 4050 6300 4050
+Wire Wire Line
+	6300 4050 6300 4325
+Wire Wire Line
+	6300 4325 4625 4325
+Wire Wire Line
+	4625 4325 4625 3975
+Wire Wire Line
+	4625 3975 4050 3975
+Wire Wire Line
+	4050 4050 4550 4050
+Wire Wire Line
+	4550 4050 4550 4400
+Wire Wire Line
+	4550 4400 6350 4400
+Wire Wire Line
+	6350 4400 6350 3975
+Wire Wire Line
+	6350 3975 6175 3975
+$Comp
+L +3V #PWR059
+U 1 1 55B7CFC4
+P 6175 2175
+F 0 "#PWR059" H 6175 2075 60  0001 C CNN
+F 1 "+3V" H 6025 2325 60  0000 C CNN
+F 2 "" H 6175 2175 60  0000 C CNN
+F 3 "" H 6175 2175 60  0000 C CNN
+	1    6175 2175
+	1    0    0    -1  
+$EndComp
+Connection ~ 6175 2550
+$EndSCHEMATC
