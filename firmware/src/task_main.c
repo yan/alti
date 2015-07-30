@@ -12,7 +12,6 @@
 #include <config.h>
 #include <globals.h>
 #include <nrf8001.h>
-#include <ble.h>
 #include <events.h>
 #include <util.h>
 #include <logger.h>

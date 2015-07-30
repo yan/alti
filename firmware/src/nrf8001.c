@@ -58,6 +58,65 @@ struct nrf8001_state_s {
 
 struct nrf8001_cmd_s cmd_buf;
 
+static void config_nrf8001_pins(void);
+static void config_nrf8001_isr(void);
+static void nrf8001_reset(void);
+
+int g_isr_hit = 0;
+
+void nrf8001_isr(void)
+{
+  BaseType_t higher;
+
+  enum event_type_e evt = GLOBAL_EVT_NRF8001_RDY;
+
+  ++g_isr_hit;
+
+  xQueueSendToFrontFromISR(g.main_queue_g, &evt, &higher);
+
+  portYIELD_FROM_ISR(higher);
+}
+
+static void config_nrf8001_pins(void)
+{
+  pin_config(NRF8001_GPIO, NRF8001_REQN, PINMODE_OUTPUT);
+  pin_config(NRF8001_GPIO, NRF8001_RST, PINMODE_OUTPUT);
+
+  pin_set(NRF8001_GPIO, NRF8001_REQN);
+  pin_set(NRF8001_GPIO, NRF8001_RST);
+}
+
+static void config_nrf8001_isr(void)
+{
+  arch_config_ble();
+
+  /* We'll use RDYN pin to interrupt*/
+  pin_config(NRF8001_GPIO, NRF8001_RDYN, PINMODE_INPUT);
+
+}
+
+static void nrf8001_reset(void)
+{
+  int i = 0;
+  pin_set(NRF8001_GPIO, NRF8001_RST);
+  pin_clear(NRF8001_GPIO, NRF8001_RST);
+  // Spec calls for the line to be low at least 200ns, set it low and busy wait
+  for (; i < 30; i++);
+  pin_set(NRF8001_GPIO, NRF8001_RST);
+}
+
+/**
+ *
+ */
+void config_nrf8001(void)
+{
+  config_nrf8001_pins();
+  config_nrf8001_isr();
+  nrf8001_reset();
+
+  //pin_clear(NRF8001_GPIO, NRF8001_REQN);
+}
+
 static void nrf8001_connect(void) {
   uint16_t *args = (uint16_t*) cmd_buf.data;
   cmd_buf.opcode = ACI_CMD_CONNECT;

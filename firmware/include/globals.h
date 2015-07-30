@@ -7,7 +7,6 @@
 #define __GLOBALS_H
 
 #include <stdint.h>
-#include <task_ble.h>
 #include <filter.h>
 
 #define WRITE_BUFFER_LEN  512
@@ -27,6 +26,11 @@ struct persisted_config_s {
   } alarms[16];
   uint32_t last_written_jump;
 } __attribute__((packed));
+
+typedef struct ble_task_data_s {
+  void *in;
+  void *semphr;
+} ble_task_data_t;
 
 struct globals {
 

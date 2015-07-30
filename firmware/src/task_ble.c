@@ -13,10 +13,11 @@
 #include <util.h>
 #include <events.h>
 #include <pins.h>
-#include <ble.h>
-#include <task_ble.h>
+//#include <ble.h>
 #include <nrf8001.h>
+#include <task_ble.h>
 #include <aci_cmds.h>
+#include <globals.h>
 
 // todo: remove me after testing flash
 #include <flash.h>
@@ -111,7 +112,7 @@ void task_ble(void *p)
   /** XXX: outgoing should not be ever freed. */
   struct nrf8001_cmd_s *incoming = pvPortMalloc(sizeof(struct nrf8001_cmd_s));
 
-  config_ble();
+  config_nrf8001();
 
   for (;;) {
 

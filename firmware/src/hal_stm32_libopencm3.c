@@ -4,7 +4,7 @@
 
 
 #include <hal.h>
-#include <ble.h>
+#include <nrf8001.h>
 #include <util.h>
 #include <config.h>
 #include <globals.h>
@@ -152,13 +152,10 @@ void arch_config_nvic(void)
 
 void exti3_isr(void)
 {
-  BaseType_t higher = pdFALSE;
-
   exti_reset_request(EXTI_PR & EXTI3);
 
-  ble_isr(&higher);
+  nrf8001_isr();
 
-  portYIELD_FROM_ISR(higher);
 }
 
 void arch_init_timer(uint32_t timer, uint32_t channel, uint32_t prescaler, uint32_t period)

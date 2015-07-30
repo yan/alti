@@ -18,8 +18,16 @@ struct nrf8001_cmd_s {
 
 #define NRF8001_SPI    SPI1
 
+#define PIPE_OPEN(p) (g.pipes_open[(p)/8] & (1 << (p % 8)))
+
+#define PIPE_CLOSED(p) (g.pipes_closed[(p)/8] & (1 << (p % 8)))
+
+void config_nrf8001(void);
+
+void nrf8001_isr(void);
+
 void nrf8001_exchange_cmds(struct nrf8001_cmd_s *out, struct nrf8001_cmd_s *in);
 
 void nrf8001_handle_event(struct nrf8001_cmd_s *event);
 
-#endif
+#endif // __NRF8001_H
