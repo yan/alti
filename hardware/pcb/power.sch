@@ -157,7 +157,7 @@ U 1 1 552EDA5A
 P 3550 2850
 F 0 "CON1" H 3250 3200 50  0000 C CNN
 F 1 "USB-MICRO-B" H 3400 2500 50  0000 C CNN
-F 2 "" H 3550 2750 50  0001 C CNN
+F 2 "aero:WM1399CT-ND" H 3550 2750 50  0001 C CNN
 F 3 "" H 3550 2750 50  0000 C CNN
 	1    3550 2850
 	1    0    0    -1  
@@ -467,4 +467,6 @@ F 3 "" H 2300 3050 60  0000 C CNN
 	1    2300 3050
 	0    -1   -1   0   
 $EndComp
+Text Label 5150 5800 0    60   ~ 0
+http://www.molex.com/molex/products/datasheet.jsp?part=active/0781710002_PCB_HEADERS.xml#partdetail
 $EndSCHEMATC

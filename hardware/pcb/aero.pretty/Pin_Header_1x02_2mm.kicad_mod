@@ -1,0 +1,13 @@
+(module Pin_Header_1x02_2mm (layer F.Cu) (tedit 55B9A350)
+  (fp_text reference REF** (at 1 2.4) (layer F.SilkS) hide
+    (effects (font (size 1 1) (thickness 0.15)))
+  )
+  (fp_text value Pin_Header_1x02_2mm (at 0 -2.2) (layer F.Fab) hide
+    (effects (font (size 1 1) (thickness 0.15)))
+  )
+  (fp_line (start 0 -1) (end -2 -1) (layer F.SilkS) (width 0.05))
+  (fp_line (start -2 -1) (end -2 1) (layer F.SilkS) (width 0.05))
+  (fp_line (start -2 1) (end 0 1) (layer F.SilkS) (width 0.05))
+  (pad 1 thru_hole circle (at -1 0) (size 1.2 1.2) (drill 0.7) (layers *.Cu *.Mask F.SilkS))
+  (pad 2 thru_hole circle (at 1 0) (size 1.2 1.2) (drill 0.7) (layers *.Cu *.Mask F.SilkS))
+)
