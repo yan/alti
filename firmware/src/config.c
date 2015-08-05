@@ -36,3 +36,25 @@ void config_store_persistent(void)
 {
   flash_write(CONFIG_ADDR, (uint8_t*)&g.persisted_config, sizeof(g.persisted_config));
 }
+
+/**
+ * @brief Set an alarm 
+ */
+void config_set_alarm(unsigned alarm_idx, struct alarm_s alarm)
+{
+  assert(alarm_idx < ALARM_LEN);
+
+  g.persisted_config.alarms[alarm_idx] = alarm;
+
+  config_store_persistent();
+}
+
+/**
+ * @brief Get an alarm
+ */
+struct alarm_s config_get_alarm(unsigned alarm_idx)
+{
+  assert(alarm_idx < ALARM_LEN);
+
+  return g.persisted_config.alarms[alarm_idx];
+}

@@ -270,7 +270,7 @@ void nrf8001_exchange_cmds(struct nrf8001_cmd_s *out, struct nrf8001_cmd_s *in)
   int bytes_to_xfer = 0, i;
   uint8_t *out_ptr = (uint8_t*) out;
 
-  gpio_clear(NRF8001_GPIO, NRF8001_REQN);
+  pin_clear(NRF8001_GPIO, NRF8001_REQN);
 
   /* Make sure the tail end of *out is zero. If out->length is 0, this will 
    * effectively zero out the entire structure.
@@ -293,5 +293,5 @@ void nrf8001_exchange_cmds(struct nrf8001_cmd_s *out, struct nrf8001_cmd_s *in)
     in->data[i] = arch_spi_xfer(NRF8001_SPI, out->data[i + 1]);
   }
 
-  gpio_set(NRF8001_GPIO, NRF8001_REQN);
+  pin_set(NRF8001_GPIO, NRF8001_REQN);
 }

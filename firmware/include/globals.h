@@ -8,22 +8,28 @@
 
 #include <stdint.h>
 #include <filter.h>
+#include <alarm.h>
 
 #define WRITE_BUFFER_LEN  512
 
+/**
+ * @brief A simple block-length buffer protected by a lock. Also includes a 
+ * write offset to make writing easier. XXX: Probably should move w_o out.
+ */
 struct protected_buffer_s {
   void *lock;
   unsigned int write_offset;
   uint8_t data[WRITE_BUFFER_LEN];
 };
 
+/**
+ * @brief Configuration of the altimeter that is persisted to non volatile
+ * storage.
+ */
 struct persisted_config_s {
   char name[16];
+  struct alarm_s alarms[ALARM_LEN];
   uint32_t logged_jumps;
-  struct alarm_s {
-    uint32_t state : 3;
-    uint32_t mbarc : 29;
-  } alarms[16];
   uint32_t last_written_jump;
 } __attribute__((packed));
 
@@ -48,12 +54,6 @@ struct globals {
 
   /** @brief The filter state for baro readings */
   filter_state_t baro_filter_state;
-
-  /** @brief Byte order of SPI links.
-   *    Bit 1 set = MSB for SPI1
-   *    Bit 2 set = MSB for SPI2
-   */
-  uint8_t spi_endian;
 
   /** @brief Data local to the BLE task */
   struct ble_task_data_s *ble_data_g;

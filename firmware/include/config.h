@@ -6,6 +6,8 @@
 #ifndef __CONFIG_H
 #define __CONFIG_H
 
+#include <stdint.h>
+#include <globals.h>
 #define BLE_EXTI_ISR_PRIORITY     (10 << 4)
 
 #define MAIN_EVENT_LOOP_TIMEOUT   (1000 / portTICK_PERIOD_MS)
@@ -39,5 +41,15 @@ void config_load_persistent(void);
  * @brief Store the running config to flash
  */
 void config_store_persistent(void);
+
+/**
+ * @brief Set an alarm 
+ */
+void config_set_alarm(unsigned alarm_idx, struct alarm_s alarm);
+
+/**
+ * @brief Get an alarm
+ */
+struct alarm_s config_get_alarm(unsigned alarm_idx);
 
 #endif
