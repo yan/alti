@@ -449,7 +449,7 @@ Connection ~ 5400 4000
 Wire Wire Line
 	5550 4000 5550 3650
 Wire Wire Line
-	5750 4150 5750 4000
+	5750 2075 5750 4150
 Connection ~ 5750 4000
 Wire Wire Line
 	5750 4450 5750 4500
@@ -469,4 +469,69 @@ F 3 "" H 2300 3050 60  0000 C CNN
 $EndComp
 Text Label 5150 5800 0    60   ~ 0
 http://www.molex.com/molex/products/datasheet.jsp?part=active/0781710002_PCB_HEADERS.xml#partdetail
+$Comp
+L R R15
+U 1 1 55C04C61
+P 7275 2075
+F 0 "R15" V 7355 2075 50  0000 C CNN
+F 1 "10m" V 7275 2075 50  0000 C CNN
+F 2 "Resistors_SMD:R_0402" V 7205 2075 30  0001 C CNN
+F 3 "" H 7275 2075 30  0000 C CNN
+	1    7275 2075
+	0    1    1    0   
+$EndComp
+$Comp
+L R R16
+U 1 1 55C04CB8
+P 7950 2075
+F 0 "R16" V 8030 2075 50  0000 C CNN
+F 1 "10m" V 7950 2075 50  0000 C CNN
+F 2 "Resistors_SMD:R_0402" V 7880 2075 30  0001 C CNN
+F 3 "" H 7950 2075 30  0000 C CNN
+	1    7950 2075
+	0    1    1    0   
+$EndComp
+$Comp
+L GND #PWR049
+U 1 1 55C04D3B
+P 8350 2425
+F 0 "#PWR049" H 8350 2175 50  0001 C CNN
+F 1 "GND" H 8350 2275 50  0000 C CNN
+F 2 "" H 8350 2425 60  0000 C CNN
+F 3 "" H 8350 2425 60  0000 C CNN
+	1    8350 2425
+	1    0    0    -1  
+$EndComp
+Text HLabel 8175 1475 2    60   Input ~ 0
+BATT_SENSE
+$Comp
+L C C32
+U 1 1 55C0577C
+P 7975 1750
+F 0 "C32" H 8000 1850 50  0000 L CNN
+F 1 "100nF" H 8000 1650 50  0000 L CNN
+F 2 "Capacitors_SMD:C_0402" H 8013 1600 30  0001 C CNN
+F 3 "" H 7975 1750 60  0000 C CNN
+	1    7975 1750
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	8100 2075 8350 2075
+Wire Wire Line
+	8350 1750 8350 2425
+Wire Wire Line
+	8125 1750 8350 1750
+Connection ~ 8350 2075
+Wire Wire Line
+	7800 2075 7425 2075
+Wire Wire Line
+	7125 2075 5750 2075
+Wire Wire Line
+	7600 1475 7600 2075
+Wire Wire Line
+	7600 1750 7825 1750
+Connection ~ 7600 2075
+Wire Wire Line
+	7600 1475 8175 1475
+Connection ~ 7600 1750
 $EndSCHEMATC

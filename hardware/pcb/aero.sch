@@ -140,7 +140,7 @@ F5 "~CS" I L 10100 2800 60
 F6 "~RESET" I L 10100 2900 60 
 $EndSheet
 $Sheet
-S 10200 5350 800  650 
+S 10200 5350 800  850 
 U 552EDA4D
 F0 "power" 60
 F1 "power.sch" 60
@@ -149,6 +149,7 @@ F3 "USB_D-" I L 10200 5650 60
 F4 "USB_D+" I L 10200 5750 60 
 F5 "~CHG" I L 10200 5850 60 
 F6 "~PG" I L 10200 5950 60 
+F7 "BATT_SENSE" I L 10200 6050 60 
 $EndSheet
 $Comp
 L +3V #PWR03
@@ -485,7 +486,7 @@ F 3 "" H 4300 2400 60  0000 C CNN
 $EndComp
 NoConn ~ 10100 4150
 NoConn ~ 10100 4250
-Text GLabel 7550 4100 2    60   Input ~ 0
+Text GLabel 4150 5000 0    60   Input ~ 0
 ~PG
 Text GLabel 9975 5975 0    60   Input ~ 0
 ~PG
@@ -513,10 +514,42 @@ F 3 "" H 9100 4700 30  0000 C CNN
 $EndComp
 Text Notes 7375 7500 0    60   ~ 0
 Alti
-Text GLabel 7550 4200 2    60   Input ~ 0
+Text GLabel 4175 4900 0    60   Input ~ 0
 ~CHG
 Text GLabel 10000 5850 0    60   Input ~ 0
 ~CHG
+NoConn ~ 1550 5200
+$Sheet
+S 675  700  900  800 
+U 55B6C26A
+F0 "GPS" 60
+F1 "GPS.sch" 60
+F2 "TIMEPULSE" I R 1575 1125 60 
+F3 "TxD" I R 1575 1425 60 
+F4 "RxD" I R 1575 1350 60 
+F5 "SDA" I R 1575 775 60 
+F6 "SCL" I R 1575 850 60 
+F7 "EXT_INT" I R 1575 1050 60 
+F8 "RESET" I R 1575 975 60 
+$EndSheet
+NoConn ~ 1575 775 
+NoConn ~ 1575 850 
+Text GLabel 1700 1350 2    60   Input ~ 0
+GPS_RX
+Text GLabel 1700 1425 2    60   Input ~ 0
+GPS_TX
+Text GLabel 7600 4100 2    60   Input ~ 0
+GPS_RX
+Text GLabel 7600 4225 2    60   Input ~ 0
+GPS_TX
+Text GLabel 1650 3850 2    60   Input ~ 0
+MS5611_EN
+Text GLabel 7625 4000 2    60   Input ~ 0
+MS5611_EN
+Text GLabel 9975 6050 0    60   Input ~ 0
+BATT_SENSE
+Text GLabel 4125 5500 0    60   Input ~ 0
+BATT_SENSE
 Wire Wire Line
 	7450 3900 10100 3900
 Wire Wire Line
@@ -605,10 +638,6 @@ Wire Wire Line
 	2000 4100 2000 5600
 Connection ~ 2000 5600
 Wire Wire Line
-	1450 3850 2450 3850
-Wire Wire Line
-	2450 3850 2450 5500
-Wire Wire Line
 	5300 2700 5300 2500
 Wire Wire Line
 	5600 2400 5600 2700
@@ -663,8 +692,6 @@ Connection ~ 1000 7350
 Wire Wire Line
 	1600 7250 1600 7350
 Connection ~ 1600 7350
-Wire Wire Line
-	2450 5500 4250 5500
 Wire Wire Line
 	9950 4050 10100 4050
 Wire Wire Line
@@ -730,10 +757,6 @@ Wire Wire Line
 Connection ~ 3100 850 
 Wire Wire Line
 	3425 3950 4250 3950
-Wire Wire Line
-	3500 3850 4250 3850
-Wire Wire Line
-	3500 850  3500 3850
 Wire Wire Line
 	4200 6900 4200 5800
 Connection ~ 4200 5800
@@ -805,8 +828,6 @@ Wire Wire Line
 Wire Wire Line
 	9975 5975 9975 5950
 Wire Wire Line
-	7550 4200 7450 4200
-Wire Wire Line
 	2200 4300 4250 4300
 Wire Wire Line
 	2200 4300 2200 4900
@@ -824,9 +845,6 @@ Wire Wire Line
 	2350 5100 2350 4500
 Wire Wire Line
 	2350 4500 4250 4500
-NoConn ~ 1550 5200
-Wire Wire Line
-	7550 4100 7450 4100
 Wire Wire Line
 	1650 3100 2875 3100
 Wire Wire Line
@@ -839,22 +857,6 @@ Wire Wire Line
 	2975 3000 2975 4700
 Wire Wire Line
 	2975 4700 4250 4700
-$Sheet
-S 675  700  900  800 
-U 55B6C26A
-F0 "GPS" 60
-F1 "GPS.sch" 60
-F2 "TIMEPULSE" I R 1575 1125 60 
-F3 "TxD" I R 1575 1425 60 
-F4 "RxD" I R 1575 1350 60 
-F5 "SDA" I R 1575 775 60 
-F6 "SCL" I R 1575 850 60 
-F7 "EXT_INT" I R 1575 1050 60 
-F8 "RESET" I R 1575 975 60 
-$EndSheet
-NoConn ~ 7450 4000
-NoConn ~ 1575 775 
-NoConn ~ 1575 850 
 Wire Wire Line
 	1575 975  2300 975 
 Wire Wire Line
@@ -862,9 +864,7 @@ Wire Wire Line
 Wire Wire Line
 	2300 1600 3325 1600
 Wire Wire Line
-	3325 1600 3325 3400
-Wire Wire Line
-	3325 3400 4250 3400
+	3325 1600 3325 3750
 Wire Wire Line
 	1575 1050 2225 1050
 Wire Wire Line
@@ -882,27 +882,35 @@ Wire Wire Line
 Wire Wire Line
 	2150 1775 3200 1775
 Wire Wire Line
-	3200 1775 3200 3750
+	1575 1425 1700 1425
 Wire Wire Line
-	3200 3750 4250 3750
+	1700 1350 1575 1350
 Wire Wire Line
-	4250 4900 3125 4900
+	4175 4900 4250 4900
 Wire Wire Line
-	3125 4900 3125 1850
+	4250 5000 4150 5000
 Wire Wire Line
-	3125 1850 2075 1850
+	7600 4100 7450 4100
 Wire Wire Line
-	2075 1850 2075 1350
+	7450 4200 7600 4200
 Wire Wire Line
-	2075 1350 1575 1350
+	7600 4200 7600 4225
 Wire Wire Line
-	4250 5000 3050 5000
+	7450 4000 7625 4000
 Wire Wire Line
-	3050 5000 3050 1925
+	1650 3850 1450 3850
 Wire Wire Line
-	3050 1925 1975 1925
+	9975 6050 10200 6050
 Wire Wire Line
-	1975 1925 1975 1425
+	4125 5500 4250 5500
 Wire Wire Line
-	1975 1425 1575 1425
+	3500 850  3500 3850
+Wire Wire Line
+	3500 3850 4250 3850
+Wire Wire Line
+	3325 3750 4250 3750
+Wire Wire Line
+	3200 1775 3200 3400
+Wire Wire Line
+	3200 3400 4250 3400
 $EndSCHEMATC
