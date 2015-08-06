@@ -12,8 +12,6 @@
 typedef enum event_type_e {
   GLOBAL_EVT_RESET,
 
-  GLOBAL_EVT_RCVD_I2C,
-
   GLOBAL_EVT_RCVD_SPI,
 
   GLOBAL_EVT_AIR_PRESSURE,

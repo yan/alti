@@ -8,10 +8,14 @@
 
 #include <stdint.h>
 #include <globals.h>
+
 #define BLE_EXTI_ISR_PRIORITY     (10 << 4)
 
 #define MAIN_EVENT_LOOP_TIMEOUT   (1000 / portTICK_PERIOD_MS)
 
+#define USE_GPS                   ( 1 )
+
+#define USE_ACCEL                 ( 1 )
 /**
  * @brief Configure the clocks 
  */

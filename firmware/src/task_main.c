@@ -45,12 +45,6 @@ void task_main(void *p)
         state = GLOBAL_STATE_RESET;
         break;
 
-      case GLOBAL_EVT_RCVD_I2C:
-        break;
-
-      case GLOBAL_EVT_RCVD_SPI:
-        break;
-
       case GLOBAL_EVT_NRF8001_PIPES_CHANGED: {
         unsigned int new_rate;
         if (PIPE_OPEN(PIPE_AERO_PRESSURE_BAROMETRIC_PRESSURE_TX)) {
@@ -72,7 +66,7 @@ void task_main(void *p)
         // log othe data
         {
           struct sensor_packet_s packet;
-          packet.pressure = (ms5611_mbarc_t) pressure;
+          packet.mbarc = (ms5611_mbarc_t) pressure;
           packet.ticks = xTaskGetTickCount();
           write_sensor_packet(&packet);
         }

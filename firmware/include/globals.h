@@ -33,6 +33,7 @@ struct persisted_config_s {
   uint32_t last_written_jump;
 } __attribute__((packed));
 
+
 typedef struct ble_task_data_s {
   void *in;
   void *semphr;
