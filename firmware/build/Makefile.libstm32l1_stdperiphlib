@@ -1,0 +1,80 @@
+
+LIBNAME = libstm32l1stdperiphlib
+
+SRCLIBDIR ?= stm32l1_stdperiphlib/Libraries/STM32L1xx_StdPeriph_Driver/src
+
+PREFIX ?= arm-none-eabi
+
+CC = $(PREFIX)-gcc
+AR = $(PREFIX)-ar
+CFLAGS = -g2 \
+      -Wall -Wextra -Wimplicit-function-declaration \
+      -Wredundant-decls -Wmissing-prototypes -Wstrict-prototypes \
+      -Wundef -Wshadow -fno-common -mcpu=cortex-m3 $(FP_FLAGS) -mthumb \
+      -Wstrict-prototypes \
+      -I$(SRCLIBDIR) -I$(SRCLIBDIR)/../inc -Iinclude \
+      -I$(SRCLIBDIR)/../../CMSIS/Device/ST/STM32L1xx/Include/ \
+      -I$(SRCLIBDIR)/../../CMSIS/Include \
+      -ffunction-sections -fdata-sections -MD -DSTM32L1 -DSTM32L1XX_MD
+      #-include $(SRCLIBDIR)/../../../Project/STM32L1xx_StdPeriph_Templates/stm32l1xx_conf.h \
+
+ARFLAGS = rcs
+
+SRC      = misc.c               stm32l1xx_exti.c            stm32l1xx_pwr.c
+SRC     += stm32l1xx_adc.c      stm32l1xx_flash.c           stm32l1xx_rcc.c
+SRC     += stm32l1xx_aes.c      stm32l1xx_flash_ramfunc.c   stm32l1xx_rtc.c
+SRC     += stm32l1xx_aes_util.c stm32l1xx_fsmc.c            stm32l1xx_sdio.c
+SRC     += stm32l1xx_comp.c     stm32l1xx_gpio.c            stm32l1xx_spi.c
+SRC     += stm32l1xx_crc.c      stm32l1xx_i2c.c             stm32l1xx_syscfg.c
+SRC     += stm32l1xx_dac.c      stm32l1xx_iwdg.c            stm32l1xx_tim.c
+SRC     += stm32l1xx_dbgmcu.c   stm32l1xx_lcd.c             stm32l1xx_usart.c
+SRC     += stm32l1xx_dma.c      stm32l1xx_opamp.c           stm32l1xx_wwdg.c
+
+
+LIB_DIR = build/lib
+OBJ_DIR = build/obj
+OBJS = $(SRC:%.c=%.o)
+
+ifeq ($(ENABLE_SEMIHOSTING), 1)
+  CFLAGS += -DENABLE_SEMIHOSTING=1
+endif
+
+# VPATH = portable portable/GCC/ARM_CM3
+
+
+
+# Be silent per default, but 'make V=1' will show all compiler calls.
+ifneq ($(V),1)
+Q := @
+endif
+
+
+all: output_dirs $(LIB_DIR)/$(LIBNAME).a
+
+$(LIB_DIR)/$(LIBNAME).a: $(OBJS)
+	@printf "  AR      $(LIBNAME).a\n"
+	$(Q)$(AR) $(ARFLAGS) "$@" $(OBJS:%.o=$(OBJ_DIR)/%.o)
+
+$(OBJ_DIR)/$(LIBNAME).ld: $(LIBNAME).ld
+	@printf "  CP      $(LIBNAME).ld\n"
+	$(Q)cp $^ "$@"
+	$(Q)if [ -f $(LIBNAME)_rom_to_ram.ld ]; then cp $(LIBNAME)_rom_to_ram.ld $(SRCLIBDIR); fi
+
+$(OBJS): %.o: $(SRCLIBDIR)/%.c
+	@printf "  CC      $(<F)\n"
+	$(Q)$(CC) $(CFLAGS) -o $(OBJ_DIR)/$@ -c $<
+
+clean:
+	$(Q)rm -rf $(OBJ_DIR) 
+	$(Q)rm -rf $(LIB_DIR)
+	$(Q)rm -f $(SRCLIBDIR)/$(LIBNAME).ld
+
+output_dirs: ${OBJ_DIR} ${LIB_DIR} ${OBJ_DIR}/portable
+
+${LIB_DIR}:
+	mkdir -p ${LIB_DIR}
+
+.PHONY: output_dirs
+
+-include $(OBJS:.o=$(OBJ_DIR)/.d)
+

@@ -1,12 +1,13 @@
 
-#ifndef __HAL_STM32_LIBOPENCM3
-#define __HAL_STM32_LIBOPENCM3
+#ifndef __HAL_STM32_STDPERIPHLIB
+#define __HAL_STM32_STDPERIPHLIB
 
+#include <stm32l1xx_conf.h>
 #include <stdint.h>
 
-typedef uint32_t pin_t;
-typedef uint32_t gpio_t;
-typedef uint32_t spi_t;
+typedef GPIO_TypeDef *gpio_t;
+typedef uint16_t      pin_t;
+typedef SPI_TypeDef  *spi_t;
 
 #define mem_manage_handler mem_manage_handler
 #define bus_fault_handler bus_fault_handler

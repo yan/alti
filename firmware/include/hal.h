@@ -4,6 +4,8 @@
  *
  * Copyright 2015 Yan Ivnitskiy
  */
+#ifndef __HAL_H
+#define __HAL_H
 
 #include <stdint.h>
 
@@ -16,20 +18,22 @@ enum pinmode_e {
 #define BYTEORDER_LSB   0
 #define BYTEORDER_MSB   1
 
-#if defined(STM32L1)
+#if defined(STM32L1) && defined(OPENCM3)
 #  include "hal_stm32_libopencm3.h"
+#elif defined(STM32L1) && defined(STM32_STDPERIPH_LIB)
+#  include "hal_stm32_stdperiphlib.h"
 #else
 #  error "Unsupported architecture"
 #endif
 
 /** GPIO functions */
-void pin_set(int port, int pin);
+void pin_set(gpio_t port, pin_t pin);
 
-void pin_clear(int port, int pin);
+void pin_clear(gpio_t port, pin_t pin);
 
-void pin_toggle(int port, int pin);
+void pin_toggle(gpio_t port, pin_t pin);
 
-void pin_config(int port, int pin, int options);
+void pin_config(gpio_t port, pin_t pin, int options);
 
 
 /** High level config functions */
@@ -51,19 +55,17 @@ void arch_init_timer(uint32_t timer, uint32_t channel, uint32_t prescaler, uint3
 void arch_timer_set(uint32_t timer, uint32_t channel, uint32_t value);
 
 /** SPI functions */
-void spi_config(int port, int options);
+void spi_config(spi_t port, int options);
 
-void spi_set_msb(uint32_t port);
+void spi_set_msb(spi_t port);
 
-void spi_set_lsb(uint32_t port);
+void spi_set_lsb(spi_t port);
 
-void arch_spi_config(uint32_t port, uint16_t byte_order);
+void arch_spi_config(spi_t port, uint16_t byte_order);
 
-uint8_t arch_spi_xfer(uint32_t port, uint8_t cmd);
+uint8_t arch_spi_xfer(spi_t port, uint8_t cmd);
 
-void arch_spi_enable(uint32_t port);
-
-void arch_spi_disable(uint32_t port);
+void arch_spi_enable(spi_t port);
 
 /** Device-specific */
 void enable_piezo(void);
@@ -73,3 +75,5 @@ void disable_piezo(void);
 void enable_pulse(void);
 
 void disable_pulse(void);
+
+#endif // __HAL_H

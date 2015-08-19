@@ -60,6 +60,7 @@ OBJS := $(addprefix $(OBJ_DIR)/, $(OBJS))
 #$(info [${OBJS}])
 
 
+ifneq ($(strip $(USE_ST_LIB)),1)
 ifeq ($(strip $(OPENCM3_DIR)),)
 # user has not specified the library path, so we try to detect it
 
@@ -82,8 +83,22 @@ endif
 INCLUDE_DIR	= $(OPENCM3_DIR)/include
 LIB_DIR		= $(OPENCM3_DIR)/lib
 SCRIPT_DIR	= $(OPENCM3_DIR)/scripts
-MISC_LIB_DIR = $(OPENCM3_DIR)/../cmsisdsp
+MISC_LIB_DIR    = $(OPENCM3_DIR)/../cmsisdsp
+DEFS           += -DOPENCM3
 
+else
+STM32_PERIPH_DIR := stm32l1_stdperiphlib/Libraries/STM32L1xx_StdPeriph_Driver
+
+INCLUDE_DIR     = $(STM32_PERIPH_DIR)/inc
+LIB_DIR         = build/lib/
+DEFS           += -DSTM32_STDPERIPH_LIB
+DEFS           += -DSTM32L1XX_HD
+DEFS           += -I$(STM32_PERIPH_DIR)/../CMSIS/Device/ST/STM32L1xx/Include
+DEFS           += -I$(STM32_PERIPH_DIR)/../CMSIS/Include
+
+
+  #### stm lib
+endif
 ###############################################################################
 # C flags
 
@@ -112,7 +127,7 @@ CPPFLAGS	+= -I$(INCLUDE_DIR) $(DEFS)
 
 LDFLAGS		+= --static -nostartfiles
 LDFLAGS		+= -L$(LIB_DIR)
-LDFLAGS   += -L$(MISC_LIB_DIR)
+LDFLAGS         += -L$(MISC_LIB_DIR)
 LDFLAGS		+= -T$(LDSCRIPT)
 LDFLAGS		+= -Wl,-Map=$(*).map
 LDFLAGS		+= -Wl,--gc-sections

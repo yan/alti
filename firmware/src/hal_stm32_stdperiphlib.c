@@ -2,7 +2,7 @@
  * Copyright 2015 Yan Ivnitskiy
  */
 
-#ifdef OPENCM3
+#ifdef STM32_STDPERIPH_LIB
 
 #include <hal.h>
 #include <nrf8001.h>
@@ -16,43 +16,38 @@
 #include <queue.h>
 #include <task.h>
 
-#include <libopencm3/cm3/scb.h>
-#include <libopencm3/stm32/gpio.h>
-#include <libopencm3/stm32/exti.h>
-#include <libopencm3/stm32/l1/nvic.h>
-#include <libopencm3/stm32/spi.h>
-#include <libopencm3/stm32/i2c.h>
-#include <libopencm3/stm32/rcc.h>
+#include <stm32l1xx_conf.h>
 
 void pin_set(gpio_t port, pin_t pin)
 {
-  gpio_set(port, pin);
+  GPIO_SetBits(port, pin);
 }
 
 void pin_clear(gpio_t port, pin_t pin)
 {
-  gpio_clear(port, pin);
+  GPIO_ResetBits(port, pin);
 }
 
 void pin_toggle(gpio_t port, pin_t pin)
 {
-  gpio_toggle(port, pin);
+  GPIO_ToggleBits(port, pin);
 }
 
 void pin_config(gpio_t port, pin_t pin, int options)
 {
-  uint32_t mode;
+  GPIO_InitTypeDef init = {
+    .GPIO_OType = GPIO_OType_PP,
+    .GPIO_Pin = pin,
+    .GPIO_Mode = options == PINMODE_INPUT ? GPIO_Mode_IN : GPIO_Mode_OUT,
+    .GPIO_PuPd = GPIO_PuPd_NOPULL,
+    .GPIO_Speed = GPIO_Speed_10MHz
+  };
 
-  if (options == PINMODE_INPUT) {
-    mode = GPIO_MODE_INPUT;
-  } else if (options == PINMODE_OUTPUT) {
-    mode = GPIO_MODE_OUTPUT;
-  } else {
-    mode = 0;
+  if (options != PINMODE_INPUT && options != PINMODE_OUTPUT) {
     assert(0);
   }
 
-  gpio_mode_setup(port, mode, GPIO_PUPD_NONE, pin);
+  GPIO_Init(port, &init);
 }
 
 void spi_config(spi_t port, int options)
@@ -70,14 +65,20 @@ void timer_config(int timer, int channel, int options)
 
 void arch_config_ble(void)
 {
-  rcc_peripheral_enable_clock(&RCC_APB2ENR, RCC_APB2ENR_SYSCFGEN);
+  // rcc_peripheral_enable_clock(&RCC_APB2ENR, RCC_APB2ENR_SYSCFGEN);
+  RCC_APB2PeriphClockCmd(RCC_APB2Periph_SYSCFG, ENABLE);
 
-  nvic_enable_irq(NVIC_EXTI3_IRQ);
-  nvic_set_priority(NVIC_EXTI3_IRQ, BLE_EXTI_ISR_PRIORITY);
+  NVIC_EnableIRQ(EXTI3_IRQn);
+  NVIC_SetPriority(EXTI3_IRQn, BLE_EXTI_ISR_PRIORITY);
 
-  exti_select_source(EXTI3, NRF8001_GPIO);
-  exti_set_trigger(EXTI3, EXTI_TRIGGER_FALLING);
-  exti_enable_request(EXTI3);
+  EXTI_InitTypeDef ble_isr_init = {
+    .EXTI_Line = EXTI_Line3,
+    .EXTI_LineCmd = ENABLE,
+    .EXTI_Mode = EXTI_Mode_Interrupt,
+    .EXTI_Trigger = EXTI_Trigger_Falling
+  };
+
+  EXTI_Init(&ble_isr_init);
 }
 
 void arch_config_clocks(void)
@@ -290,4 +291,5 @@ void disable_pulse(void)
 }
 
 
-#endif // ifdef OPENCM3
+#endif // ifdef STM32_STDPERIPH_LIB
+

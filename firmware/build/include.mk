@@ -37,6 +37,11 @@ OOCD_BOARD	?= stm32ldiscovery
 BMP_PORT	?=
 
 ################################################################################
+# Set to 1 to use ST's standard peripheral library.
+USE_ST_LIB      ?= 0
+
+
+################################################################################
 # texane/stlink specific variables
 #STLINK_PORT	?= :4242
 

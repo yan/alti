@@ -1,14 +1,16 @@
 
 BINARY = aero
+
 OPENCM3_DIR = ./libopencm3
 
-LDSCRIPT = $(OPENCM3_DIR)/lib/stm32/l1/stm32l15xxb.ld
+LDSCRIPT = support/stm32l15xxb.ld
 
 ENABLE_SEMIHOSTING ?= 0
 
 TOPLEVEL_LIB_DIR = build/lib
 
-LIBS := opencm3 freertos
+LIBS := freertos stm32l1_stdperiphlib opencm3
+# opencm3
 
 PID_DIR := build/pid
 OBJ_DIR := build/obj
@@ -56,6 +58,7 @@ $(OBJ_DIR):
 cleanlib:
 	make -f build/Makefile.libfreertos clean
 	make -f build/Makefile.libopencm3 clean
+	make -f build/Makefile.libstm32l1_stdperiphlib
 
 run: elf
 	mkdir -p $(PID_DIR)
