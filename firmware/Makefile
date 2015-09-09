@@ -4,6 +4,7 @@ BINARY = aero
 OPENCM3_DIR = ./libopencm3
 
 LDSCRIPT = support/stm32l15xxb.ld
+LDFLAGS += -Lsupport
 
 ENABLE_SEMIHOSTING ?= 0
 
@@ -13,33 +14,19 @@ LIBS := freertos stm32l1_stdperiphlib opencm3
 # opencm3
 
 PID_DIR := build/pid
-OBJ_DIR := build/obj
-SRC_DIR := src/
+# OBJ_DIR := build/obj
+SRC_DIR := ./src
 
-SRCS = $(wildcard $(SRC_DIR)/*.c)
-OBJS = $(SRCS:$(SRC_DIR)/%.c=%.o)
+SRC = $(wildcard $(SRC_DIR)/*.c)
+SRC := $(SRC:$(SRC_DIR)/%=%)
 
-#$(info [${SRCS}])
-#$(info [${OBJS}])
 
 LDFLAGS += -L$(TOPLEVEL_LIB_DIR)
-LDLIBS += -lm -lfreertos
+LDLIBS += -lm -lfreertos -lopencm3_stm32l1
 
-FREERTOS_DIR = freertos/FreeRTOS/Source/
-CPPFLAGS += -Iinclude -I$(FREERTOS_DIR)/include -I$(FREERTOS_DIR)/portable/GCC/ARM_CM3
 
-GDB_CMDS = support/gdb_commands
 OPENOCD_CFG = -f /usr/local/share/openocd/scripts/interface/stlink-v2.cfg    \
               -f /usr/local/share/openocd/scripts/target/stm32lx_stlink.cfg
-
-ifeq ($(ENABLE_SEMIHOSTING), 1)
-  LDFLAGS += --specs=rdimon.specs
-  LDLIBS += -lrdimon
-  CPPFLAGS += -DENABLE_SEMIHOSTING=1
-  $(shell grep -q semihosting $(GDB_CMDS) || echo 'mon arm semihosting enable' >> $(GDB_CMDS))
-else
-  $(shell [ -f $(GDB_CMDS) ] && sed -i '' '/mon arm semihosting/d' $(GDB_CMDS))
-endif
 
 
 include build/include.mk
@@ -66,3 +53,4 @@ run: elf
 	openocd $(OPENOCD_CFG) -l "${PID_DIR}/openocd.log" & echo "$$!" > "${PID_DIR}/openocd.pid"
 	$(PREFIX)-gdb --command=$(GDB_CMDS) $(OBJ_DIR)/$(BINARY).elf
 	@kill `cat $(PID_DIR)/openocd.pid`
+

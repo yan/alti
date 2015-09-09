@@ -18,7 +18,6 @@
 ## along with this library.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-LIBNAME		= opencm3_stm32l1
 DEFS		= -DSTM32L1
 
 FP_FLAGS	?= -msoft-float
@@ -32,11 +31,6 @@ OOCD_INTERFACE	?= stlink-v2
 OOCD_BOARD	?= stm32ldiscovery
 
 ################################################################################
-# Black Magic Probe specific variables
-# Set the BMP_PORT to a serial port and then BMP is used for flashing
-BMP_PORT	?=
-
-################################################################################
 # Set to 1 to use ST's standard peripheral library.
 USE_ST_LIB      ?= 0
 
@@ -47,3 +41,4 @@ USE_ST_LIB      ?= 0
 
 
 include build/rules.mk
+include build/paths.mk

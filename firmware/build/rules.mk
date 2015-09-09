@@ -48,11 +48,13 @@ STYLECHECKFILES	:= $(shell find . -name '*.[ch]')
 ###############################################################################
 # Source files
 
-LDSCRIPT	?= $(BINARY).ld
 
-OBJ_DIR ?= ./
+OBJ_DIR ?= build/obj
 
-OBJS := $(addprefix $(OBJ_DIR)/, $(OBJS))
+OBJS = $(addprefix $(OBJ_DIR)/, $(SRC:%.c=%.o))
+# OBJS := $(addprefix $(OBJ_DIR)/, $(OBJS))
+#
+TO_CLEAN       ?= $(OBJ_DIR)/*
 
 #OBJS_WITH_PATH := $(OBJS: %.o=$(OBJ_DIR)/%.o)
 #OBJS := $(OBJS_WITH_PATH)
@@ -73,20 +75,21 @@ OPENCM3_DIR := $(firstword $(dir $(OPENCM3_DIR)))
 ifeq ($(strip $(OPENCM3_DIR)),)
 $(warning Cannot find libopencm3 library in the standard search paths.)
 $(error Please specify it through OPENCM3_DIR variable!)
-endif
-endif
+endif # !OPENCMD3_DIR
+endif # !USE_ST_LIB
 
 ifeq ($(V),1)
 $(info Using $(OPENCM3_DIR) path to library)
-endif
+endif # V
 
 INCLUDE_DIR	= $(OPENCM3_DIR)/include
-LIB_DIR		= $(OPENCM3_DIR)/lib
+#LIB_DIR		= $(OPENCM3_DIR)/lib
 SCRIPT_DIR	= $(OPENCM3_DIR)/scripts
 MISC_LIB_DIR    = $(OPENCM3_DIR)/../cmsisdsp
 DEFS           += -DOPENCM3
 
-else
+else # USE_ST_LIB
+
 STM32_PERIPH_DIR := stm32l1_stdperiphlib/Libraries/STM32L1xx_StdPeriph_Driver
 
 INCLUDE_DIR     = $(STM32_PERIPH_DIR)/inc
@@ -96,9 +99,21 @@ DEFS           += -DSTM32L1XX_HD
 DEFS           += -I$(STM32_PERIPH_DIR)/../CMSIS/Device/ST/STM32L1xx/Include
 DEFS           += -I$(STM32_PERIPH_DIR)/../CMSIS/Include
 
+endif # USE_ST_LIB
 
-  #### stm lib
-endif
+
+###############################################################################
+# Semihosting support
+GDB_CMDS = support/gdb_commands
+ifeq ($(ENABLE_SEMIHOSTING), 1)
+  LDFLAGS += --specs=rdimon.specs
+  LDLIBS += -lrdimon
+  CPPFLAGS += -DENABLE_SEMIHOSTING=1
+  $(shell grep -q semihosting $(GDB_CMDS) || echo 'mon arm semihosting enable' >> $(GDB_CMDS))
+else
+  $(shell [ -f $(GDB_CMDS) ] && sed -i '' '/mon arm semihosting/d' $(GDB_CMDS))
+endif # ENABLE_SEMIHOSTING
+
 ###############################################################################
 # C flags
 
@@ -138,8 +153,9 @@ endif
 ###############################################################################
 # Used libraries
 
-LDLIBS		+= -l$(LIBNAME)
+#LDLIBS		+= -l$(LIBNAME)
 LDLIBS		+= -Wl,--start-group -lc -lgcc -lnosys -Wl,--end-group
+
 
 ###############################################################################
 ###############################################################################
@@ -151,10 +167,8 @@ LDLIBS		+= -Wl,--start-group -lc -lgcc -lnosys -Wl,--end-group
 .SECONDEXPANSION:
 .SECONDARY:
 
-all: elf
 
 elf: $(OBJ_DIR)/$(BINARY).elf
-	$(SIZE) $(OBJ_DIR)/$(BINARY).elf
 bin: $(OBJ_DIR)/$(BINARY).bin
 hex: $(OBJ_DIR)/$(BINARY).hex
 srec: $(OBJ_DIR)/$(BINARY).srec
@@ -164,69 +178,59 @@ images: $(OBJ_DIR)/$(BINARY).images
 flash: $(OBJ_DIR)/$(BINARY).flash
 
 size:
-	$(PREFIX)-size $(OBJ_DIR)/$(BINARY).elf
+	$(SIZE) $(OBJ_DIR)/$(BINARY).elf
 
 $(OBJ_DIR)/%.images: $(OBJ_DIR)/%.bin $(OBJ_DIR)/%.hex $(OBJ_DIR)/%.srec $(OBJ_DIR)/%.list $(OBJ_DIR)/%.map
-	@#printf "*** $* images generated ***\n"
+	@printf "*** $* images generated ***\n"
 
-$(OBJ_DIR)/%.bin: $(OBJ_DIR)/%.elf
-	@#printf "  OBJCOPY $(*).bin\n"
-	$(Q)$(OBJCOPY) -Obinary $< $@ #$(*).bin
+$(OBJ_DIR)/%.bin: elf
+	@printf "  OBJCOPY $(*).bin\n"
+	$(Q)$(OBJCOPY) -Obinary $< $@
 
-$(OBJ_DIR)/%.hex: $(OBJ_DIR)/%.elf
-	@#printf "  OBJCOPY $(*).hex\n"
-	$(Q)$(OBJCOPY) -Oihex $< $@ #$(*).hex
+$(OBJ_DIR)/%.hex: elf
+	@printf "  OBJCOPY $(*).hex\n"
+	$(Q)$(OBJCOPY) -Oihex $< $@
 
-$(OBJ_DIR)/%.srec: $(OBJ_DIR)/%.elf
-	@#printf "  OBJCOPY $(*).srec\n"
-	$(Q)$(OBJCOPY) -Osrec $< $@ #$(*).srec
+$(OBJ_DIR)/%.srec: elf
+	@printf "  OBJCOPY $(*).srec\n"
+	$(Q)$(OBJCOPY) -Osrec $< $@
 
-$(OBJ_DIR)/%.list: $(OBJ_DIR)/%.elf
-	@#printf "  OBJDUMP $(*).list\n"
-	$(Q)$(OBJDUMP) -S $< > $@ #$(*).list
+$(OBJ_DIR)/%.list: elf
+	@printf "  OBJDUMP $(*).list\n"
+	$(Q)$(OBJDUMP) -S $< > $@
 
-$(OBJ_DIR)/%.elf: $(OBJS) $(LDSCRIPT) $(LIB_DIR)/lib$(LIBNAME).a
-	@#printf "  LD      $(*).elf\n"
-	$(Q)$(LD) $(LDFLAGS) $(ARCH_FLAGS) $(OBJS) $(LDLIBS) -o $(*).elf
-
-build/obj/aero.elf: $(OBJS) $(LDSCRIPT) $(LIB_DIR)/lib$(LIBNAME).a
-	@#printf "  LD      $(*).elf\n"
-	$(Q)$(LD) $(LDFLAGS) $(ARCH_FLAGS) $(OBJS) $(LDLIBS) -o $(*).elf
+$(info srcdir is $(SRC_DIR))
+$(OBJ_DIR)/%.elf: $(OBJS) $(LDSCRIPT)
+	@printf "  LD      $(*).elf\n"
+	$(Q)$(LD) $(LDFLAGS) $(ARCH_FLAGS) $(OBJS) $(LDLIBS) -o $@
+	$(SIZE) $(OBJ_DIR)/$(BINARY).elf
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
-	@#printf "  CC      $(*).c\n"
+	@printf "  CC      $(*).c\n"
 	$(Q)$(CC) $(CFLAGS) $(CPPFLAGS) $(ARCH_FLAGS) -o $@ -c $<
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cxx
-	@#printf "  CXX     $(*).cxx\n"
+	@printf "  CXX     $(*).cxx\n"
 	$(Q)$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(ARCH_FLAGS) -o $@ -c $<
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cc
-	@#printf "  CXX     $(*).cc\n"
+	@printf "  CXX     $(*).cc\n"
 	$(Q)$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(ARCH_FLAGS) -o $@ -c $<
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
-	@#printf "  CXX     $(*).cpp\n"
+	@printf "  CXX     $(*).cpp\n"
 	$(Q)$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(ARCH_FLAGS) -o $@ -c $<
 
+ifneq ($(LIBNAME),)
+$(LIB_DIR)/$(LIBNAME).a: $(OBJS)
+	@printf "  AR      $(LIBNAME).a\n"
+	$(Q)$(AR) rcs "$@" $(OBJS)
+endif
+
 clean:
-	@#printf "  CLEAN\n"
-	$(Q)cd $(OBJ_DIR) && $(RM) *.o *.d *.elf *.bin *.hex *.srec *.list *.map
-
-stylecheck: $(STYLECHECKFILES:=.stylecheck)
-styleclean: $(STYLECHECKFILES:=.styleclean)
-
-# the cat is due to multithreaded nature - we like to have consistent chunks of text on the output
-%.stylecheck: %
-	$(Q)$(SCRIPT_DIR)$(STYLECHECK) $(STYLECHECKFLAGS) $* > $*.stylecheck; \
-		if [ -s $*.stylecheck ]; then \
-			cat $*.stylecheck; \
-		else \
-			rm -f $*.stylecheck; \
-		fi;
-
-%.styleclean:
-	$(Q)rm -f $*.stylecheck;
+	@printf "  CLEAN\n"
+	$(Q)cd $(OBJ_DIR) && $(RM) -fr *
+	$(Q)$(RM) $(TO_CLEAN)
 
 
 %.stlink-flash: %.bin
@@ -245,7 +249,7 @@ ifeq ($(OOCD_SERIAL),)
 		    -c "flash write_image erase $(*).hex" \
 		    -c "reset" \
 		    -c "shutdown" $(NULL)
-else
+else # OOCD_SERIAL
 %.flash: %.hex
 	@printf "  FLASH   $<\n"
 	@# IMPORTANT: Don't use "resume", only "reset" will work correctly!
@@ -256,24 +260,24 @@ else
 		    -c "flash write_image erase $(*).hex" \
 		    -c "reset" \
 		    -c "shutdown" $(NULL)
-endif
-else
+endif # OOCD_SERIAL
+else  # BMP_PORT
 %.flash: %.elf
 	@printf "  GDB   $(*).elf (flash)\n"
 	$(Q)$(GDB) --batch \
 		   -ex 'target extended-remote $(BMP_PORT)' \
 		   -x $(SCRIPT_DIR)/black_magic_probe_flash.scr \
 		   $(*).elf
-endif
-else
+endif # BMP_PORT
+else  # STLINK_PORT
 %.flash: %.elf
 	@printf "  GDB   $(*).elf (flash)\n"
 	$(Q)$(GDB) --batch \
 		   -ex 'target extended-remote $(STLINK_PORT)' \
 		   -x $(SCRIPT_DIR)/stlink_flash.scr \
 		   $(*).elf
-endif
+endif # STLINK_PORT
 
-.PHONY: images clean stylecheck styleclean elf bin hex srec list size
+.PHONY: images clean elf bin hex srec list size
 
 -include $(OBJS:.o=.d)
