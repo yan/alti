@@ -35,32 +35,17 @@ CXX		:= $(PREFIX)-g++
 LD		:= $(PREFIX)-gcc
 AR		:= $(PREFIX)-ar
 AS		:= $(PREFIX)-as
-SIZE  := $(PREFIX)-size
+SIZE		:= $(PREFIX)-size
 OBJCOPY		:= $(PREFIX)-objcopy
 OBJDUMP		:= $(PREFIX)-objdump
 GDB		:= $(PREFIX)-gdb
 STFLASH		= $(shell which st-flash)
-STYLECHECK	:= /checkpatch.pl
-STYLECHECKFLAGS	:= --no-tree -f --terse --mailback
-STYLECHECKFILES	:= $(shell find . -name '*.[ch]')
 
 
 ###############################################################################
 # Source files
 
-
-OBJ_DIR ?= build/obj
-
-OBJS = $(addprefix $(OBJ_DIR)/, $(SRC:%.c=%.o))
-# OBJS := $(addprefix $(OBJ_DIR)/, $(OBJS))
-#
-TO_CLEAN       ?= $(OBJ_DIR)/*
-
-#OBJS_WITH_PATH := $(OBJS: %.o=$(OBJ_DIR)/%.o)
-#OBJS := $(OBJS_WITH_PATH)
-
-#$(info [${OBJS}])
-
+OBJS ?= $(addprefix $(OBJ_DIR)/, $(SRC:%.c=%.o))
 
 ifneq ($(strip $(USE_ST_LIB)),1)
 ifeq ($(strip $(OPENCM3_DIR)),)
@@ -78,95 +63,37 @@ $(error Please specify it through OPENCM3_DIR variable!)
 endif # !OPENCMD3_DIR
 endif # !USE_ST_LIB
 
-ifeq ($(V),1)
-$(info Using $(OPENCM3_DIR) path to library)
-endif # V
-
-INCLUDE_DIR	= $(OPENCM3_DIR)/include
-#LIB_DIR		= $(OPENCM3_DIR)/lib
 SCRIPT_DIR	= $(OPENCM3_DIR)/scripts
 MISC_LIB_DIR    = $(OPENCM3_DIR)/../cmsisdsp
-DEFS           += -DOPENCM3
+USER_CPPFLAGS   += -DOPENCM3
+USER_CPPFLAGS   += -I$(OPENCM3_DIR)/include 
 
 else # USE_ST_LIB
 
 STM32_PERIPH_DIR := stm32l1_stdperiphlib/Libraries/STM32L1xx_StdPeriph_Driver
 
-INCLUDE_DIR     = $(STM32_PERIPH_DIR)/inc
-LIB_DIR         = build/lib/
-DEFS           += -DSTM32_STDPERIPH_LIB
-DEFS           += -DSTM32L1XX_HD
-DEFS           += -I$(STM32_PERIPH_DIR)/../CMSIS/Device/ST/STM32L1xx/Include
-DEFS           += -I$(STM32_PERIPH_DIR)/../CMSIS/Include
+USER_CPPFLAGS   += -DSTM32_STDPERIPH_LIB
+USER_CPPFLAGS   += -DSTM32L1XX_HD
+USER_CPPFLAGS   += -I$(STM32_PERIPH_DIR)/../CMSIS/Device/ST/STM32L1xx/Include
+USER_CPPFLAGS   += -I$(STM32_PERIPH_DIR)/../CMSIS/Include
+USER_CPPFLAGS   += -I$(STM32_PERIPH_DIR)/inc
 
 endif # USE_ST_LIB
 
 
-###############################################################################
-# Semihosting support
-GDB_CMDS = support/gdb_commands
-ifeq ($(ENABLE_SEMIHOSTING), 1)
-  LDFLAGS += --specs=rdimon.specs
-  LDLIBS += -lrdimon
-  CPPFLAGS += -DENABLE_SEMIHOSTING=1
-  $(shell grep -q semihosting $(GDB_CMDS) || echo 'mon arm semihosting enable' >> $(GDB_CMDS))
-else
-  $(shell [ -f $(GDB_CMDS) ] && sed -i '' '/mon arm semihosting/d' $(GDB_CMDS))
-endif # ENABLE_SEMIHOSTING
-
-###############################################################################
-# C flags
-
-CFLAGS		+= -g # -Os
-CFLAGS		+= -Wextra -Wshadow -Wimplicit-function-declaration
-CFLAGS		+= -Wredundant-decls -Wmissing-prototypes -Wstrict-prototypes
-CFLAGS          += -Wno-unused-function
-CFLAGS		+= -fno-common -ffunction-sections -fdata-sections
-
-###############################################################################
-# C++ flags
-
-CXXFLAGS	+= -g #-Os
-CXXFLAGS	+= -Wextra -Wshadow -Wredundant-decls  -Weffc++
-CXXFLAGS	+= -fno-common -ffunction-sections -fdata-sections
-
-###############################################################################
-# C & C++ preprocessor common flags
-
-CPPFLAGS	+= -MD
-CPPFLAGS	+= -Wall -Wundef -Werror
-CPPFLAGS	+= -I$(INCLUDE_DIR) $(DEFS)
-
-###############################################################################
-# Linker flags
-
-LDFLAGS		+= --static -nostartfiles
-LDFLAGS		+= -L$(LIB_DIR)
-LDFLAGS         += -L$(MISC_LIB_DIR)
-LDFLAGS		+= -T$(LDSCRIPT)
-LDFLAGS		+= -Wl,-Map=$(*).map
-LDFLAGS		+= -Wl,--gc-sections
-ifeq ($(V),99)
-LDFLAGS		+= -Wl,--print-gc-sections
-endif
-
-###############################################################################
-# Used libraries
-
-#LDLIBS		+= -l$(LIBNAME)
-LDLIBS		+= -Wl,--start-group -lc -lgcc -lnosys -Wl,--end-group
+include build/flags.mk
 
 
 ###############################################################################
-###############################################################################
-###############################################################################
 
-#VPATH = $(OBJ_DIR)
+# Only build the final binaries if we're not building a library
+ifeq ($(LIBNAME),)
 
 .SUFFIXES: .elf .bin .hex .srec .list .map .images
 .SECONDEXPANSION:
 .SECONDARY:
 
+all: output_dirs elf
 
 elf: $(OBJ_DIR)/$(BINARY).elf
 bin: $(OBJ_DIR)/$(BINARY).bin
@@ -178,32 +105,53 @@ images: $(OBJ_DIR)/$(BINARY).images
 flash: $(OBJ_DIR)/$(BINARY).flash
 
 size:
-	$(SIZE) $(OBJ_DIR)/$(BINARY).elf
+	$(Q)$(SIZE) $(OBJ_DIR)/$(BINARY).elf
 
 $(OBJ_DIR)/%.images: $(OBJ_DIR)/%.bin $(OBJ_DIR)/%.hex $(OBJ_DIR)/%.srec $(OBJ_DIR)/%.list $(OBJ_DIR)/%.map
 	@printf "*** $* images generated ***\n"
 
-$(OBJ_DIR)/%.bin: elf
+$(OBJ_DIR)/%.bin: $(OBJ_DIR)/%.elf
 	@printf "  OBJCOPY $(*).bin\n"
 	$(Q)$(OBJCOPY) -Obinary $< $@
 
-$(OBJ_DIR)/%.hex: elf
+$(OBJ_DIR)/%.hex: $(OBJ_DIR)/%.elf
 	@printf "  OBJCOPY $(*).hex\n"
 	$(Q)$(OBJCOPY) -Oihex $< $@
 
-$(OBJ_DIR)/%.srec: elf
+$(OBJ_DIR)/%.srec: $(OBJ_DIR)/%.elf
 	@printf "  OBJCOPY $(*).srec\n"
 	$(Q)$(OBJCOPY) -Osrec $< $@
 
-$(OBJ_DIR)/%.list: elf
+$(OBJ_DIR)/%.list: $(OBJ_DIR)/%.elf
 	@printf "  OBJDUMP $(*).list\n"
 	$(Q)$(OBJDUMP) -S $< > $@
 
-$(info srcdir is $(SRC_DIR))
-$(OBJ_DIR)/%.elf: $(OBJS) $(LDSCRIPT)
-	@printf "  LD      $(*).elf\n"
-	$(Q)$(LD) $(LDFLAGS) $(ARCH_FLAGS) $(OBJS) $(LDLIBS) -o $@
-	$(SIZE) $(OBJ_DIR)/$(BINARY).elf
+#
+$(OBJ_DIR)/%.elf: $(OBJS) $(LDSCRIPT) $(LDLIBS:%=$(LIB_DIR)/lib%.a)
+	@printf "  LD      $(*).elf ($(LDLIBS))\n"
+	$(Q)$(LD) $(LDFLAGS) $(ARCH_FLAGS) $(OBJS) $(LDLIBS:%=-l%) -o $@
+	$(Q)$(SIZE) $(OBJ_DIR)/$(BINARY).elf
+
+$(LIB_DIR)/lib%.a: 
+	@printf "BUILD $*\n"
+	$(Q)make -s -f build/Makefile.lib$* V=$(Q)
+#$(LDLIBS): $(LIB_DIR)
+
+.PHONY: images clean elf bin hex srec list size output_dirs
+
+else
+
+.PHONY: output_dirs
+
+ifeq ($(DONT_ARCHIVE),)
+$(LIB_DIR)/$(LIBNAME).a: output_dirs $(OBJS)
+	@printf "  AR      $(LIBNAME).a\n"
+	$(Q)$(AR) rcs "$@" $(OBJS)
+else
+prebuilt_lib: $(LIB_DIR)/$(LIBNAME).a
+endif
+
+endif
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	@printf "  CC      $(*).c\n"
@@ -221,63 +169,33 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
 	@printf "  CXX     $(*).cpp\n"
 	$(Q)$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(ARCH_FLAGS) -o $@ -c $<
 
-ifneq ($(LIBNAME),)
-$(LIB_DIR)/$(LIBNAME).a: $(OBJS)
-	@printf "  AR      $(LIBNAME).a\n"
-	$(Q)$(AR) rcs "$@" $(OBJS)
-endif
-
 clean:
 	@printf "  CLEAN\n"
 	$(Q)cd $(OBJ_DIR) && $(RM) -fr *
-	$(Q)$(RM) $(TO_CLEAN)
+	$(Q)$(RM) -r $(TO_CLEAN)
 
+cleanlib:
+	$(Q)$(RM) $(LIB_DIR)/*.a
+
+ifneq ($(OUTPUT_DIRS),)
+output_dirs: $(OUTPUT_DIRS)
+$(OUTPUT_DIRS):
+	$(Q)mkdir -p $@
+endif
 
 %.stlink-flash: %.bin
 	@printf "  FLASH  $<\n"
 	$(Q)$(STFLASH) write $(*).bin 0x8000000
 
-ifeq ($(STLINK_PORT),)
-ifeq ($(BMP_PORT),)
-ifeq ($(OOCD_SERIAL),)
 %.flash: %.hex
 	@printf "  FLASH   $<\n"
 	@# IMPORTANT: Don't use "resume", only "reset" will work correctly!
 	$(Q)$(OOCD) -f interface/$(OOCD_INTERFACE).cfg \
-		    -f board/$(OOCD_BOARD).cfg \
+		    -f board/$(OOCD_TARGET).cfg \
 		    -c "init" -c "reset init" \
 		    -c "flash write_image erase $(*).hex" \
 		    -c "reset" \
 		    -c "shutdown" $(NULL)
-else # OOCD_SERIAL
-%.flash: %.hex
-	@printf "  FLASH   $<\n"
-	@# IMPORTANT: Don't use "resume", only "reset" will work correctly!
-	$(Q)$(OOCD) -f interface/$(OOCD_INTERFACE).cfg \
-		    -f board/$(OOCD_BOARD).cfg \
-		    -c "ft2232_serial $(OOCD_SERIAL)" \
-		    -c "init" -c "reset init" \
-		    -c "flash write_image erase $(*).hex" \
-		    -c "reset" \
-		    -c "shutdown" $(NULL)
-endif # OOCD_SERIAL
-else  # BMP_PORT
-%.flash: %.elf
-	@printf "  GDB   $(*).elf (flash)\n"
-	$(Q)$(GDB) --batch \
-		   -ex 'target extended-remote $(BMP_PORT)' \
-		   -x $(SCRIPT_DIR)/black_magic_probe_flash.scr \
-		   $(*).elf
-endif # BMP_PORT
-else  # STLINK_PORT
-%.flash: %.elf
-	@printf "  GDB   $(*).elf (flash)\n"
-	$(Q)$(GDB) --batch \
-		   -ex 'target extended-remote $(STLINK_PORT)' \
-		   -x $(SCRIPT_DIR)/stlink_flash.scr \
-		   $(*).elf
-endif # STLINK_PORT
 
-.PHONY: images clean elf bin hex srec list size
 
 -include $(OBJS:.o=.d)

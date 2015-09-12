@@ -1,51 +1,26 @@
 
 BINARY = aero
 
-OPENCM3_DIR = ./libopencm3
 
-LDSCRIPT = support/stm32l15xxb.ld
-LDFLAGS += -Lsupport
-
-ENABLE_SEMIHOSTING ?= 0
-
-TOPLEVEL_LIB_DIR = build/lib
-
-LIBS := freertos stm32l1_stdperiphlib opencm3
-# opencm3
+LIBS := freertos opencm3_stm32l1
 
 PID_DIR := build/pid
-# OBJ_DIR := build/obj
-SRC_DIR := ./src
 
-SRC = $(wildcard $(SRC_DIR)/*.c)
-SRC := $(SRC:$(SRC_DIR)/%=%)
+SRC_DIR = src/
 
+# Generate with: COLUMNS=100 ls -x src/ |sed 's/^/SRC   += /g'
+SRC	= aero.c			bmx055.c			config.c
+SRC	+= fault_handlers.c		filter.c			flash.c
+SRC	+= globals.c			hal_stm32_libopencm3.c		hal_stm32_stdperiphlib.c
+SRC	+= hooks.c			logger.c			ms5611.c
+SRC	+= nrf8001.c			spi.c				task_alert.c
+SRC	+= task_ble.c			task_main.c			task_sensor.c
+SRC	+= util.c
 
-LDFLAGS += -L$(TOPLEVEL_LIB_DIR)
-LDLIBS += -lm -lfreertos -lopencm3_stm32l1
-
-
-OPENOCD_CFG = -f /usr/local/share/openocd/scripts/interface/stlink-v2.cfg    \
-              -f /usr/local/share/openocd/scripts/target/stm32lx_stlink.cfg
-
+LDLIBS += freertos opencm3_stm32l1
 
 include build/include.mk
 
-$(LIBS:%=$(TOPLEVEL_LIB_DIR)/lib%.a):
-	make -f build/Makefile.$(*F)
-
-libs: $(OBJ_DIR) $(TOPLEVEL_LIB_DIR) $(LIBS:%=$(TOPLEVEL_LIB_DIR)/lib%.a)
-
-$(TOPLEVEL_LIB_DIR):
-	mkdir -p $(TOPLEVEL_LIB_DIR)
-
-$(OBJ_DIR):
-	mkdir -p $(OBJ_DIR)
-
-cleanlib:
-	make -f build/Makefile.libfreertos clean
-	make -f build/Makefile.libopencm3 clean
-	make -f build/Makefile.libstm32l1_stdperiphlib
 
 run: elf
 	mkdir -p $(PID_DIR)

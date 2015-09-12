@@ -1,75 +1,12 @@
 
-LIBNAME = libfreertos
+LIBNAME := libfreertos
 
-SRCLIBDIR ?= freertos/FreeRTOS/Source
-
-OPENCM3_DIR = libopencm3
-
-PREFIX ?= arm-none-eabi
-
-CC = $(PREFIX)-gcc
-AR = $(PREFIX)-ar
-CFLAGS = -g2 \
-      -Wall -Wextra -Wimplicit-function-declaration \
-      -Wredundant-decls -Wmissing-prototypes -Wstrict-prototypes \
-      -Wundef -Wshadow -fno-common -mcpu=cortex-m3 $(FP_FLAGS) -mthumb \
-      -Wstrict-prototypes \
-      -I$(SRCLIBDIR) -I$(SRCLIBDIR)/include -Iinclude \
-      -I$(SRCLIBDIR)/portable/GCC/ARM_CM3 \
-      -ffunction-sections -fdata-sections -MD -DSTM32L1 -DFREERTOS
-
-ARFLAGS = rcs
 
 SRC		 = croutine.c event_groups.c list.c queue.c tasks.c timers.c
 SRC		+= portable/MemMang/heap_2.c portable/GCC/ARM_CM3/port.c
 
-LIB_DIR = build/lib
-OBJ_DIR = build/obj
-OBJS = $(SRC:%.c=%.o)
+SRC_DIR		:= freertos/FreeRTOS/Source
+OUTPUT_DIRS     += $(OBJ_DIR)/portable/MemMang $(OBJ_DIR)/portable/GCC/ARM_CM3
 
-ifeq ($(ENABLE_SEMIHOSTING), 1)
-  CFLAGS += -DENABLE_SEMIHOSTING=1
-endif
-
-# VPATH = portable portable/GCC/ARM_CM3
-
-
-
-# Be silent per default, but 'make V=1' will show all compiler calls.
-ifneq ($(V),1)
-Q := @
-endif
-
-
-all: output_dirs $(LIB_DIR)/$(LIBNAME).a
-
-$(LIB_DIR)/$(LIBNAME).a: $(OBJS)
-	@printf "  AR      $(LIBNAME).a\n"
-	$(Q)$(AR) $(ARFLAGS) "$@" $(OBJS:%.o=$(OBJ_DIR)/%.o)
-
-$(OBJ_DIR)/$(LIBNAME).ld: $(LIBNAME).ld
-	@printf "  CP      $(LIBNAME).ld\n"
-	$(Q)cp $^ "$@"
-	$(Q)if [ -f $(LIBNAME)_rom_to_ram.ld ]; then cp $(LIBNAME)_rom_to_ram.ld $(SRCLIBDIR); fi
-
-$(OBJS): %.o: $(SRCLIBDIR)/%.c
-	@printf "  CC      $(<F)\n"
-	$(Q)$(CC) $(CFLAGS) -o $(OBJ_DIR)/$@ -c $<
-
-clean:
-	$(Q)rm -rf $(OBJ_DIR) 
-	$(Q)rm -rf $(LIB_DIR)
-	$(Q)rm -f $(SRCLIBDIR)/$(LIBNAME).ld
-
-output_dirs: ${OBJ_DIR} ${LIB_DIR} ${OBJ_DIR}/portable
-
-${OBJ_DIR}/portable: 
-	mkdir -p ${OBJ_DIR}/portable/{MemMang,GCC/ARM_CM3}
-
-${LIB_DIR}:
-	mkdir -p ${LIB_DIR}
-
-.PHONY: output_dirs
-
--include $(OBJS:.o=$(OBJ_DIR)/.d)
+include build/include.mk
 

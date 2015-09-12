@@ -28,8 +28,7 @@ ARCH_FLAGS	= -mthumb -mcpu=cortex-m3 $(FP_FLAGS) -mfix-cortex-m3-ldrd
 
 OOCD		?= openocd
 OOCD_INTERFACE	?= stlink-v2
-OOCD_BOARD	?= stm32ldiscovery
-
+OOCD_TARGET	?= stm32lx_stlink
 ################################################################################
 # Set to 1 to use ST's standard peripheral library.
 USE_ST_LIB      ?= 0
