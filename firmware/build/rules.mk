@@ -25,22 +25,6 @@ Q		:= @
 NULL		:= 2>/dev/null
 endif
 
-###############################################################################
-# Executables
-
-PREFIX		?= arm-none-eabi
-
-CC		:= $(PREFIX)-gcc
-CXX		:= $(PREFIX)-g++
-LD		:= $(PREFIX)-gcc
-AR		:= $(PREFIX)-ar
-AS		:= $(PREFIX)-as
-SIZE		:= $(PREFIX)-size
-OBJCOPY		:= $(PREFIX)-objcopy
-OBJDUMP		:= $(PREFIX)-objdump
-GDB		:= $(PREFIX)-gdb
-STFLASH		= $(shell which st-flash)
-
 
 ###############################################################################
 # Source files
@@ -48,35 +32,35 @@ STFLASH		= $(shell which st-flash)
 OBJS ?= $(addprefix $(OBJ_DIR)/, $(SRC:%.c=%.o))
 
 ifneq ($(strip $(USE_ST_LIB)),1)
-ifeq ($(strip $(OPENCM3_DIR)),)
+#ifeq ($(strip $(OPENCM3_DIR)),)
 # user has not specified the library path, so we try to detect it
 
 # where we search for the library
-LIBPATHS := ./libopencm3 ../../../../libopencm3 ../../../../../libopencm3 
-
-OPENCM3_DIR := $(wildcard $(LIBPATHS:=/locm3.sublime-project))
-OPENCM3_DIR := $(firstword $(dir $(OPENCM3_DIR)))
-
-ifeq ($(strip $(OPENCM3_DIR)),)
-$(warning Cannot find libopencm3 library in the standard search paths.)
-$(error Please specify it through OPENCM3_DIR variable!)
-endif # !OPENCMD3_DIR
-endif # !USE_ST_LIB
-
-SCRIPT_DIR	= $(OPENCM3_DIR)/scripts
-MISC_LIB_DIR    = $(OPENCM3_DIR)/../cmsisdsp
-USER_CPPFLAGS   += -DOPENCM3
-USER_CPPFLAGS   += -I$(OPENCM3_DIR)/include 
+## LIBPATHS := ./libopencm3 ../../../../libopencm3 ../../../../../libopencm3 
+## 
+## OPENCM3_DIR := $(wildcard $(LIBPATHS:=/locm3.sublime-project))
+## OPENCM3_DIR := $(firstword $(dir $(OPENCM3_DIR)))
+## 
+## ifeq ($(strip $(OPENCM3_DIR)),)
+## $(warning Cannot find libopencm3 library in the standard search paths.)
+## $(error Please specify it through OPENCM3_DIR variable!)
+## endif # !OPENCMD3_DIR
+## endif # !USE_ST_LIB
+## 
+## SCRIPT_DIR	= $(OPENCM3_DIR)/scripts
+## MISC_LIB_DIR    = $(OPENCM3_DIR)/../cmsisdsp
+## USER_CPPFLAGS   += -DOPENCM3
+## USER_CPPFLAGS   += -I$(OPENCM3_DIR)/include 
 
 else # USE_ST_LIB
 
-STM32_PERIPH_DIR := stm32l1_stdperiphlib/Libraries/STM32L1xx_StdPeriph_Driver
-
-USER_CPPFLAGS   += -DSTM32_STDPERIPH_LIB
-USER_CPPFLAGS   += -DSTM32L1XX_HD
-USER_CPPFLAGS   += -I$(STM32_PERIPH_DIR)/../CMSIS/Device/ST/STM32L1xx/Include
-USER_CPPFLAGS   += -I$(STM32_PERIPH_DIR)/../CMSIS/Include
-USER_CPPFLAGS   += -I$(STM32_PERIPH_DIR)/inc
+## STM32_PERIPH_DIR := stm32l1_stdperiphlib/Libraries/STM32L1xx_StdPeriph_Driver
+## 
+## USER_CPPFLAGS   += -DSTM32_STDPERIPH_LIB
+## USER_CPPFLAGS   += -DSTM32L1XX_HD
+## USER_CPPFLAGS   += -I$(STM32_PERIPH_DIR)/../CMSIS/Device/ST/STM32L1xx/Include
+## USER_CPPFLAGS   += -I$(STM32_PERIPH_DIR)/../CMSIS/Include
+## USER_CPPFLAGS   += -I$(STM32_PERIPH_DIR)/inc
 
 endif # USE_ST_LIB
 
@@ -135,7 +119,6 @@ $(OBJ_DIR)/%.elf: $(OBJS) $(LDSCRIPT) $(LDLIBS:%=$(LIB_DIR)/lib%.a)
 $(LIB_DIR)/lib%.a: 
 	@printf "BUILD $*\n"
 	$(Q)make -s -f build/Makefile.lib$* V=$(Q)
-#$(LDLIBS): $(LIB_DIR)
 
 .PHONY: images clean elf bin hex srec list size output_dirs
 
@@ -144,11 +127,11 @@ else
 .PHONY: output_dirs
 
 ifeq ($(DONT_ARCHIVE),)
-$(LIB_DIR)/$(LIBNAME).a: output_dirs $(OBJS)
-	@printf "  AR      $(LIBNAME).a\n"
+$(LIB_DIR)/lib$(LIBNAME).a: output_dirs $(OBJS)
+	@printf "  AR      lib$(LIBNAME).a\n"
 	$(Q)$(AR) rcs "$@" $(OBJS)
 else
-prebuilt_lib: $(LIB_DIR)/$(LIBNAME).a
+prebuilt_lib: $(LIB_DIR)/lib$(LIBNAME).a
 endif
 
 endif
@@ -177,6 +160,8 @@ clean:
 cleanlib:
 	$(Q)$(RM) $(LIB_DIR)/*.a
 
+cleanall: clean cleanlib
+
 ifneq ($(OUTPUT_DIRS),)
 output_dirs: $(OUTPUT_DIRS)
 $(OUTPUT_DIRS):
@@ -196,6 +181,13 @@ endif
 		    -c "flash write_image erase $(*).hex" \
 		    -c "reset" \
 		    -c "shutdown" $(NULL)
+
+run: elf
+	$(Q)mkdir -p $(PID_DIR)
+	$(Q)killall openocd || true
+	$(Q)openocd $(OPENOCD_CFG) -l "${PID_DIR}/openocd.log" & echo "$$!" > "${PID_DIR}/openocd.pid"
+	$(Q)$(GDB) --command=$(GDB_CMDS) $(OBJ_DIR)/$(BINARY).elf
+	$(Q)kill `cat $(PID_DIR)/openocd.pid`
 
 
 -include $(OBJS:.o=.d)

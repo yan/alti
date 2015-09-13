@@ -1,5 +1,7 @@
 
-LIBNAME		= libopencm3_stm32l1
+ifeq ($(LIBNAME)$(BINARY),)
+
+LIBNAME		= opencm3_stm32l1
 
 TARGET		:= stm32/l1
 
@@ -7,7 +9,7 @@ DONT_ARCHIVE    = 1
 
 include build/include.mk
 
-$(LIB_DIR)/$(LIBNAME).a: output_dirs
+$(LIB_DIR)/lib$(LIBNAME).a: output_dirs
 	$(Q)if [ ! "`ls -A libopencm3`" ] ; then \
 	  printf "######## ERROR ########\n"; \
 	  printf "\tlibopencm3 is not initialized.\n"; \
@@ -19,5 +21,22 @@ $(LIB_DIR)/$(LIBNAME).a: output_dirs
 	  exit 1; \
 	fi
 	$(Q)$(MAKE) -C libopencm3/lib/$(TARGET)
-	$(Q)cp $(realpath libopencm3)/lib/$(LIBNAME).a $(LIB_DIR)/$(LIBNAME).a
+	$(Q)cp $(realpath libopencm3)/lib/lib$(LIBNAME).a $(LIB_DIR)/lib$(LIBNAME).a
+
+endif
+
+LIBPATHS := ./libopencm3 ../../../../libopencm3 ../../../../../libopencm3 
+
+OPENCM3_DIR := $(wildcard $(LIBPATHS:=/locm3.sublime-project))
+OPENCM3_DIR := $(firstword $(dir $(OPENCM3_DIR)))
+
+ifeq ($(strip $(OPENCM3_DIR)),)
+$(warning Cannot find libopencm3 library in the standard search paths.)
+$(error Please specify it through OPENCM3_DIR variable!)
+endif # !OPENCMD3_DIR
+
+SCRIPT_DIR	= $(OPENCM3_DIR)/scripts
+MISC_LIB_DIR    = $(OPENCM3_DIR)/../cmsisdsp
+CPPFLAGS   += -DOPENCM3
+CPPFLAGS   += -I$(OPENCM3_DIR)/include 
 

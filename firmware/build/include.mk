@@ -21,7 +21,7 @@
 DEFS		= -DSTM32L1
 
 FP_FLAGS	?= -msoft-float
-ARCH_FLAGS	= -mthumb -mcpu=cortex-m3 $(FP_FLAGS) -mfix-cortex-m3-ldrd
+ARCH_FLAGS	?= -mthumb -mcpu=cortex-m3 $(FP_FLAGS) -mfix-cortex-m3-ldrd
 
 ################################################################################
 # OpenOCD specific variables
@@ -33,11 +33,10 @@ OOCD_TARGET	?= stm32lx_stlink
 # Set to 1 to use ST's standard peripheral library.
 USE_ST_LIB      ?= 0
 
-
 ################################################################################
 # texane/stlink specific variables
 #STLINK_PORT	?= :4242
 
 
 include build/rules.mk
-include build/paths.mk
+#include build/paths.mk

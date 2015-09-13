@@ -1,6 +1,8 @@
 
-LIBNAME := libfreertos
 
+ifeq ($(LIBNAME)$(BINARY),)
+
+LIBNAME := freertos
 
 SRC		 = croutine.c event_groups.c list.c queue.c tasks.c timers.c
 SRC		+= portable/MemMang/heap_2.c portable/GCC/ARM_CM3/port.c
@@ -10,3 +12,7 @@ OUTPUT_DIRS     += $(OBJ_DIR)/portable/MemMang $(OBJ_DIR)/portable/GCC/ARM_CM3
 
 include build/include.mk
 
+endif
+
+FREERTOS_DIR 	 = freertos/FreeRTOS/Source/
+CPPFLAGS 	+= -Iinclude -I$(FREERTOS_DIR)/include -I$(FREERTOS_DIR)/portable/GCC/ARM_CM3

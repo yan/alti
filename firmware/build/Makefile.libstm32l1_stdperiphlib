@@ -1,5 +1,8 @@
 
-LIBNAME = libstm32l1stdperiphlib
+
+ifeq ($(LIBNAME)$(BINARY),)
+
+LIBNAME = stm32l1stdperiphlib
 
 SRC      = misc.c               stm32l1xx_exti.c            stm32l1xx_pwr.c
 SRC     += stm32l1xx_adc.c      stm32l1xx_flash.c           stm32l1xx_rcc.c
@@ -19,3 +22,12 @@ USER_CPPFLAGS += -include stm32l1xx_conf.h
 
 include build/include.mk
 
+endif
+
+STM32_PERIPH_DIR := stm32l1_stdperiphlib/Libraries/STM32L1xx_StdPeriph_Driver
+
+CPPFLAGS   += -DSTM32_STDPERIPH_LIB
+CPPFLAGS   += -DSTM32L1XX_HD
+CPPFLAGS   += -I$(STM32_PERIPH_DIR)/../CMSIS/Device/ST/STM32L1xx/Include
+CPPFLAGS   += -I$(STM32_PERIPH_DIR)/../CMSIS/Include
+CPPFLAGS   += -I$(STM32_PERIPH_DIR)/inc

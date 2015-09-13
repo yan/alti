@@ -11,6 +11,22 @@ LDSCRIPT	= $(SUPPORT_DIR)/stm32l15xxb.ld
 DONT_ARCHIVE    ?= 
 
 ###############################################################################
+# Executables
+
+PREFIX		?= arm-none-eabi-
+
+CC		:= $(PREFIX)gcc
+CXX		:= $(PREFIX)g++
+LD		:= $(PREFIX)gcc
+AR		:= $(PREFIX)ar
+AS		:= $(PREFIX)as
+SIZE		:= $(PREFIX)size
+OBJCOPY		:= $(PREFIX)objcopy
+OBJDUMP		:= $(PREFIX)objdump
+GDB		:= $(PREFIX)gdb
+STFLASH		= $(shell which st-flash)
+
+###############################################################################
 # C flags
 
 CFLAGS		+= -g # -Os
