@@ -17,9 +17,9 @@
 #include <task.h>
 
 #include <libopencm3/cm3/scb.h>
+#include <libopencm3/cm3/nvic.h>
 #include <libopencm3/stm32/gpio.h>
 #include <libopencm3/stm32/exti.h>
-#include <libopencm3/stm32/l1/nvic.h>
 #include <libopencm3/stm32/spi.h>
 #include <libopencm3/stm32/i2c.h>
 #include <libopencm3/stm32/rcc.h>
@@ -61,7 +61,7 @@ void spi_config(spi_t port, int options)
   (void) options;
 }
 
-void timer_config(int timer, int channel, int options)
+void timer_config(pwm_timer_t timer, int channel, int options)
 {
   (void) timer;
   (void) channel;
@@ -156,10 +156,9 @@ void exti3_isr(void)
   exti_reset_request(EXTI_PR & EXTI3);
 
   nrf8001_isr();
-
 }
 
-void arch_init_timer(uint32_t timer, uint32_t channel, uint32_t prescaler, uint32_t period)
+void arch_init_timer(pwm_timer_t timer, uint32_t channel, uint32_t prescaler, uint32_t period)
 {
   rcc_peripheral_enable_clock(&RCC_APB1ENR, RCC_APB1ENR_TIM2EN);
 

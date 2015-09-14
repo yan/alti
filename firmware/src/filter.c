@@ -12,8 +12,6 @@ void filter_init_state( filter_state_t *state )
   state->n_values = 0;
 }
 
-#define FILTER_LEN    ( 8 )
-
 filter_value_t filter_add_value( filter_state_t *state, filter_value_t value)
 {
   float v;

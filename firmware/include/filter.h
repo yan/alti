@@ -11,6 +11,11 @@
 
 typedef uint32_t filter_value_t;
 
+/**
+ * @brief The number of samples in the filter window
+ */
+#define FILTER_LEN   ( 8 )
+
 /** @brief Average state is just a running average. Average length is a compile-
  * defined constant
  */

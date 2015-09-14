@@ -45,20 +45,6 @@ void task_main(void *p)
         state = GLOBAL_STATE_RESET;
         break;
 
-      case GLOBAL_EVT_NRF8001_PIPES_CHANGED: {
-        unsigned int new_rate;
-        if (PIPE_OPEN(PIPE_AERO_PRESSURE_BAROMETRIC_PRESSURE_TX)) {
-          new_rate = 100 / portTICK_PERIOD_MS;
-          dbg_print("Starting to send pressure\n");
-        } else {
-          new_rate = portMAX_DELAY;
-          dbg_print("Stopping to send pressure\n");
-        }
-          
-        xQueueSend(g.sensor_queue_g, &new_rate, 0);
-      }
-        break;
-
       case GLOBAL_EVT_AIR_PRESSURE: {
         unsigned int pressure = (unsigned int) evt.payload;
         const uint8_t tx_pipe = PIPE_AERO_PRESSURE_BAROMETRIC_PRESSURE_TX;
@@ -75,6 +61,21 @@ void task_main(void *p)
         if (PIPE_OPEN(tx_pipe)) {
           ble_tx(tx_pipe, (void*)&pressure, sizeof(pressure));
         }
+      }
+        break;
+
+      /* Bluetooth events */
+      case GLOBAL_EVT_NRF8001_PIPES_CHANGED: {
+        unsigned int new_rate;
+        if (PIPE_OPEN(PIPE_AERO_PRESSURE_BAROMETRIC_PRESSURE_TX)) {
+          new_rate = 100 / portTICK_PERIOD_MS;
+          dbg_print("Starting to send pressure\n");
+        } else {
+          new_rate = portMAX_DELAY;
+          dbg_print("Stopping to send pressure\n");
+        }
+          
+        xQueueSend(g.sensor_queue_g, &new_rate, 0);
       }
         break;
 

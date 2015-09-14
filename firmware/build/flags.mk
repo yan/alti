@@ -29,7 +29,7 @@ STFLASH		= $(shell which st-flash)
 ###############################################################################
 # C flags
 
-CFLAGS		+= -g # -Os
+#CFLAGS		+= -g # -O2 # -Os
 CFLAGS		+= -Wextra -Wshadow -Wimplicit-function-declaration
 CFLAGS		+= -Wredundant-decls -Wmissing-prototypes -Wstrict-prototypes
 CFLAGS          += -Wno-unused-function
@@ -38,7 +38,7 @@ CFLAGS		+= -fno-common -ffunction-sections -fdata-sections
 ###############################################################################
 # C++ flags
 
-CXXFLAGS	+= -g # -Os
+#CXXFLAGS	+= -g # -O2 #-Os
 CXXFLAGS	+= -Wextra -Wshadow -Wredundant-decls  -Weffc++
 CXXFLAGS	+= -fno-common -ffunction-sections -fdata-sections
 
@@ -62,7 +62,7 @@ LDFLAGS		+= -T$(LDSCRIPT)
 LDFLAGS		+= -Wl,-Map=$(OBJ_DIR)/$(*).map
 LDFLAGS		+= -Wl,--gc-sections
 LDFLAGS		+= -Wl,--start-group
-LDFLAGS         += -lc -lm -lgcc -lnosys
+LDFLAGS         += -lm -lgcc -lnosys
 LDFLAGS		+= -Wl,--end-group
 ifeq ($(V),99)
 LDFLAGS		+= -Wl,--print-gc-sections
@@ -72,8 +72,8 @@ endif
 # Semihosting support
 GDB_CMDS = support/gdb_commands
 ifeq ($(ENABLE_SEMIHOSTING), 1)
-  LDFLAGS += --specs=rdimon.specs
-  LDLIBS += rdimon
+  LDFLAGS += --specs=rdimon.specs -lc -lrdimon
+  LDSYSLIBS += rdimon
   CPPFLAGS += -DENABLE_SEMIHOSTING=1
   $(shell grep -q semihosting $(GDB_CMDS) || echo 'mon arm semihosting enable' >> $(GDB_CMDS))
 else

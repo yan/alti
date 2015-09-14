@@ -18,6 +18,8 @@
 
 #include <stm32l1xx_conf.h>
 
+void EXTI3_IRQHandler(void);
+
 void pin_set(gpio_t port, pin_t pin)
 {
   GPIO_SetBits(port, pin);
@@ -56,7 +58,7 @@ void spi_config(spi_t port, int options)
   (void) options;
 }
 
-void timer_config(int timer, int channel, int options)
+void timer_config(pwm_timer_t timer, int channel, int options)
 {
   (void) timer;
   (void) channel;
@@ -83,61 +85,88 @@ void arch_config_ble(void)
 
 void arch_config_clocks(void)
 {
+  RCC_ClocksTypeDef RCC_Clocks;
+
   /* Configure main system clock */
-  rcc_clock_setup_pll(&clock_config[CLOCK_VRANGE1_HSI_PLL_24MHZ]);
-  // rcc_clock_setup_pll(&clock_config[CLOCK_VRANGE1_MSI_RAW_4MHZ]);
+  RCC_PLLConfig(RCC_PLLSource_HSI, RCC_PLLMul_3, RCC_PLLDiv_2);
 
-  rcc_periph_clock_enable(RCC_PWR);
-  pwr_disable_backup_domain_write_protect();
 
-  /* Enable LSE xtal */
-  rcc_osc_on(LSE);
-  rcc_wait_for_osc_ready(LSE);
+  /* Enable peripheral clocks */
+  RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR, ENABLE);
 
-  /* Make the RTC use the LSE */
-  rcc_rtc_select_clock(RCC_CSR_RTCSEL_LSE);
+  /* Enable LSE */
+  /* Enable access to the RTC XXX: Do we need to disable it? */
+  PWR_RTCAccessCmd(ENABLE);
 
-  //RCC_CSR |= RCC_CSR_RTCEN;
+  /* Reset RTC Domain */
+  RCC_RTCResetCmd(ENABLE);
+  RCC_RTCResetCmd(DISABLE);
 
-  //rtc_unlock();
+  /* Enable LSE and wait until it's ready */
+  RCC_LSEConfig(RCC_LSE_ON);
+  while (RCC_GetFlagStatus(RCC_FLAG_LSERDY) == RESET) { }
 
-  // Initialize GPIO
-  rcc_periph_clock_enable(RCC_GPIOA);
-  rcc_peripheral_enable_clock(&RCC_AHBENR, RCC_AHBENR_GPIOAEN);
+  /* Set the RTC to use the LSE */
+  RCC_RTCCLKConfig(RCC_RTCCLKSource_LSE);
 
-  rcc_periph_clock_enable(RCC_GPIOB);
-  rcc_peripheral_enable_clock(&RCC_AHBENR, RCC_AHBENR_GPIOBEN);
+  RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOA, ENABLE);
+  RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOB, ENABLE);
 
-  g.rcc_clock_freq = rcc_apb2_frequency;
+  RCC_GetClocksFreq(&RCC_Clocks);
+  g.rcc_clock_freq = RCC_Clocks.PCLK1_Frequency;
+
 }
 
 void arch_config_io(void)
 {
+  GPIO_InitTypeDef GPIO_Init_Structure;
+
   /* Configure SPI for nrf8001 and flash */
-  rcc_periph_clock_enable(RCC_SPI1);
-  gpio_mode_setup(SPI1_GPIO, GPIO_MODE_AF, GPIO_PUPD_NONE, SPI1_PINS);
-  gpio_set_output_options(SPI1_GPIO, GPIO_OTYPE_PP, GPIO_OSPEED_10MHZ, SPI1_PINS);
-  gpio_set_af(SPI1_GPIO, GPIO_AF5, SPI1_PINS);
-  arch_spi_config(1, BYTEORDER_LSB);
+  RCC_APB2PeriphClockCmd(RCC_APB2Periph_SPI1, ENABLE);
+
+  /* Configure AF for SPI1 */
+  GPIO_PinAFConfig(SPI1_GPIO, SPI1_SCK_SRC,  GPIO_AF_SPI1);
+  GPIO_PinAFConfig(SPI1_GPIO, SPI1_MISO_SRC, GPIO_AF_SPI1);
+  GPIO_PinAFConfig(SPI1_GPIO, SPI1_MOSI_SRC, GPIO_AF_SPI1);
+
+  GPIO_Init_Structure.GPIO_Mode = GPIO_Mode_AF;
+  GPIO_Init_Structure.GPIO_OType = GPIO_OType_PP;
+  GPIO_Init_Structure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+  GPIO_Init_Structure.GPIO_Speed = GPIO_Speed_40MHz;
+  GPIO_Init_Structure.GPIO_Pin = SPI1_SCK | SPI1_MISO | SPI1_MOSI;
+
+  GPIO_Init(SPI1_GPIO, &GPIO_Init_Structure);
 
   /* Configure SPI for ms5611 and bmx055 */
-  rcc_periph_clock_enable(RCC_SPI2);
-  gpio_mode_setup(SPI2_GPIO, GPIO_MODE_AF, GPIO_PUPD_NONE, SPI2_PINS);
-  gpio_set_output_options(SPI2_GPIO, GPIO_OTYPE_PP, GPIO_OSPEED_10MHZ, SPI2_PINS);
-  gpio_set_af(SPI2_GPIO, GPIO_AF5, SPI2_PINS);
-  arch_spi_config(2, BYTEORDER_MSB);
+  RCC_APB1PeriphClockCmd(RCC_APB1Periph_SPI2, ENABLE);
 
-  /* Configure all enable pins */
-  gpio_mode_setup(MS5611_GPIO, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, MS5611_EN);
-  gpio_set_output_options(MS5611_GPIO, GPIO_OTYPE_PP, GPIO_OSPEED_10MHZ, MS5611_EN);
+  GPIO_PinAFConfig(SPI2_GPIO, SPI2_SCK_SRC, GPIO_AF_SPI2);
+  GPIO_PinAFConfig(SPI2_GPIO, SPI2_MISO_SRC, GPIO_AF_SPI2);
+  GPIO_PinAFConfig(SPI2_GPIO, SPI2_MOSI_SRC, GPIO_AF_SPI2);
+  GPIO_Init_Structure.GPIO_Pin = SPI2_SCK | SPI2_MISO | SPI2_MOSI;
+
+  GPIO_Init(SPI2_GPIO, &GPIO_Init_Structure);
+
+  /* Configure MS5611 enable pin (XXX: can this use a slower gpio?) */
+  GPIO_Init_Structure.GPIO_Mode = GPIO_Mode_OUT;
+  GPIO_Init_Structure.GPIO_Pin = MS5611_EN;
+
+  GPIO_Init(MS5611_GPIO, &GPIO_Init_Structure);
+
   pin_set(MS5611_GPIO, MS5611_EN);
 
-  gpio_mode_setup(BMX055_EN_GPIO, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, BMX055_EN_PINS);
-  gpio_set_output_options(BMX055_EN_GPIO, GPIO_OTYPE_PP, GPIO_OSPEED_10MHZ, BMX055_EN_PINS);
+  /* Configure the BMX055 Enable pin */
+  GPIO_Init_Structure.GPIO_Pin = BMX055_EN_PINS;
+
+  GPIO_Init(BMX055_EN_GPIO, &GPIO_Init_Structure);
+
   pin_set(BMX055_EN_GPIO, BMX055_EN_PINS);
 
-  gpio_mode_setup(STATUS_GPIO, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, STATUS_LED);
-  gpio_set_output_options(STATUS_GPIO, GPIO_OTYPE_PP, GPIO_OSPEED_2MHZ, STATUS_LED);
+  /* Configure the status LED */
+  GPIO_Init_Structure.GPIO_Pin = STATUS_LED;
+
+  GPIO_Init(STATUS_GPIO, &GPIO_Init_Structure);
+
   pin_set(STATUS_GPIO, STATUS_LED);
 }
 
@@ -149,38 +178,54 @@ void config_isr(int port)
 
 void arch_config_nvic(void)
 {
-  scb_set_priority_grouping(SCB_AIRCR_PRIGROUP_GROUP16_NOSUB);
+  /* 4 bits for preemption priority, 0 for subpriority */
+  NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
 }
 
-void exti3_isr(void)
+void EXTI3_IRQHandler(void)
 {
-  exti_reset_request(EXTI_PR & EXTI3);
+  /* exti_reset_request(EXTI_PR & EXTI3); */
+  EXTI_ClearITPendingBit(EXTI_Line3);
 
   nrf8001_isr();
-
 }
 
-void arch_init_timer(uint32_t timer, uint32_t channel, uint32_t prescaler, uint32_t period)
+void arch_init_timer(pwm_timer_t timer, uint32_t channel, uint32_t prescaler, uint32_t period)
 {
-  rcc_peripheral_enable_clock(&RCC_APB1ENR, RCC_APB1ENR_TIM2EN);
+  TIM_TimeBaseInitTypeDef TIM_Struct;
+  TIM_OCInitTypeDef TIM_OCStruct;
 
-  timer_reset(timer);
+  RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
+
+  TIM_Struct.TIM_Period = period;
+  TIM_Struct.TIM_Prescaler = prescaler;
+  TIM_Struct.TIM_ClockDivision = 0;
+  TIM_Struct.TIM_CounterMode = TIM_CounterMode_Up;
+
+  TIM_TimeBaseInit(timer, &TIM_Struct);
+
+  TIM_OCStruct.TIM_OCMode = TIM_OCMode_PWM1;
+  TIM_OCStruct.TIM_OutputState = TIM_OutputState_Enable;
+  //TIM_OCStruct.TIM_Pulse
+  TIM_OCStruct
+
+  // timer_reset(timer);
 
   timer_set_mode(timer, TIM_CR1_CKD_CK_INT,
                  TIM_CR1_CMS_EDGE, TIM_CR1_DIR_UP);
 
-  timer_direction_up(timer);
+  //timer_direction_up(timer);
   timer_continuous_mode(timer);
-  timer_set_prescaler(timer, prescaler);
+  //timer_set_prescaler(timer, prescaler);
   timer_set_oc_mode(timer, channel, TIM_OCM_PWM1);
   timer_enable_oc_output(timer, channel);
   timer_set_oc_value(timer, channel, 0);
   timer_set_oc_idle_state_set(timer, channel);
-  timer_set_period(timer, period);
+  //timer_set_period(timer, period);
 
 }
 
-void arch_timer_set(uint32_t timer, uint32_t channel, uint32_t value)
+void arch_timer_set(pwm_timer_t timer, uint32_t channel, uint32_t value)
 {
   /** TODO: move this to HAL */
   timer_set_oc_value(timer, channel, value);

@@ -48,11 +48,11 @@ void arch_config_io(void);
 void arch_config_nvic(void);
 
 /** Timer functions */
-void timer_config(int timer, int channel, int options);
+void timer_config(pwm_timer_t timer, int channel, int options);
 
-void arch_init_timer(uint32_t timer, uint32_t channel, uint32_t prescaler, uint32_t period);
+void arch_init_timer(pwm_timer_t timer, uint32_t channel, uint32_t prescaler, uint32_t period);
 
-void arch_timer_set(uint32_t timer, uint32_t channel, uint32_t value);
+void arch_timer_set(pwm_timer_t timer, uint32_t channel, uint32_t value);
 
 /** SPI functions */
 void spi_config(spi_t port, int options);

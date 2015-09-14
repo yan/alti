@@ -31,39 +31,6 @@ endif
 
 OBJS ?= $(addprefix $(OBJ_DIR)/, $(SRC:%.c=%.o))
 
-ifneq ($(strip $(USE_ST_LIB)),1)
-#ifeq ($(strip $(OPENCM3_DIR)),)
-# user has not specified the library path, so we try to detect it
-
-# where we search for the library
-## LIBPATHS := ./libopencm3 ../../../../libopencm3 ../../../../../libopencm3 
-## 
-## OPENCM3_DIR := $(wildcard $(LIBPATHS:=/locm3.sublime-project))
-## OPENCM3_DIR := $(firstword $(dir $(OPENCM3_DIR)))
-## 
-## ifeq ($(strip $(OPENCM3_DIR)),)
-## $(warning Cannot find libopencm3 library in the standard search paths.)
-## $(error Please specify it through OPENCM3_DIR variable!)
-## endif # !OPENCMD3_DIR
-## endif # !USE_ST_LIB
-## 
-## SCRIPT_DIR	= $(OPENCM3_DIR)/scripts
-## MISC_LIB_DIR    = $(OPENCM3_DIR)/../cmsisdsp
-## USER_CPPFLAGS   += -DOPENCM3
-## USER_CPPFLAGS   += -I$(OPENCM3_DIR)/include 
-
-else # USE_ST_LIB
-
-## STM32_PERIPH_DIR := stm32l1_stdperiphlib/Libraries/STM32L1xx_StdPeriph_Driver
-## 
-## USER_CPPFLAGS   += -DSTM32_STDPERIPH_LIB
-## USER_CPPFLAGS   += -DSTM32L1XX_HD
-## USER_CPPFLAGS   += -I$(STM32_PERIPH_DIR)/../CMSIS/Device/ST/STM32L1xx/Include
-## USER_CPPFLAGS   += -I$(STM32_PERIPH_DIR)/../CMSIS/Include
-## USER_CPPFLAGS   += -I$(STM32_PERIPH_DIR)/inc
-
-endif # USE_ST_LIB
-
 
 include build/flags.mk
 
@@ -113,12 +80,12 @@ $(OBJ_DIR)/%.list: $(OBJ_DIR)/%.elf
 #
 $(OBJ_DIR)/%.elf: $(OBJS) $(LDSCRIPT) $(LDLIBS:%=$(LIB_DIR)/lib%.a)
 	@printf "  LD      $(*).elf ($(LDLIBS))\n"
-	$(Q)$(LD) $(LDFLAGS) $(ARCH_FLAGS) $(OBJS) $(LDLIBS:%=-l%) -o $@
+	$(Q)$(LD) $(LDFLAGS) $(ARCH_FLAGS) $(OBJS) $(LDLIBS:%=-l%) $(LDSYSLIBS:%=-l%) -o $@
 	$(Q)$(SIZE) $(OBJ_DIR)/$(BINARY).elf
 
 $(LIB_DIR)/lib%.a: 
 	@printf "BUILD $*\n"
-	$(Q)make -s -f build/Makefile.lib$* V=$(Q)
+	$(Q)make $(if $(V),,-s) -f build/Makefile.lib$* V=$(V)
 
 .PHONY: images clean elf bin hex srec list size output_dirs
 
@@ -176,7 +143,7 @@ endif
 	@printf "  FLASH   $<\n"
 	@# IMPORTANT: Don't use "resume", only "reset" will work correctly!
 	$(Q)$(OOCD) -f interface/$(OOCD_INTERFACE).cfg \
-		    -f board/$(OOCD_TARGET).cfg \
+		    -f target/$(OOCD_TARGET).cfg \
 		    -c "init" -c "reset init" \
 		    -c "flash write_image erase $(*).hex" \
 		    -c "reset" \
@@ -184,8 +151,8 @@ endif
 
 run: elf
 	$(Q)mkdir -p $(PID_DIR)
-	$(Q)killall openocd || true
-	$(Q)openocd $(OPENOCD_CFG) -l "${PID_DIR}/openocd.log" & echo "$$!" > "${PID_DIR}/openocd.pid"
+	#$(Q)killall openocd || true
+	#$(Q)openocd -f interface/$(OOCD_INTERFACE).cfg -f target/$(OOCD_TARGET).cfg -l "${PID_DIR}/openocd.log" & echo "$$!" > "${PID_DIR}/openocd.pid"
 	$(Q)$(GDB) --command=$(GDB_CMDS) $(OBJ_DIR)/$(BINARY).elf
 	$(Q)kill `cat $(PID_DIR)/openocd.pid`
 

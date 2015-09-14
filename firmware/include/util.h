@@ -11,7 +11,8 @@
 #  include <stdio.h>
 #endif
 
-#define assert(x) {if ((x) == 0) __asm("BKPT 0");}
+//#define assert(x) {if ((x) == 0) __asm("BKPT 0");}
+#define assert(x) {if ((x) == 0) for(;;);}
 
 void delay_ms(uint32_t ms);
 

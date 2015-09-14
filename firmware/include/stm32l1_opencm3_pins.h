@@ -9,6 +9,11 @@
 #include <libopencm3/stm32/timer.h>
 #include <libopencm3/stm32/spi.h>
 
+#define PIN(x)              GPIO ## x
+#define PIN_SRC(x)
+#define GPIO(x)             GPIO ## x
+
+#if 0
 /** Status LED */
 #define STATUS_LED          GPIO11
 #define STATUS_GPIO         GPIOB
@@ -69,6 +74,7 @@
 /** Fre-fall alert LEDs */
 #define ALERT_HIGH_SELECT
 #define ALERT_HIGH_ENABLE
+#endif
 
 
 #endif // __STM32L1_PINS_H

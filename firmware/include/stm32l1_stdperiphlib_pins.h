@@ -8,6 +8,11 @@
 #include "stm32l1xx.h"
 
 
+#define PIN(x)              GPIO_Pin_ ## x
+#define PIN_SRC(x)          GPIO_PinSource ## x
+#define GPIO(x)             GPIO ## x
+
+#if 0
 /** Status LED */
 #define STATUS_LED          GPIO_Pin_11
 #define STATUS_GPIO         GPIOB
@@ -42,7 +47,10 @@
 #define SPI1_SCK            GPIO_Pin_5
 #define SPI1_MISO           GPIO_Pin_6
 #define SPI1_MOSI           GPIO_Pin_7
-#define SPI1_PINS           (SPI1_SCK |  SPI1_MOSI | SPI1_MISO) // NRF8001_REQN
+#define SPI1_SCK_SRC        GPIO_PinSource5
+#define SPI1_MISO_SRC       GPIO_PinSource6
+#define SPI1_MOSI_SRC       GPIO_PinSource7
+// #define SPI1_PINS           (SPI1_SCK |  SPI1_MOSI | SPI1_MISO) // NRF8001_REQN
 
 /** MS5611 barometric sensor and bmx055 9-axis */
 #define BMX055_EN_GPIO      GPIOA
@@ -60,6 +68,9 @@
 #define SPI2_SCK            GPIO_Pin_13
 #define SPI2_MISO           GPIO_Pin_14
 #define SPI2_MOSI           GPIO_Pin_15
+#define SPI2_SCK_SRC        GPIO_PinSource13
+#define SPI2_MISO_SRC       GPIO_PinSource14
+#define SPI2_MOSI_SRC       GPIO_PinSource15
 #define SPI2_PINS          (SPI2_SCK | SPI2_MOSI | SPI2_MISO)
 
 #define BMX055_INT_GPIO     GPIOB
@@ -68,6 +79,8 @@
 /** Fre-fall alert LEDs */
 #define ALERT_HIGH_SELECT
 #define ALERT_HIGH_ENABLE
+
+#endif
 
 
 #endif // __STM32L1_PINS_H

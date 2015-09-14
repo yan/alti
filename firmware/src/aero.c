@@ -1,6 +1,8 @@
 /**
  * Copyright 2015 Yan Ivnitskiy
  */
+#include <aero.h>
+
 #include <string.h>
 
 #include <FreeRTOS.h>
@@ -105,7 +107,7 @@ static void config_sensor_task(void)
 }
 
 int
-main(void)
+aero_main(void)
 {
 
 #if defined(ENABLE_SEMIHOSTING) && ENABLE_SEMIHOSTING
