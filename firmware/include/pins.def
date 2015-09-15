@@ -1,0 +1,89 @@
+
+pin { name: PIEZO_EN, gpio: B, index: 4 }
+pin { name: PIEZO_OUT, gpio: B, index: 5 }
+pin { name: CHG, gpio: B, index: 6 }
+pin { name: PG, gpio: B, index: 7 }
+pin { name: WARN_LED_A, gpio: B, index: 8 }
+pin { name: WARN_LED_B, gpio: B, index: 9 }
+pin { name: STATUS_LED, gpio: B, index: 11 }
+pin { name: BATT_SENSE, gpio: B, index: 12 }
+timer { name: PIEZO_OUT, index: 4, channel: 2, af: 2 }
+timer { name: STATUS_LED, index: 2, channel: 4, af: 1 }
+bus {
+  name : BT_STORE,
+  kind : SPI1,
+  gpio: A,
+  pins {
+    { name: SCK,  index: 5 },
+    { name: MISO, index: 6 },
+    { name: MOSI, index: 7 }
+  } 
+}
+bus {
+  name: SENSORS,
+  kind: SPI2,
+  gpio: B,
+  pins {
+    {name: SCK,  index: 13},
+    {name: MISO, index: 14},
+    {name: MOSI, index: 15}
+  }
+}
+bus {
+  name: UBLOX_UART,
+  kind: USART1,
+  gpio: A,
+  pins {
+    {name: TX, index: 9},
+    {name: RX, index: 10}
+  }
+}
+peripheral {
+  name: NRF8001,
+  on_bus: BT_STORE,
+  pins {
+    { name: RST, gpio: A, index: 2 },
+    { name: RDYN, gpio: A, index: 3 },
+    { name: REQN, gpio: A, index: 4 },
+    { name: ACTIVE, gpio: B, index: 10 }
+  }
+}
+
+peripheral {
+  name: ADESTO_FLASH,
+  on_bus: BT_STORE,
+  pins {
+    { name: RESET, gpio: A, index: 0 },
+    { name: CS, gpio: A, index: 1 }
+  }
+}
+
+peripheral {
+  name: MS5611,
+  on_bus: SENSORS,
+  pins {
+    {name: EN, gpio: A, index: 8 }
+  }
+}
+
+peripheral {
+  name: BMX055,
+  on_bus: SENSORS,
+  pins {
+    { name: EN_ACC, gpio: B, index: 0 },
+    { name: EN_GYRO, gpio: B, index: 1 },
+    { name: EN_MAG, gpio: B, index: 2 }
+  }
+}
+peripheral {
+  name: UBLOX_MAX7,
+  on_bus: UBLOX_UART,
+  pins {
+    { name: RESET, gpio: C, index: 13 },
+    { name: TIMEPULSE, gpio: H, index: 0},
+    { name: EXT_INT, gpio: H, index: 1 }
+  }
+}
+
+# endian: little, # (??)
+

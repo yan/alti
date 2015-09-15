@@ -65,6 +65,12 @@ class GpioBank(object):
             print(bank)
             for pin in sorted(self._banks[bank], key=lambda p: p.index):
                 print(pin)
+
+    def visit_pins(self, visitor):
+        for bank in sorted(self._banks):
+            for pin in sorted(self._banks[bank], key=lambda p: p.index):
+                visitor(pin)
+
     
 Bus = namedtuple('Bus', ['name', 'kind', 'gpio', 'pins'])
 Peripheral = namedtuple('Peripheral', ['name', 'on_bus', 'pins'])

@@ -15,8 +15,7 @@ SRC   += task_alert.c			task_ble.c			task_main.c
 SRC   += task_sensor.c			util.c
 
 include build/Makefile.libfreertos
-include build/Makefile.libopencm3_stm32l1
-#include build/Makefile.libstm32l1_stdperiphlib
+include build/alternatives.mk
 include build/include.mk
 
 endif

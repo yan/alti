@@ -53,28 +53,34 @@
 #define SPI1_PINS           (SPI1_SCK |  SPI1_MOSI | SPI1_MISO) // NRF8001_REQN
 
 /** MS5611 barometric sensor and bmx055 9-axis */
-#define BMX055_EN_GPIO      GPIO(A)
-#define BMX055_EN_MAG       PIN(8)
-#define BMX055_EN_ACC       PIN(9)
-#define BMX055_EN_GYR       PIN(10)
+#define BMX055_EN_GPIO      GPIO(B)
+#define BMX055_EN_ACC       PIN(0)
+#define BMX055_EN_GYR       PIN(1)
+#define BMX055_EN_MAG       PIN(2)
 #define BMX055_EN_PINS      (BMX055_EN_MAG | BMX055_EN_ACC | BMX055_EN_GYR)
 
-#define MS5611_PORT         SPI2
-#define BMX055_PORT         SPI2
 #define SPI2_GPIO           GPIO(B)
-#define MS5611_GPIO         SPI2_GPIO
+#define MS5611_PORT         SPI2
+#define MS5611_EN_GPIO      GPIO(A)
+#define MS5611_EN           PIN(8)
+#define BMX055_PORT         SPI2
 #define BMX055_GPIO         SPI2_GPIO
-#define MS5611_EN           PIN(12)
 #define SPI2_SCK            PIN(13)
 #define SPI2_MISO           PIN(14)
 #define SPI2_MOSI           PIN(15)
-#define SPI2_SCK_SRC        GPIO_PinSource13
-#define SPI2_MISO_SRC       GPIO_PinSource14
-#define SPI2_MOSI_SRC       GPIO_PinSource15
+#define SPI2_SCK_SRC        PIN_SRC(13)
+#define SPI2_MISO_SRC       PIN_SRC(14)
+#define SPI2_MOSI_SRC       PIN_SRC(15)
 #define SPI2_PINS          (SPI2_SCK | SPI2_MOSI | SPI2_MISO)
 
 #define BMX055_INT_GPIO     GPIO(B)
 #define BMX055_INT_ACC      PIN(4)
+
+/** UBLOX pins */
+#define UBLOX_UART_GPIO     GPIO(A)
+#define UBLOX_UART_TX       PIN(9)
+#define UBLOX_UART_RX       PIN(10)
+#define UBLOX_GPIO          GPIO
 
 /** Fre-fall alert LEDs */
 #define ALERT_HIGH_SELECT
