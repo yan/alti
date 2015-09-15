@@ -3,7 +3,6 @@ grammar PinDefinition;
 
 @header {
 from pin_def import *
-#el = []
 }
 
 specification returns [spec]
@@ -11,10 +10,10 @@ specification returns [spec]
   ;
 
 definition returns [e]
-  : a=single_pin_def {$e = $a.pin ;; print("A " + str($a.pin)) }
-  | a=peripheral_def {$e = $a.e ;; print("B " + str($a.e)) }
-  | a=timer_def {$e = $a.timer;; print ("C " + str($a.timer)) }
-  | a=bus_def {$e = $a.bus ;; print("D " + str($a.bus)) }
+  : a=single_pin_def {$e = $a.pin }
+  | a=peripheral_def {$e = $a.e }
+  | a=timer_def {$e = $a.timer}
+  | a=bus_def {$e = $a.bus}
   ;
 
 bus_def returns [bus]
@@ -52,8 +51,8 @@ def_tuple_list returns [e]
   ;
 
 complex_member returns [e]
-  : v=def_tuple {$e = $v.e ;; print($v.e) }
-  | v=pins_def {$e = $v.pins ;; print($v.pins)}
+  : v=def_tuple {$e = $v.e}
+  | v=pins_def {$e = $v.pins}
   ;
 
 complex_member_list returns [e]
@@ -62,7 +61,7 @@ complex_member_list returns [e]
   ;
 
 peripheral_def returns [e]
-  : PERIPHERAL '{' l=complex_member_list '}' {$e = $l.e }
+  : PERIPHERAL '{' l=complex_member_list '}' {$e = Peripheral(**$l.e) }
   ;
 
 PINS : 'pins' ;
