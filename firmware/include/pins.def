@@ -41,6 +41,7 @@ bus {
 peripheral {
   name: NRF8001,
   on_bus: BT_STORE,
+  bitorder: lsb,
   pins {
     { name: RST, gpio: A, index: 2 },
     { name: RDYN, gpio: A, index: 3 },
@@ -52,6 +53,7 @@ peripheral {
 peripheral {
   name: ADESTO_FLASH,
   on_bus: BT_STORE,
+  bitorder: lsb,
   pins {
     { name: RESET, gpio: A, index: 0 },
     { name: CS, gpio: A, index: 1 }
@@ -61,6 +63,7 @@ peripheral {
 peripheral {
   name: MS5611,
   on_bus: SENSORS,
+  bitorder: lsb,
   pins {
     {name: EN, gpio: A, index: 8 }
   }
@@ -69,6 +72,7 @@ peripheral {
 peripheral {
   name: BMX055,
   on_bus: SENSORS,
+  bitorder: lsb,
   pins {
     { name: EN_ACC, gpio: B, index: 0 },
     { name: EN_GYRO, gpio: B, index: 1 },
@@ -78,6 +82,7 @@ peripheral {
 peripheral {
   name: UBLOX_MAX7,
   on_bus: UBLOX_UART,
+  bitorder: lsb,
   pins {
     { name: RESET, gpio: C, index: 13 },
     { name: TIMEPULSE, gpio: H, index: 0},

@@ -79,11 +79,11 @@ void nrf8001_isr(void)
 
 static void config_nrf8001_pins(void)
 {
-  pin_config(NRF8001_GPIO, NRF8001_REQN, PINMODE_OUTPUT);
-  pin_config(NRF8001_GPIO, NRF8001_RST, PINMODE_OUTPUT);
+  pin_config(NRF8001_REQN_GPIO, NRF8001_REQN, PINMODE_OUTPUT);
+  pin_config(NRF8001_RST_GPIO, NRF8001_RST, PINMODE_OUTPUT);
 
-  pin_set(NRF8001_GPIO, NRF8001_REQN);
-  pin_set(NRF8001_GPIO, NRF8001_RST);
+  pin_set(NRF8001_REQN_GPIO, NRF8001_REQN);
+  pin_set(NRF8001_RST_GPIO, NRF8001_RST);
 }
 
 static void config_nrf8001_isr(void)
@@ -91,18 +91,18 @@ static void config_nrf8001_isr(void)
   arch_config_ble();
 
   /* We'll use RDYN pin to interrupt*/
-  pin_config(NRF8001_GPIO, NRF8001_RDYN, PINMODE_INPUT);
+  pin_config(NRF8001_RDYN_GPIO, NRF8001_RDYN, PINMODE_INPUT);
 
 }
 
 static void nrf8001_reset(void)
 {
   int i = 0;
-  pin_set(NRF8001_GPIO, NRF8001_RST);
-  pin_clear(NRF8001_GPIO, NRF8001_RST);
+  pin_set(NRF8001_RST_GPIO, NRF8001_RST);
+  pin_clear(NRF8001_RST_GPIO, NRF8001_RST);
   // Spec calls for the line to be low at least 200ns, set it low and busy wait
   for (; i < 30; i++);
-  pin_set(NRF8001_GPIO, NRF8001_RST);
+  pin_set(NRF8001_RST_GPIO, NRF8001_RST);
 }
 
 /**
@@ -114,7 +114,7 @@ void config_nrf8001(void)
   config_nrf8001_isr();
   nrf8001_reset();
 
-  //pin_clear(NRF8001_GPIO, NRF8001_REQN);
+  //pin_clear(NRF8001_REQN_GPIO, NRF8001_REQN);
 }
 
 static void nrf8001_connect(void) {
@@ -270,7 +270,7 @@ void nrf8001_exchange_cmds(struct nrf8001_cmd_s *out, struct nrf8001_cmd_s *in)
   int bytes_to_xfer = 0, i;
   uint8_t *out_ptr = (uint8_t*) out;
 
-  pin_clear(NRF8001_GPIO, NRF8001_REQN);
+  pin_clear(NRF8001_REQN_GPIO, NRF8001_REQN);
 
   /* Make sure the tail end of *out is zero. If out->length is 0, this will 
    * effectively zero out the entire structure.
@@ -293,5 +293,5 @@ void nrf8001_exchange_cmds(struct nrf8001_cmd_s *out, struct nrf8001_cmd_s *in)
     in->data[i] = arch_spi_xfer(NRF8001_SPI, out->data[i + 1]);
   }
 
-  pin_set(NRF8001_GPIO, NRF8001_REQN);
+  pin_set(NRF8001_REQN_GPIO, NRF8001_REQN);
 }

@@ -90,16 +90,16 @@ uint16_t ms5611_verify_prom(void)
 void ms5611_reset(void)
 {
 #if defined(USE_SPI)
-  spi_send_msb_first(MS5611_PORT);
+  spi_send_msb_first(MS5611_BUS);
 #endif
 
-  pin_clear(MS5611_GPIO, MS5611_EN);
-  arch_spi_xfer(MS5611_PORT, MS5611_CMD_RESET);
+  pin_clear(MS5611_EN_GPIO, MS5611_EN);
+  arch_spi_xfer(MS5611_BUS, MS5611_CMD_RESET);
 
   /* Give it 3ms to start */
   delay_ms(3);
 
-  pin_set(MS5611_GPIO, MS5611_EN);
+  pin_set(MS5611_EN_GPIO, MS5611_EN);
 
 }
 
@@ -108,13 +108,13 @@ static uint16_t ms5611_get16(uint8_t cmd)
   uint16_t val;
 
 #if defined(USE_SPI)
-  spi_send_msb_first(MS5611_PORT);
+  spi_send_msb_first(MS5611_BUS);
 #endif
 
-  pin_clear(MS5611_GPIO, MS5611_EN);
-  arch_spi_xfer(MS5611_PORT, cmd);
-  val = spi_read_octets(MS5611_PORT, 2, BYTEORDER_MSB);
-  pin_set(MS5611_GPIO, MS5611_EN);
+  pin_clear(MS5611_EN_GPIO, MS5611_EN);
+  arch_spi_xfer(MS5611_BUS, cmd);
+  val = spi_read_octets(MS5611_BUS, 2, BYTEORDER_MSB);
+  pin_set(MS5611_EN_GPIO, MS5611_EN);
 
   return val;
 }
@@ -142,8 +142,8 @@ void ms5611_init(void)
   filter_init_state(&g.baro_filter_state);
 
 #if MS5611_VERIFY_RECVD == 1
-  arch_spi_xfer(MS5611_PORT, MS5611_CMD_PROM_READ_LAST);
-  crc4_dword = spi_read_octets(MS5611_PORT, 2, BYTEORDER_MSB);
+  arch_spi_xfer(MS5611_BUS, MS5611_CMD_PROM_READ_LAST);
+  crc4_dword = spi_read_octets(MS5611_BUS, 2, BYTEORDER_MSB);
 
   crc = ms5611_verify_prom();
   
@@ -162,21 +162,21 @@ static uint32_t ms5611_read_adc(uint8_t cmd)
   uint32_t val;
 
 #if defined(USE_SPI)
-  spi_send_msb_first(MS5611_PORT);
+  spi_send_msb_first(MS5611_BUS);
 #endif
 
   /* Warn that we're about to read, and wait a period of time depending on the
    * precision required*/
-  pin_clear(MS5611_GPIO, MS5611_EN);
-  arch_spi_xfer(MS5611_PORT, cmd);
+  pin_clear(MS5611_EN_GPIO, MS5611_EN);
+  arch_spi_xfer(MS5611_BUS, cmd);
   delay_ms((cmd&0x0F) * 2 + 1);
-  pin_set(MS5611_GPIO, MS5611_EN);
+  pin_set(MS5611_EN_GPIO, MS5611_EN);
 
   /* Read back the ADC result */
-  pin_clear(MS5611_GPIO, MS5611_EN);
-  arch_spi_xfer(MS5611_PORT, MS5611_CMD_ADC_READ);
-  val = spi_read_octets(MS5611_PORT, 3, BYTEORDER_MSB);
-  pin_set(MS5611_GPIO, MS5611_EN);
+  pin_clear(MS5611_EN_GPIO, MS5611_EN);
+  arch_spi_xfer(MS5611_BUS, MS5611_CMD_ADC_READ);
+  val = spi_read_octets(MS5611_BUS, 3, BYTEORDER_MSB);
+  pin_set(MS5611_EN_GPIO, MS5611_EN);
 
   return val;
 }

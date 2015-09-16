@@ -75,7 +75,7 @@ void arch_config_ble(void)
   nvic_enable_irq(NVIC_EXTI3_IRQ);
   nvic_set_priority(NVIC_EXTI3_IRQ, BLE_EXTI_ISR_PRIORITY);
 
-  exti_select_source(EXTI3, NRF8001_GPIO);
+  exti_select_source(EXTI3, NRF8001_RDYN_GPIO);
   exti_set_trigger(EXTI3, EXTI_TRIGGER_FALLING);
   exti_enable_request(EXTI3);
 }
@@ -114,30 +114,38 @@ void arch_config_io(void)
 {
   /* Configure SPI for nrf8001 and flash */
   rcc_periph_clock_enable(RCC_SPI1);
-  gpio_mode_setup(SPI1_GPIO, GPIO_MODE_AF, GPIO_PUPD_NONE, SPI1_PINS);
-  gpio_set_output_options(SPI1_GPIO, GPIO_OTYPE_PP, GPIO_OSPEED_10MHZ, SPI1_PINS);
-  gpio_set_af(SPI1_GPIO, GPIO_AF5, SPI1_PINS);
-  arch_spi_config(1, BYTEORDER_LSB);
+  gpio_mode_setup(BT_STORE_GPIO, GPIO_MODE_AF, GPIO_PUPD_NONE, BT_STORE_PINS);
+  gpio_set_output_options(BT_STORE_GPIO, GPIO_OTYPE_PP, GPIO_OSPEED_10MHZ, BT_STORE_PINS);
+  gpio_set_af(BT_STORE_GPIO, GPIO_AF5, BT_STORE_PINS);
+  //arch_spi_config(1, BYTEORDER_LSB);
 
   /* Configure SPI for ms5611 and bmx055 */
   rcc_periph_clock_enable(RCC_SPI2);
-  gpio_mode_setup(SPI2_GPIO, GPIO_MODE_AF, GPIO_PUPD_NONE, SPI2_PINS);
-  gpio_set_output_options(SPI2_GPIO, GPIO_OTYPE_PP, GPIO_OSPEED_10MHZ, SPI2_PINS);
-  gpio_set_af(SPI2_GPIO, GPIO_AF5, SPI2_PINS);
+  gpio_mode_setup(SENSORS_GPIO, GPIO_MODE_AF, GPIO_PUPD_NONE, SENSORS_PINS);
+  gpio_set_output_options(SENSORS_GPIO, GPIO_OTYPE_PP, GPIO_OSPEED_10MHZ, SENSORS_PINS);
+  gpio_set_af(SENSORS_GPIO, GPIO_AF5, SENSORS_PINS);
   arch_spi_config(2, BYTEORDER_MSB);
 
   /* Configure all enable pins */
-  gpio_mode_setup(MS5611_GPIO, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, MS5611_EN);
-  gpio_set_output_options(MS5611_GPIO, GPIO_OTYPE_PP, GPIO_OSPEED_10MHZ, MS5611_EN);
-  pin_set(MS5611_GPIO, MS5611_EN);
+  gpio_mode_setup(MS5611_EN_GPIO, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, MS5611_EN);
+  gpio_set_output_options(MS5611_EN_GPIO, GPIO_OTYPE_PP, GPIO_OSPEED_10MHZ, MS5611_EN);
+  pin_set(MS5611_EN_GPIO, MS5611_EN);
 
-  gpio_mode_setup(BMX055_EN_GPIO, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, BMX055_EN_PINS);
-  gpio_set_output_options(BMX055_EN_GPIO, GPIO_OTYPE_PP, GPIO_OSPEED_10MHZ, BMX055_EN_PINS);
-  pin_set(BMX055_EN_GPIO, BMX055_EN_PINS);
+  gpio_mode_setup(BMX055_EN_ACC_GPIO, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, BMX055_EN_ACC);
+  gpio_set_output_options(BMX055_EN_ACC_GPIO, GPIO_OTYPE_PP, GPIO_OSPEED_10MHZ, BMX055_EN_ACC);
+  pin_set(BMX055_EN_ACC_GPIO, BMX055_EN_ACC);
 
-  gpio_mode_setup(STATUS_GPIO, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, STATUS_LED);
-  gpio_set_output_options(STATUS_GPIO, GPIO_OTYPE_PP, GPIO_OSPEED_2MHZ, STATUS_LED);
-  pin_set(STATUS_GPIO, STATUS_LED);
+  gpio_mode_setup(BMX055_EN_GYRO_GPIO, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, BMX055_EN_GYRO);
+  gpio_set_output_options(BMX055_EN_GYRO_GPIO, GPIO_OTYPE_PP, GPIO_OSPEED_10MHZ, BMX055_EN_GYRO);
+  pin_set(BMX055_EN_GYRO_GPIO, BMX055_EN_GYRO);
+
+  gpio_mode_setup(BMX055_EN_MAG_GPIO, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, BMX055_EN_MAG);
+  gpio_set_output_options(BMX055_EN_MAG_GPIO, GPIO_OTYPE_PP, GPIO_OSPEED_10MHZ, BMX055_EN_MAG);
+  pin_set(BMX055_EN_MAG_GPIO, BMX055_EN_MAG);
+
+  gpio_mode_setup(STATUS_LED_GPIO, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, STATUS_LED);
+  gpio_set_output_options(STATUS_LED_GPIO, GPIO_OTYPE_PP, GPIO_OSPEED_2MHZ, STATUS_LED);
+  pin_set(STATUS_LED_GPIO, STATUS_LED);
 }
 
 void config_isr(int port)
@@ -247,15 +255,15 @@ void arch_spi_enable(spi_t port)
 
 void enable_piezo(void)
 {
-  gpio_mode_setup(PIEZO_GPIO, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, PIEZO_EN);
-  gpio_set_output_options(PIEZO_GPIO, GPIO_OTYPE_PP, GPIO_OSPEED_2MHZ, PIEZO_EN);
-  pin_set(PIEZO_GPIO, PIEZO_EN);
+  gpio_mode_setup(PIEZO_EN_GPIO, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, PIEZO_EN);
+  gpio_set_output_options(PIEZO_EN_GPIO, GPIO_OTYPE_PP, GPIO_OSPEED_2MHZ, PIEZO_EN);
+  pin_set(PIEZO_EN_GPIO, PIEZO_EN);
 
-  gpio_mode_setup(PIEZO_GPIO, GPIO_MODE_AF, GPIO_PUPD_NONE, PIEZO_OUT);
-  gpio_set_output_options(PIEZO_GPIO, GPIO_OTYPE_PP, GPIO_OSPEED_2MHZ, PIEZO_OUT);
+  gpio_mode_setup(PIEZO_OUT_GPIO, GPIO_MODE_AF, GPIO_PUPD_NONE, PIEZO_OUT);
+  gpio_set_output_options(PIEZO_OUT_GPIO, GPIO_OTYPE_PP, GPIO_OSPEED_2MHZ, PIEZO_OUT);
   //gpio_set_af(PIEZO_GPIO, PIEZO_OUT_AF, PIEZO_OUT);
 
-  pin_clear(PIEZO_GPIO, PIEZO_OUT);
+  pin_clear(PIEZO_OUT_GPIO, PIEZO_OUT);
 
   //timer_enable_counter(PIEZO_OUT_TIMER);
 }
@@ -265,18 +273,18 @@ void disable_piezo(void)
   rcc_peripheral_disable_clock(&RCC_APB1ENR, RCC_APB1ENR_TIM4EN);
   timer_disable_counter(PIEZO_OUT_TIMER);
 
-  gpio_mode_setup(PIEZO_GPIO, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, PIEZO_EN);
-  gpio_set_output_options(PIEZO_GPIO, GPIO_OTYPE_PP, GPIO_OSPEED_2MHZ, PIEZO_EN);
-  pin_clear(PIEZO_GPIO, PIEZO_EN);
+  gpio_mode_setup(PIEZO_EN_GPIO, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, PIEZO_EN);
+  gpio_set_output_options(PIEZO_EN_GPIO, GPIO_OTYPE_PP, GPIO_OSPEED_2MHZ, PIEZO_EN);
+  pin_clear(PIEZO_EN_GPIO, PIEZO_EN);
 
-  pin_clear(PIEZO_GPIO, PIEZO_OUT);
+  pin_clear(PIEZO_OUT_GPIO, PIEZO_OUT);
 }
 
 void enable_pulse(void)
 {
-  gpio_mode_setup(STATUS_GPIO, GPIO_MODE_AF, GPIO_PUPD_NONE, STATUS_LED);
-  gpio_set_output_options(STATUS_GPIO, GPIO_OTYPE_PP, GPIO_OSPEED_2MHZ, STATUS_LED);
-  gpio_set_af(STATUS_GPIO, STATUS_LED_AF, STATUS_LED);
+  gpio_mode_setup(STATUS_LED_GPIO, GPIO_MODE_AF, GPIO_PUPD_NONE, STATUS_LED);
+  gpio_set_output_options(STATUS_LED_GPIO, GPIO_OTYPE_PP, GPIO_OSPEED_2MHZ, STATUS_LED);
+  gpio_set_af(STATUS_LED_GPIO, STATUS_LED_AF, STATUS_LED);
 
   timer_enable_counter(STATUS_LED_TIMER);
 }
@@ -285,7 +293,7 @@ void enable_pulse(void)
 void disable_pulse(void)
 {
   timer_disable_counter(STATUS_LED_TIMER);
-  gpio_mode_setup(STATUS_GPIO, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, STATUS_LED);
+  gpio_mode_setup(STATUS_LED_GPIO, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, STATUS_LED);
 }
 
 

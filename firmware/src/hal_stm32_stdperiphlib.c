@@ -151,9 +151,9 @@ void arch_config_io(void)
   GPIO_Init_Structure.GPIO_Mode = GPIO_Mode_OUT;
   GPIO_Init_Structure.GPIO_Pin = MS5611_EN;
 
-  GPIO_Init(MS5611_GPIO, &GPIO_Init_Structure);
+  GPIO_Init(MS5611_EN_GPIO, &GPIO_Init_Structure);
 
-  pin_set(MS5611_GPIO, MS5611_EN);
+  pin_set(MS5611_EN_GPIO, MS5611_EN);
 
   /* Configure the BMX055 Enable pin */
   GPIO_Init_Structure.GPIO_Pin = BMX055_EN_PINS;

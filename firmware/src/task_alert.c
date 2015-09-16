@@ -101,13 +101,13 @@ void task_alert_led(void *p)
     switch (received_event) {
       case ALERT_LOW_OFF:
         disable_pulse();
-        pin_clear(STATUS_GPIO, STATUS_LED);
+        pin_clear(STATUS_LED_GPIO, STATUS_LED);
         state = TASK_ALERT_STATE_OFF;
         break;
         
       case ALERT_LOW_ON:
         disable_pulse();
-        pin_set(STATUS_GPIO, STATUS_LED);
+        pin_set(STATUS_LED_GPIO, STATUS_LED);
         state = TASK_ALERT_STATE_ON;
         break;
 
@@ -119,14 +119,14 @@ void task_alert_led(void *p)
       case ALERT_LOW_BLINK: {
         disable_pulse();
         while (argument-- > 0) {
-          pin_toggle(STATUS_GPIO, STATUS_LED);
+          pin_toggle(STATUS_LED_GPIO, STATUS_LED);
           delay_ms(250);
-          pin_clear(STATUS_GPIO, STATUS_LED);
+          pin_clear(STATUS_LED_GPIO, STATUS_LED);
           delay_ms(250);
         }
         
         if (state == TASK_ALERT_STATE_ON) {
-          pin_set(STATUS_GPIO, STATUS_LED);
+          pin_set(STATUS_LED_GPIO, STATUS_LED);
         } else if (state == TASK_ALERT_STATE_PULSING) {
           enable_pulse();
         }

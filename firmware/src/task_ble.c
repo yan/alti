@@ -71,7 +71,7 @@ static void exchange_commands(struct nrf8001_cmd_s *outgoing, struct nrf8001_cmd
 void ble_send_cmd(struct nrf8001_cmd_s *cmd)
 {
   if (xQueueSend(g.ble_data_g->in, &cmd, portMAX_DELAY) == pdPASS) {
-    pin_clear(NRF8001_GPIO, NRF8001_REQN);
+    pin_clear(NRF8001_REQN_GPIO, NRF8001_REQN);
   }
 }
 

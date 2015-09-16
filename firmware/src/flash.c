@@ -38,81 +38,81 @@ inline static void flash_reset(void)
 {
   int i = 0;
 
-  pin_set(FLASH_GPIO, FLASH_nRESET);
-  pin_clear(FLASH_GPIO, FLASH_nRESET);
+  pin_set(ADESTO_FLASH_RESET_GPIO, ADESTO_FLASH_RESET);
+  pin_clear(ADESTO_FLASH_RESET_GPIO, ADESTO_FLASH_RESET);
   for (i = 0; i < 30; i++)
     ;
-  pin_set(FLASH_GPIO, FLASH_nRESET);
+  pin_set(ADESTO_FLASH_RESET_GPIO, ADESTO_FLASH_RESET);
 }
 
 static void flash_write_buffer(uint8_t *data, size_t size)
 {
-  pin_clear(FLASH_GPIO, FLASH_nCS);
+  pin_clear(ADESTO_FLASH_CS_GPIO, ADESTO_FLASH_CS);
 
   /* First, write it to the flash buffer */
-  arch_spi_xfer(FLASH_PORT, ADESTO_WRITE_BUFFER_2);
+  arch_spi_xfer(ADESTO_FLASH_BUS, ADESTO_WRITE_BUFFER_2);
 
   /* Send 15 dummy bits, then 9 intra-sector offset. */
-  arch_spi_xfer(FLASH_PORT, 0);
-  arch_spi_xfer(FLASH_PORT, 0);
-  arch_spi_xfer(FLASH_PORT, 0);
+  arch_spi_xfer(ADESTO_FLASH_BUS, 0);
+  arch_spi_xfer(ADESTO_FLASH_BUS, 0);
+  arch_spi_xfer(ADESTO_FLASH_BUS, 0);
 
   /* Then, clock in the actual data */
-  spi_send_buf(FLASH_PORT, data, size);
+  spi_send_buf(ADESTO_FLASH_BUS, data, size);
 
   /* And we're done */
-  pin_set(FLASH_GPIO, FLASH_nCS);
+  pin_set(ADESTO_FLASH_CS_GPIO, ADESTO_FLASH_CS);
 }
 
 static void flash_commit_buffer(uint32_t address)
 {
-  pin_clear(FLASH_GPIO, FLASH_nCS);
+  pin_clear(ADESTO_FLASH_CS_GPIO, ADESTO_FLASH_CS);
 
-  arch_spi_xfer(FLASH_PORT, ADESTO_WRITE_BUFFER_2_TO_MEM_W_ER);
-  arch_spi_xfer(FLASH_PORT, (address & 0xFF0000) >> 16);
-  arch_spi_xfer(FLASH_PORT, (address & 0xFF00) >> 8);
-  arch_spi_xfer(FLASH_PORT,  address & 0xFF);
+  arch_spi_xfer(ADESTO_FLASH_BUS, ADESTO_WRITE_BUFFER_2_TO_MEM_W_ER);
+  arch_spi_xfer(ADESTO_FLASH_BUS, (address & 0xFF0000) >> 16);
+  arch_spi_xfer(ADESTO_FLASH_BUS, (address & 0xFF00) >> 8);
+  arch_spi_xfer(ADESTO_FLASH_BUS,  address & 0xFF);
   
-  pin_set(FLASH_GPIO, FLASH_nCS);
+  pin_set(ADESTO_FLASH_CS_GPIO, ADESTO_FLASH_CS);
 }
 
 static void flash_read_status(struct status_register_s *dest)
 {
-  spi_set_msb(FLASH_PORT);
+  spi_set_msb(ADESTO_FLASH_BUS);
 
-  pin_clear(FLASH_GPIO, FLASH_nCS);
+  pin_clear(ADESTO_FLASH_CS_GPIO, ADESTO_FLASH_CS);
 
   uint16_t returned;
 
-  arch_spi_xfer(FLASH_PORT, ADESTO_AUX_STATUS_REGISTER_READ);
+  arch_spi_xfer(ADESTO_FLASH_BUS, ADESTO_AUX_STATUS_REGISTER_READ);
 
-  returned = spi_read_octets(FLASH_PORT, sizeof(*dest), BYTEORDER_MSB);
+  returned = spi_read_octets(ADESTO_FLASH_BUS, sizeof(*dest), BYTEORDER_MSB);
 
   returned = (returned & 0x00ff) << 8 | (returned & 0xff00) >> 8;
 
   * (uint16_t*) dest = returned;
 
-  pin_set(FLASH_GPIO, FLASH_nCS);
+  pin_set(ADESTO_FLASH_CS_GPIO, ADESTO_FLASH_CS);
 
 }
 void flash_read(uint32_t addr, uint8_t *data, size_t size)
 {
-  spi_set_msb(FLASH_PORT);
+  spi_set_msb(ADESTO_FLASH_BUS);
 
-  pin_clear(FLASH_GPIO, FLASH_nCS);
+  pin_clear(ADESTO_FLASH_CS_GPIO, ADESTO_FLASH_CS);
 
   /* Read memory in low power mode */
-  arch_spi_xfer(FLASH_PORT, ADESTO_READ_CONTINUOUS_ARR_READ_LP);
+  arch_spi_xfer(ADESTO_FLASH_BUS, ADESTO_READ_CONTINUOUS_ARR_READ_LP);
 
   /* Send the address */
-  arch_spi_xfer(FLASH_PORT, (addr & 0xFF0000) >> 16);
-  arch_spi_xfer(FLASH_PORT, (addr & 0xFF00) >> 8);
-  arch_spi_xfer(FLASH_PORT,  addr & 0xFF);
+  arch_spi_xfer(ADESTO_FLASH_BUS, (addr & 0xFF0000) >> 16);
+  arch_spi_xfer(ADESTO_FLASH_BUS, (addr & 0xFF00) >> 8);
+  arch_spi_xfer(ADESTO_FLASH_BUS,  addr & 0xFF);
 
   /* Then read as much as we asked for */
-  spi_read_data(FLASH_PORT, data, size);
+  spi_read_data(ADESTO_FLASH_BUS, data, size);
 
-  pin_set(FLASH_GPIO, FLASH_nCS);
+  pin_set(ADESTO_FLASH_CS_GPIO, ADESTO_FLASH_CS);
 }
 
 void flash_write(uint32_t addr, uint8_t *data, size_t size)
@@ -120,7 +120,7 @@ void flash_write(uint32_t addr, uint8_t *data, size_t size)
   // Make sure that the address is sector-aligned
   assert((addr & 0x1FF) == 0);
 
-  spi_set_msb(FLASH_PORT);
+  spi_set_msb(ADESTO_FLASH_BUS);
 
   flash_write_buffer(data, size);
   flash_commit_buffer(addr);
@@ -165,11 +165,11 @@ static void busy_wait_for_ready(void)
 void config_flash(void)
 {
 
-  pin_config(FLASH_GPIO, FLASH_nRESET, PINMODE_OUTPUT);
-  pin_config(FLASH_GPIO, FLASH_nCS, PINMODE_OUTPUT);
+  pin_config(ADESTO_FLASH_RESET_GPIO, ADESTO_FLASH_RESET, PINMODE_OUTPUT);
+  pin_config(ADESTO_FLASH_CS_GPIO, ADESTO_FLASH_CS, PINMODE_OUTPUT);
 
-  pin_set(FLASH_GPIO, FLASH_nRESET);
-  pin_set(FLASH_GPIO, FLASH_nCS);
+  pin_set(ADESTO_FLASH_RESET_GPIO, ADESTO_FLASH_RESET);
+  pin_set(ADESTO_FLASH_CS_GPIO, ADESTO_FLASH_CS);
 
   /* Reset the flash memory and wait until it's ready */
   flash_reset();
