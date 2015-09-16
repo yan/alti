@@ -73,5 +73,5 @@ class GpioBank(object):
 
     
 Bus = namedtuple('Bus', ['name', 'kind', 'gpio', 'pins'])
-Peripheral = namedtuple('Peripheral', ['name', 'on_bus', 'pins'])
+Peripheral = namedtuple('Peripheral', ['name', 'on_bus', 'pins', 'bitorder'])
 Timer = namedtuple('Timer', ['name', 'index', 'channel', 'af'])
