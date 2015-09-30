@@ -20,17 +20,18 @@ static void step_pulse(void);
 static void task_alert_config(void)
 {
   // int ksps = 100, period = 12000/ksps, half_period = period / 2;
-  const int USE_PIEZO = 0;
+  const int USE_PIEZO = 1;
 
   // Initialize timer
   arch_init_timer(STATUS_LED_TIMER, STATUS_LED_CHANNEL, 11, 1000);
   enable_pulse();
 
   if (USE_PIEZO) {
-    arch_init_timer(PIEZO_OUT_TIMER, PIEZO_OUT_CHANNEL, 5, 1000);
+    arch_init_timer(PIEZO_OUT_TIMER, PIEZO_OUT_CHANNEL, 11, 1000);
     enable_piezo();
+    arch_timer_set(PIEZO_OUT_TIMER, PIEZO_OUT_CHANNEL, 500);
   } else {
-    disable_piezo();
+    //disable_piezo();
   }
 
 }
@@ -82,6 +83,7 @@ void task_alert_led(void *p)
   enum task_alert_event_e received_event;
   uint32_t received;
   uint16_t argument;
+  //uint32_t toggle = 0;
 
   task_alert_config();
 
@@ -92,11 +94,25 @@ void task_alert_led(void *p)
       if (state == TASK_ALERT_STATE_PULSING) {
         step_pulse();
       }
+
+      // if (toggle) 
+      // {
+      //   pin_set(PIEZO_OUT_GPIO, PIEZO_OUT);
+      // }
+      // else 
+      // {
+      //   pin_clear(PIEZO_OUT_GPIO, PIEZO_OUT);
+      // }
+
+      // toggle = !toggle;
+
       continue;
     }
 
     received_event = (received >> 16) & 0xFFFF;
     argument = received & 0xFFFF;
+
+
 
     switch (received_event) {
       case ALERT_LOW_OFF:

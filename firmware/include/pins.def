@@ -7,7 +7,7 @@ pin { name: WARN_LED_A, gpio: B, index: 8 }
 pin { name: WARN_LED_B, gpio: B, index: 9 }
 pin { name: STATUS_LED, gpio: B, index: 11 }
 pin { name: BATT_SENSE, gpio: B, index: 12 }
-timer { name: PIEZO_OUT, index: 4, channel: 2, af: 2 }
+timer { name: PIEZO_OUT, index: 3, channel: 2, af: 2 }
 timer { name: STATUS_LED, index: 2, channel: 4, af: 1 }
 bus {
   name : BT_STORE,

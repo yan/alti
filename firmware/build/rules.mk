@@ -142,19 +142,19 @@ endif
 %.flash: %.hex
 	@printf "  FLASH   $<\n"
 	@# IMPORTANT: Don't use "resume", only "reset" will work correctly!
-	$(Q)$(OOCD) -f interface/$(OOCD_INTERFACE).cfg \
+	$(OOCD) -f interface/$(OOCD_INTERFACE).cfg \
 		    -f target/$(OOCD_TARGET).cfg \
 		    -c "init" -c "reset init" \
 		    -c "flash write_image erase $(*).hex" \
 		    -c "reset" \
-		    -c "shutdown" $(NULL)
+		    -c "shutdown"
 
 run: elf
 	$(Q)mkdir -p $(PID_DIR)
 	#$(Q)killall openocd || true
-	#$(Q)openocd -f interface/$(OOCD_INTERFACE).cfg -f target/$(OOCD_TARGET).cfg -l "${PID_DIR}/openocd.log" & echo "$$!" > "${PID_DIR}/openocd.pid"
+	#$(Q)openocd -f interface/$(OOCD_INTERFACE).cfg -f target/$(OOCD_TARGET).cfg -c 'mon reset init' -l "${PID_DIR}/openocd.log" & echo "$$!" > "${PID_DIR}/openocd.pid"
 	$(Q)$(GDB) --command=$(GDB_CMDS) $(OBJ_DIR)/$(BINARY).elf
-	$(Q)kill `cat $(PID_DIR)/openocd.pid`
+	#$(Q)kill `cat $(PID_DIR)/openocd.pid`
 
 
 -include $(OBJS:.o=.d)

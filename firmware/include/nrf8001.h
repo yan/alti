@@ -16,8 +16,6 @@ struct nrf8001_cmd_s {
 
 #define NRF8001_MAX_CMD_LENGTH  (sizeof(((struct nrf8001_cmd_s*)0)->data) + 1)
 
-#define NRF8001_SPI    SPI1
-
 #define PIPE_OPEN(p) (g.pipes_open[(p)/8] & (1 << (p % 8)))
 
 #define PIPE_CLOSED(p) (g.pipes_closed[(p)/8] & (1 << (p % 8)))

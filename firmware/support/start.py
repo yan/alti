@@ -54,6 +54,7 @@ class OpenCM3Render(object):
     def render_bus(self, bus):
         self._f.write(self.F.format(bus.name, bus.kind))
         self._f.write(self.F.format(bus.name+'_GPIO', 'GPIO({})'.format(bus.gpio)))
+        self._f.write(self.F.format(bus.name+'_RCC', 'RCC_' + bus.kind))
 
         pins = ['PIN({})'.format(p.index) for p in bus.pins]
         self._f.write(self.F.format(bus.name+'_PINS', '('+'|'.join(pins)+')'))

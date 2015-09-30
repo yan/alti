@@ -122,7 +122,7 @@ aero_main(void)
   config_globals();
   config_tasks();
   config_flash();
-  config_load_persistent();
+  //config_load_persistent();
 
   vTaskStartScheduler();
 

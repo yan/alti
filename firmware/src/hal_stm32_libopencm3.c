@@ -19,6 +19,7 @@
 #include <libopencm3/cm3/scb.h>
 #include <libopencm3/cm3/nvic.h>
 #include <libopencm3/stm32/gpio.h>
+#include <libopencm3/stm32/usart.h>
 #include <libopencm3/stm32/exti.h>
 #include <libopencm3/stm32/spi.h>
 #include <libopencm3/stm32/i2c.h>
@@ -107,45 +108,68 @@ void arch_config_clocks(void)
   rcc_periph_clock_enable(RCC_GPIOB);
   rcc_peripheral_enable_clock(&RCC_AHBENR, RCC_AHBENR_GPIOBEN);
 
+  rcc_periph_clock_enable(RCC_GPIOC);
+  rcc_peripheral_enable_clock(&RCC_AHBENR, RCC_AHBENR_GPIOCEN);
+
   g.rcc_clock_freq = rcc_apb2_frequency;
 }
 
 void arch_config_io(void)
 {
   /* Configure SPI for nrf8001 and flash */
-  rcc_periph_clock_enable(RCC_SPI1);
+  rcc_periph_clock_enable(BT_STORE_RCC);
   gpio_mode_setup(BT_STORE_GPIO, GPIO_MODE_AF, GPIO_PUPD_NONE, BT_STORE_PINS);
   gpio_set_output_options(BT_STORE_GPIO, GPIO_OTYPE_PP, GPIO_OSPEED_10MHZ, BT_STORE_PINS);
   gpio_set_af(BT_STORE_GPIO, GPIO_AF5, BT_STORE_PINS);
-  //arch_spi_config(1, BYTEORDER_LSB);
+  arch_spi_config(1, BYTEORDER_LSB);
 
   /* Configure SPI for ms5611 and bmx055 */
-  rcc_periph_clock_enable(RCC_SPI2);
+  rcc_periph_clock_enable(SENSORS_RCC);
   gpio_mode_setup(SENSORS_GPIO, GPIO_MODE_AF, GPIO_PUPD_NONE, SENSORS_PINS);
   gpio_set_output_options(SENSORS_GPIO, GPIO_OTYPE_PP, GPIO_OSPEED_10MHZ, SENSORS_PINS);
   gpio_set_af(SENSORS_GPIO, GPIO_AF5, SENSORS_PINS);
   arch_spi_config(2, BYTEORDER_MSB);
 
+
+  /* Enable clocks for USART1. */
+  rcc_periph_clock_enable(UBLOX_UART_RCC);
+  rcc_peripheral_enable_clock(&RCC_APB2ENR, RCC_APB2ENR_USART1EN);
+  
+  gpio_mode_setup(UBLOX_UART_GPIO, GPIO_MODE_AF, GPIO_PUPD_NONE, UBLOX_UART_PINS);
+  gpio_set_output_options(UBLOX_UART_GPIO, GPIO_OTYPE_PP, GPIO_OSPEED_10MHZ, UBLOX_UART_PINS);
+  /* XXX: Move the AF to pins.defs*/
+  gpio_set_af(UBLOX_UART_GPIO, GPIO_AF7, UBLOX_UART_PINS);
+  
+  /* Configure UART for ublox max 7 */
+  //usart_disable(UBLOX_MAX7_BUS);
+  usart_set_baudrate(UBLOX_MAX7_BUS, 9600);
+  usart_set_databits(UBLOX_MAX7_BUS, 8);
+  usart_set_stopbits(UBLOX_MAX7_BUS, USART_STOPBITS_1);
+  usart_set_mode(UBLOX_MAX7_BUS, USART_MODE_TX_RX);
+  usart_set_parity(UBLOX_MAX7_BUS, USART_PARITY_NONE);
+  usart_set_flow_control(UBLOX_MAX7_BUS, USART_FLOWCONTROL_NONE);
+
+  /* Finally enable the USART. */
+  usart_enable(UBLOX_MAX7_BUS);
+
+#define CONFIG_STANDARD_PIN(GPIO, PIN) \
+  do { \
+    gpio_mode_setup(GPIO, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, PIN); \
+    gpio_set_output_options(GPIO, GPIO_OTYPE_PP, GPIO_OSPEED_10MHZ, PIN); \
+    pin_set(GPIO, PIN); \
+  } while (0)
+
   /* Configure all enable pins */
-  gpio_mode_setup(MS5611_EN_GPIO, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, MS5611_EN);
-  gpio_set_output_options(MS5611_EN_GPIO, GPIO_OTYPE_PP, GPIO_OSPEED_10MHZ, MS5611_EN);
-  pin_set(MS5611_EN_GPIO, MS5611_EN);
+  CONFIG_STANDARD_PIN(MS5611_EN_GPIO, MS5611_EN);
+  CONFIG_STANDARD_PIN(BMX055_EN_ACC_GPIO, BMX055_EN_ACC);
+  CONFIG_STANDARD_PIN(BMX055_EN_GYRO_GPIO, BMX055_EN_GYRO);
+  CONFIG_STANDARD_PIN(BMX055_EN_MAG_GPIO, BMX055_EN_MAG);
+  CONFIG_STANDARD_PIN(STATUS_LED_GPIO, STATUS_LED);
+  CONFIG_STANDARD_PIN(UBLOX_MAX7_RESET_GPIO, UBLOX_MAX7_RESET);
+  //CONFIG_STANDARD_PIN(PIEZO_EN_GPIO, PIEZO_EN);
+  //CONFIG_STANDARD_PIN(PIEZO_OUT_GPIO, PIEZO_OUT);
 
-  gpio_mode_setup(BMX055_EN_ACC_GPIO, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, BMX055_EN_ACC);
-  gpio_set_output_options(BMX055_EN_ACC_GPIO, GPIO_OTYPE_PP, GPIO_OSPEED_10MHZ, BMX055_EN_ACC);
-  pin_set(BMX055_EN_ACC_GPIO, BMX055_EN_ACC);
 
-  gpio_mode_setup(BMX055_EN_GYRO_GPIO, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, BMX055_EN_GYRO);
-  gpio_set_output_options(BMX055_EN_GYRO_GPIO, GPIO_OTYPE_PP, GPIO_OSPEED_10MHZ, BMX055_EN_GYRO);
-  pin_set(BMX055_EN_GYRO_GPIO, BMX055_EN_GYRO);
-
-  gpio_mode_setup(BMX055_EN_MAG_GPIO, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, BMX055_EN_MAG);
-  gpio_set_output_options(BMX055_EN_MAG_GPIO, GPIO_OTYPE_PP, GPIO_OSPEED_10MHZ, BMX055_EN_MAG);
-  pin_set(BMX055_EN_MAG_GPIO, BMX055_EN_MAG);
-
-  gpio_mode_setup(STATUS_LED_GPIO, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, STATUS_LED);
-  gpio_set_output_options(STATUS_LED_GPIO, GPIO_OTYPE_PP, GPIO_OSPEED_2MHZ, STATUS_LED);
-  pin_set(STATUS_LED_GPIO, STATUS_LED);
 }
 
 void config_isr(int port)
@@ -255,17 +279,20 @@ void arch_spi_enable(spi_t port)
 
 void enable_piezo(void)
 {
-  gpio_mode_setup(PIEZO_EN_GPIO, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, PIEZO_EN);
-  gpio_set_output_options(PIEZO_EN_GPIO, GPIO_OTYPE_PP, GPIO_OSPEED_2MHZ, PIEZO_EN);
-  pin_set(PIEZO_EN_GPIO, PIEZO_EN);
 
+  CONFIG_STANDARD_PIN(PIEZO_EN_GPIO, PIEZO_EN);
+  // gpio_mode_setup(PIEZO_EN_GPIO, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, PIEZO_EN);
+  // gpio_set_output_options(PIEZO_EN_GPIO, GPIO_OTYPE_PP, GPIO_OSPEED_2MHZ, PIEZO_EN);
+  // pin_set(PIEZO_EN_GPIO, PIEZO_EN);
+
+  //CONFIG_STANDARD_PIN(PIEZO_OUT_GPIO, PIEZO_OUT);
   gpio_mode_setup(PIEZO_OUT_GPIO, GPIO_MODE_AF, GPIO_PUPD_NONE, PIEZO_OUT);
-  gpio_set_output_options(PIEZO_OUT_GPIO, GPIO_OTYPE_PP, GPIO_OSPEED_2MHZ, PIEZO_OUT);
-  //gpio_set_af(PIEZO_GPIO, PIEZO_OUT_AF, PIEZO_OUT);
+  gpio_set_output_options(PIEZO_OUT_GPIO, GPIO_OTYPE_PP, GPIO_OSPEED_10MHZ, PIEZO_OUT);
+  gpio_set_af(PIEZO_OUT_GPIO, PIEZO_OUT_AF, PIEZO_OUT);
 
-  pin_clear(PIEZO_OUT_GPIO, PIEZO_OUT);
+  // pin_clear(PIEZO_OUT_GPIO, PIEZO_OUT);
 
-  //timer_enable_counter(PIEZO_OUT_TIMER);
+  timer_enable_counter(PIEZO_OUT_TIMER);
 }
 
 void disable_piezo(void)

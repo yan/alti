@@ -24,7 +24,7 @@
 #include <services.h>
 
 /** Set to 1 to enable nRF8001-related debugging output */
-#define NRF8001_DEBUG  ( 0 )
+#define NRF8001_DEBUG  ( 1 )
 
 #if NRF8001_DEBUG != 1
 #  undef dbg_print
@@ -279,18 +279,18 @@ void nrf8001_exchange_cmds(struct nrf8001_cmd_s *out, struct nrf8001_cmd_s *in)
    */
   memset(out_ptr + out->length + 1, '\0', NRF8001_MAX_CMD_LENGTH-out->length);
 
-  spi_set_lsb(NRF8001_SPI);
+  spi_set_lsb(BT_STORE);
 
   /* Send length, receive and ignore debug byte */
-  arch_spi_xfer(NRF8001_SPI, out->length);
+  arch_spi_xfer(BT_STORE, out->length);
 
-  in->length = arch_spi_xfer(NRF8001_SPI, out->opcode);
-  in->opcode = arch_spi_xfer(NRF8001_SPI, out->data[0]);
+  in->length = arch_spi_xfer(BT_STORE, out->opcode);
+  in->opcode = arch_spi_xfer(BT_STORE, out->data[0]);
 
   bytes_to_xfer = MAX(in->length, out->length - 1) - 1;
 
   for (i = 0; i < bytes_to_xfer; i++) {
-    in->data[i] = arch_spi_xfer(NRF8001_SPI, out->data[i + 1]);
+    in->data[i] = arch_spi_xfer(BT_STORE, out->data[i + 1]);
   }
 
   pin_set(NRF8001_REQN_GPIO, NRF8001_REQN);

@@ -11,7 +11,7 @@
 #else
 #  error "Unsupprted architecture"
 #endif
-#define PIEZO_OUT_TIMER                 TIM4
+#define PIEZO_OUT_TIMER                 TIM3
 #define PIEZO_OUT_CHANNEL               TIM_OC2
 #define PIEZO_OUT_AF                    GPIO_AF2
 #define STATUS_LED_TIMER                TIM2
@@ -19,12 +19,15 @@
 #define STATUS_LED_AF                   GPIO_AF1
 #define BT_STORE                        SPI1
 #define BT_STORE_GPIO                   GPIO(A)
+#define BT_STORE_RCC                    RCC_SPI1
 #define BT_STORE_PINS                   (PIN(7)|PIN(6)|PIN(5))
 #define SENSORS                         SPI2
 #define SENSORS_GPIO                    GPIO(B)
+#define SENSORS_RCC                     RCC_SPI2
 #define SENSORS_PINS                    (PIN(15)|PIN(14)|PIN(13))
 #define UBLOX_UART                      USART1
 #define UBLOX_UART_GPIO                 GPIO(A)
+#define UBLOX_UART_RCC                  RCC_USART1
 #define UBLOX_UART_PINS                 (PIN(10)|PIN(9))
 #define NRF8001_LSB                     1
 #define NRF8001_BUS                     BT_STORE

@@ -14,13 +14,15 @@
 
 #include <ms5611.h>
 #include <bmx055.h>
+#include <ublox.h>
 /**
  *
  */
 void config_sensor(void)
 {
-  // bmx055_init();
+  bmx055_init();
   ms5611_init();
+  ublox_init();
 }
 
 /**
@@ -47,7 +49,7 @@ void task_sensor(void *p)
     evt.type = GLOBAL_EVT_AIR_PRESSURE;
     evt.payload = (void*) pressure;
 
-    dbg_print("Baro: got pressure: %x\n", (unsigned int)pressure);
+    //dbg_print("Baro: got pressure: %x\n", (unsigned int)pressure);
 
     xQueueSend(g.main_queue_g, &evt, 0);
   }

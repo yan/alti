@@ -7,12 +7,11 @@ SRC_DIR = src/
 
 # Generate with: COLUMNS=100 ls -x src/ |sed 's/^/SRC   += /g'
 SRC    = aero.c				bmx055.c			config.c
-SRC   += filter.c			flash.c
-SRC   += globals.c			hal_stm32_libopencm3.c		hal_stm32_stdperiphlib.c
-SRC   += logger.c
+SRC   += filter.c			flash.c				globals.c
+SRC   += hal_stm32_libopencm3.c		hal_stm32_stdperiphlib.c	logger.c
 SRC   += ms5611.c			nrf8001.c			spi.c
 SRC   += task_alert.c			task_ble.c			task_main.c
-SRC   += task_sensor.c			util.c
+SRC   += task_sensor.c			ublox.c				util.c
 
 include build/Makefile.libfreertos
 include build/alternatives.mk

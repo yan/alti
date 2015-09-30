@@ -119,7 +119,7 @@ your application. */
 
 #if defined(ENABLE_SEMIHOSTING)
 #  undef configTOTAL_HEAP_SIZE
-#  define configTOTAL_HEAP_SIZE                  (49152 - 36344)
+#  define configTOTAL_HEAP_SIZE                  (49152 - 36444)
 
 #  undef CONFIG_TASK_MAIN_STACK_DEPTH
 #  define CONFIG_TASK_MAIN_STACK_DEPTH           1024
@@ -131,7 +131,7 @@ your application. */
 #  define CONFIG_TASK_BLE_STACK_DEPTH            512
 
 #  undef CONFIG_TASK_SENSOR_STACK_DEPTH
-#  define CONFIG_TASK_SENSOR_STACK_DEPTH         512
+#  define CONFIG_TASK_SENSOR_STACK_DEPTH         600
 #endif
 
 #endif /* FREERTOS_CONFIG_H */
