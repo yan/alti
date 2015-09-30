@@ -39,7 +39,7 @@
   )
 
   (setup
-    (last_trace_width 0.352298)
+    (last_trace_width 0.25)
     (user_trace_width 0.1524)
     (user_trace_width 0.1778)
     (user_trace_width 0.2286)
@@ -3226,9 +3226,9 @@
   )
 
   (module aero:2450AT18A100 (layer F.Cu) (tedit 55C1018B) (tstamp 55B9A6B1)
-    (at 164.3888 70.8406 90)
+    (at 164.0078 70.8406 90)
     (path /551C09E8/55B43099)
-    (fp_text reference A1 (at 4.25 2.9 90) (layer F.SilkS)
+    (fp_text reference A1 (at 0.127 0.0254 90) (layer F.SilkS)
       (effects (font (size 1 1) (thickness 0.15)))
     )
     (fp_text value 2450AT18A100 (at 0.05 -3.95 90) (layer F.Fab) hide
@@ -4003,7 +4003,7 @@
   (module aero:CONMMCX002-SMD (layer F.Cu) (tedit 554BAB24) (tstamp 55B9A790)
     (at 161.576 112.776 270)
     (path /55359120/5540F4C0)
-    (fp_text reference CON2 (at 3 0 360) (layer F.SilkS)
+    (fp_text reference CON2 (at -0.1651 -2.5842 450) (layer F.SilkS)
       (effects (font (size 1 1) (thickness 0.15)))
     )
     (fp_text value MMCX_CONN (at 0 -4 270) (layer F.Fab) hide
@@ -5223,7 +5223,7 @@
     (tags SC-70-6,)
     (path /55359120/55B160CF)
     (attr smd)
-    (fp_text reference U12 (at 0.01016 -3.05054 180) (layer F.SilkS)
+    (fp_text reference U12 (at -1.7333 0.1143 270) (layer F.SilkS)
       (effects (font (size 1 1) (thickness 0.15)))
     )
     (fp_text value NC7WZ17 (at -2.416 -1.28 270) (layer F.Fab)
