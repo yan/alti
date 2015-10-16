@@ -90,7 +90,7 @@ uint16_t ms5611_verify_prom(void)
 void ms5611_reset(void)
 {
 #if defined(USE_SPI)
-  spi_send_msb_first(MS5611_BUS);
+  spi_set_msb(MS5611_BUS);
 #endif
 
   pin_clear(MS5611_EN_GPIO, MS5611_EN);
@@ -108,7 +108,7 @@ static uint16_t ms5611_get16(uint8_t cmd)
   uint16_t val;
 
 #if defined(USE_SPI)
-  spi_send_msb_first(MS5611_BUS);
+  spi_set_msb(MS5611_BUS);
 #endif
 
   pin_clear(MS5611_EN_GPIO, MS5611_EN);
@@ -162,7 +162,7 @@ static uint32_t ms5611_read_adc(uint8_t cmd)
   uint32_t val;
 
 #if defined(USE_SPI)
-  spi_send_msb_first(MS5611_BUS);
+  spi_set_msb(MS5611_BUS);
 #endif
 
   /* Warn that we're about to read, and wait a period of time depending on the

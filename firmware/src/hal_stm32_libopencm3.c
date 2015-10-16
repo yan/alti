@@ -81,6 +81,16 @@ void arch_config_ble(void)
   exti_enable_request(EXTI3);
 }
 
+void arch_usart_send(usart_t port, uint8_t data)
+{
+  usart_send_blocking(port, data);
+}
+
+uint8_t arch_usart_recv(usart_t port)
+{
+  return usart_recv_blocking(port);
+}
+
 void arch_config_clocks(void)
 {
   /* Configure main system clock */
@@ -168,6 +178,8 @@ void arch_config_io(void)
   CONFIG_STANDARD_PIN(UBLOX_MAX7_RESET_GPIO, UBLOX_MAX7_RESET);
   //CONFIG_STANDARD_PIN(PIEZO_EN_GPIO, PIEZO_EN);
   //CONFIG_STANDARD_PIN(PIEZO_OUT_GPIO, PIEZO_OUT);
+  CONFIG_STANDARD_PIN(WARN_LED_A_GPIO, WARN_LED_A);
+  CONFIG_STANDARD_PIN(WARN_LED_B_GPIO, WARN_LED_B);
 
 
 }

@@ -24,12 +24,7 @@
 
 static void exchange_commands(struct nrf8001_cmd_s *outgoing, struct nrf8001_cmd_s *incoming);
 
-static struct nrf8001_cmd_s s_null_cmd = {
-  .length = 0,
-  .opcode = 0,
-  .data = { 0 }
-};
-
+const char s_null_cmd[sizeof(struct nrf8001_cmd_s)] = { 0 };
 
 int g_received = 0, g_gotsemphrs = 0;
 
@@ -49,7 +44,7 @@ static void exchange_commands(struct nrf8001_cmd_s *outgoing, struct nrf8001_cmd
   if (outgoing == NULL) {
     status = xQueueReceive(g.ble_data_g->in, &outgoing, 0);
     if (status == pdFAIL) {
-      outgoing = &s_null_cmd;
+      outgoing = (struct nrf8001_cmd_s*)&s_null_cmd;
     }
   }
 
@@ -60,7 +55,7 @@ static void exchange_commands(struct nrf8001_cmd_s *outgoing, struct nrf8001_cmd
   if (incoming->length > 0) {
     struct global_event_s evt;
     evt.type = GLOBAL_EVT_NRF8001_EVENT;
-    evt.payload = incoming;
+    evt.payload = (event_payload_t) incoming;
     xQueueSend(g.main_queue_g, &evt, portMAX_DELAY);
   }
 }

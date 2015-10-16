@@ -5,8 +5,6 @@
 #include <pins.h>
 #include <ublox.h>
 
-#include <libopencm3/stm32/usart.h>
-
 
 static void calculateCheckSum(uint8_t *in, size_t length, uint8_t* dest);
 
@@ -50,7 +48,7 @@ static void ublox_poll(uint8_t class_id, uint8_t msg_id)
   calculateCheckSum(&u.msg_buf[2], 4, &u.msg_buf[6]);
 
   for (i = 0; i < sizeof(u.msg_buf); i++) {
-    usart_send_blocking(UBLOX_UART, u.msg_buf[i]);
+    arch_usart_send(UBLOX_UART, u.msg_buf[i]);
   }
 
 }
@@ -68,7 +66,7 @@ static void ublox_ping(void)
 
 
   for (i = 0; i < 8; i++) {
-    j = usart_recv_blocking(UBLOX_UART);
+    j = arch_usart_recv(UBLOX_UART);
     //dbg_print("Received: %d\n", );
   }
   i = j;

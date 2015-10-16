@@ -47,7 +47,7 @@ void task_sensor(void *p)
     pressure = ms5611_get_mbarc(4);
 
     evt.type = GLOBAL_EVT_AIR_PRESSURE;
-    evt.payload = (void*) pressure;
+    evt.payload = (event_payload_t) (intptr_t) pressure;
 
     //dbg_print("Baro: got pressure: %x\n", (unsigned int)pressure);
 

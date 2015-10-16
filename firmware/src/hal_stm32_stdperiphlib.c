@@ -52,6 +52,17 @@ void pin_config(gpio_t port, pin_t pin, int options)
   GPIO_Init(port, &init);
 }
 
+void arch_usart_send(usart_t port, uint8_t data)
+{
+  (void) port;
+  (void) data;
+}
+
+uint8_t arch_usart_recv(usart_t port)
+{
+  (void) port;
+  return 0;
+}
 void spi_config(spi_t port, int options)
 {
   (void) port;

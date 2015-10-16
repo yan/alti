@@ -7,8 +7,13 @@ SRC_DIR  = src/
 
 SRC     = main.c hooks.c fault_handlers.c
 
-LDLIBS += aero freertos 
+LDLIBS += aero
 
+TESTING ?= 0
+
+ifneq ($(TESTING),1)
+LDLIBS += freertos 
+endif
 
 include build/alternatives.mk
 include build/Makefile.libfreertos

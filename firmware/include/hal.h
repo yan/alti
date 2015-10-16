@@ -22,6 +22,8 @@ enum pinmode_e {
 #  include "hal_stm32_libopencm3.h"
 #elif defined(STM32L1) && defined(STM32_STDPERIPH_LIB)
 #  include "hal_stm32_stdperiphlib.h"
+#elif defined(TESTING)
+#  include "hal_empty.h"
 #else
 #  error "Unsupported architecture"
 #endif
@@ -35,6 +37,10 @@ void pin_toggle(gpio_t port, pin_t pin);
 
 void pin_config(gpio_t port, pin_t pin, int options);
 
+/** USART functions */
+void arch_usart_send(usart_t port, uint8_t data);
+
+uint8_t arch_usart_recv(usart_t port);
 
 /** High level config functions */
 void config_isr(int port);

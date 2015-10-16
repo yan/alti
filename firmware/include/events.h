@@ -6,6 +6,8 @@
 #ifndef __EVENTS_H
 #define __EVENTS_H
 
+#include <stdint.h>
+
 /**
  * @brief All possible events that can be pushed to the main "thread"
  */
@@ -27,12 +29,20 @@ typedef enum event_type_e {
   GLOBAL_EVT_LAST
 } event_type_t;
 
+
+#ifdef TESTING
+// typedef uint32_t event_payload_t;
+typedef void *event_payload_t;
+#else
+typedef void *event_payload_t;
+#endif
+
 /**
  *
  */
 struct global_event_s {
   enum event_type_e type;
-  void *payload;
+  event_payload_t payload;
 };
 
 /**

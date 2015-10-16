@@ -1,6 +1,6 @@
 
-#ifndef __HAL_STM32_LIBOPENCM3
-#define __HAL_STM32_LIBOPENCM3
+#ifndef __HAL_EMPTY
+#define __HAL_EMPTY
 
 #include <stdint.h>
 
@@ -15,4 +15,4 @@ typedef uint32_t usart_t;
 #define hard_fault_handler hard_fault_handler
 #define usage_fault_handler usage_fault_handler
 
-#endif // __HAL_STM32_LIBOPENCM
+#endif // __HAL_EMPTY

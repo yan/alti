@@ -18,10 +18,14 @@
 ## along with this library.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
+ifneq ($(TESTING),1)
 DEFS		= -DSTM32L1
 
 FP_FLAGS	?= -msoft-float
 ARCH_FLAGS	?= -mthumb -mcpu=cortex-m3 $(FP_FLAGS) -mfix-cortex-m3-ldrd
+else
+DEFS            = -DTESTING
+endif
 
 ################################################################################
 # OpenOCD specific variables

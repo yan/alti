@@ -5,10 +5,11 @@
 #include <stm32l1xx_conf.h>
 #include <stdint.h>
 
-typedef GPIO_TypeDef *gpio_t;
-typedef uint16_t      pin_t;
-typedef SPI_TypeDef  *spi_t;
-typedef TIM_TypeDef  *pwm_timer_t;
+typedef GPIO_TypeDef  *gpio_t;
+typedef uint16_t       pin_t;
+typedef SPI_TypeDef   *spi_t;
+typedef TIM_TypeDef   *pwm_timer_t;
+typedef USART_TypeDef *usart_t;
 
 #define mem_manage_handler mem_manage_handler
 #define bus_fault_handler bus_fault_handler

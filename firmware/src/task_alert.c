@@ -83,10 +83,11 @@ void task_alert_led(void *p)
   enum task_alert_event_e received_event;
   uint32_t received;
   uint16_t argument;
-  //uint32_t toggle = 0;
+  uint32_t toggle = 0;
 
   task_alert_config();
 
+  //pin_set(WARN_LED_B_GPIO, WARN_LED_B);
   for (;;) {
     status = xQueueReceive(g.alert_queue_g, &received, delay);
 
@@ -95,19 +96,22 @@ void task_alert_led(void *p)
         step_pulse();
       }
 
-      // if (toggle) 
-      // {
-      //   pin_set(PIEZO_OUT_GPIO, PIEZO_OUT);
-      // }
-      // else 
-      // {
-      //   pin_clear(PIEZO_OUT_GPIO, PIEZO_OUT);
-      // }
+      if (toggle) 
+      {
+          pin_set(WARN_LED_A_GPIO, WARN_LED_A);
+        pin_clear(WARN_LED_B_GPIO, WARN_LED_B);
+      }
+      else 
+      {
+        pin_clear(WARN_LED_A_GPIO, WARN_LED_A);
+          pin_set(WARN_LED_B_GPIO, WARN_LED_B);
+      }
 
-      // toggle = !toggle;
+      toggle = !toggle;
 
       continue;
     }
+
 
     received_event = (received >> 16) & 0xFFFF;
     argument = received & 0xFFFF;

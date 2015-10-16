@@ -13,7 +13,11 @@ DONT_ARCHIVE    ?=
 ###############################################################################
 # Executables
 
+ifneq ($(TESTING),1)
 PREFIX		?= arm-none-eabi-
+else
+PREFIX		?= 
+endif
 
 CC		:= $(PREFIX)gcc
 CXX		:= $(PREFIX)g++
@@ -54,6 +58,7 @@ CPPFLAGS	+= $(DEFS)
 ###############################################################################
 # Linker flags
 
+ifneq ($(TESTING),1)
 LDFLAGS		+= --static -nostartfiles
 LDFLAGS		+= -L$(LIB_DIR)
 LDFLAGS         += -L$(MISC_LIB_DIR)
@@ -67,6 +72,8 @@ LDFLAGS		+= -Wl,--end-group
 ifeq ($(V),99)
 LDFLAGS		+= -Wl,--print-gc-sections
 endif
+endif
+
 
 ###############################################################################
 # Semihosting support

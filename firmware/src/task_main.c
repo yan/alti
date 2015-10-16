@@ -86,7 +86,7 @@ void task_main(void *p)
         break;
 
       case GLOBAL_EVT_NRF8001_EVENT: 
-        nrf8001_handle_event(evt.payload);
+        nrf8001_handle_event((struct nrf8001_cmd_s *) evt.payload);
         break;
 
       case GLOBAL_EVT_LAST:

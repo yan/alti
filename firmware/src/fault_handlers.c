@@ -4,6 +4,7 @@
 
 #include "hal.h"
 
+#ifndef TESTING
 
 void mem_manage_handler(void) __attribute__ (( naked ));
 void bus_fault_handler(void) __attribute__ (( naked ));
@@ -135,3 +136,5 @@ void usage_fault_handler(void)
 		" handler4_address_const: .word pop_registers_from_fault_stack	\n"
 	);
 }
+
+#endif
