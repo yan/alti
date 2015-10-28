@@ -2,3 +2,4 @@ firmware/build/obj/**
 firmware/build/lib/**
 firmware/build/pid/**
 .DS_Store
+*bak
