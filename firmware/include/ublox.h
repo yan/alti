@@ -100,7 +100,7 @@ struct ubx_header_s {
   uint8_t msg_class;
   uint8_t msg_id;
   uint16_t length;
-};
+} __attribute__((packed));
 
 void ublox_init(void);
 

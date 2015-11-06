@@ -67,9 +67,8 @@ static void ublox_ping(void)
 
   for (i = 0; i < 8; i++) {
     j = arch_usart_recv(UBLOX_UART);
-    //dbg_print("Received: %d\n", );
+    dbg_print("Received: %d\n", j);
   }
-  i = j;
 
 }
 

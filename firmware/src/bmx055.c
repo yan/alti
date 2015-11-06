@@ -11,7 +11,7 @@
  * Note: Current hardware is not working, so tabling this until a new board is 
  * made
  */
-void bmx055_reset(void)
+int bmx055_reset(void)
 {
   int response;
 
@@ -28,7 +28,8 @@ void bmx055_reset(void)
   pin_set(BMX055_EN_ACC_GPIO, BMX055_EN_ACC);
 
   dbg_print("WHOAMI? %d\n", response);
-  (void) response;
+
+  return response;
 }
 
 void bmx055_init(void)

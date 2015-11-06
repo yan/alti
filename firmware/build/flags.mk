@@ -17,6 +17,7 @@ ifneq ($(TESTING),1)
 PREFIX		?= arm-none-eabi-
 else
 PREFIX		?= 
+CFLAGS          := --analyze
 endif
 
 CC		:= $(PREFIX)gcc
@@ -60,9 +61,6 @@ CPPFLAGS	+= $(DEFS)
 
 ifneq ($(TESTING),1)
 LDFLAGS		+= --static -nostartfiles
-LDFLAGS		+= -L$(LIB_DIR)
-LDFLAGS         += -L$(MISC_LIB_DIR)
-LDFLAGS		+= -L$(SUPPORT_DIR)
 LDFLAGS		+= -T$(LDSCRIPT)
 LDFLAGS		+= -Wl,-Map=$(OBJ_DIR)/$(*).map
 LDFLAGS		+= -Wl,--gc-sections
@@ -74,6 +72,10 @@ LDFLAGS		+= -Wl,--print-gc-sections
 endif
 endif
 
+# Need libdirs even when testing
+LDFLAGS		+= -L$(LIB_DIR)
+LDFLAGS         += -L$(MISC_LIB_DIR)
+LDFLAGS		+= -L$(SUPPORT_DIR)
 
 ###############################################################################
 # Semihosting support

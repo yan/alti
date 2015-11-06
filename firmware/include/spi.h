@@ -9,8 +9,12 @@
 #include <stdint.h>
 #include <hal.h>
 
-void     spi_send_buf(spi_t port, uint8_t *buf, uint32_t length);
-void     spi_read_data(spi_t port, uint8_t *data, uint32_t length);
+#define spi_send_buf(port, buf, length) \
+    spi_exchange_buf(port, buf, NULL, length)
+#define spi_recv_buf(port, buf, length) \
+    spi_exchange_buf(port, NULL, buf, length)
+
+void spi_exchange_buf(spi_t port, uint8_t *out, uint8_t *in, uint32_t length);
 uint32_t spi_read_octets(spi_t port, unsigned octets, uint32_t byte_order);
 
 #define spi_read16(port) (uint16_t)spi_read_octets(port, 2);

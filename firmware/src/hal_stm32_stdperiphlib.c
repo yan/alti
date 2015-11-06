@@ -58,7 +58,7 @@ void arch_usart_send(usart_t port, uint8_t data)
   (void) data;
 }
 
-uint8_t arch_usart_recv(usart_t port)
+uint16_t arch_usart_recv(usart_t port)
 {
   (void) port;
   return 0;

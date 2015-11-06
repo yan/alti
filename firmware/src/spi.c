@@ -11,24 +11,21 @@
 /**
  * @brief
  */
-void spi_send_buf(spi_t port, uint8_t *buf, uint32_t length)
+void spi_exchange_buf(spi_t port, uint8_t *out, uint8_t *in, uint32_t length)
 {
   unsigned int i = 0;
+  uint8_t c = 0;
 
   for (i = 0; i < length; i++) {
-    arch_spi_xfer(port, buf[i]);
-  }
-}
+    if (out != NULL) {
+      c = out[i];
+    }
 
-/**
- * @brief
- */
-void spi_read_data(spi_t port, uint8_t *data, uint32_t length)
-{
-  unsigned int i;
+    c = arch_spi_xfer(port, c);
 
-  for (i = 0; i < length; ++i) {
-    data[i] = arch_spi_xfer(port, 0);
+    if (in != NULL) {
+      in[i] = c;
+    }
   }
 }
 

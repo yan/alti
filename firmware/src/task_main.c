@@ -49,11 +49,12 @@ void task_main(void *p)
         unsigned int pressure = (unsigned int) evt.payload;
         const uint8_t tx_pipe = PIPE_AERO_PRESSURE_BAROMETRIC_PRESSURE_TX;
 
-        // log othe data
+        // log the data
         {
-          struct sensor_packet_s packet;
-          packet.mbarc = (ms5611_mbarc_t) pressure;
-          packet.ticks = xTaskGetTickCount();
+          struct sensor_packet_s packet = {
+            .mbarc = (ms5611_mbarc_t) pressure,
+            .ticks = xTaskGetTickCount()
+          };
           write_sensor_packet(&packet);
         }
 
@@ -96,6 +97,8 @@ void task_main(void *p)
         state = GLOBAL_STATE_RESET;
         break;
     }
+
+    (void) state;
 
     g_events_processed++;
   }

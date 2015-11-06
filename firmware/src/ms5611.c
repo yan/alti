@@ -14,8 +14,6 @@
 #include <util.h>
 #include <pins.h>
 
-#define USE_SPI
-
 /**
  * @brief PROM
  */
@@ -36,7 +34,7 @@ struct ms5611_C_s {
       coefficient_t C6_temp_coefficient_temp;
       coefficient_t C7_crc;
     };
-    uint16_t _C[8];
+    coefficient_t _C[8];
   };
 } __attribute__((packed)) C;
 
@@ -64,11 +62,13 @@ uint16_t ms5611_verify_prom(void)
   n_prom[7] = (0xFF00 & (n_prom[7])); //CRC byte is replaced by 0
 
   for (cnt = 0; cnt < 16; cnt++) // operation is performed on bytes
-  { // choose LSB or MSB
-    if (cnt%2==1)
+  {
+    // choose LSB or MSB
+    if (cnt%2==1) {
       n_rem ^= (unsigned short) ((n_prom[cnt>>1]) & 0x00FF);
-    else
+    } else {
       n_rem ^= (unsigned short) (n_prom[cnt>>1]>>8);
+    }
     for (n_bit = 8; n_bit > 0; n_bit--) {
       if (n_rem & (0x8000)) {
         n_rem = (n_rem << 1) ^ 0x3000;
@@ -89,9 +89,7 @@ uint16_t ms5611_verify_prom(void)
  */
 void ms5611_reset(void)
 {
-#if defined(USE_SPI)
   spi_set_msb(MS5611_BUS);
-#endif
 
   pin_clear(MS5611_EN_GPIO, MS5611_EN);
   arch_spi_xfer(MS5611_BUS, MS5611_CMD_RESET);
@@ -107,9 +105,7 @@ static uint16_t ms5611_get16(uint8_t cmd)
 {
   uint16_t val;
 
-#if defined(USE_SPI)
   spi_set_msb(MS5611_BUS);
-#endif
 
   pin_clear(MS5611_EN_GPIO, MS5611_EN);
   arch_spi_xfer(MS5611_BUS, cmd);
@@ -161,9 +157,7 @@ static uint32_t ms5611_read_adc(uint8_t cmd)
 {
   uint32_t val;
 
-#if defined(USE_SPI)
   spi_set_msb(MS5611_BUS);
-#endif
 
   /* Warn that we're about to read, and wait a period of time depending on the
    * precision required*/

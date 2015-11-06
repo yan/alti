@@ -31,7 +31,7 @@ uint32_t cpu_cycle_count(void);
    ((x<<24) & 0xff000000))  
     
 
-#if defined(ENABLE_SEMIHOSTING) && ENABLE_SEMIHOSTING
+#if ((defined(ENABLE_SEMIHOSTING) && ENABLE_SEMIHOSTING) || defined(TESTING))
 #  define dbg_print(args...) printf(args)
 #else
 #  define dbg_print(args...)

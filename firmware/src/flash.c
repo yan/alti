@@ -110,7 +110,7 @@ void flash_read(uint32_t addr, uint8_t *data, size_t size)
   arch_spi_xfer(ADESTO_FLASH_BUS,  addr & 0xFF);
 
   /* Then read as much as we asked for */
-  spi_read_data(ADESTO_FLASH_BUS, data, size);
+  spi_recv_buf(ADESTO_FLASH_BUS, data, size);
 
   pin_set(ADESTO_FLASH_CS_GPIO, ADESTO_FLASH_CS);
 }
@@ -153,7 +153,7 @@ int test_flash(void)
 
 static void busy_wait_for_ready(void)
 {
-  struct status_register_s status_reg;
+  struct status_register_s status_reg = {0};
 
   status_reg.ready = 0;
 

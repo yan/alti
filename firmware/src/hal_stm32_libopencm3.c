@@ -86,7 +86,7 @@ void arch_usart_send(usart_t port, uint8_t data)
   usart_send_blocking(port, data);
 }
 
-uint8_t arch_usart_recv(usart_t port)
+uint16_t arch_usart_recv(usart_t port)
 {
   return usart_recv_blocking(port);
 }
