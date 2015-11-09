@@ -142,6 +142,7 @@ struct ubx_nav_pvt_solution_s {
   uint32_t _reserved3;
 } __attribute__((packed));
 
+/* */
 struct ubx_nav_solution_s {
   /*    */
   uint32_t iTOW;
@@ -199,7 +200,22 @@ enum ublox_nav_fixstat_e {
  */
 int ublox_init(void);
 
+/**
+ * @brief Receiving a navigation solution (blocking)
+ */
 int ublox_get(void);
 
+/**
+ * @brief Ask module to start sending navigational messages.
+ * 
+ * @return 1 on success, 0 on failure.
+ */
 int ublox_start_updates(int rate);
+
+/**
+ * @brief Set the measuring rate of measurements.
+ *
+ * @brief ms The rate of measurement, in milliseconds
+ */
+int ublox_set_measuring_rate(uint16_t ms);
 #endif // __UBLOX_H

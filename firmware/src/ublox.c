@@ -1,3 +1,9 @@
+/*
+ *
+ *
+ *
+ *
+ */
 
 #include <stdint.h>
 #include <stddef.h>
@@ -19,6 +25,14 @@ static void   ublox_send(uint8_t class_id, uint8_t msg_id, uint8_t *buf, size_t 
 static size_t usart_recv_buf(usart_t port, uint8_t *dest, size_t length);
 static void   usart_send_buf(usart_t port, uint8_t *buf, size_t length);
 
+/**
+ * Calculate using the 8-Bit Fletcher algorithm, as per UBX docs.
+ *
+ * @param in Pointer to the buffer
+ * @param length The length of the buffer
+ * @param dest Where to produce a checksum. This is also used as a checksum seed
+ *   for calculating checksums in multiple steps.
+ */
 static void calculateCheckSum(uint8_t *in, size_t length, uint8_t* dest) {
   uint8_t a = dest[0];
   uint8_t b = dest[1];
@@ -34,6 +48,7 @@ static void calculateCheckSum(uint8_t *in, size_t length, uint8_t* dest) {
   dest[0] = (a & 0xFF);
   dest[1] = (b & 0xFF);
 }
+
 
 static void usart_send_buf(usart_t port, uint8_t *buf, size_t length)
 {
@@ -58,6 +73,14 @@ static size_t usart_recv_buf(usart_t port, uint8_t *dest, size_t length)
   return length;
 }
 
+/**
+ * Send a UBX message, with calculated checksum.
+ *
+ * @brief class_id The class id of the message
+ * @brief msg_id The message is
+ * @brief buf The data buffer of the body of the message
+ * @brief length The length of the buffer
+ */
 static void ublox_send(uint8_t class_id, uint8_t msg_id, uint8_t *buf, size_t length)
 {
   union {
@@ -120,6 +143,10 @@ static int ublox_get_next_header(usart_t port, struct ubx_header_s *head)
   return 1;
 }
 
+/**
+ * @brief Keep receiving UBX messages until we get one with correct msg_class
+ * and msg_id.
+ */
 static int ublox_expect_response(usart_t port, uint8_t msg_class, uint8_t msg_id)
 {
   int attempts;
@@ -139,9 +166,11 @@ static int ublox_expect_response(usart_t port, uint8_t msg_class, uint8_t msg_id
 
   return !!attempts;
 }
+
 /**
+ * @brief Send a ping to a ublox module, to ensure it's alive.
  *
- *
+ * @return 1 if successfully pinged, 0 if not.
  */
 static int ublox_ping(void)
 {
@@ -212,6 +241,11 @@ int ublox_init(void)
   return 0;
 }
 
+/**
+ * @brief Ask module to start sending navigational messages.
+ * 
+ * @return 1 on success, 0 on failure.
+ */
 int ublox_start_updates(int rate)
 {
   uint8_t request[3] = {
@@ -227,6 +261,9 @@ int ublox_start_updates(int rate)
   return ublox_expect_response(UBLOX_UART, MSG_CLASS_ACK, MSG_ID_ACK_ACK);
 }
 
+/**
+ * @brief Receiving a navigation solution (blocking)
+ */
 int ublox_get(void)
 {
   struct ubx_header_s head;
@@ -238,7 +275,29 @@ int ublox_get(void)
 
   usart_recv_buf(UBLOX_UART, (uint8_t*)&body, sizeof(body));
 
-  dbg_print("(%d %d): %d {%f, %f} (accuracy: %f) %zu\n", head.msg_class, head.msg_id, body.year, body.lat/1e7f, body.lon/1e7f, body.pDOP*0.01f, sizeof(body));
+  dbg_print("(%d %d): %d {%f, %f} (accuracy: %f)\n",
+      head.msg_class, head.msg_id,
+      body.year,
+      body.lat/1e7f, body.lon/1e7f, body.pDOP*0.01f);
 
   return 1;
+}
+
+/**
+ * @brief Set the measuring rate of measurements.
+ *
+ * @brief ms The rate of measurement, in milliseconds
+ */
+int ublox_set_measuring_rate(uint16_t ms)
+{
+  uint16_t request[3] = {
+    ms,
+    1, /* Navitagion rate -- can not be changed, must be 1 */
+    0 /* Alignment, 0 = UTC, 1 = GPS time (??) */
+  };
+
+  ublox_send(MSG_CLASS_CFG, MSG_ID_CFG_RATE, (uint8_t*)request, sizeof(request));
+
+  // XXX Do we get acks?
+  return ublox_expect_response(UBLOX_UART, MSG_CLASS_ACK, MSG_ID_ACK_ACK);
 }
