@@ -75,6 +75,7 @@
     #define MSG_ID_NAV_POSLLH 0x02
     #define MSG_ID_NAV_SBAS 0x32
     #define MSG_ID_NAV_SOL 0x06
+    #define MSG_ID_NAV_PVT 0x07
     #define MSG_ID_NAV_STATUS 0x03
     #define MSG_ID_NAV_SVINFO 0x30
     #define MSG_ID_NAV_TIMEGPS 0x20
@@ -102,7 +103,103 @@ struct ubx_header_s {
   uint16_t length;
 } __attribute__((packed));
 
-void ublox_init(void);
+struct ubx_nav_status_s {
+  /* GPS time of week of the navigation epoch */
+  uint32_t iTOW;
+  /* ublox_fixtype_e */
+  uint8_t gpsFix; 
+  /* navigation status flags (ublox_fixtype_e) */
+  uint8_t flags; 
+  uint8_t fixStat;
+  uint8_t flags2; 
+  uint32_t ttff;
+  uint32_t msss;
+} __attribute__((packed));
 
+/*    */
+struct ubx_nav_pvt_solution_s {
+  uint32_t iTOW;
+  uint16_t year;
+  uint8_t month, day, hour, min, sec;
+  uint8_t valid;
+  uint32_t tAcc;
+  int32_t nano;
+  uint8_t fixType;
+  uint8_t flags;
+  uint8_t _reserved1;
+  uint8_t numSV;
+  int32_t lon, lat;
+  int32_t height;
+  int32_t hMSL;
+  uint32_t hAcc, vAcc;
+  int32_t velN, velE, velD;
+  int32_t gSpeed;
+  int32_t heading;
+  uint32_t sAcc;
+  uint32_t headingAcc;
+  uint16_t pDOP;
+  int16_t _reserved2;
+  uint32_t _reserved3;
+} __attribute__((packed));
 
+struct ubx_nav_solution_s {
+  /*    */
+  uint32_t iTOW;
+  /*    */
+  uint32_t fTOW;
+  /*    */
+  uint16_t week;
+  /*    */
+  uint8_t gpsFix;
+  /*    */
+  uint8_t flags;
+  /*    */
+  int32_t ecefX, ecefY, ecefZ;
+  /*    */
+  uint32_t pAcc;
+  /*    */
+  int32_t ecefVX, ecefVY, ecefVZ;
+  /*    */
+  uint32_t sAcc;
+  /*    */
+  uint16_t pDOP;
+  /*    */
+  uint8_t _reserved1;
+  /*    */
+  uint8_t numSV;
+  /*    */
+  uint32_t _reserved2;
+} __attribute__((packed));
+
+enum ublox_fixtype_e {
+  FIXTYPE_NO_FIX = 0x00,
+  FIXTYPE_DEAD_RECKONING,
+  FIXTYPE_2D_FIX,
+  FIXTYPE_3D_FIX,
+  FIXTYPE_GPS_DEAD_RECKONING,
+  FIXTYPE_TIME_ONLY
+};
+
+enum ublox_nav_flags_e {
+  NAV_FLAGS_FIX_OK = 0x01,
+  NAV_FLAGS_DIFF_SOLN = 0x02,
+  NAV_FLAGS_WKNSET = 0x04,
+  NAV_FLAGS_TOWSET = 0x08
+};
+
+enum ublox_nav_fixstat_e {
+  NAV_FIXSTAT_DPGS = 0x01,
+  NAV_FIXSTAT_MAP_MATCHING = 0xA0
+};
+
+/**
+ * @brief Try to disocver the ublox module.
+ *
+ * @return 1 on success, 0 if unable to ping one
+ */
+int ublox_init(void);
+
+int ublox_get(void);
+
+int ublox_start_updates(int rate);
 #endif // __UBLOX_H
