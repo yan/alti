@@ -11,7 +11,7 @@
 #include <pins.h>
 #include <util.h>
 
-#if defined(STM32L1)
+#if defined(STM32L1) || defined(TESTING)
 #  include <hal.h>
 #endif
 
