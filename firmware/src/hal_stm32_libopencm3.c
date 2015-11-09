@@ -131,14 +131,14 @@ void arch_config_io(void)
   gpio_mode_setup(BT_STORE_GPIO, GPIO_MODE_AF, GPIO_PUPD_NONE, BT_STORE_PINS);
   gpio_set_output_options(BT_STORE_GPIO, GPIO_OTYPE_PP, GPIO_OSPEED_10MHZ, BT_STORE_PINS);
   gpio_set_af(BT_STORE_GPIO, GPIO_AF5, BT_STORE_PINS);
-  arch_spi_config(1, BYTEORDER_LSB);
+  arch_spi_config(1);
 
   /* Configure SPI for ms5611 and bmx055 */
   rcc_periph_clock_enable(SENSORS_RCC);
   gpio_mode_setup(SENSORS_GPIO, GPIO_MODE_AF, GPIO_PUPD_NONE, SENSORS_PINS);
   gpio_set_output_options(SENSORS_GPIO, GPIO_OTYPE_PP, GPIO_OSPEED_10MHZ, SENSORS_PINS);
   gpio_set_af(SENSORS_GPIO, GPIO_AF5, SENSORS_PINS);
-  arch_spi_config(2, BYTEORDER_MSB);
+  arch_spi_config(2);
 
 
   /* Enable clocks for USART1. */
@@ -235,11 +235,9 @@ void arch_timer_set(uint32_t timer, uint32_t channel, uint32_t value)
  * @param port 1 for SPI1 or 2 for SPI2
  * @param byte_order 0 for LSB first, 1 for MSB first
  */
-void arch_spi_config(spi_t port, uint16_t byte_order)
+void arch_spi_config(spi_t port)
 {
   port = ((port == 1) ? SPI1 : SPI2);
-
-  byte_order = !!byte_order;
 
   spi_reset(port);
   spi_init_master(port,
@@ -247,7 +245,7 @@ void arch_spi_config(spi_t port, uint16_t byte_order)
                   SPI_CR1_CPOL_CLK_TO_0_WHEN_IDLE,
                   SPI_CR1_CPHA_CLK_TRANSITION_1,
                   SPI_CR1_DFF_8BIT,
-                  byte_order ? SPI_CR1_MSBFIRST : SPI_CR1_LSBFIRST);
+                  SPI_CR1_MSBFIRST);
 
   spi_enable_software_slave_management(port);
   spi_disable_ss_output(port);

@@ -2,8 +2,6 @@
  * Copyright 2015 Yan Ivnitskiy
  */
 
-#ifdef TESTING
-
 #include <hal.h>
 #include <nrf8001.h>
 #include <util.h>
@@ -11,12 +9,6 @@
 #include <globals.h>
 #include <pins.h>
 #include <spi.h>
-
-/*
-#include <FreeRTOS.h>
-#include <queue.h>
-#include <task.h>
-*/
 
 void exti3_isr(void);
 
@@ -118,10 +110,9 @@ void arch_timer_set(uint32_t timer, uint32_t channel, uint32_t value)
  * @param port 1 for SPI1 or 2 for SPI2
  * @param byte_order 0 for LSB first, 1 for MSB first
  */
-void arch_spi_config(spi_t port, uint16_t byte_order)
+void arch_spi_config(spi_t port)
 {
   (void) port;
-  (void) byte_order;
 }
 
 
@@ -173,5 +164,3 @@ void disable_pulse(void)
 {
 }
 
-
-#endif // ifdef TESTING

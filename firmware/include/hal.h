@@ -67,7 +67,7 @@ void spi_set_msb(spi_t port);
 
 void spi_set_lsb(spi_t port);
 
-void arch_spi_config(spi_t port, uint16_t byte_order);
+void arch_spi_config(spi_t port);
 
 uint8_t arch_spi_xfer(spi_t port, uint8_t cmd);
 
