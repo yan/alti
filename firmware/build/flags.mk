@@ -15,12 +15,15 @@ DONT_ARCHIVE    ?=
 
 ifneq ($(TESTING),1)
 PREFIX		?= arm-none-eabi-
+CC		:= $(PREFIX)gcc
+CXX		:= $(PREFIX)g++
 else
 PREFIX		?= 
+CC              := clang
+CXX		:= clang
 CFLAGS          := --analyze
 endif
 
-CC		:= $(PREFIX)gcc
 CXX		:= $(PREFIX)g++
 LD		:= $(PREFIX)gcc
 AR		:= $(PREFIX)ar
