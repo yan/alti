@@ -31,13 +31,13 @@ AS		:= $(PREFIX)as
 SIZE		:= $(PREFIX)size
 OBJCOPY		:= $(PREFIX)objcopy
 OBJDUMP		:= $(PREFIX)objdump
-GDB		:= $(PREFIX)gdb
+GDB		:= $(PREFIX)gdb-py
 STFLASH		= $(shell which st-flash)
 
 ###############################################################################
 # C flags
 
-CFLAGS		+= -g -O2 # -Os
+CFLAGS		+= -g #  -O2 # -Os
 CFLAGS		+= -Wextra -Wshadow -Wimplicit-function-declaration
 CFLAGS		+= -Wredundant-decls -Wmissing-prototypes -Wstrict-prototypes
 CFLAGS          += -Wno-unused-function
@@ -46,7 +46,7 @@ CFLAGS		+= -fno-common -ffunction-sections -fdata-sections
 ###############################################################################
 # C++ flags
 
-CXXFLAGS	+= -g -O2 #-Os
+CXXFLAGS	+= -g # -O2 #-Os
 CXXFLAGS	+= -Wextra -Wshadow -Wredundant-decls  -Weffc++
 CXXFLAGS	+= -fno-common -ffunction-sections -fdata-sections
 

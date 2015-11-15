@@ -24,6 +24,10 @@
 #include <libopencm3/stm32/spi.h>
 #include <libopencm3/stm32/i2c.h>
 #include <libopencm3/stm32/rcc.h>
+#include <libopencm3/stm32/rtc.h>
+
+
+void arch_config_uart(usart_t port, int baud);
 
 void pin_set(gpio_t port, pin_t pin)
 {
@@ -43,17 +47,28 @@ void pin_toggle(gpio_t port, pin_t pin)
 void pin_config(gpio_t port, pin_t pin, int options)
 {
   uint32_t mode;
+  gpio_af_mode_t af = 0;
+  int should_set = 0;
 
   if (options == PINMODE_INPUT) {
     mode = GPIO_MODE_INPUT;
   } else if (options == PINMODE_OUTPUT) {
     mode = GPIO_MODE_OUTPUT;
+  } else if (options >= PINMODE_AF_1 && options <= PINMODE_AF_8) {
+    mode = GPIO_MODE_AF;
+    af = options;
+    should_set = 1;
   } else {
     mode = 0;
     assert(0);
   }
 
   gpio_mode_setup(port, mode, GPIO_PUPD_NONE, pin);
+  gpio_set_output_options(port, GPIO_OTYPE_PP, GPIO_OSPEED_10MHZ, pin);
+
+  if (should_set) {
+    gpio_set_af(port, af, pin);
+  }
 }
 
 void spi_config(spi_t port, int options)
@@ -107,9 +122,9 @@ void arch_config_clocks(void)
   /* Make the RTC use the LSE */
   rcc_rtc_select_clock(RCC_CSR_RTCSEL_LSE);
 
-  //RCC_CSR |= RCC_CSR_RTCEN;
+  // RCC_CSR |= RCC_CSR_RTCEN;
 
-  //rtc_unlock();
+  rtc_unlock();
 
   // Initialize GPIO
   rcc_periph_clock_enable(RCC_GPIOA);
@@ -124,63 +139,72 @@ void arch_config_clocks(void)
   g.rcc_clock_freq = rcc_apb2_frequency;
 }
 
-void arch_config_io(void)
+void arch_config_uart(usart_t port, int baud)
 {
-  /* Configure SPI for nrf8001 and flash */
-  rcc_periph_clock_enable(BT_STORE_RCC);
-  gpio_mode_setup(BT_STORE_GPIO, GPIO_MODE_AF, GPIO_PUPD_NONE, BT_STORE_PINS);
-  gpio_set_output_options(BT_STORE_GPIO, GPIO_OTYPE_PP, GPIO_OSPEED_10MHZ, BT_STORE_PINS);
-  gpio_set_af(BT_STORE_GPIO, GPIO_AF5, BT_STORE_PINS);
-  arch_spi_config(1);
-
-  /* Configure SPI for ms5611 and bmx055 */
-  rcc_periph_clock_enable(SENSORS_RCC);
-  gpio_mode_setup(SENSORS_GPIO, GPIO_MODE_AF, GPIO_PUPD_NONE, SENSORS_PINS);
-  gpio_set_output_options(SENSORS_GPIO, GPIO_OTYPE_PP, GPIO_OSPEED_10MHZ, SENSORS_PINS);
-  gpio_set_af(SENSORS_GPIO, GPIO_AF5, SENSORS_PINS);
-  arch_spi_config(2);
-
-
   /* Enable clocks for USART1. */
-  rcc_periph_clock_enable(UBLOX_UART_RCC);
-  rcc_peripheral_enable_clock(&RCC_APB2ENR, RCC_APB2ENR_USART1EN);
+  if (port == USART1) {
+    rcc_periph_clock_enable(RCC_USART1);
+  } else if (port == USART2) {
+    rcc_periph_clock_enable(RCC_USART2);
+  } else {
+    assert(0);
+  }
   
-  gpio_mode_setup(UBLOX_UART_GPIO, GPIO_MODE_AF, GPIO_PUPD_NONE, UBLOX_UART_PINS);
-  gpio_set_output_options(UBLOX_UART_GPIO, GPIO_OTYPE_PP, GPIO_OSPEED_10MHZ, UBLOX_UART_PINS);
-  /* XXX: Move the AF to pins.defs*/
-  gpio_set_af(UBLOX_UART_GPIO, GPIO_AF7, UBLOX_UART_PINS);
-  
+  /* AF7 == USART? */
+  pin_config(UBLOX_UART_GPIO, UBLOX_UART_PINS, PINMODE_AF_7);
+
   /* Configure UART for ublox max 7 */
-  //usart_disable(UBLOX_MAX7_BUS);
-  usart_set_baudrate(UBLOX_MAX7_BUS, 9600);
-  usart_set_databits(UBLOX_MAX7_BUS, 8);
-  usart_set_stopbits(UBLOX_MAX7_BUS, USART_STOPBITS_1);
-  usart_set_mode(UBLOX_MAX7_BUS, USART_MODE_TX_RX);
-  usart_set_parity(UBLOX_MAX7_BUS, USART_PARITY_NONE);
-  usart_set_flow_control(UBLOX_MAX7_BUS, USART_FLOWCONTROL_NONE);
+  usart_disable(port);
+
+  usart_set_baudrate(port, baud);
+  usart_set_databits(port, 8);
+  usart_set_stopbits(port, USART_STOPBITS_1);
+  usart_set_mode(port, USART_MODE_TX_RX);
+  usart_set_parity(port, USART_PARITY_NONE);
+  usart_set_flow_control(port, USART_FLOWCONTROL_NONE);
 
   /* Finally enable the USART. */
-  usart_enable(UBLOX_MAX7_BUS);
+  usart_enable(port);
+}
 
-#define CONFIG_STANDARD_PIN(GPIO, PIN) \
-  do { \
-    gpio_mode_setup(GPIO, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, PIN); \
-    gpio_set_output_options(GPIO, GPIO_OTYPE_PP, GPIO_OSPEED_10MHZ, PIN); \
-    pin_set(GPIO, PIN); \
-  } while (0)
+void arch_config_io(void)
+{
+  unsigned i;
+  /* Configure SPI for nrf8001 and flash */
+  pin_config(BT_STORE_GPIO, BT_STORE_PINS, PINMODE_AF_5);
+  arch_spi_config(BT_STORE);
+
+  /* Configure SPI for ms5611 and bmx055 */
+  pin_config(SENSORS_GPIO, SENSORS_PINS, PINMODE_AF_5);
+  arch_spi_config(SENSORS);
+  
+  /* Configure UART for ublox GPS */
+  arch_config_uart(UBLOX_MAX7_BUS, 9600);
 
   /* Configure all enable pins */
-  CONFIG_STANDARD_PIN(MS5611_EN_GPIO, MS5611_EN);
-  CONFIG_STANDARD_PIN(BMX055_EN_ACC_GPIO, BMX055_EN_ACC);
-  CONFIG_STANDARD_PIN(BMX055_EN_GYRO_GPIO, BMX055_EN_GYRO);
-  CONFIG_STANDARD_PIN(BMX055_EN_MAG_GPIO, BMX055_EN_MAG);
-  CONFIG_STANDARD_PIN(STATUS_LED_GPIO, STATUS_LED);
-  CONFIG_STANDARD_PIN(UBLOX_MAX7_RESET_GPIO, UBLOX_MAX7_RESET);
-  //CONFIG_STANDARD_PIN(PIEZO_EN_GPIO, PIEZO_EN);
-  //CONFIG_STANDARD_PIN(PIEZO_OUT_GPIO, PIEZO_OUT);
-  CONFIG_STANDARD_PIN(WARN_LED_A_GPIO, WARN_LED_A);
-  CONFIG_STANDARD_PIN(WARN_LED_B_GPIO, WARN_LED_B);
+#define __PIN(name) { name ## _GPIO, name }
+  struct {
+    gpio_t port;
+    pin_t pin;
+  } init_pins[] = {
+    __PIN(MS5611_EN),
+    __PIN(BMX055_EN_ACC),
+    __PIN(BMX055_EN_GYRO),
+    __PIN(BMX055_EN_MAG),
+    __PIN(ADESTO_FLASH_CS),
+    __PIN(STATUS_LED),
+    __PIN(UBLOX_MAX7_RESET),
+    __PIN(WARN_LED_A),
+    __PIN(WARN_LED_B),
+    // __PIN(PIEZO_EN),
+    // __PIN(PIEZO_OUT),
+  };
+#undef __PIN
 
+  for (i = 0; i < sizeof(init_pins)/sizeof(init_pins[0]); i++) {
+    pin_config(init_pins[i].port, init_pins[i].pin, PINMODE_OUTPUT);
+    pin_set(init_pins[i].port, init_pins[i].pin);
+  }
 
 }
 
@@ -237,11 +261,17 @@ void arch_timer_set(uint32_t timer, uint32_t channel, uint32_t value)
  */
 void arch_spi_config(spi_t port)
 {
-  port = ((port == 1) ? SPI1 : SPI2);
+  if (port == SPI1) {
+    rcc_periph_clock_enable(RCC_SPI1);
+  } else if (port == SPI2) {
+    rcc_periph_clock_enable(RCC_SPI2);
+  } else {
+    assert(0);
+  }
 
   spi_reset(port);
   spi_init_master(port,
-                  SPI_CR1_BAUDRATE_FPCLK_DIV_4,
+                  SPI_CR1_BAUDRATE_FPCLK_DIV_8,
                   SPI_CR1_CPOL_CLK_TO_0_WHEN_IDLE,
                   SPI_CR1_CPHA_CLK_TRANSITION_1,
                   SPI_CR1_DFF_8BIT,
@@ -280,9 +310,12 @@ uint8_t arch_spi_xfer(spi_t port, uint8_t cmd)
  */
 void arch_spi_enable(spi_t port)
 {
-  rcc_periph_clock_enable((port == 2) ? RCC_SPI2 : RCC_SPI1);
+  if (port == SPI1) {
+    rcc_periph_clock_enable(RCC_SPI1);
+  } else {
+    rcc_periph_clock_enable(RCC_SPI2);
+  }
 
-  port = ((port == 2) ? SPI2 : SPI1);
   spi_enable(port);
 }
 
@@ -290,15 +323,10 @@ void arch_spi_enable(spi_t port)
 void enable_piezo(void)
 {
 
-  CONFIG_STANDARD_PIN(PIEZO_EN_GPIO, PIEZO_EN);
-  // gpio_mode_setup(PIEZO_EN_GPIO, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, PIEZO_EN);
-  // gpio_set_output_options(PIEZO_EN_GPIO, GPIO_OTYPE_PP, GPIO_OSPEED_2MHZ, PIEZO_EN);
-  // pin_set(PIEZO_EN_GPIO, PIEZO_EN);
+  pin_config(PIEZO_EN_GPIO, PIEZO_EN, PINMODE_OUTPUT);
+  pin_set(PIEZO_EN_GPIO, PIEZO_EN);
 
-  //CONFIG_STANDARD_PIN(PIEZO_OUT_GPIO, PIEZO_OUT);
-  gpio_mode_setup(PIEZO_OUT_GPIO, GPIO_MODE_AF, GPIO_PUPD_NONE, PIEZO_OUT);
-  gpio_set_output_options(PIEZO_OUT_GPIO, GPIO_OTYPE_PP, GPIO_OSPEED_10MHZ, PIEZO_OUT);
-  gpio_set_af(PIEZO_OUT_GPIO, PIEZO_OUT_AF, PIEZO_OUT);
+  pin_config(PIEZO_OUT_GPIO, PIEZO_OUT, PINMODE_AF_2);
 
   // pin_clear(PIEZO_OUT_GPIO, PIEZO_OUT);
 
@@ -310,18 +338,14 @@ void disable_piezo(void)
   rcc_peripheral_disable_clock(&RCC_APB1ENR, RCC_APB1ENR_TIM4EN);
   timer_disable_counter(PIEZO_OUT_TIMER);
 
-  gpio_mode_setup(PIEZO_EN_GPIO, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, PIEZO_EN);
-  gpio_set_output_options(PIEZO_EN_GPIO, GPIO_OTYPE_PP, GPIO_OSPEED_2MHZ, PIEZO_EN);
+  pin_config(PIEZO_EN_GPIO, PIEZO_EN, PINMODE_OUTPUT);
   pin_clear(PIEZO_EN_GPIO, PIEZO_EN);
-
   pin_clear(PIEZO_OUT_GPIO, PIEZO_OUT);
 }
 
 void enable_pulse(void)
 {
-  gpio_mode_setup(STATUS_LED_GPIO, GPIO_MODE_AF, GPIO_PUPD_NONE, STATUS_LED);
-  gpio_set_output_options(STATUS_LED_GPIO, GPIO_OTYPE_PP, GPIO_OSPEED_2MHZ, STATUS_LED);
-  gpio_set_af(STATUS_LED_GPIO, STATUS_LED_AF, STATUS_LED);
+  pin_config(STATUS_LED_GPIO, STATUS_LED, PINMODE_AF_1);
 
   timer_enable_counter(STATUS_LED_TIMER);
 }
@@ -330,7 +354,7 @@ void enable_pulse(void)
 void disable_pulse(void)
 {
   timer_disable_counter(STATUS_LED_TIMER);
-  gpio_mode_setup(STATUS_LED_GPIO, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, STATUS_LED);
+  pin_config(STATUS_LED_GPIO, STATUS_LED, PINMODE_OUTPUT);
 }
 
 

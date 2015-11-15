@@ -21,7 +21,8 @@ your application. */
 #define configUSE_RECURSIVE_MUTEXES             0
 #define configUSE_COUNTING_SEMAPHORES           0
 #define configUSE_ALTERNATIVE_API               0 /* Deprecated! */
-#define configQUEUE_REGISTRY_SIZE               10
+/** TODO: Comment this out later */
+#define configQUEUE_REGISTRY_SIZE               20
 #define configUSE_QUEUE_SETS                    0
 #define configUSE_TIME_SLICING                  0
 #define configUSE_NEWLIB_REENTRANT              0

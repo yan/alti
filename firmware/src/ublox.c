@@ -6,6 +6,7 @@
  */
 
 #include <stdint.h>
+#include <inttypes.h>
 #include <stddef.h>
 #include <ublox.h>
 #include <pins.h>
@@ -17,13 +18,16 @@
 
 #define MAX_RECEIVED 1024
 
-#define MAX_RETRIES (5)
+#define MAX_RETRIES (10)
 
 static void calculateCheckSum(uint8_t *in, size_t length, uint8_t* dest);
-static int    ublox_expect_response(usart_t port, uint8_t msg_class, uint8_t msg_id);
+static int    ublox_expect_response(usart_t port, uint8_t msg_class, uint8_t msg_id, struct ubx_header_s *header);
+static int    ublox_update_port_settings(usart_t port);
 static void   ublox_send(uint8_t class_id, uint8_t msg_id, uint8_t *buf, size_t length);
 static size_t usart_recv_buf(usart_t port, uint8_t *dest, size_t length);
 static void   usart_send_buf(usart_t port, uint8_t *buf, size_t length);
+
+#define ublox_poll(class_id, msg_id) ublox_send(class_id, msg_id, NULL, 0)
 
 /**
  * Calculate using the 8-Bit Fletcher algorithm, as per UBX docs.
@@ -83,27 +87,28 @@ static size_t usart_recv_buf(usart_t port, uint8_t *dest, size_t length)
  */
 static void ublox_send(uint8_t class_id, uint8_t msg_id, uint8_t *buf, size_t length)
 {
+  uint8_t sync_bytes[2] = { UBX_SYNC_BYTE_1, UBX_SYNC_BYTE_2 };
   union {
     struct ubx_header_s msg;
-    uint8_t msg_buf[6];
+    uint8_t msg_buf[sizeof(struct ubx_header_s)];
   } u;
 
   uint16_t checksum = 0;
 
-  u.msg.sync1 = UBX_SYNC_BYTE_1;
-  u.msg.sync2 = UBX_SYNC_BYTE_2;
   u.msg.msg_class = class_id;
   u.msg.msg_id = msg_id;
   u.msg.length = length;
 
-  // Checksum header
-  calculateCheckSum(&u.msg_buf[2], 4, (uint8_t*)&checksum);
+  // TODO: Try commenting this out
+  usart_wait_send_ready(UBLOX_UART);
 
-  // Checksum buffer
-  calculateCheckSum(buf, length, (uint8_t*)&checksum);
-
-  usart_send_buf(UBLOX_UART, u.msg_buf, 6);
-  usart_send_buf(UBLOX_UART, buf, length);
+  usart_send_buf(UBLOX_UART, sync_bytes, sizeof sync_bytes);
+  usart_send_buf(UBLOX_UART, u.msg_buf, sizeof u.msg_buf);
+  calculateCheckSum(u.msg_buf, sizeof u.msg_buf, (uint8_t*)&checksum);
+  if (length > 0) {
+    usart_send_buf(UBLOX_UART, buf, length);
+    calculateCheckSum(buf, length, (uint8_t*)&checksum);
+  }
   usart_send_buf(UBLOX_UART, (uint8_t*)&checksum, sizeof(checksum));
 }
 
@@ -115,18 +120,19 @@ static void ublox_send(uint8_t class_id, uint8_t msg_id, uint8_t *buf, size_t le
  */
 static int ublox_get_next_header(usart_t port, struct ubx_header_s *head)
 {
+  uint8_t received;
   if (head == NULL) {
     return 0;
   }
 
   do {
-    head->sync1 = arch_usart_recv(port);
-    if (head->sync1 != UBX_SYNC_BYTE_1) {
+    received = arch_usart_recv(port);
+    if (received != UBX_SYNC_BYTE_1) {
       continue;
     }
 
-    head->sync2 = arch_usart_recv(port);
-    if (head->sync2 != UBX_SYNC_BYTE_2) {
+    received = arch_usart_recv(port);
+    if (received != UBX_SYNC_BYTE_2) {
       continue;
     }
 
@@ -147,21 +153,25 @@ static int ublox_get_next_header(usart_t port, struct ubx_header_s *head)
  * @brief Keep receiving UBX messages until we get one with correct msg_class
  * and msg_id.
  */
-static int ublox_expect_response(usart_t port, uint8_t msg_class, uint8_t msg_id)
+static int ublox_expect_response(usart_t port, uint8_t msg_class, uint8_t msg_id, struct ubx_header_s *header)
 {
   int attempts;
-  struct ubx_header_s header;
+  struct ubx_header_s h;
 
-  for (attempts = 0; attempts < MAX_RETRIES; attempts++) {
-    if (!ublox_get_next_header(port, &header)) {
+  for (attempts = MAX_RETRIES; attempts > 0; attempts--) {
+    if (!ublox_get_next_header(port, &h)) {
       continue;
     }
 
-    if (header.msg_class != msg_class || header.msg_id != msg_id) {
+    if (h.msg_class != msg_class || h.msg_id != msg_id) {
       continue;
     }
 
     break;
+  }
+
+  if (header != NULL) {
+    *header = h;
   }
 
   return !!attempts;
@@ -177,9 +187,7 @@ static int ublox_ping(void)
   struct ubx_header_s header;
   int received = 0;
 
-  ublox_send(MSG_CLASS_MON, MSG_ID_MON_VER, NULL, 0);
-
-  delay_ms(500);
+  ublox_poll(MSG_CLASS_MON, MSG_ID_MON_VER);
 
   if (!ublox_get_next_header(UBLOX_UART, &header)) {
     return 0;
@@ -229,15 +237,20 @@ static int ublox_ping(void)
  */
 int ublox_init(void)
 {
-  int attempts = MAX_RETRIES;
+  int attempts = 0;
+  //static char buf[32];
 
-  dbg_print("configuring ublox\n");
+  ublox_hard_reset();
+
   delay_ms(200);
-  while (attempts-- > 0) {
+  //ublox_update_port_settings(UBLOX_UART);
+
+  for (attempts = MAX_RETRIES; attempts > 0; attempts--) {
     if (ublox_ping()) {
       return 1;
     }
   }
+
   return 0;
 }
 
@@ -254,11 +267,35 @@ int ublox_start_updates(int rate)
     rate
   };
 
-  dbg_print("asked to start sending updates at %d\n", rate);
-
   ublox_send(MSG_CLASS_CFG, MSG_ID_CFG_MSG, request, sizeof(request));
 
-  return ublox_expect_response(UBLOX_UART, MSG_CLASS_ACK, MSG_ID_ACK_ACK);
+  return ublox_expect_response(UBLOX_UART, MSG_CLASS_ACK, MSG_ID_ACK_ACK, NULL);
+}
+
+int ublox_get_rate(void)
+{
+  int status;
+  struct ubx_header_s head;
+  uint16_t response[3];
+
+  ublox_poll(MSG_CLASS_CFG, MSG_ID_CFG_RATE);
+
+  status = ublox_expect_response(UBLOX_UART, MSG_CLASS_CFG, MSG_ID_CFG_RATE, &head);
+
+  if (!status) {
+    return status;
+  }
+
+  if (head.length != sizeof(response)) {
+    return 0;
+  }
+
+  usart_recv_buf(UBLOX_UART, (uint8_t*)response, sizeof(response));
+
+  dbg_print("Measuing rate is: %d ms, %d cycles, (time ref = %d)", 
+      response[0], response[1], response[2]);
+
+  return 1;
 }
 
 /**
@@ -269,16 +306,45 @@ int ublox_get(void)
   struct ubx_header_s head;
   struct ubx_nav_pvt_solution_s body;
 
-  if (!ublox_get_next_header(UBLOX_UART, &head)) {
+
+  if (!ublox_expect_response(UBLOX_UART, MSG_CLASS_NAV, MSG_ID_NAV_PVT, &head)) {
     return 0;
   }
 
   usart_recv_buf(UBLOX_UART, (uint8_t*)&body, sizeof(body));
 
-  dbg_print("(%d %d): %d {%f, %f} (accuracy: %f)\n",
-      head.msg_class, head.msg_id,
+  dbg_print("(%i %i ft: %i): %d {%d, %d}",
+      head.msg_class, head.msg_id, body.fixType,
       body.year,
-      body.lat/1e7f, body.lon/1e7f, body.pDOP*0.01f);
+      (int) body.lat/*1e7f*/, (int) body.lon/*1e7f*/);
+
+  return 1;
+}
+
+int ublox_hard_reset(void)
+{
+#if defined(SOFT_RESET)
+
+  struct {
+    uint16_t navBbrMask;
+    uint8_t resetMode;
+    uint8_t reserved;
+  } __attribute__((packed)) request = {
+    0xFFFF,
+    0x01,
+    0x00
+  };
+
+  ublox_send(MSG_CLASS_CFG, MSG_ID_CFG_RST, (uint8_t*) &request, sizeof(request));
+
+#else
+
+  pin_set(UBLOX_MAX7_RESET_GPIO, UBLOX_MAX7_RESET);
+  pin_clear(UBLOX_MAX7_RESET_GPIO, UBLOX_MAX7_RESET);
+  delay_ms(1);
+  pin_set(UBLOX_MAX7_RESET_GPIO, UBLOX_MAX7_RESET);
+
+#endif
 
   return 1;
 }
@@ -299,5 +365,45 @@ int ublox_set_measuring_rate(uint16_t ms)
   ublox_send(MSG_CLASS_CFG, MSG_ID_CFG_RATE, (uint8_t*)request, sizeof(request));
 
   // XXX Do we get acks?
-  return ublox_expect_response(UBLOX_UART, MSG_CLASS_ACK, MSG_ID_ACK_ACK);
+  return ublox_expect_response(UBLOX_UART, MSG_CLASS_ACK, MSG_ID_ACK_ACK, NULL);
+}
+
+static int ublox_get_power_mgmt(usart_t port)
+{
+  struct ubx_header_s head;
+  struct ublox_cfg_pm2_s body;
+  int status;
+
+  ublox_poll(MSG_CLASS_CFG, MSG_ID_CFG_PM2);
+
+  status = ublox_expect_response(port, MSG_CLASS_CFG, MSG_ID_CFG_PM2, &head);
+
+  if (head.length != sizeof(body)) {
+    return 0;
+  }
+
+  status = usart_recv_buf(port, (uint8_t*)&body, sizeof(body));
+
+  return status;
+}
+
+static int ublox_update_port_settings(usart_t port)
+{
+  struct ubx_header_s head;
+  struct ublox_port_config_s config;
+  uint8_t portConfig = 1;
+  int status;
+
+
+  ublox_send(MSG_CLASS_CFG, MSG_ID_CFG_PRT, &portConfig, sizeof(portConfig));
+
+  status = ublox_expect_response(port, MSG_CLASS_CFG, MSG_ID_CFG_PRT, &head);
+
+  if (head.length != sizeof(config)) {
+    return 0;
+  }
+
+  status = usart_recv_buf(port, (uint8_t*)&config, sizeof(config));
+
+  return status;
 }

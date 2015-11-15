@@ -10,8 +10,16 @@
 #include <stdint.h>
 
 enum pinmode_e {
+  PINMODE_AF_1 = 1,
+  PINMODE_AF_2,
+  PINMODE_AF_3,
+  PINMODE_AF_4,
+  PINMODE_AF_5,
+  PINMODE_AF_6,
+  PINMODE_AF_7,
+  PINMODE_AF_8,
   PINMODE_OUTPUT,
-  PINMODE_INPUT,
+  PINMODE_INPUT
 };
 
 

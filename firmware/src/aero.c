@@ -38,6 +38,8 @@ static void config_tasks(void)
   config_alert_task();
   config_ble_task();
   config_sensor_task();
+#if 0
+#endif
 }
 
 
@@ -51,6 +53,10 @@ static void config_ble_task(void)
 
   g.ble_data_g->in  = xQueueCreate(CONFIG_TASK_BLE_QUEUE_LEN, sizeof(void*));
   g.ble_data_g->semphr = xSemaphoreCreateBinary();
+
+#if ( configQUEUE_REGISTRY_SIZE > 0 )
+  vQueueAddToRegistry(g.ble_data_g->in, "ble");
+#endif
 
   assert(g.ble_data_g->in != NULL);
   assert(g.ble_data_g->semphr != NULL);
@@ -71,6 +77,9 @@ static void config_alert_task(void)
                                 sizeof(enum task_alert_event_e));
   assert(g.alert_queue_g != NULL);
 
+#if ( configQUEUE_REGISTRY_SIZE > 0 )
+  vQueueAddToRegistry(g.alert_queue_g, "alert");
+#endif
   status = xTaskCreate(task_alert_led, "alert", CONFIG_TASK_ALERT_STACK_DEPTH,
                        g.alert_queue_g, CONFIG_TASK_ALERT_PRIORITY, &alert_handle);
   assert(status == pdPASS);
@@ -85,6 +94,9 @@ static void config_main_task(void)
                             sizeof(struct global_event_s));
   assert(g.main_queue_g != NULL);
 
+#if ( configQUEUE_REGISTRY_SIZE > 0 )
+  vQueueAddToRegistry(g.main_queue_g, "main");
+#endif
   status = xTaskCreate(task_main, "main", CONFIG_TASK_MAIN_STACK_DEPTH,
                        g.main_queue_g, CONFIG_TASK_MAIN_PRIORITY, &main_handle);
   assert(status == pdPASS);
@@ -97,6 +109,10 @@ static void config_sensor_task(void)
 
   g.sensor_queue_g = xQueueCreate(CONFIG_TASK_SENSOR_QUEUE_LEN,
       sizeof(BaseType_t));
+
+#if ( configQUEUE_REGISTRY_SIZE > 0 )
+  vQueueAddToRegistry(g.sensor_queue_g, "sensor");
+#endif
 
   configASSERT(g.sensor_queue_g != NULL);
 
@@ -122,7 +138,7 @@ aero_main(void)
   config_globals();
   config_tasks();
   config_flash();
-  //config_load_persistent();
+  config_load_persistent();
 
   vTaskStartScheduler();
 

@@ -13,6 +13,8 @@
 #define PIN(x)              GPIO ## x
 #define PIN_SRC(x)
 #define GPIO(x)             GPIO ## x
+#define GPIO_AF(x)          GPIO_AF ## x
+#define TIM_OC(x)           TIM_OC ## x
 
 #endif // __STM32L1_PINS_H
 

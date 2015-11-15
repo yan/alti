@@ -22,7 +22,7 @@ void config_sensor(void)
 {
   bmx055_init();
   ms5611_init();
-  ublox_init();
+  // ublox_init();
 }
 
 /**

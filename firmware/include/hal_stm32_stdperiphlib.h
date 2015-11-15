@@ -10,6 +10,7 @@ typedef uint16_t       pin_t;
 typedef SPI_TypeDef   *spi_t;
 typedef TIM_TypeDef   *pwm_timer_t;
 typedef USART_TypeDef *usart_t;
+typedef uint8_t       gpio_af_mode_t;
 
 #define mem_manage_handler mem_manage_handler
 #define bus_fault_handler bus_fault_handler

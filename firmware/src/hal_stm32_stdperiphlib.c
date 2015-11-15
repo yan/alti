@@ -18,6 +18,8 @@
 
 #include <stm32l1xx_conf.h>
 
+void arch_config_uart(usart_t port, int baud);
+
 void EXTI3_IRQHandler(void);
 
 void pin_set(gpio_t port, pin_t pin)
@@ -128,6 +130,71 @@ void arch_config_clocks(void)
 
 }
 
+void arch_config_uart(usart_t port, int baud)
+{
+  USART_InitTypeDef USART_InitStruct;
+  /* Enable clocks for USART1. */
+  RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1, ENABLE);
+  
+  /* AF7 == USART? */
+  pin_config(UBLOX_UART_GPIO, UBLOX_UART_PINS, PINMODE_AF_7);
+
+  /* Configure UART for ublox max 7 */
+  USART_InitStruct.USART_BaudRate = baud;
+  USART_InitStruct.USART_WordLength = USART_WordLength_8b;
+  USART_InitStruct.USART_StopBits = USART_StopBits_1;
+  USART_InitStruct.USART_Parity = USART_Parity_No;
+  USART_InitStruct.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
+  USART_InitStruct.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
+  USART_Init(port, &USART_InitStruct);
+
+  /* Finally enable the USART. */
+  USART_Cmd(port, ENABLE);
+}
+
+
+void arch_config_io(void)
+{
+  unsigned i;
+  /* Configure SPI for nrf8001 and flash */
+  pin_config(BT_STORE_GPIO, BT_STORE_PINS, PINMODE_AF_5);
+  arch_spi_config(BT_STORE);
+
+  /* Configure SPI for ms5611 and bmx055 */
+  pin_config(SENSORS_GPIO, SENSORS_PINS, PINMODE_AF_5);
+  arch_spi_config(SENSORS);
+
+  
+  /* Configure UART for ublox GPS */
+  arch_config_uart(UBLOX_MAX7_BUS, 9600);
+
+  /* Configure all enable pins */
+#define __PIN(name) { name ## _GPIO, name }
+  struct {
+    gpio_t port;
+    pin_t pin;
+  } init_pins[] = {
+    __PIN(MS5611_EN),
+    __PIN(BMX055_EN_ACC),
+    __PIN(BMX055_EN_GYRO),
+    __PIN(STATUS_LED),
+    __PIN(UBLOX_MAX7_RESET),
+    __PIN(WARN_LED_A),
+    __PIN(WARN_LED_B),
+    // __PIN(PIEZO_EN),
+    // __PIN(PIEZO_OUT),
+  };
+#undef __PIN
+
+  for (i = 0; i < sizeof(init_pins)/sizeof(init_pins[0]); i++) {
+    pin_config(init_pins[i].port, init_pins[i].pin, PINMODE_OUTPUT);
+    pin_set(init_pins[i].port, init_pins[i].pin);
+  }
+
+}
+
+#if 0
+
 void arch_config_io(void)
 {
   GPIO_InitTypeDef GPIO_Init_Structure;
@@ -136,9 +203,9 @@ void arch_config_io(void)
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_SPI1, ENABLE);
 
   /* Configure AF for SPI1 */
-  GPIO_PinAFConfig(SPI1_GPIO, SPI1_SCK_SRC,  GPIO_AF_SPI1);
-  GPIO_PinAFConfig(SPI1_GPIO, SPI1_MISO_SRC, GPIO_AF_SPI1);
-  GPIO_PinAFConfig(SPI1_GPIO, SPI1_MOSI_SRC, GPIO_AF_SPI1);
+  GPIO_PinAFConfig(BT_STORE_GPIO, SPI1_SCK_SRC,  GPIO_AF_SPI1);
+  GPIO_PinAFConfig(BT_STORE_GPIO, SPI1_MISO_SRC, GPIO_AF_SPI1);
+  GPIO_PinAFConfig(BT_STORE_GPIO, SPI1_MOSI_SRC, GPIO_AF_SPI1);
 
   GPIO_Init_Structure.GPIO_Mode = GPIO_Mode_AF;
   GPIO_Init_Structure.GPIO_OType = GPIO_OType_PP;
@@ -181,6 +248,7 @@ void arch_config_io(void)
   pin_set(STATUS_GPIO, STATUS_LED);
 }
 
+#endif
 void config_isr(int port)
 {
   (void) port;
@@ -208,32 +276,32 @@ void arch_init_timer(pwm_timer_t timer, uint32_t channel, uint32_t prescaler, ui
 
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
 
-  TIM_Struct.TIM_Period = period;
   TIM_Struct.TIM_Prescaler = prescaler;
-  TIM_Struct.TIM_ClockDivision = 0;
   TIM_Struct.TIM_CounterMode = TIM_CounterMode_Up;
+  TIM_Struct.TIM_Period = period;
+  TIM_Struct.TIM_ClockDivision = 0;
 
   TIM_TimeBaseInit(timer, &TIM_Struct);
 
   TIM_OCStruct.TIM_OCMode = TIM_OCMode_PWM1;
   TIM_OCStruct.TIM_OutputState = TIM_OutputState_Enable;
-  //TIM_OCStruct.TIM_Pulse
-  TIM_OCStruct
+  TIM_OCStruct.TIM_Pulse = 0;
+  TIM_OCStruct.TIM_OCPolarity = TIM_OCPolarity_High;
 
-  // timer_reset(timer);
-
-  timer_set_mode(timer, TIM_CR1_CKD_CK_INT,
-                 TIM_CR1_CMS_EDGE, TIM_CR1_DIR_UP);
-
-  //timer_direction_up(timer);
-  timer_continuous_mode(timer);
-  //timer_set_prescaler(timer, prescaler);
-  timer_set_oc_mode(timer, channel, TIM_OCM_PWM1);
-  timer_enable_oc_output(timer, channel);
-  timer_set_oc_value(timer, channel, 0);
-  timer_set_oc_idle_state_set(timer, channel);
-  //timer_set_period(timer, period);
-
+  switch (channel) {
+    case 1:
+      TIM_OC1Init(timer, &TIM_OCStruct);
+      break;
+    case 2:
+      TIM_OC2Init(timer, &TIM_OCStruct);
+      break;
+    case 3:
+      TIM_OC3Init(timer, &TIM_OCStruct);
+      break;
+    case 4:
+      TIM_OC4Init(timer, &TIM_OCStruct);
+      break;
+  }
 }
 
 void arch_timer_set(pwm_timer_t timer, uint32_t channel, uint32_t value)

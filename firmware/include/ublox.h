@@ -2,6 +2,17 @@
 #ifndef __UBLOX_H
 #define __UBLOX_H
 
+/* To closer match the ublox pdf */
+typedef int32_t I4;
+typedef int16_t I2;
+typedef int8_t I1;
+typedef uint32_t U4;
+typedef uint32_t X4;
+typedef uint16_t U2;
+typedef uint16_t X2;
+typedef uint8_t X1;
+typedef uint8_t U1;
+
 //! Header prepended to ubx binary messages
 #define HDR_CHKSM_LENGTH 8 //(includes "sync1 sync2 classid msgid length checksum")
 #define UBX_SYNC_BYTE_1 0xB5
@@ -97,7 +108,6 @@
 
 
 struct ubx_header_s {
-  uint8_t sync1, sync2;
   uint8_t msg_class;
   uint8_t msg_id;
   uint16_t length;
@@ -105,71 +115,86 @@ struct ubx_header_s {
 
 struct ubx_nav_status_s {
   /* GPS time of week of the navigation epoch */
-  uint32_t iTOW;
+  U4 iTOW;
   /* ublox_fixtype_e */
-  uint8_t gpsFix; 
+  U1 gpsFix; 
   /* navigation status flags (ublox_fixtype_e) */
-  uint8_t flags; 
-  uint8_t fixStat;
-  uint8_t flags2; 
-  uint32_t ttff;
-  uint32_t msss;
+  X1 flags; 
+  X1 fixStat;
+  X1 flags2; 
+  U4 ttff;
+  U4 msss;
 } __attribute__((packed));
 
 /*    */
 struct ubx_nav_pvt_solution_s {
-  uint32_t iTOW;
-  uint16_t year;
-  uint8_t month, day, hour, min, sec;
-  uint8_t valid;
-  uint32_t tAcc;
-  int32_t nano;
-  uint8_t fixType;
-  uint8_t flags;
-  uint8_t _reserved1;
-  uint8_t numSV;
-  int32_t lon, lat;
-  int32_t height;
-  int32_t hMSL;
-  uint32_t hAcc, vAcc;
-  int32_t velN, velE, velD;
-  int32_t gSpeed;
-  int32_t heading;
-  uint32_t sAcc;
-  uint32_t headingAcc;
-  uint16_t pDOP;
-  int16_t _reserved2;
-  uint32_t _reserved3;
+  U4 iTOW;
+  U2 year;
+  U1 month, day, hour, min, sec;
+  X1 valid;
+  U4 tAcc;
+  I4 nano;
+  U1 fixType;
+  X1 flags;
+  U1 _reserved1;
+  U1 numSV;
+  I4 lon, lat;
+  I4 height;
+  I4 hMSL;
+  U4 hAcc, vAcc;
+  I4 velN, velE, velD;
+  I4 gSpeed;
+  I4 heading;
+  U4 sAcc;
+  U4 headingAcc;
+  U2 pDOP;
+  X2 _reserved2;
+  U4 _reserved3;
 } __attribute__((packed));
 
 /* */
 struct ubx_nav_solution_s {
-  /*    */
-  uint32_t iTOW;
-  /*    */
-  uint32_t fTOW;
-  /*    */
-  uint16_t week;
-  /*    */
-  uint8_t gpsFix;
-  /*    */
-  uint8_t flags;
-  /*    */
-  int32_t ecefX, ecefY, ecefZ;
-  /*    */
-  uint32_t pAcc;
-  /*    */
-  int32_t ecefVX, ecefVY, ecefVZ;
-  /*    */
-  uint32_t sAcc;
-  /*    */
-  uint16_t pDOP;
-  /*    */
-  uint8_t _reserved1;
-  /*    */
-  uint8_t numSV;
-  /*    */
-  uint32_t _reserved2;
+  U4 iTOW; /*    */
+  I4 fTOW; /*    */
+  I2 week; /*    */
+  U1 gpsFix; /*    */
+  X1 flags; /*    */
+  I4 ecefX, ecefY, ecefZ; /*    */
+  U4 pAcc; /*    */
+  I4 ecefVX, ecefVY, ecefVZ; /*    */
+  U4 sAcc; /*    */
+  U2 pDOP; /*    */
+  U1 _reserved1; /*    */
+  U1 numSV; /*    */
+  U4 _reserved2; /*    */
+} __attribute__((packed));
+
+struct ublox_port_config_s {
+  U1 portID;
+  U1 reserved0;
+  X2 txReady;
+  X4 mode;
+  U4 baudRate;
+  X2 inProtoMask;
+  X2 outProtoMask;
+  X2 flags;
+  U2 reserved5;
+} __attribute__((packed));
+
+struct ublox_cfg_pm2_s {
+  U1 version;
+  U1 reserved[3];
+  X4 flags;
+  U4 updatePeriod;
+  U4 searchPeriod;
+  U4 gridOffset;
+  U2 onTime;
+  U2 minAcqTime;
+  U2 reserved4[2];
+  U4 reserved6[2];
+  U1 reserved8[2];
+  U2 reserved10;
+  U4 reserved11;
 } __attribute__((packed));
 
 enum ublox_fixtype_e {
@@ -191,6 +216,17 @@ enum ublox_nav_flags_e {
 enum ublox_nav_fixstat_e {
   NAV_FIXSTAT_DPGS = 0x01,
   NAV_FIXSTAT_MAP_MATCHING = 0xA0
+};
+
+enum dynamic_platform_model_e {
+  DYN_MODEL_PORTABLE = 0,
+  DYN_MODEL_STATIONARY = 2,
+  DYN_MODEL_PEDESTRIAN = 3,
+  DYN_MODEL_AUTOMOTIVE = 4,
+  DYN_MODEL_SEA = 5,
+  DYN_MODEL_AIRBORNE_1G = 6,
+  DYN_MODEL_AIRBORNE_2G = 7,
+  DYN_MODEL_AIRBORNE_4G = 8
 };
 
 /**
@@ -218,4 +254,8 @@ int ublox_start_updates(int rate);
  * @brief ms The rate of measurement, in milliseconds
  */
 int ublox_set_measuring_rate(uint16_t ms);
+
+int ublox_get_rate(void);
+
+int ublox_hard_reset(void);
 #endif // __UBLOX_H

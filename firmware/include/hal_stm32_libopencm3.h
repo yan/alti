@@ -9,6 +9,7 @@ typedef uint32_t gpio_t;
 typedef uint32_t spi_t;
 typedef uint32_t pwm_timer_t;
 typedef uint32_t usart_t;
+typedef uint32_t gpio_af_mode_t;
 
 #define mem_manage_handler mem_manage_handler
 #define bus_fault_handler bus_fault_handler

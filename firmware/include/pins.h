@@ -13,24 +13,20 @@
 #else
 #  error "Unsupprted architecture"
 #endif
-
 #define PIEZO_OUT_TIMER                 TIM3
-#define PIEZO_OUT_CHANNEL               TIM_OC2
+#define PIEZO_OUT_CHANNEL               TIM_OC(2)
 #define PIEZO_OUT_AF                    GPIO_AF2
 #define STATUS_LED_TIMER                TIM2
-#define STATUS_LED_CHANNEL              TIM_OC4
+#define STATUS_LED_CHANNEL              TIM_OC(4)
 #define STATUS_LED_AF                   GPIO_AF1
 #define BT_STORE                        SPI1
 #define BT_STORE_GPIO                   GPIO(A)
-#define BT_STORE_RCC                    RCC_SPI1
 #define BT_STORE_PINS                   (PIN(7)|PIN(6)|PIN(5))
 #define SENSORS                         SPI2
 #define SENSORS_GPIO                    GPIO(B)
-#define SENSORS_RCC                     RCC_SPI2
 #define SENSORS_PINS                    (PIN(15)|PIN(14)|PIN(13))
 #define UBLOX_UART                      USART1
 #define UBLOX_UART_GPIO                 GPIO(A)
-#define UBLOX_UART_RCC                  RCC_USART1
 #define UBLOX_UART_PINS                 (PIN(10)|PIN(9))
 #define NRF8001_LSB                     1
 #define NRF8001_BUS                     BT_STORE
@@ -42,10 +38,10 @@
 #define BMX055_BUS                      SENSORS
 #define UBLOX_MAX7_LSB                  1
 #define UBLOX_MAX7_BUS                  UBLOX_UART
-#define ADESTO_FLASH_RESET              PIN(0)
-#define ADESTO_FLASH_RESET_GPIO         GPIO(A)
-#define ADESTO_FLASH_CS                 PIN(1)
+#define ADESTO_FLASH_CS                 PIN(0)
 #define ADESTO_FLASH_CS_GPIO            GPIO(A)
+#define ADESTO_FLASH_RESET              PIN(1)
+#define ADESTO_FLASH_RESET_GPIO         GPIO(A)
 #define NRF8001_RST                     PIN(2)
 #define NRF8001_RST_GPIO                GPIO(A)
 #define NRF8001_RDYN                    PIN(3)
@@ -70,18 +66,18 @@
 #define BMX055_EN_GYRO_GPIO             GPIO(B)
 #define BMX055_EN_MAG                   PIN(2)
 #define BMX055_EN_MAG_GPIO              GPIO(B)
-#define PIEZO_EN                        PIN(4)
-#define PIEZO_EN_GPIO                   GPIO(B)
-#define PIEZO_OUT                       PIN(5)
-#define PIEZO_OUT_GPIO                  GPIO(B)
-#define CHG                             PIN(6)
+#define CHG                             PIN(4)
 #define CHG_GPIO                        GPIO(B)
-#define PG                              PIN(7)
+#define PG                              PIN(5)
 #define PG_GPIO                         GPIO(B)
-#define WARN_LED_A                      PIN(8)
+#define WARN_LED_A                      PIN(6)
 #define WARN_LED_A_GPIO                 GPIO(B)
-#define WARN_LED_B                      PIN(9)
+#define WARN_LED_B                      PIN(7)
 #define WARN_LED_B_GPIO                 GPIO(B)
+#define PIEZO_EN                        PIN(8)
+#define PIEZO_EN_GPIO                   GPIO(B)
+#define PIEZO_OUT                       PIN(9)
+#define PIEZO_OUT_GPIO                  GPIO(B)
 #define NRF8001_ACTIVE                  PIN(10)
 #define NRF8001_ACTIVE_GPIO             GPIO(B)
 #define STATUS_LED                      PIN(11)
