@@ -25,6 +25,7 @@
 #include <libopencm3/stm32/i2c.h>
 #include <libopencm3/stm32/rcc.h>
 #include <libopencm3/stm32/rtc.h>
+#include <libopencm3/stm32/adc.h>
 
 
 void arch_config_uart(usart_t port, int baud);
@@ -357,5 +358,28 @@ void disable_pulse(void)
   pin_config(STATUS_LED_GPIO, STATUS_LED, PINMODE_OUTPUT);
 }
 
+void batt_sense_enable(void)
+{
+#if 0
+  rcc_periph_clock_enable(RCC_ADC);
+
+  gpio_mode_setup(BATT_SENSE_GPIO, GPIO_MODE_ANALOG,
+                                           GPIO_PUPD_NONE, BATT_SENSE);
+
+  adc_power_off(ADC1);
+  adc_set_clk_source(ADC1, ADC_CLKSOURCE_ADC);
+  adc_calibrate_start(ADC1);
+  adc_calibrate_wait_finish(ADC1);
+#endif
+}
+
+void batt_sense_disable(void)
+{
+}
+
+uint16_t batt_sans_sample(void)
+{
+  return 0;
+}
 
 #endif // ifdef OPENCM3

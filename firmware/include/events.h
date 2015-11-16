@@ -26,6 +26,10 @@ typedef enum event_type_e {
 
   GLOBAL_EVT_NRF8001_LAST,
 
+  GLOBAL_EVT_GPS_START,
+  GLOBAL_EVT_GPS_STARTED,
+  GLOBAL_EVT_GPS_FINISH,
+
   GLOBAL_EVT_LAST
 } event_type_t;
 

@@ -53,6 +53,9 @@ struct globals {
   /** @brief */
   void *sensor_queue_g;
 
+  /** @brief */
+  void *gps_queue_g;
+
   /** @brief The filter state for baro readings */
   filter_state_t baro_filter_state;
 

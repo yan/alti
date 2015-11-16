@@ -36,6 +36,8 @@ class OpenCM3Render(object):
             #  include <stm32l1_opencm3_pins.h>
             #elif defined(STM32L1) &&  defined(STM32_STDPERIPH_LIB)
             #  include <stm32l1_stdperiphlib_pins.h>
+            #elif defined(TESTING)
+            #  include <empty_pins.h>
             #else
             #  error "Unsupprted architecture"
             #endif
@@ -54,7 +56,7 @@ class OpenCM3Render(object):
     def render_bus(self, bus):
         self._f.write(self.F.format(bus.name, bus.kind))
         self._f.write(self.F.format(bus.name+'_GPIO', 'GPIO({})'.format(bus.gpio)))
-        self._f.write(self.F.format(bus.name+'_RCC', 'RCC_' + bus.kind))
+        #self._f.write(self.F.format(bus.name+'_RCC', 'RCC_' + bus.kind))
 
         pins = ['PIN({})'.format(p.index) for p in bus.pins]
         self._f.write(self.F.format(bus.name+'_PINS', '('+'|'.join(pins)+')'))
@@ -62,7 +64,7 @@ class OpenCM3Render(object):
     def render_timer(self, timer):
         n = timer.name
         self._f.write('#define {0:30}  TIM{1}\n'.format(n+'_TIMER', timer.index))
-        self._f.write('#define {0:30}  TIM_OC{1}\n'.format(n+'_CHANNEL', timer.channel))
+        self._f.write('#define {0:30}  TIM_OC({1})\n'.format(n+'_CHANNEL', timer.channel))
         self._f.write('#define {0:30}  GPIO_AF{1}\n'.format(n+'_AF', timer.af))
 
     def finish(self):

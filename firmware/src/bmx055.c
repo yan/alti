@@ -1,15 +1,18 @@
 /**
  * Copyright 2015 Yan Ivnitskiy
  */
+#include <stddef.h>
+#include <stdint.h>
+
 #include <bmx055.h>
 #include <hal.h>
 #include <pins.h>
 #include <util.h>
 
 
-enum direction_e {
-  DIR_READ,
-  DIR_WRITE
+enum operation_e {
+  OP_READ,
+  OP_WRITE
 };
 
 enum sensor_e {
@@ -18,12 +21,12 @@ enum sensor_e {
   GYRO
 };
 
-#define bmx055_read(sensor, reg, val) bmx055_xfer(DIR_READ, sensor, reg, val)
+#define bmx055_read(sensor, reg) bmx055_xfer(OP_READ, sensor, reg, NULL)
 
-#define bmx055_write(sensor, reg, val) bmx055_xfer(DIR_WRITE, sensor, reg, val)
+#define bmx055_write(sensor, reg, val) bmx055_xfer(OP_WRITE, sensor, reg, val)
 
 static uint8_t
-bmx055_xfer(enum direction_e dir, enum sensor_e sensor, uint8_t reg, uint8_t *val)
+bmx055_xfer(enum operation_e op, enum sensor_e sensor, uint8_t reg, uint8_t *val)
 {
   uint8_t result, data;
   pin_t cs;
@@ -42,7 +45,7 @@ bmx055_xfer(enum direction_e dir, enum sensor_e sensor, uint8_t reg, uint8_t *va
       break;
   }
 
-  if (dir == DIR_READ) {
+  if (op == OP_READ) {
     reg |= 0x80;
   }
 
@@ -56,7 +59,9 @@ bmx055_xfer(enum direction_e dir, enum sensor_e sensor, uint8_t reg, uint8_t *va
   arch_spi_xfer(BMX055_BUS, reg);
 
   
-  if (dir == DIR_WRITE) {
+  if (op == OP_WRITE) {
+    assert(val != NULL);
+
     data = *val;
   } else {
     data = 0;
@@ -70,6 +75,32 @@ bmx055_xfer(enum direction_e dir, enum sensor_e sensor, uint8_t reg, uint8_t *va
 }
 
 
+int16_t bmx055_read_acc(enum direction_e direction)
+{
+  uint16_t result;
+  uint8_t byte, address;
+
+  switch (direction) {
+    case X:
+      address = BMX055_ACC_X_LSB_ADDR;
+      break;
+    case Y:
+      address = BMX055_ACC_Y_LSB_ADDR;
+      break;
+    case Z:
+      address = BMX055_ACC_Z_LSB_ADDR;
+      break;
+  }
+
+  byte = bmx055_read(ACCEL, address);
+  result = byte;
+
+  byte = bmx055_read(ACCEL, address+1);
+  result |= (uint16_t) byte  << 8;
+
+  return (int16_t) result;
+}
+
 /**
  * Note: Current hardware is not working, so tabling this until a new board is 
  * made
@@ -78,7 +109,7 @@ int bmx055_reset(void)
 {
   //int response = 1;
 
-  if (bmx055_read(ACCEL, 0x00, 0x00) != 0xFA) {
+  if (bmx055_read(ACCEL, 0x00) != 0xFA) {
     return 0;
   }
 

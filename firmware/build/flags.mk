@@ -37,7 +37,11 @@ STFLASH		= $(shell which st-flash)
 ###############################################################################
 # C flags
 
-CFLAGS		+= -g #  -O2 # -Os
+ifeq ($(SMALL),)
+CFLAGS		+= -g
+else
+CFLAGS		+= -O2 -Os
+endif
 CFLAGS		+= -Wextra -Wshadow -Wimplicit-function-declaration
 CFLAGS		+= -Wredundant-decls -Wmissing-prototypes -Wstrict-prototypes
 CFLAGS          += -Wno-unused-function
@@ -46,7 +50,11 @@ CFLAGS		+= -fno-common -ffunction-sections -fdata-sections
 ###############################################################################
 # C++ flags
 
-CXXFLAGS	+= -g # -O2 #-Os
+ifeq ($(SMALL),)
+CXXFLAGS	+= -g 
+else
+CXXFLAGS	+=  -O2 -Os
+endif
 CXXFLAGS	+= -Wextra -Wshadow -Wredundant-decls  -Weffc++
 CXXFLAGS	+= -fno-common -ffunction-sections -fdata-sections
 

@@ -102,8 +102,8 @@ your application. */
 #define xPortSysTickHandler                     sys_tick_handler
 
 
-#define CONFIG_TASK_MAIN_STACK_DEPTH            768 // 3k
-#define CONFIG_TASK_MAIN_QUEUE_LEN              32
+#define CONFIG_TASK_MAIN_STACK_DEPTH            128 // 768 // 3k
+#define CONFIG_TASK_MAIN_QUEUE_LEN              16
 #define CONFIG_TASK_MAIN_PRIORITY               ( DEFAULT_TASK_PRIORITY )
 
 #define CONFIG_TASK_ALERT_QUEUE_LEN             4
@@ -111,16 +111,22 @@ your application. */
 #define CONFIG_TASK_ALERT_PRIORITY              ( DEFAULT_TASK_PRIORITY+1 )
 
 #define CONFIG_TASK_BLE_QUEUE_LEN               4
-#define CONFIG_TASK_BLE_STACK_DEPTH             256
+#define CONFIG_TASK_BLE_STACK_DEPTH             128
 #define CONFIG_TASK_BLE_PRIORITY                ( DEFAULT_TASK_PRIORITY )
 
 #define CONFIG_TASK_SENSOR_QUEUE_LEN               4
-#define CONFIG_TASK_SENSOR_STACK_DEPTH             256
+#define CONFIG_TASK_SENSOR_STACK_DEPTH             128
 #define CONFIG_TASK_SENSOR_PRIORITY                ( DEFAULT_TASK_PRIORITY+1 )
+
+#define CONFIG_TASK_GPS_QUEUE_LEN                  4
+#define CONFIG_TASK_GPS_STACK_DEPTH                128
+#define CONFIG_TASK_GPS_PRIORITY                   ( DEFAULT_TASK_PRIORITY+1)
+
+#define CONFIG_USE_GPS                             ( 1 )
 
 #if defined(ENABLE_SEMIHOSTING)
 #  undef configTOTAL_HEAP_SIZE
-#  define configTOTAL_HEAP_SIZE                  (49152 - 36444)
+#  define configTOTAL_HEAP_SIZE                  (49152 - 37000)//36444)
 
 #  undef CONFIG_TASK_MAIN_STACK_DEPTH
 #  define CONFIG_TASK_MAIN_STACK_DEPTH           1024
@@ -133,6 +139,9 @@ your application. */
 
 #  undef CONFIG_TASK_SENSOR_STACK_DEPTH
 #  define CONFIG_TASK_SENSOR_STACK_DEPTH         600
+
+#  undef CONFIG_TASK_GPS_STACK_DEPTH
+#  define CONFIG_TASK_GPS_STACK_DEPTH         600
 #endif
 
 #endif /* FREERTOS_CONFIG_H */

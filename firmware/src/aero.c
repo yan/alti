@@ -21,6 +21,7 @@
 #include <task_ble.h>
 #include <task_alert.h>
 #include <task_sensor.h>
+#include <task_gps.h>
 
 #if defined(ENABLE_SEMIHOSTING) && ENABLE_SEMIHOSTING
 extern void initialise_monitor_handles(void);
@@ -31,6 +32,9 @@ static void config_main_task(void);
 static void config_alert_task(void);
 static void config_ble_task(void);
 static void config_sensor_task(void);
+#if (defined(CONFIG_USE_GPS) &&  CONFIG_USE_GPS == 1 )
+static void config_gps_task(void);
+#endif
 
 static void config_tasks(void)
 {
@@ -38,7 +42,8 @@ static void config_tasks(void)
   config_alert_task();
   config_ble_task();
   config_sensor_task();
-#if 0
+#if (defined(CONFIG_USE_GPS) &&  CONFIG_USE_GPS == 1 )
+  config_gps_task();
 #endif
 }
 
@@ -110,17 +115,39 @@ static void config_sensor_task(void)
   g.sensor_queue_g = xQueueCreate(CONFIG_TASK_SENSOR_QUEUE_LEN,
       sizeof(BaseType_t));
 
+  configASSERT(g.sensor_queue_g != NULL);
+
 #if ( configQUEUE_REGISTRY_SIZE > 0 )
   vQueueAddToRegistry(g.sensor_queue_g, "sensor");
 #endif
-
-  configASSERT(g.sensor_queue_g != NULL);
 
   status = xTaskCreate(task_sensor, "sensor", CONFIG_TASK_SENSOR_STACK_DEPTH,
       g.sensor_queue_g, CONFIG_TASK_SENSOR_PRIORITY, &sensor_handle);
 
   configASSERT(status == pdPASS);
 }
+
+#if (defined(CONFIG_USE_GPS) &&  CONFIG_USE_GPS == 1 )
+static void config_gps_task(void)
+{
+  BaseType_t status;
+  TaskHandle_t gps_handle;
+
+  g.gps_queue_g = xQueueCreate(CONFIG_TASK_GPS_QUEUE_LEN,
+      sizeof(BaseType_t));
+
+  configASSERT(g.gps_queue_g != NULL);
+
+#if ( configQUEUE_REGISTRY_SIZE > 0 )
+  vQueueAddToRegistry(g.gps_queue_g, "gps");
+#endif
+
+  status = xTaskCreate(task_gps, "gps", CONFIG_TASK_GPS_STACK_DEPTH,
+      g.gps_queue_g, CONFIG_TASK_GPS_PRIORITY, &gps_handle);
+
+  configASSERT(status == pdPASS);
+}
+#endif
 
 int
 aero_main(void)

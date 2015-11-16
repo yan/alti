@@ -14,7 +14,7 @@
 #define dbg_print(args...) printf(args)
 
 static int uart_fd = 0;
-typedef int usart_t;
+typedef uint32_t usart_t;
 
 void delay_ms(uint32_t ms)
 {
@@ -149,6 +149,7 @@ main(int argc, char *argv[])
 
   while (1) {
     ublox_get();
+    ublox_get_rate();
   }
 
   return 0;

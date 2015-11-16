@@ -90,4 +90,10 @@ void enable_pulse(void);
 
 void disable_pulse(void);
 
+void batt_sense_enable(void);
+
+void batt_sense_disable(void);
+
+uint16_t batt_sans_sample(void);
+
 #endif // __HAL_H

@@ -1,4 +1,4 @@
 target remote :3333
+source ~/src/FreeRTOS-GDB/src/FreeRTOS.py
 set pagination off
 load
-mon reset halt

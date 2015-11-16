@@ -21,8 +21,10 @@
 ifneq ($(TESTING),1)
 DEFS		= -DSTM32L1
 
-FP_FLAGS	?= -msoft-float
+#FP_FLAGS	?= -msoft-float
+FP_FLAGS	?= -mfloat-abi=soft
 ARCH_FLAGS	?= -mthumb -mcpu=cortex-m3 $(FP_FLAGS) -mfix-cortex-m3-ldrd
+#ARCH_FLAGS	?= -target arm-none-eabi -mthumb -mcpu=cortex-m3 $(FP_FLAGS) -nostdlib -ffreestanding
 else
 DEFS            = -DTESTING
 endif
