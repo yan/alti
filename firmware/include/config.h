@@ -15,7 +15,7 @@
 
 #define CONFIG_USE_GPS            ( 1 )
 
-#define USE_ACCEL                 ( 1 )
+#define CONFIG_USE_ACCEL          ( 1 )
 /**
  * @brief Configure the clocks 
  */

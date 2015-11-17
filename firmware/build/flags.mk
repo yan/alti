@@ -38,10 +38,12 @@ STFLASH		= $(shell which st-flash)
 # C flags
 
 ifeq ($(SMALL),)
-CFLAGS		+= -g
+OPT_FLAGS	+= -g
 else
-CFLAGS		+= -O2 -Os
+OPT_FLAGS	+= -O3 -Os
 endif
+
+CFLAGS		+= $(OPT_FLAGS)
 CFLAGS		+= -Wextra -Wshadow -Wimplicit-function-declaration
 CFLAGS		+= -Wredundant-decls -Wmissing-prototypes -Wstrict-prototypes
 CFLAGS          += -Wno-unused-function
@@ -50,11 +52,7 @@ CFLAGS		+= -fno-common -ffunction-sections -fdata-sections
 ###############################################################################
 # C++ flags
 
-ifeq ($(SMALL),)
-CXXFLAGS	+= -g 
-else
-CXXFLAGS	+=  -O2 -Os
-endif
+CXXFLAGS	+= $(OPT_FLAGS)
 CXXFLAGS	+= -Wextra -Wshadow -Wredundant-decls  -Weffc++
 CXXFLAGS	+= -fno-common -ffunction-sections -fdata-sections
 

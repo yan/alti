@@ -1,6 +1,8 @@
 /**
  * Copyright 2015 Yan Ivnitskiy
  */
+#ifndef __BMX055_H
+#define __BMX055_H
 
 #define BMX055_ACC_X_LSB_ADDR              0x02
 #define BMX055_ACC_X_MSB_ADDR              0x03
@@ -26,3 +28,5 @@ enum bmx055_device_e {
 int16_t bmx055_read(enum bmx055_device_e device, enum direction_e direction);
 
 void bmx055_init(void);
+
+#endif // __BMX055_H

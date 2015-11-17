@@ -21,7 +21,9 @@
  */
 void config_sensor(void)
 {
+#if CONFIG_USE_ACCEL
   bmx055_init();
+#endif
   ms5611_init();
 }
 
@@ -54,24 +56,14 @@ void task_sensor(void *p)
       xQueueSend(g.main_queue_g, &evt, 0);
     }
 
+#if CONFIG_USE_ACCEL
     if (received_event & SENSOR_REQUEST_ACCEL) {
       // save result
       result = bmx055_read(BMX055_ACCEL, DIR_X);
       result = bmx055_read(BMX055_ACCEL, DIR_Y);
       result = bmx055_read(BMX055_ACCEL, DIR_Z);
     }
-
-    if (received_event & SENSOR_REQUEST_MAG) {
-      result = bmx055_read(BMX055_MAG, DIR_X);
-      result = bmx055_read(BMX055_MAG, DIR_Y);
-      result = bmx055_read(BMX055_MAG, DIR_Z);
-    }
-
-    if (received_event & SENSOR_REQUEST_GYRO) {
-      result = bmx055_read(BMX055_GYRO, DIR_X);
-      result = bmx055_read(BMX055_GYRO, DIR_Y);
-      result = bmx055_read(BMX055_GYRO, DIR_Z);
-    }
+#endif // CONFIG_USE_ACCEL
 
     // respond with a result
   }

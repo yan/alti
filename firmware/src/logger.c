@@ -4,7 +4,9 @@
 
 #include <string.h>
 
+#include <config.h>
 #include <logger.h>
+#include <sample.h>
 #include <flash.h>
 #include <globals.h>
 
