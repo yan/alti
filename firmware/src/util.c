@@ -11,7 +11,7 @@
 
 void delay_ms(uint32_t ms)
 {
-  vTaskDelay(ms / portTICK_PERIOD_MS);
+  vTaskDelay(MS_TO_TICKS(ms));
 }
 
 uint32_t cpu_cycle_count(void)

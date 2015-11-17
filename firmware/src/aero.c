@@ -23,7 +23,7 @@
 #include <task_sensor.h>
 #include <task_gps.h>
 
-#if defined(ENABLE_SEMIHOSTING) && ENABLE_SEMIHOSTING
+#if CONFIG_USE_GPS
 extern void initialise_monitor_handles(void);
 #endif
 
@@ -32,7 +32,7 @@ static void config_main_task(void);
 static void config_alert_task(void);
 static void config_ble_task(void);
 static void config_sensor_task(void);
-#if (defined(CONFIG_USE_GPS) &&  CONFIG_USE_GPS == 1 )
+#if CONFIG_USE_GPS
 static void config_gps_task(void);
 #endif
 
@@ -42,7 +42,7 @@ static void config_tasks(void)
   config_alert_task();
   config_ble_task();
   config_sensor_task();
-#if (defined(CONFIG_USE_GPS) &&  CONFIG_USE_GPS == 1 )
+#if CONFIG_USE_GPS
   config_gps_task();
 #endif
 }
@@ -127,7 +127,7 @@ static void config_sensor_task(void)
   configASSERT(status == pdPASS);
 }
 
-#if (defined(CONFIG_USE_GPS) &&  CONFIG_USE_GPS == 1 )
+#if CONFIG_USE_GPS
 static void config_gps_task(void)
 {
   BaseType_t status;

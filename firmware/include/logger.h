@@ -14,16 +14,16 @@ struct sensor_packet_s {
   uint32_t ticks;
   ms5611_mbarc_t mbarc;
 
-#if USE_GPS
-  uint32_t ecef_x;
-  uint32_t ecef_y;
-  uint32_t ecef_z;
+#if CONFIG_USE_GPS
+  int32_t ecef_x;
+  int32_t ecef_y;
+  int32_t ecef_z;
 #endif
 
 #if USE_ACCEL
-  uint32_t accel;
-  uint32_t mag;
-  uint32_t gy;
+  int16_t accel;
+  int16_t mag;
+  int16_t gy;
 #endif
 
 };

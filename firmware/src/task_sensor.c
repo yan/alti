@@ -14,8 +14,10 @@
 
 #include <ms5611.h>
 #include <bmx055.h>
+
 /**
- *
+ * All the sensors in this task share the same SPI bus, otherwise we'd need 
+ * extra locking.
  */
 void config_sensor(void)
 {
@@ -29,27 +31,48 @@ void config_sensor(void)
 void task_sensor(void *p)
 {
   (void) p;
-  uint32_t pressure;
+  uint32_t result;
+  sensor_event_t received_event;
   struct global_event_s evt;
   BaseType_t sleep_period = portMAX_DELAY, status;
 
   config_sensor();
 
   for (;;) {
-    status = xQueueReceive(g.sensor_queue_g, &sleep_period, sleep_period);
+    status = xQueueReceive(g.sensor_queue_g, &received_event, sleep_period);
 
     if (status != pdPASS) {
       //
     }
 
-    //pressure = bmx055_read_acc(X); // ms5611_get_mbarc(4);
-    pressure = ms5611_get_mbarc(4);
+    if (received_event & SENSOR_REQUEST_AIR_PRESSURE) {
+      result = ms5611_get_mbarc(4);
 
-    evt.type = GLOBAL_EVT_AIR_PRESSURE;
-    evt.payload = (event_payload_t) (intptr_t) pressure;
+      evt.type = GLOBAL_EVT_AIR_PRESSURE;
+      evt.payload = (event_payload_t) (intptr_t) result;
 
-    //dbg_print("Baro: got pressure: %x\n", (unsigned int)pressure);
+      xQueueSend(g.main_queue_g, &evt, 0);
+    }
 
-    xQueueSend(g.main_queue_g, &evt, 0);
+    if (received_event & SENSOR_REQUEST_ACCEL) {
+      // save result
+      result = bmx055_read(BMX055_ACCEL, DIR_X);
+      result = bmx055_read(BMX055_ACCEL, DIR_Y);
+      result = bmx055_read(BMX055_ACCEL, DIR_Z);
+    }
+
+    if (received_event & SENSOR_REQUEST_MAG) {
+      result = bmx055_read(BMX055_MAG, DIR_X);
+      result = bmx055_read(BMX055_MAG, DIR_Y);
+      result = bmx055_read(BMX055_MAG, DIR_Z);
+    }
+
+    if (received_event & SENSOR_REQUEST_GYRO) {
+      result = bmx055_read(BMX055_GYRO, DIR_X);
+      result = bmx055_read(BMX055_GYRO, DIR_Y);
+      result = bmx055_read(BMX055_GYRO, DIR_Z);
+    }
+
+    // respond with a result
   }
 }

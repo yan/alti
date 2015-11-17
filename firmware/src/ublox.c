@@ -408,3 +408,10 @@ static int ublox_update_port_settings(usart_t port)
 
   return status;
 }
+
+/**
+ * TODO: Implement this */
+int ublox_sleep(void)
+{
+  return 0;
+}

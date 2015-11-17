@@ -3,6 +3,10 @@
 #include <FreeRTOS.h>
 #include <queue.h>
 
+#include <config.h>
+
+#if CONFIG_USE_GPS
+
 #include <events.h>
 #include <globals.h>
 #include <task_gps.h>
@@ -25,9 +29,15 @@ void config_gps(void)
 void task_gps(void *p)
 {
   (void) p;
+
+  enum {
+    SLEEP,
+    RUN
+  } state = SLEEP;
+
   BaseType_t received;
-  struct global_event_s evt;
-  BaseType_t sleep_period = portMAX_DELAY, status;
+  BaseType_t sleep_period = portMAX_DELAY;
+  BaseType_t status;
 
   config_gps();
 
@@ -35,22 +45,33 @@ void task_gps(void *p)
     status = xQueueReceive(g.gps_queue_g, &received, sleep_period);
 
     if (status != pdPASS) {
-      //
+      if (state == RUN) {
+        ublox_get();
+        // send to main queue ??
+        //
+      }
+      continue; // ??
     }
 
     switch (received) {
-      case GLOBAL_EVT_GPS_START:
+      case EVT_GPS_START:
         ublox_start_updates(1);
+        state = RUN;
+        break;
+
+      case EVT_GPS_SLEEP:
+        ublox_sleep();
+        state = SLEEP;
+        break;
+
+      case EVT_GPS_UPDATE_RTC:
+        // do that
+        break;
+
+      default:
+        assert(0);
         break;
     }
-
-
-
-    evt.type = GLOBAL_EVT_GPS_STARTED;
-    evt.payload = (event_payload_t) 0;
-
-    //dbg_print("Baro: got pressure: %x\n", (unsigned int)pressure);
-
-    xQueueSend(g.main_queue_g, &evt, 0);
   }
 }
+#endif // CONFIG_USE_GPS

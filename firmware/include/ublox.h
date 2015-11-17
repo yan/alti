@@ -258,4 +258,6 @@ int ublox_set_measuring_rate(uint16_t ms);
 int ublox_get_rate(void);
 
 int ublox_hard_reset(void);
+
+int ublox_sleep(void);
 #endif // __UBLOX_H

@@ -13,7 +13,7 @@
 
 #define MAIN_EVENT_LOOP_TIMEOUT   (1000 / portTICK_PERIOD_MS)
 
-#define USE_GPS                   ( 1 )
+#define CONFIG_USE_GPS            ( 1 )
 
 #define USE_ACCEL                 ( 1 )
 /**

@@ -4,10 +4,16 @@
  */
 
 
-#if defined(CONFIG_USE_GPS) && ( CONFIG_USE_GPS == 1 )
+#if CONFIG_USE_GPS
 
 #ifndef __TASK_GPS_H
 #define __TASK_GPS_H
+
+enum gps_event_t {
+  EVT_GPS_START,
+  EVT_GPS_SLEEP,
+  EVT_GPS_UPDATE_RTC
+};
 
 void config_gps(void);
 

@@ -12,11 +12,17 @@
 int bmx055_reset(void);
 
 enum direction_e {
-  X,
-  Y,
-  Z
+  DIR_X,
+  DIR_Y,
+  DIR_Z
 };
 
-int16_t bmx055_read_acc(enum direction_e direction);
+enum bmx055_device_e {
+  BMX055_ACCEL,
+  BMX055_GYRO,
+  BMX055_MAG
+};
+
+int16_t bmx055_read(enum bmx055_device_e device, enum direction_e direction);
 
 void bmx055_init(void);

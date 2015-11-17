@@ -21,7 +21,7 @@ enum sensor_e {
   GYRO
 };
 
-#define bmx055_read(sensor, reg) bmx055_xfer(OP_READ, sensor, reg, NULL)
+#define bmx055_get(sensor, reg) bmx055_xfer(OP_READ, sensor, reg, NULL)
 
 #define bmx055_write(sensor, reg, val) bmx055_xfer(OP_WRITE, sensor, reg, val)
 
@@ -75,27 +75,32 @@ bmx055_xfer(enum operation_e op, enum sensor_e sensor, uint8_t reg, uint8_t *val
 }
 
 
-int16_t bmx055_read_acc(enum direction_e direction)
+int16_t bmx055_read(enum bmx055_device_e device, enum direction_e direction)
 {
   uint16_t result;
   uint8_t byte, address;
 
+  assert(device == BMX055_ACCEL);
+
   switch (direction) {
-    case X:
+    case DIR_X:
       address = BMX055_ACC_X_LSB_ADDR;
       break;
-    case Y:
+    case DIR_Y:
       address = BMX055_ACC_Y_LSB_ADDR;
       break;
-    case Z:
+    case DIR_Z:
       address = BMX055_ACC_Z_LSB_ADDR;
+      break;
+    default:
+      assert(0);
       break;
   }
 
-  byte = bmx055_read(ACCEL, address);
+  byte = bmx055_get(ACCEL, address);
   result = byte;
 
-  byte = bmx055_read(ACCEL, address+1);
+  byte = bmx055_get(ACCEL, address + 1);
   result |= (uint16_t) byte  << 8;
 
   return (int16_t) result;
@@ -109,7 +114,7 @@ int bmx055_reset(void)
 {
   //int response = 1;
 
-  if (bmx055_read(ACCEL, 0x00) != 0xFA) {
+  if (bmx055_get(ACCEL, 0x00) != 0xFA) {
     return 0;
   }
 
