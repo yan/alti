@@ -157,7 +157,6 @@ aero_main(void)
   initialise_monitor_handles();
 #endif
 
-
   arch_config_nvic();
   arch_config_clocks();
   arch_config_io();

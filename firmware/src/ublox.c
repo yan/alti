@@ -239,7 +239,6 @@ static int ublox_ping(void)
 int ublox_init(void)
 {
   int attempts = 0;
-  //static char buf[32];
 
   ublox_hard_reset();
 

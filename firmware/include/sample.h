@@ -15,11 +15,11 @@ struct gps_sample_s {
   int32_t ecef_z;
   int32_t ground_speed;
   int32_t heading;
-};
+} __attribute__((packed));
 
 struct accel_sample_s {
   int16_t accel[3];
-};
+}__attribute__((packed));
 
 struct sensor_packet_s {
   uint32_t ticks;

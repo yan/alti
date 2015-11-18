@@ -2,6 +2,8 @@
  * Copyright 2015 Yan Ivnitskiy
  */
 
+#include <string.h>
+
 #include <config.h>
 #include <globals.h>
 
@@ -19,6 +21,13 @@ void config_globals(void)
 {
   g.flash_buffer.lock = (SemaphoreHandle_t) xSemaphoreCreateMutex();
   g.flash_buffer.write_offset = 0;
+
+#if CONFIG_USE_USART_ISR
+  g.usart_mutex_g = xSemaphoreCreateBinary();
+  configASSERT(g.usart_mutex_g != NULL);
+
+  memset((void*)&g.usart_isr_state, '\0', sizeof(g.usart_isr_state));
+#endif
 }
 
 /**

@@ -11,11 +11,13 @@
 
 #define BLE_EXTI_ISR_PRIORITY     (10 << 4)
 
+/* TODO: IS this correct? this needs to take precedence over the scheduler so
+ * so that buffer management can not get preempted
+ */
+#define USART_ISR_PRIORITY        (11 << 4)
+
 #define MAIN_EVENT_LOOP_TIMEOUT   (1000 / portTICK_PERIOD_MS)
 
-#define CONFIG_USE_GPS            ( 1 )
-
-#define CONFIG_USE_ACCEL          ( 1 )
 /**
  * @brief Configure the clocks 
  */

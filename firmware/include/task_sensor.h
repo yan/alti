@@ -14,6 +14,7 @@ typedef uint16_t sensor_event_t;
 #define SENSOR_REQUEST_ACCEL                                          ( 0x0002 )
 #define SENSOR_REQUEST_MAG                                            ( 0x0004 )
 #define SENSOR_REQUEST_GYRO                                           ( 0x0008 )
+#define SENSOR_REQUEST_STOP                                           ( 0x8000 )
 
 void config_sensor(void);
 

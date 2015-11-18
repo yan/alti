@@ -20,6 +20,7 @@
 #include <task_main.h>
 #include <task_ble.h>
 #include <task_alert.h>
+#include <task_sensor.h>
 
 #include <services.h>
 
@@ -68,16 +69,19 @@ void task_main(void *p)
 
       /* Bluetooth events */
       case GLOBAL_EVT_NRF8001_PIPES_CHANGED: {
-        unsigned int new_rate;
+        // unsigned int new_rate;
+        BaseType_t type = 0; //= SENSOR_REQUEST_ACCEL;
         if (PIPE_OPEN(PIPE_AERO_PRESSURE_BAROMETRIC_PRESSURE_TX)) {
-          new_rate = 100 / portTICK_PERIOD_MS;
+          //new_rate = 100 / portTICK_PERIOD_MS;
+          type |= SENSOR_REQUEST_ACCEL;
           dbg_print("Starting to send pressure\n");
         } else {
-          new_rate = portMAX_DELAY;
+          //new_rate = portMAX_DELAY;
+          type |= SENSOR_REQUEST_STOP;
           dbg_print("Stopping to send pressure\n");
         }
           
-        xQueueSend(g.sensor_queue_g, &new_rate, 0);
+        xQueueSend(g.sensor_queue_g, &type, 0);
       }
         break;
 

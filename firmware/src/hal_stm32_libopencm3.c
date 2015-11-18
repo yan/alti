@@ -15,6 +15,11 @@
 #include <FreeRTOS.h>
 #include <queue.h>
 #include <task.h>
+#include <semphr.h>
+
+#if CONFIG_USE_USART_ISR
+#include <ublox.h>
+#endif
 
 #include <libopencm3/cm3/scb.h>
 #include <libopencm3/cm3/nvic.h>
@@ -97,16 +102,6 @@ void arch_config_ble(void)
   exti_enable_request(EXTI3);
 }
 
-void arch_usart_send(usart_t port, uint8_t data)
-{
-  usart_send_blocking(port, data);
-}
-
-uint16_t arch_usart_recv(usart_t port)
-{
-  return usart_recv_blocking(port);
-}
-
 void arch_config_clocks(void)
 {
   /* Configure main system clock */
@@ -140,6 +135,9 @@ void arch_config_clocks(void)
   g.rcc_clock_freq = rcc_apb2_frequency;
 }
 
+/* =========================================================================== */
+/* =  USART functions   ====================================================== */
+/* =========================================================================== */
 void arch_config_uart(usart_t port, int baud)
 {
   /* Enable clocks for USART1. */
@@ -164,9 +162,137 @@ void arch_config_uart(usart_t port, int baud)
   usart_set_parity(port, USART_PARITY_NONE);
   usart_set_flow_control(port, USART_FLOWCONTROL_NONE);
 
+#if CONFIG_USE_USART_ISR
+  arch_enable_usart_interrupt(port);
+#endif
+
   /* Finally enable the USART. */
   usart_enable(port);
 }
+
+void arch_usart_send(usart_t port, uint8_t data)
+{
+  usart_send_blocking(port, data);
+}
+
+uint16_t arch_usart_recv(usart_t port)
+{
+  uint16_t value = 0;
+
+#if CONFIG_USE_USART_ISR
+  (void) port;
+  BaseType_t status;
+
+  if (g.usart_isr_state.read_offset == g.usart_isr_state.write_offset) {
+    // Blocking here should fill up the buffer again
+    status = xSemaphoreTake(g.usart_mutex_g, portMAX_DELAY);
+    if (status != pdPASS) {
+      // TODO: Is this reachable with portMAX_DELAY? What do we do here?
+    }
+  }
+
+  /* Make sure we filled the receive buffer */
+  assert(g.usart_isr_state.read_offset != g.usart_isr_state.write_offset);
+    
+  portENTER_CRITICAL();
+
+  value = (uint8_t) g.usart_isr_state.buffer[g.usart_isr_state.read_offset];
+  g.usart_isr_state.read_offset =
+    (g.usart_isr_state.read_offset + 1) % USART_ISR_BUFFER_LEN; 
+
+  portEXIT_CRITICAL();
+
+#else
+  value = usart_recv_blocking(port);
+#endif
+  return value;
+}
+
+void arch_enable_usart_interrupt(usart_t port)
+{
+  // make this configurable
+  nvic_enable_irq(NVIC_USART1_IRQ);
+  nvic_set_priority(NVIC_USART1_IRQ, USART_ISR_PRIORITY);
+
+  usart_enable_rx_interrupt(port);
+}
+
+void arch_disable_usart_interrupt(usart_t port)
+{
+  usart_disable_rx_interrupt(port);
+}
+
+#if CONFIG_USE_USART_ISR
+/**
+ * @brief ISR that's hit when there's new USART data waiting to be read. Reads 
+ * a byte into a global buffer. This unfortunately has some parsing logic of 
+ * UBX message types such that it only gives the semaphore after it received a
+ * full message. This is done in order to minimize power consumption.
+ *
+ * XXX: Make sure the recv port is correct
+ */
+void usart1_isr(void)
+{
+  uint8_t value = usart_recv(USART1);
+
+  switch (g.usart_isr_state.read_state) {
+    case USART_ISR_STATE_WAITING:
+      if (value == UBX_SYNC_BYTE_1) {
+        g.usart_isr_state.read_state = USART_ISR_STATE_READ_SYNC1;
+      } else {
+        /* If we're waiting for the first sync byte, and it's not it, just
+         * ignore the character
+         * */
+        return;
+      }
+      break;
+    case USART_ISR_STATE_READ_SYNC1:
+      if (value == UBX_SYNC_BYTE_2) {
+        g.usart_isr_state.read_state++;
+      } else {
+        g.usart_isr_state.read_state = USART_ISR_STATE_WAITING;
+        /* Failed two sync bytes, again, ignore the character */
+        return;
+      }
+      break;
+    case USART_ISR_STATE_READ_SYNC2:
+      g.usart_isr_state.remaining = value << 8;
+      g.usart_isr_state.read_state++;
+      break;
+    case USART_ISR_STATE_READ_LSB_LEN:
+      g.usart_isr_state.remaining |= value;
+
+      /* Cap the message size we're capable of reading to the buffer size.
+       * This is a good place to put a breakpoint in case messages of that size
+       * actually happen
+       */
+      if (g.usart_isr_state.remaining > USART_ISR_BUFFER_LEN) {
+        g.usart_isr_state.read_state = USART_ISR_STATE_WAITING;
+        return;
+      }
+
+      g.usart_isr_state.read_state++;
+      break;
+    case USART_ISR_STATE_READING: {
+        BaseType_t higher_awoken;
+        if (g.usart_isr_state.remaining == 0) {
+          // we're done reading, reset state, counters, and give semaphore
+          g.usart_isr_state.read_state = USART_ISR_STATE_WAITING;
+          xSemaphoreGiveFromISR(g.usart_mutex_g, &higher_awoken);
+          portYIELD_FROM_ISR(higher_awoken);
+        }
+        g.usart_isr_state.remaining--;
+      }
+      break;
+  }
+
+  g.usart_isr_state.buffer[g.usart_isr_state.write_offset] = value; 
+  g.usart_isr_state.write_offset = (g.usart_isr_state.write_offset + 1) % USART_ISR_BUFFER_LEN;
+}
+#endif // CONFIG_USE_USART_ISR
+
+/* =========================================================================== */
+/* =========================================================================== */
 
 void arch_config_io(void)
 {
@@ -197,7 +323,7 @@ void arch_config_io(void)
     __PIN(UBLOX_MAX7_RESET),
     __PIN(WARN_LED_A),
     __PIN(WARN_LED_B),
-    // __PIN(PIEZO_EN),
+    __PIN(PIEZO_EN),
     // __PIN(PIEZO_OUT),
   };
 #undef __PIN
@@ -229,7 +355,13 @@ void exti3_isr(void)
 
 void arch_init_timer(pwm_timer_t timer, uint32_t channel, uint32_t prescaler, uint32_t period)
 {
-  rcc_peripheral_enable_clock(&RCC_APB1ENR, RCC_APB1ENR_TIM2EN);
+  switch (timer) {
+    case TIM2:
+      rcc_peripheral_enable_clock(&RCC_APB1ENR, RCC_APB1ENR_TIM2EN);
+      break;
+    case TIM4:
+      rcc_peripheral_enable_clock(&RCC_APB1ENR, RCC_APB1ENR_TIM4EN);
+  }
 
   timer_reset(timer);
 
@@ -329,7 +461,7 @@ void enable_piezo(void)
 
   pin_config(PIEZO_OUT_GPIO, PIEZO_OUT, PINMODE_AF_2);
 
-  // pin_clear(PIEZO_OUT_GPIO, PIEZO_OUT);
+  pin_clear(PIEZO_OUT_GPIO, PIEZO_OUT);
 
   timer_enable_counter(PIEZO_OUT_TIMER);
 }
@@ -337,6 +469,7 @@ void enable_piezo(void)
 void disable_piezo(void)
 {
   rcc_peripheral_disable_clock(&RCC_APB1ENR, RCC_APB1ENR_TIM4EN);
+
   timer_disable_counter(PIEZO_OUT_TIMER);
 
   pin_config(PIEZO_EN_GPIO, PIEZO_EN, PINMODE_OUTPUT);

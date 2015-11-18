@@ -9,8 +9,13 @@
 #include <stdint.h>
 #include <filter.h>
 #include <alarm.h>
+#include <config.h>
+#include <features.h>
 
-#define WRITE_BUFFER_LEN  512
+#define WRITE_BUFFER_LEN        512
+
+#define USART_ISR_BUFFER_LEN    128
+
 
 /**
  * @brief A simple block-length buffer protected by a lock. Also includes a 
@@ -55,6 +60,31 @@ struct globals {
 
   /** @brief */
   void *gps_queue_g;
+
+#if CONFIG_USE_USART_ISR
+
+  /** @brief USART interupt mutex for gps */
+  void *usart_mutex_g;
+
+  /** @brief The buffer and offsets into which the usart interrupt writes data */
+  struct usart_isr_state_s {
+    uint8_t buffer[USART_ISR_BUFFER_LEN];
+
+    uint8_t write_offset;
+
+    uint8_t read_offset;
+
+    uint16_t remaining;
+
+    enum {
+      USART_ISR_STATE_WAITING,
+      USART_ISR_STATE_READ_SYNC1,
+      USART_ISR_STATE_READ_SYNC2,
+      USART_ISR_STATE_READ_LSB_LEN,
+      USART_ISR_STATE_READING
+    } read_state;
+  } usart_isr_state;
+#endif
 
   /** @brief The filter state for baro readings */
   filter_state_t baro_filter_state;

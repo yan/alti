@@ -50,6 +50,10 @@ void arch_usart_send(usart_t port, uint8_t data);
 
 uint16_t arch_usart_recv(usart_t port);
 
+void arch_enable_usart_interrupt(usart_t port);
+
+void arch_disable_usart_interrupt(usart_t port);
+
 /** High level config functions */
 void config_isr(int port);
 

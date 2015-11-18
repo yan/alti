@@ -13,8 +13,8 @@
 #else
 #  error "Unsupprted architecture"
 #endif
-#define PIEZO_OUT_TIMER                 TIM3
-#define PIEZO_OUT_CHANNEL               TIM_OC(2)
+#define PIEZO_OUT_TIMER                 TIM4
+#define PIEZO_OUT_CHANNEL               TIM_OC(4)
 #define PIEZO_OUT_AF                    GPIO_AF2
 #define STATUS_LED_TIMER                TIM2
 #define STATUS_LED_CHANNEL              TIM_OC(4)

@@ -20,18 +20,18 @@ static void step_pulse(void);
 static void task_alert_config(void)
 {
   // int ksps = 100, period = 12000/ksps, half_period = period / 2;
-  const int USE_PIEZO = 1;
+  const int USE_PIEZO = 0;
 
   // Initialize timer
   arch_init_timer(STATUS_LED_TIMER, STATUS_LED_CHANNEL, 11, 1000);
   enable_pulse();
 
   if (USE_PIEZO) {
-    arch_init_timer(PIEZO_OUT_TIMER, PIEZO_OUT_CHANNEL, 11, 1000);
+    arch_init_timer(PIEZO_OUT_TIMER, PIEZO_OUT_CHANNEL, 5, 1000);
     enable_piezo();
     arch_timer_set(PIEZO_OUT_TIMER, PIEZO_OUT_CHANNEL, 500);
   } else {
-    //disable_piezo();
+    disable_piezo();
   }
 
 }

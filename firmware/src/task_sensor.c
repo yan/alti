@@ -45,6 +45,9 @@ void task_sensor(void *p)
 
     if (status != pdPASS) {
       //
+    } else {
+      // Start spamming
+      sleep_period = MS_TO_TICKS(200);
     }
 
     if (received_event & SENSOR_REQUEST_AIR_PRESSURE) {
@@ -62,8 +65,18 @@ void task_sensor(void *p)
       result = bmx055_read(BMX055_ACCEL, DIR_X);
       result = bmx055_read(BMX055_ACCEL, DIR_Y);
       result = bmx055_read(BMX055_ACCEL, DIR_Z);
+
+      evt.type = GLOBAL_EVT_AIR_PRESSURE;
+      evt.payload = (event_payload_t) (intptr_t) result;
+
+      xQueueSend(g.main_queue_g, &evt, 0);
     }
 #endif // CONFIG_USE_ACCEL
+
+    // Go back to sleeping
+    if (received_event & SENSOR_REQUEST_STOP) {
+      sleep_period = portMAX_DELAY;
+    }
 
     // respond with a result
   }
