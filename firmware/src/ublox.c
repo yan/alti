@@ -23,7 +23,7 @@
 
 static void calculateCheckSum(uint8_t *in, size_t length, uint8_t* dest);
 static int    ublox_expect_response(usart_t port, uint8_t msg_class, uint8_t msg_id, struct ubx_header_s *header);
-static int    ublox_update_port_settings(usart_t port);
+static int    ublox_update_port_settings(usart_t port, uint32_t baud);
 static void   ublox_send(uint8_t class_id, uint8_t msg_id, uint8_t *buf, size_t length);
 static size_t usart_recv_buf(usart_t port, uint8_t *dest, size_t length);
 static void   usart_send_buf(usart_t port, uint8_t *buf, size_t length);
@@ -236,14 +236,22 @@ static int ublox_ping(void)
  *
  * @return 1 on success, 0 if unable to ping one
  */
-int ublox_init(void)
+int ublox_init(uint32_t baudRate)
 {
   int attempts = 0;
+  int status = 0;
 
-  ublox_hard_reset();
+  ublox_reset();
 
-  delay_ms(200);
-  //ublox_update_port_settings(UBLOX_UART);
+  delay_ms(300);
+
+  status = ublox_update_port_settings(UBLOX_MAX7_BUS, baudRate);
+
+  if (status == 0) {
+   return 0;
+  }
+
+  delay_ms(20);
 
   for (attempts = MAX_RETRIES; attempts > 0; attempts--) {
     if (ublox_ping()) {
@@ -290,6 +298,8 @@ int ublox_get_rate(void)
     return 0;
   }
 
+  assert(head.length == sizeof(response));
+
   usart_recv_buf(UBLOX_UART, (uint8_t*)response, sizeof(response));
 
   dbg_print("Measuing rate is: %d ms, %d cycles, (time ref = %d)", 
@@ -301,17 +311,26 @@ int ublox_get_rate(void)
 /**
  * @brief Receiving a navigation solution (blocking)
  */
-int ublox_get(void)
+int ublox_get(struct gps_sample_s *sample)
 {
   struct ubx_header_s head;
   struct ubx_nav_pvt_solution_s body;
 
+  assert(sample != NULL);
 
   if (!ublox_expect_response(UBLOX_UART, MSG_CLASS_NAV, MSG_ID_NAV_PVT, &head)) {
     return 0;
   }
 
+  assert(sizeof(body) == head.length);
+
   usart_recv_buf(UBLOX_UART, (uint8_t*)&body, sizeof(body));
+
+  sample->lat = body.lat;
+  sample->lon =  body.lon; 
+  sample->ground_speed = body.gSpeed;
+  sample->heading = body.heading;
+  sample->accuracy = body.pDOP;
 
   dbg_print("(%i %i ft: %i): %d {%d, %d}",
       head.msg_class, head.msg_id, body.fixType,
@@ -321,7 +340,7 @@ int ublox_get(void)
   return 1;
 }
 
-int ublox_hard_reset(void)
+int ublox_reset(void)
 {
 #if defined(SOFT_RESET)
 
@@ -387,10 +406,10 @@ static int ublox_get_power_mgmt(usart_t port)
   return status;
 }
 
-static int ublox_update_port_settings(usart_t port)
+static int ublox_update_port_settings(usart_t port, uint32_t baud)
 {
   struct ubx_header_s head;
-  struct ublox_port_config_s config;
+  struct ublox_prt_cfg_s config;
   uint8_t portConfig = 1;
   int status;
 
@@ -405,12 +424,43 @@ static int ublox_update_port_settings(usart_t port)
 
   status = usart_recv_buf(port, (uint8_t*)&config, sizeof(config));
 
-  return status;
+  if (status == 0) {
+    return 0;
+  }
+
+  /** TODO: Document getting the config via passing a 0 baud */
+  if (baud == 0) {
+    return 1;
+  }
+
+  config.outProtoMask = PROTO_UBX;
+  config.baudRate = baud;
+
+  ublox_send(MSG_CLASS_CFG, MSG_ID_CFG_PRT, (uint8_t*)&config, sizeof(config));
+
+  /** */
+  while ((USART_SR(port) & USART_SR_TC) == 0)
+    ;
+
+  if (baud != 0) {
+    usart_set_baudrate(port, baud);
+  }
+
+  return ublox_expect_response(UBLOX_UART, MSG_CLASS_ACK, MSG_ID_ACK_ACK, NULL);
 }
 
 /**
- * TODO: Implement this */
+ * TODO: This also needs to use CFG-PM@ message.
+ */
 int ublox_sleep(void)
 {
-  return 0;
+  uint8_t request[2] = {
+    0,
+    4 /* power save mode */
+  };
+
+  ublox_send(MSG_CLASS_CFG, MSG_ID_CFG_RXM, (uint8_t*)request, sizeof(request));
+
+  // XXX Do we get acks?
+  return ublox_expect_response(UBLOX_UART, MSG_CLASS_ACK, MSG_ID_ACK_ACK, NULL);
 }

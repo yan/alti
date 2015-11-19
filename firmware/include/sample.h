@@ -5,16 +5,14 @@
 #define __SAMPLE_H
 
 #include <bmx055.h>
-#include <ublox.h>
 #include <ms5611.h>
 #include <config.h>
 
 struct gps_sample_s {
-  int32_t ecef_x;
-  int32_t ecef_y;
-  int32_t ecef_z;
+  int32_t lat, lon;
   int32_t ground_speed;
   int32_t heading;
+  int32_t accuracy;
 } __attribute__((packed));
 
 struct accel_sample_s {

@@ -2,6 +2,8 @@
 #ifndef __UBLOX_H
 #define __UBLOX_H
 
+#include <sample.h>
+
 /* To closer match the ublox pdf */
 typedef int32_t I4;
 typedef int16_t I2;
@@ -148,8 +150,9 @@ struct ubx_nav_pvt_solution_s {
   U4 sAcc;
   U4 headingAcc;
   U2 pDOP;
-  X2 _reserved2;
-  U4 _reserved3;
+  U1 _reserved2[6];
+  I4 headVeh;
+  U1 _reserved3[4];
 } __attribute__((packed));
 
 /* */
@@ -169,17 +172,52 @@ struct ubx_nav_solution_s {
   U4 _reserved2; /*    */
 } __attribute__((packed));
 
-struct ublox_port_config_s {
+enum ubx_proto_mask_e {
+  PROTO_UBX = 0x01,
+  PROTO_NMEA = 0x02,
+  // RTCM not available on outProtoMask
+  PROTO_RTCM = 0x04
+};
+
+struct ublox_prt_cfg_s {
   U1 portID;
-  U1 reserved0;
-  X2 txReady;
-  X4 mode;
+  U1 reserved1;
+  struct {
+    uint16_t en    : 1;
+    uint16_t pol   : 1;
+    uint16_t pin   : 5;
+    uint16_t thres : 9;
+  } txReady;
+  struct {
+    uint32_t reserved0 : 6;
+    uint32_t charLen   : 2;
+    uint32_t reserved1 : 1;
+    uint32_t parity    : 3;
+    uint32_t nStopBits : 2;
+    uint32_t reserved2 : 18;
+  }mode;
   U4 baudRate;
   X2 inProtoMask;
   X2 outProtoMask;
   X2 flags;
-  U2 reserved5;
+  U1 reserved2[2];
 } __attribute__((packed));
+
+#define TXREADY_THRESH_MASK                                0xFF80
+#define TXREADY_THRESH_SHIFT                               7
+#define TXREADY_PIN_MASK                                   0x007C
+#define TXREADY_PIN_SHIFT                                  2
+#define TXREADY_POL_MASK                                   0x0002
+#define TXREADY_POL_SHIFT                                  1
+#define TXREADY_EN_MASK                                    0x0001
+#define TXREADY_EN_SHIFT                                   0
+
+#define MODE_NSTOPBITS_MASK                                0x3000
+#define MODE_NSTOPBITS_SHIFT                               12
+#define MODE_PARITY_MASK                                   0x0E00
+#define MODE_PARITY_SHIFT                                  9
+#define MODE_CHARLEN_MASK                                  0x00C0
+#define MODE_CHARLEN_SHIFT                                 6
 
 struct ublox_cfg_pm2_s {
   U1 version;
@@ -231,15 +269,16 @@ enum dynamic_platform_model_e {
 
 /**
  * @brief Try to disocver the ublox module.
+ * @param baud The baudrate at which to use this
  *
  * @return 1 on success, 0 if unable to ping one
  */
-int ublox_init(void);
+int ublox_init(uint32_t baudRate);
 
 /**
  * @brief Receiving a navigation solution (blocking)
  */
-int ublox_get(void);
+int ublox_get(struct gps_sample_s *sample);
 
 /**
  * @brief Ask module to start sending navigational messages.
@@ -257,7 +296,7 @@ int ublox_set_measuring_rate(uint16_t ms);
 
 int ublox_get_rate(void);
 
-int ublox_hard_reset(void);
+int ublox_reset(void);
 
 int ublox_sleep(void);
 #endif // __UBLOX_H

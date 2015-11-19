@@ -17,6 +17,8 @@
 #include <task.h>
 #include <semphr.h>
 
+#include <string.h>
+
 #if CONFIG_USE_USART_ISR
 #include <ublox.h>
 #endif
@@ -32,8 +34,6 @@
 #include <libopencm3/stm32/rtc.h>
 #include <libopencm3/stm32/adc.h>
 
-
-void arch_config_uart(usart_t port, int baud);
 
 void pin_set(gpio_t port, pin_t pin)
 {
@@ -192,7 +192,7 @@ uint16_t arch_usart_recv(usart_t port)
   }
 
   /* Make sure we filled the receive buffer */
-  assert(g.usart_isr_state.read_offset != g.usart_isr_state.write_offset);
+  // assert(g.usart_isr_state.read_offset != g.usart_isr_state.write_offset);
     
   portENTER_CRITICAL();
 
@@ -214,6 +214,13 @@ void arch_enable_usart_interrupt(usart_t port)
   nvic_enable_irq(NVIC_USART1_IRQ);
   nvic_set_priority(NVIC_USART1_IRQ, USART_ISR_PRIORITY);
 
+#if CONFIG_USE_USART_ISR
+  // TODO: move this to a utility function
+  memset(&g.usart_isr_state, '\0', sizeof(g.usart_isr_state));
+#endif // CONFIG_USE_USART_ISR
+
+
+  usart_disable_rx_interrupt(port);
   usart_enable_rx_interrupt(port);
 }
 
@@ -233,12 +240,24 @@ void arch_disable_usart_interrupt(usart_t port)
  */
 void usart1_isr(void)
 {
-  uint8_t value = usart_recv(USART1);
+  struct usart_isr_state_s *s = &g.usart_isr_state;
+  uint8_t value;
 
-  switch (g.usart_isr_state.read_state) {
+  /* Do nothing if there's an error condition */
+  if ((USART_SR(UBLOX_UART) & USART_SR_RXNE) == 0) {
+    return;
+  }
+
+#define RESET_STATE do {                          \
+  s->read_state = USART_ISR_STATE_WAITING;        \
+  s->read_offset = s->write_offset;               \
+} while(0)
+  value = usart_recv(UBLOX_UART);
+
+  switch (s->read_state) {
     case USART_ISR_STATE_WAITING:
       if (value == UBX_SYNC_BYTE_1) {
-        g.usart_isr_state.read_state = USART_ISR_STATE_READ_SYNC1;
+        s->read_state = USART_ISR_STATE_READ_SYNC1;
       } else {
         /* If we're waiting for the first sync byte, and it's not it, just
          * ignore the character
@@ -248,47 +267,77 @@ void usart1_isr(void)
       break;
     case USART_ISR_STATE_READ_SYNC1:
       if (value == UBX_SYNC_BYTE_2) {
-        g.usart_isr_state.read_state++;
+        s->read_state++;
       } else {
-        g.usart_isr_state.read_state = USART_ISR_STATE_WAITING;
+        s->read_state = USART_ISR_STATE_WAITING;
         /* Failed two sync bytes, again, ignore the character */
         return;
       }
       break;
     case USART_ISR_STATE_READ_SYNC2:
-      g.usart_isr_state.remaining = value << 8;
-      g.usart_isr_state.read_state++;
+      //Checksum only covers msg_class and onwards
+      s->running_checksum[0] = 0;
+      s->running_checksum[1] = 0;
+      s->read_state++;
+      break;
+    case USART_ISR_STATE_READ_CLASS:
+      s->read_state++;
+      break;
+    case USART_ISR_STATE_READ_ID:
+      s->remaining = value;
+      s->read_state++;
       break;
     case USART_ISR_STATE_READ_LSB_LEN:
-      g.usart_isr_state.remaining |= value;
+      s->remaining += value << 8;
 
       /* Cap the message size we're capable of reading to the buffer size.
        * This is a good place to put a breakpoint in case messages of that size
        * actually happen
        */
-      if (g.usart_isr_state.remaining > USART_ISR_BUFFER_LEN) {
-        g.usart_isr_state.read_state = USART_ISR_STATE_WAITING;
+      if (s->remaining > USART_ISR_BUFFER_LEN) {
+        RESET_STATE;
         return;
       }
 
-      g.usart_isr_state.read_state++;
+      s->read_state++;
       break;
-    case USART_ISR_STATE_READING: {
+
+    case USART_ISR_STATE_READING: 
+        s->remaining--;
+        if (s->remaining == 0) {
+          s->read_state++;
+        }
+        break;
+    case USART_ISR_STATE_CK1:
+        if (s->running_checksum[0] == value) {
+          s->read_state++;
+        } else {
+          RESET_STATE;
+          return;
+        }
+        return;
+    case USART_ISR_STATE_CK2: {
         BaseType_t higher_awoken;
-        if (g.usart_isr_state.remaining == 0) {
+        if (s->running_checksum[1] == value) { 
           // we're done reading, reset state, counters, and give semaphore
-          g.usart_isr_state.read_state = USART_ISR_STATE_WAITING;
-          g.usart_isr_state.until_offset = g.usart_isr_state.write_offset;
+          s->read_state = USART_ISR_STATE_WAITING;
+          s->until_offset = s->write_offset;
           xSemaphoreGiveFromISR(g.usart_mutex_g, &higher_awoken);
           portYIELD_FROM_ISR(higher_awoken);
+        } else {
+          RESET_STATE;
         }
-        g.usart_isr_state.remaining--;
       }
-      break;
+      return;
   }
 
-  g.usart_isr_state.buffer[g.usart_isr_state.write_offset] = value; 
-  g.usart_isr_state.write_offset = (g.usart_isr_state.write_offset + 1) % USART_ISR_BUFFER_LEN;
+  s->running_checksum[0] = s->running_checksum[0]
+    + value; 
+  s->running_checksum[1] = s->running_checksum[1]
+    + s->running_checksum[0]; 
+
+  s->buffer[s->write_offset] = value; 
+  s->write_offset = (s->write_offset + 1) % USART_ISR_BUFFER_LEN;
 }
 #endif // CONFIG_USE_USART_ISR
 

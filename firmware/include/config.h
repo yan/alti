@@ -14,7 +14,7 @@
 /* TODO: IS this correct? this needs to take precedence over the scheduler so
  * so that buffer management can not get preempted
  */
-#define USART_ISR_PRIORITY        (11 << 4)
+#define USART_ISR_PRIORITY        (11 << 3)
 
 #define MAIN_EVENT_LOOP_TIMEOUT   (1000 / portTICK_PERIOD_MS)
 

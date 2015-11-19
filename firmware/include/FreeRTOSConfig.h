@@ -120,7 +120,7 @@ your application. */
 
 #define CONFIG_TASK_GPS_QUEUE_LEN                  4
 #define CONFIG_TASK_GPS_STACK_DEPTH                128
-#define CONFIG_TASK_GPS_PRIORITY                   ( DEFAULT_TASK_PRIORITY+1)
+#define CONFIG_TASK_GPS_PRIORITY                   ( DEFAULT_TASK_PRIORITY-1)
 
 #if defined(ENABLE_SEMIHOSTING)
 #  undef configTOTAL_HEAP_SIZE

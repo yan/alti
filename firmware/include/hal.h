@@ -48,6 +48,8 @@ void pin_config(gpio_t port, pin_t pin, int options);
 /** USART functions */
 void arch_usart_send(usart_t port, uint8_t data);
 
+void arch_config_uart(usart_t port, int baud);
+
 uint16_t arch_usart_recv(usart_t port);
 
 void arch_enable_usart_interrupt(usart_t port);

@@ -24,22 +24,11 @@ BaseType_t usart_given = 0;
  */
 void config_gps(void)
 {
-  ublox_init();
+  ublox_init(CONFIG_UBLOX_BAUD_RATE);
+  ublox_set_measuring_rate(200);
   ublox_start_updates(1);
-}
-
-extern void usart1_isr(void);
-void usart1_isr(void)
-{
-  static BaseType_t higher_priority;
-
-  usart_disable_rx_interrupt(UBLOX_UART);
-
-  usart_given++;
-
-  xSemaphoreGiveFromISR(g.usart_mutex_g, &higher_priority);
-
-  portYIELD_FROM_ISR(higher_priority);
+  delay_ms(1000);
+  ublox_sleep();
 }
 
 /**
@@ -57,19 +46,19 @@ void task_gps(void *p)
   BaseType_t received;
   BaseType_t sleep_period = MS_TO_TICKS(100);
   BaseType_t status;
+  struct gps_sample_s sample;
 
   config_gps();
-  xSemaphoreGive(g.usart_mutex_g);
 
   for (;;) {
     status = xQueueReceive(g.gps_queue_g, &received, sleep_period);
 
+    // TODO: Determine the wait characteristics of having xQueueReceive block and
+    // ublox_get block, via usart recv
     if (status != pdPASS) {
-      while (state == RUN) {
+      if (state == RUN) {
 
-        xSemaphoreTake(g.usart_mutex_g, portMAX_DELAY);
-        ublox_get();
-        arch_enable_usart_interrupt(UBLOX_UART);
+        ublox_get(&sample);
 
         // send to main queue ??
         //

@@ -9,6 +9,7 @@
 #include <sample.h>
 #include <flash.h>
 #include <globals.h>
+#include <sample.h>
 
 void write_sensor_packet(struct sensor_packet_s *packet)
 {
