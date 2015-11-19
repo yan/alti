@@ -183,7 +183,7 @@ uint16_t arch_usart_recv(usart_t port)
   (void) port;
   BaseType_t status;
 
-  if (g.usart_isr_state.read_offset == g.usart_isr_state.write_offset) {
+  if (g.usart_isr_state.read_offset == g.usart_isr_state.until_offset) {
     // Blocking here should fill up the buffer again
     status = xSemaphoreTake(g.usart_mutex_g, portMAX_DELAY);
     if (status != pdPASS) {
@@ -278,6 +278,7 @@ void usart1_isr(void)
         if (g.usart_isr_state.remaining == 0) {
           // we're done reading, reset state, counters, and give semaphore
           g.usart_isr_state.read_state = USART_ISR_STATE_WAITING;
+          g.usart_isr_state.until_offset = g.usart_isr_state.write_offset;
           xSemaphoreGiveFromISR(g.usart_mutex_g, &higher_awoken);
           portYIELD_FROM_ISR(higher_awoken);
         }

@@ -74,6 +74,11 @@ struct globals {
 
     uint8_t read_offset;
 
+    /* TODO: Document until offset (if usart appends more bytes after the mutex
+     * have been given
+     */
+    uint8_t until_offset;
+
     uint16_t remaining;
 
     enum {
