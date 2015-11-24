@@ -11,10 +11,9 @@
 #include <alarm.h>
 #include <config.h>
 #include <features.h>
+#include <ublox_isr.h>
 
 #define WRITE_BUFFER_LEN        512
-
-#define USART_ISR_BUFFER_LEN    128
 
 
 /**
@@ -61,51 +60,11 @@ struct globals {
   void *gps_queue_g;
 
 #if CONFIG_USE_USART_ISR
-
   /* USART interupt mutex for gps */
   void *usart_mutex_g;
 
   /* The buffer and offsets into which the usart interrupt writes data */
-  struct usart_isr_state_s {
-    /* The actual usart buffer */
-    uint8_t buffer[USART_ISR_BUFFER_LEN];
-
-    /* Offset where the ISR is writing to */
-    uint8_t write_offset;
-
-    /* Offset where the receiving call is reading from */
-    uint8_t read_offset;
-
-    /* Marked when the ISR finishes reading a UBX message. Separate from
-     * |write_offset| since the ISR can write more data while the receiving task
-     * is still not done reading a UBX message. Right now, the mutex marks a 
-     * complete UBX message, not just finished data, although they will probably
-     * be identicaly
-     */
-    uint8_t until_offset;
-
-    /* How many bytes left to read for the ISR before finishing the UBX message
-     * and giving the mutex.
-     */
-    uint16_t remaining;
-
-    uint8_t running_checksum[2];
-
-    /* The UBX message reading state that the ISR can be in */
-    enum {
-      USART_ISR_STATE_WAITING,
-      USART_ISR_STATE_READ_SYNC1,
-      USART_ISR_STATE_READ_SYNC2,
-      USART_ISR_STATE_READ_CLASS,
-      USART_ISR_STATE_READ_ID,
-      USART_ISR_STATE_READ_LSB_LEN,
-      USART_ISR_STATE_READING,
-      USART_ISR_STATE_CK1,
-      USART_ISR_STATE_CK2,
-
-    } read_state;
-
-  } usart_isr_state;
+  struct usart_isr_state_s usart_isr_state;
 #endif
 
   /** @brief Data local to the BLE task */

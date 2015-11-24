@@ -12,21 +12,25 @@
 #include <ublox.h>
 #include <pins.h>
 #include <util.h>
+#include <ublox_isr.h>
 
-#if defined(STM32L1) || defined(TESTING)
+//#if defined(STM32L1) || defined(TESTING)
 #  include <hal.h>
-#endif
+//#endif
 
 #define MAX_RECEIVED 1024
 
 #define MAX_RETRIES (10)
 
+/**
+ * @brief Defined in ublox_isr.c
+ */
+
 static void calculateCheckSum(uint8_t *in, size_t length, uint8_t* dest);
-static int    ublox_expect_response(usart_t port, uint8_t msg_class, uint8_t msg_id, struct ubx_header_s *header);
+static struct ubx_header_s *ublox_expect_response(uint8_t msg_class, uint8_t msg_id);
 static int    ublox_update_port_settings(usart_t port, uint32_t baud);
 static void   ublox_send(uint8_t class_id, uint8_t msg_id, uint8_t *buf, size_t length);
-static size_t usart_recv_buf(usart_t port, uint8_t *dest, size_t length);
-static void   usart_send_buf(usart_t port, uint8_t *buf, size_t length);
+static void   usart_send_buf(usart_t port, const uint8_t *buf, size_t length);
 
 #define ublox_poll(class_id, msg_id) ublox_send(class_id, msg_id, NULL, 0)
 
@@ -55,27 +59,12 @@ static void calculateCheckSum(uint8_t *in, size_t length, uint8_t* dest) {
 }
 
 
-static void usart_send_buf(usart_t port, uint8_t *buf, size_t length)
+static void usart_send_buf(usart_t port, const uint8_t *buf, size_t length)
 {
   unsigned i = 0;
   for (i = 0; i < length; i++ ) {
     arch_usart_send(port, buf[i]);
   }
-}
-
-static size_t usart_recv_buf(usart_t port, uint8_t *dest, size_t length)
-{
-  unsigned i = 0;
-
-  if (dest == NULL) {
-    return 0;
-  }
-
-  for (i = 0; i < length; i++) {
-    dest[i] = arch_usart_recv(port);
-  }
-
-  return length;
 }
 
 /**
@@ -88,94 +77,50 @@ static size_t usart_recv_buf(usart_t port, uint8_t *dest, size_t length)
  */
 static void ublox_send(uint8_t class_id, uint8_t msg_id, uint8_t *buf, size_t length)
 {
-  uint8_t sync_bytes[2] = { UBX_SYNC_BYTE_1, UBX_SYNC_BYTE_2 };
-  union {
-    struct ubx_header_s msg;
-    uint8_t msg_buf[sizeof(struct ubx_header_s)];
-  } u;
+  const uint8_t sync_bytes[2] = { UBX_SYNC_BYTE_1, UBX_SYNC_BYTE_2 };
+  struct ubx_header_s msg;
 
-  uint16_t checksum = 0;
+  uint8_t checksum[2] = {0};
 
-  u.msg.msg_class = class_id;
-  u.msg.msg_id = msg_id;
-  u.msg.length = length;
+  msg.msg_class = class_id;
+  msg.msg_id = msg_id;
+  msg.length = length;
 
   // TODO: Try commenting this out
   usart_wait_send_ready(UBLOX_UART);
 
-  usart_send_buf(UBLOX_UART, sync_bytes, sizeof sync_bytes);
-  usart_send_buf(UBLOX_UART, u.msg_buf, sizeof u.msg_buf);
-  calculateCheckSum(u.msg_buf, sizeof u.msg_buf, (uint8_t*)&checksum);
+  usart_send_buf(UBLOX_UART, (uint8_t*)sync_bytes, sizeof sync_bytes);
+  usart_send_buf(UBLOX_UART, (uint8_t*)&msg, sizeof msg);
+  calculateCheckSum((uint8_t*)&msg, sizeof msg, checksum);
   if (length > 0) {
     usart_send_buf(UBLOX_UART, buf, length);
-    calculateCheckSum(buf, length, (uint8_t*)&checksum);
+    calculateCheckSum(buf, length, checksum);
   }
-  usart_send_buf(UBLOX_UART, (uint8_t*)&checksum, sizeof(checksum));
+  usart_send_buf(UBLOX_UART, checksum, sizeof(checksum));
 }
 
 
-/**
- * @brief Read a UBX message header
- *
- * @return 1 on success, 0 on failure
- */
-static int ublox_get_next_header(usart_t port, struct ubx_header_s *head)
-{
-  uint8_t received;
-  if (head == NULL) {
-    return 0;
-  }
-
-  do {
-    received = arch_usart_recv(port);
-    if (received != UBX_SYNC_BYTE_1) {
-      continue;
-    }
-
-    received = arch_usart_recv(port);
-    if (received != UBX_SYNC_BYTE_2) {
-      continue;
-    }
-
-    break;
-  } while (1);
-
-  head->msg_class = arch_usart_recv(port);
-  head->msg_id = arch_usart_recv(port);
-
-  /* Then, get the length of the payload */
-  head->length = arch_usart_recv(port);
-  head->length += arch_usart_recv(port) << 8;
-
-  return 1;
-}
 
 /**
  * @brief Keep receiving UBX messages until we get one with correct msg_class
  * and msg_id.
  */
-static int ublox_expect_response(usart_t port, uint8_t msg_class, uint8_t msg_id, struct ubx_header_s *header)
+static struct ubx_header_s *ublox_expect_response(uint8_t msg_class, uint8_t msg_id)
 {
   int attempts;
-  struct ubx_header_s h;
+  struct ubx_header_s *h = NULL;
 
   for (attempts = MAX_RETRIES; attempts > 0; attempts--) {
-    if (!ublox_get_next_header(port, &h)) {
-      continue;
-    }
+    h = ublox_wait_for_message();
 
-    if (h.msg_class != msg_class || h.msg_id != msg_id) {
+    if (h->msg_class != msg_class || h->msg_id != msg_id) {
       continue;
     }
 
     break;
   }
 
-  if (header != NULL) {
-    *header = h;
-  }
-
-  return !!attempts;
+  return h;
 }
 
 /**
@@ -185,20 +130,20 @@ static int ublox_expect_response(usart_t port, uint8_t msg_class, uint8_t msg_id
  */
 static int ublox_ping(void)
 {
-  struct ubx_header_s header;
+  struct ubx_header_s *header;
+  uint8_t *data;
   int received = 0;
 
   ublox_poll(MSG_CLASS_MON, MSG_ID_MON_VER);
 
-  if (!ublox_get_next_header(UBLOX_UART, &header)) {
+  header = ublox_wait_for_message();
+  data = (uint8_t*) (header + 1);
+
+  if (header->msg_class != MSG_CLASS_MON) {
     return 0;
   }
 
-  if (header.msg_class != MSG_CLASS_MON) {
-    return 0;
-  }
-
-  if (header.msg_id != MSG_ID_MON_VER) {
+  if (header->msg_id != MSG_ID_MON_VER) {
     return 0;
   }
 
@@ -206,7 +151,7 @@ static int ublox_ping(void)
   {                                                            \
     volatile int i, j, appending;                              \
     for (appending = 1, i = 0; i < bytes; i++, received++) {   \
-      j = arch_usart_recv(UBLOX_UART);                         \
+      j = *data++;                                             \
       if (j == 0) {                                            \
         appending = 0;                                         \
       }                                                        \
@@ -223,7 +168,7 @@ static int ublox_ping(void)
   GET_ZT_STRING(10);
 
   /* Get extra fields */
-  while (received < header.length) {
+  while (received < header->length) {
     GET_ZT_STRING(30);
   }
 #undef GET_ZT_STRING
@@ -277,30 +222,32 @@ int ublox_start_updates(int rate)
 
   ublox_send(MSG_CLASS_CFG, MSG_ID_CFG_MSG, request, sizeof(request));
 
-  return ublox_expect_response(UBLOX_UART, MSG_CLASS_ACK, MSG_ID_ACK_ACK, NULL);
+  ublox_expect_response(MSG_CLASS_ACK, MSG_ID_ACK_ACK);
+
+  return 1;
 }
 
 int ublox_get_rate(void)
 {
-  int status;
-  struct ubx_header_s head;
-  uint16_t response[3];
+  int status = 0;
+  struct ubx_header_s *head;
+  uint16_t *response;
 
   ublox_poll(MSG_CLASS_CFG, MSG_ID_CFG_RATE);
 
-  status = ublox_expect_response(UBLOX_UART, MSG_CLASS_CFG, MSG_ID_CFG_RATE, &head);
+  head = ublox_expect_response(MSG_CLASS_CFG, MSG_ID_CFG_RATE);
+
+  if (head == NULL) {
+    return status;
+  }
 
   if (!status) {
     return status;
   }
 
-  if (head.length != sizeof(response)) {
-    return 0;
-  }
+  assert(head->length == sizeof(response));
 
-  assert(head.length == sizeof(response));
-
-  usart_recv_buf(UBLOX_UART, (uint8_t*)response, sizeof(response));
+  response = (uint16_t*) (head + 1);
 
   dbg_print("Measuing rate is: %d ms, %d cycles, (time ref = %d)", 
       response[0], response[1], response[2]);
@@ -313,29 +260,31 @@ int ublox_get_rate(void)
  */
 int ublox_get(struct gps_sample_s *sample)
 {
-  struct ubx_header_s head;
-  struct ubx_nav_pvt_solution_s body;
+  struct ubx_header_s *head;
+  struct ubx_nav_pvt_solution_s *body;
 
   assert(sample != NULL);
 
-  if (!ublox_expect_response(UBLOX_UART, MSG_CLASS_NAV, MSG_ID_NAV_PVT, &head)) {
+  head = ublox_expect_response(MSG_CLASS_NAV, MSG_ID_NAV_PVT);
+
+  if (head == NULL) {
     return 0;
   }
+  assert(sizeof(*body) == head->length);
 
-  assert(sizeof(body) == head.length);
+  body = (struct ubx_nav_pvt_solution_s *) (head + 1);
 
-  usart_recv_buf(UBLOX_UART, (uint8_t*)&body, sizeof(body));
 
-  sample->lat = body.lat;
-  sample->lon =  body.lon; 
-  sample->ground_speed = body.gSpeed;
-  sample->heading = body.heading;
-  sample->accuracy = body.pDOP;
+  sample->lat = body->lat;
+  sample->lon =  body->lon; 
+  sample->ground_speed = body->gSpeed;
+  sample->heading = body->heading;
+  sample->accuracy = body->pDOP;
 
   dbg_print("(%i %i ft: %i): %d {%d, %d}",
-      head.msg_class, head.msg_id, body.fixType,
-      body.year,
-      (int) body.lat/*1e7f*/, (int) body.lon/*1e7f*/);
+      head->msg_class, head->msg_id, body->fixType,
+      body->year,
+      (int) body->lat/*1e7f*/, (int) body->lon/*1e7f*/);
 
   return 1;
 }
@@ -383,60 +332,61 @@ int ublox_set_measuring_rate(uint16_t ms)
 
   ublox_send(MSG_CLASS_CFG, MSG_ID_CFG_RATE, (uint8_t*)request, sizeof(request));
 
-  // XXX Do we get acks?
-  return ublox_expect_response(UBLOX_UART, MSG_CLASS_ACK, MSG_ID_ACK_ACK, NULL);
+  ublox_expect_response(MSG_CLASS_ACK, MSG_ID_ACK_ACK);
+
+  return 1;
 }
 
-static int ublox_get_power_mgmt(usart_t port)
+static struct ublox_cfg_pm2_s *ublox_get_power_mgmt(void)
 {
-  struct ubx_header_s head;
-  struct ublox_cfg_pm2_s body;
-  int status;
+  struct ubx_header_s *head;
+  struct ublox_cfg_pm2_s *body;
 
   ublox_poll(MSG_CLASS_CFG, MSG_ID_CFG_PM2);
 
-  status = ublox_expect_response(port, MSG_CLASS_CFG, MSG_ID_CFG_PM2, &head);
+  head = ublox_expect_response(MSG_CLASS_CFG, MSG_ID_CFG_PM2);
 
-  if (head.length != sizeof(body)) {
+  if (head == NULL) {
     return 0;
   }
 
-  status = usart_recv_buf(port, (uint8_t*)&body, sizeof(body));
+  if (head->length != sizeof(*body)) {
+    return 0;
+  }
 
-  return status;
+  body = (struct ublox_cfg_pm2_s *) (head + 1);
+
+  return body;
 }
 
 static int ublox_update_port_settings(usart_t port, uint32_t baud)
 {
-  struct ubx_header_s head;
-  struct ublox_prt_cfg_s config;
+  struct ubx_header_s *head;
+  struct ublox_prt_cfg_s *config;
   uint8_t portConfig = 1;
-  int status;
-
 
   ublox_send(MSG_CLASS_CFG, MSG_ID_CFG_PRT, &portConfig, sizeof(portConfig));
 
-  status = ublox_expect_response(port, MSG_CLASS_CFG, MSG_ID_CFG_PRT, &head);
+  head = ublox_expect_response(MSG_CLASS_CFG, MSG_ID_CFG_PRT);
 
-  if (head.length != sizeof(config)) {
+  if (head == NULL) {
+    return 0;
+  }
+  if (head->length != sizeof(config)) {
     return 0;
   }
 
-  status = usart_recv_buf(port, (uint8_t*)&config, sizeof(config));
-
-  if (status == 0) {
-    return 0;
-  }
+  config = (struct ublox_prt_cfg_s *)(head + 1);
 
   /** TODO: Document getting the config via passing a 0 baud */
   if (baud == 0) {
     return 1;
   }
 
-  config.outProtoMask = PROTO_UBX;
-  config.baudRate = baud;
+  config->outProtoMask = PROTO_UBX;
+  config->baudRate = baud;
 
-  ublox_send(MSG_CLASS_CFG, MSG_ID_CFG_PRT, (uint8_t*)&config, sizeof(config));
+  ublox_send(MSG_CLASS_CFG, MSG_ID_CFG_PRT, (uint8_t*)config, sizeof(*config));
 
   /** */
   while ((USART_SR(port) & USART_SR_TC) == 0)
@@ -446,7 +396,9 @@ static int ublox_update_port_settings(usart_t port, uint32_t baud)
     usart_set_baudrate(port, baud);
   }
 
-  return ublox_expect_response(UBLOX_UART, MSG_CLASS_ACK, MSG_ID_ACK_ACK, NULL);
+  ublox_expect_response(MSG_CLASS_ACK, MSG_ID_ACK_ACK);
+
+  return 1;
 }
 
 /**
@@ -462,5 +414,7 @@ int ublox_sleep(void)
   ublox_send(MSG_CLASS_CFG, MSG_ID_CFG_RXM, (uint8_t*)request, sizeof(request));
 
   // XXX Do we get acks?
-  return ublox_expect_response(UBLOX_UART, MSG_CLASS_ACK, MSG_ID_ACK_ACK, NULL);
+  ublox_expect_response(MSG_CLASS_ACK, MSG_ID_ACK_ACK);
+
+  return 1;
 }

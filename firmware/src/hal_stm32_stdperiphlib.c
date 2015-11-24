@@ -47,9 +47,7 @@ void pin_config(gpio_t port, pin_t pin, int options)
     .GPIO_Speed = GPIO_Speed_10MHz
   };
 
-  if (options != PINMODE_INPUT && options != PINMODE_OUTPUT) {
-    assert(0);
-  }
+  assert(options == PINMODE_INPUT || options == PINMODE_OUTPUT);
 
   GPIO_Init(port, &init);
 }
@@ -103,7 +101,6 @@ void arch_config_clocks(void)
   /* Configure main system clock */
   RCC_PLLConfig(RCC_PLLSource_HSI, RCC_PLLMul_3, RCC_PLLDiv_2);
 
-
   /* Enable peripheral clocks */
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR, ENABLE);
 
@@ -150,108 +147,6 @@ void arch_config_uart(usart_t port, int baud)
 
   /* Finally enable the USART. */
   USART_Cmd(port, ENABLE);
-}
-
-
-void arch_config_io(void)
-{
-  unsigned i;
-  /* Configure SPI for nrf8001 and flash */
-  pin_config(BT_STORE_GPIO, BT_STORE_PINS, PINMODE_AF_5);
-  arch_spi_config(BT_STORE);
-
-  /* Configure SPI for ms5611 and bmx055 */
-  pin_config(SENSORS_GPIO, SENSORS_PINS, PINMODE_AF_5);
-  arch_spi_config(SENSORS);
-
-  
-  /* Configure UART for ublox GPS */
-  arch_config_uart(UBLOX_MAX7_BUS, 9600);
-
-  /* Configure all enable pins */
-#define __PIN(name) { name ## _GPIO, name }
-  struct {
-    gpio_t port;
-    pin_t pin;
-  } init_pins[] = {
-    __PIN(MS5611_EN),
-    __PIN(BMX055_EN_ACC),
-    __PIN(BMX055_EN_GYRO),
-    __PIN(STATUS_LED),
-    __PIN(UBLOX_MAX7_RESET),
-    __PIN(WARN_LED_A),
-    __PIN(WARN_LED_B),
-    // __PIN(PIEZO_EN),
-    // __PIN(PIEZO_OUT),
-  };
-#undef __PIN
-
-  for (i = 0; i < sizeof(init_pins)/sizeof(init_pins[0]); i++) {
-    pin_config(init_pins[i].port, init_pins[i].pin, PINMODE_OUTPUT);
-    pin_set(init_pins[i].port, init_pins[i].pin);
-  }
-
-}
-
-#if 0
-
-void arch_config_io(void)
-{
-  GPIO_InitTypeDef GPIO_Init_Structure;
-
-  /* Configure SPI for nrf8001 and flash */
-  RCC_APB2PeriphClockCmd(RCC_APB2Periph_SPI1, ENABLE);
-
-  /* Configure AF for SPI1 */
-  GPIO_PinAFConfig(BT_STORE_GPIO, SPI1_SCK_SRC,  GPIO_AF_SPI1);
-  GPIO_PinAFConfig(BT_STORE_GPIO, SPI1_MISO_SRC, GPIO_AF_SPI1);
-  GPIO_PinAFConfig(BT_STORE_GPIO, SPI1_MOSI_SRC, GPIO_AF_SPI1);
-
-  GPIO_Init_Structure.GPIO_Mode = GPIO_Mode_AF;
-  GPIO_Init_Structure.GPIO_OType = GPIO_OType_PP;
-  GPIO_Init_Structure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-  GPIO_Init_Structure.GPIO_Speed = GPIO_Speed_40MHz;
-  GPIO_Init_Structure.GPIO_Pin = SPI1_SCK | SPI1_MISO | SPI1_MOSI;
-
-  GPIO_Init(SPI1_GPIO, &GPIO_Init_Structure);
-
-  /* Configure SPI for ms5611 and bmx055 */
-  RCC_APB1PeriphClockCmd(RCC_APB1Periph_SPI2, ENABLE);
-
-  GPIO_PinAFConfig(SPI2_GPIO, SPI2_SCK_SRC, GPIO_AF_SPI2);
-  GPIO_PinAFConfig(SPI2_GPIO, SPI2_MISO_SRC, GPIO_AF_SPI2);
-  GPIO_PinAFConfig(SPI2_GPIO, SPI2_MOSI_SRC, GPIO_AF_SPI2);
-  GPIO_Init_Structure.GPIO_Pin = SPI2_SCK | SPI2_MISO | SPI2_MOSI;
-
-  GPIO_Init(SPI2_GPIO, &GPIO_Init_Structure);
-
-  /* Configure MS5611 enable pin (XXX: can this use a slower gpio?) */
-  GPIO_Init_Structure.GPIO_Mode = GPIO_Mode_OUT;
-  GPIO_Init_Structure.GPIO_Pin = MS5611_EN;
-
-  GPIO_Init(MS5611_EN_GPIO, &GPIO_Init_Structure);
-
-  pin_set(MS5611_EN_GPIO, MS5611_EN);
-
-  /* Configure the BMX055 Enable pin */
-  GPIO_Init_Structure.GPIO_Pin = BMX055_EN_PINS;
-
-  GPIO_Init(BMX055_EN_GPIO, &GPIO_Init_Structure);
-
-  pin_set(BMX055_EN_GPIO, BMX055_EN_PINS);
-
-  /* Configure the status LED */
-  GPIO_Init_Structure.GPIO_Pin = STATUS_LED;
-
-  GPIO_Init(STATUS_GPIO, &GPIO_Init_Structure);
-
-  pin_set(STATUS_GPIO, STATUS_LED);
-}
-
-#endif
-void config_isr(int port)
-{
-  (void) port;
 }
 
 
@@ -369,51 +264,6 @@ void arch_spi_enable(spi_t port)
   port = ((port == 2) ? SPI2 : SPI1);
   spi_enable(port);
 }
-
-
-void enable_piezo(void)
-{
-  gpio_mode_setup(PIEZO_GPIO, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, PIEZO_EN);
-  gpio_set_output_options(PIEZO_GPIO, GPIO_OTYPE_PP, GPIO_OSPEED_2MHZ, PIEZO_EN);
-  pin_set(PIEZO_GPIO, PIEZO_EN);
-
-  gpio_mode_setup(PIEZO_GPIO, GPIO_MODE_AF, GPIO_PUPD_NONE, PIEZO_OUT);
-  gpio_set_output_options(PIEZO_GPIO, GPIO_OTYPE_PP, GPIO_OSPEED_2MHZ, PIEZO_OUT);
-  //gpio_set_af(PIEZO_GPIO, PIEZO_OUT_AF, PIEZO_OUT);
-
-  pin_clear(PIEZO_GPIO, PIEZO_OUT);
-
-  //timer_enable_counter(PIEZO_OUT_TIMER);
-}
-
-void disable_piezo(void)
-{
-  rcc_peripheral_disable_clock(&RCC_APB1ENR, RCC_APB1ENR_TIM4EN);
-  timer_disable_counter(PIEZO_OUT_TIMER);
-
-  gpio_mode_setup(PIEZO_GPIO, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, PIEZO_EN);
-  gpio_set_output_options(PIEZO_GPIO, GPIO_OTYPE_PP, GPIO_OSPEED_2MHZ, PIEZO_EN);
-  pin_clear(PIEZO_GPIO, PIEZO_EN);
-
-  pin_clear(PIEZO_GPIO, PIEZO_OUT);
-}
-
-void enable_pulse(void)
-{
-  gpio_mode_setup(STATUS_GPIO, GPIO_MODE_AF, GPIO_PUPD_NONE, STATUS_LED);
-  gpio_set_output_options(STATUS_GPIO, GPIO_OTYPE_PP, GPIO_OSPEED_2MHZ, STATUS_LED);
-  gpio_set_af(STATUS_GPIO, STATUS_LED_AF, STATUS_LED);
-
-  timer_enable_counter(STATUS_LED_TIMER);
-}
-
-
-void disable_pulse(void)
-{
-  timer_disable_counter(STATUS_LED_TIMER);
-  gpio_mode_setup(STATUS_GPIO, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, STATUS_LED);
-}
-
 
 #endif // ifdef STM32_STDPERIPH_LIB
 

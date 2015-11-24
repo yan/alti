@@ -16,6 +16,7 @@
 #include <config.h>
 #include <globals.h>
 #include <flash.h>
+#include <periph.h>
 
 #include <task_main.h>
 #include <task_ble.h>

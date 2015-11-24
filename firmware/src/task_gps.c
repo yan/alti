@@ -19,6 +19,85 @@
 
 #include <ublox.h>
 BaseType_t usart_given = 0;
+
+struct ubx_state_s {
+  usart_t port;
+  struct {
+    uint32_t waiting_for_ack : 1;
+  } flags;
+  uint8_t class_and_id[2];
+};
+
+
+static void handle_ubx_message(struct ubx_state_s *state);
+
+static void handle_ubx_message(struct ubx_state_s *state)
+{
+  struct ubx_header_s *head;
+  uint8_t *content;
+
+  assert(state != NULL);
+
+  /* If we're here, the message is already in the receiving buffer */
+  head = ublox_get_incoming_message();
+  content = (uint8_t*) (head + 1);
+
+
+#define IS(class, id) ((head->msg_class == (class) && head->msg_id == (id)))
+
+  /**
+   * We received a standard acknowledgement to a previous message
+   */
+  if (IS(MSG_CLASS_ACK, MSG_ID_ACK_ACK)) {
+    if (!state->flags.waiting_for_ack) {
+      return;
+    }
+
+    if (content[0] != state->class_and_id[0] ||
+        content[1] != state->class_and_id[1]) {
+      /*
+       * Here is where we'd note that we received an out of order
+       * acknowledgement.
+       */
+    } else {
+      state->flags.waiting_for_ack = 0;
+    }
+  }
+
+  /**
+   * We received a negative acknowledgement. TODO: Retransmit last message or  
+   * mark an error condition.
+   */
+  if (IS(MSG_CLASS_ACK, MSG_ID_ACK_NAK)) {
+
+  }
+
+  if (IS(MSG_CLASS_CFG, MSG_ID_CFG_RATE)) {
+    uint16_t *response = (uint16_t*) content;
+    
+    dbg_print("Measuing rate is: %d ms, %d cycles, (time ref = %d)", 
+        response[0], response[1], response[2]);
+    (void) response;
+  }
+
+  if (IS(MSG_CLASS_NAV, MSG_ID_NAV_PVT)) {
+    struct ubx_nav_pvt_solution_s *body = (struct ubx_nav_pvt_solution_s*)content;;
+    struct global_event_s evt;
+    // struct gps_sample_s *sample;
+    
+    assert(sizeof(*body) == head->length);
+
+    evt.type = GLOBAL_EVT_SENSOR_GPS;
+
+    evt.payload.gps_sample.lat = body->lat;
+    evt.payload.gps_sample.lon = body->lon;
+    evt.payload.gps_sample.ground_speed = body->gSpeed;
+    evt.payload.gps_sample.heading = body->heading;
+    evt.payload.gps_sample.accuracy = body->pDOP;
+
+    xQueueSend(g.main_queue_g, &evt, portMAX_DELAY);
+  }
+}
 /**
  *
  */
@@ -44,30 +123,41 @@ void task_gps(void *p)
   } state = RUN;
 
   BaseType_t received;
-  BaseType_t sleep_period = MS_TO_TICKS(100);
   BaseType_t status;
-  struct gps_sample_s sample;
+  struct ubx_state_s ubx_state = {
+    .port = UBLOX_UART
+  };
+  // uint8_t waiting_ack[2] = {0};
+  // struct gps_sample_s sample;
 
   config_gps();
+  // ublox_reset();
+  // ublox_set_measuring_rate(200);
 
   for (;;) {
-    status = xQueueReceive(g.gps_queue_g, &received, sleep_period);
+    status = xQueueReceive(g.gps_queue_g, &received, portMAX_DELAY);
 
-    // TODO: Determine the wait characteristics of having xQueueReceive block and
-    // ublox_get block, via usart recv
     if (status != pdPASS) {
-      if (state == RUN) {
-
-        ublox_get(&sample);
-
-        // send to main queue ??
-        //
-      }
-      continue; // ??
+      // ????
     }
 
     switch (received) {
+      case EVT_GPS_RESET:
+        ublox_reset();
+        break;
+
       case EVT_GPS_START:
+        ubx_state.flags.waiting_for_ack = !!ublox_set_measuring_rate(200);
+
+        status = xQueueReceive(g.gps_queue_g, &received, MS_TO_TICKS(1000));
+        /* XXX Send a 'failed to start message to main queue here? */
+        if (status != pdPASS) {
+          received = EVT_GPS_RESET;
+          xQueueSend(g.gps_queue_g, &received, portMAX_DELAY);
+          continue;
+        } 
+
+
         ublox_start_updates(1);
         state = RUN;
         break;
@@ -77,8 +167,16 @@ void task_gps(void *p)
         state = SLEEP;
         break;
 
+      case EVT_GPS_CFG:
+        // ublox_update_port_settings
+        break;
+
       case EVT_GPS_UPDATE_RTC:
         // do that
+        break;
+
+      case EVT_GPS_UBX_WAITING:
+        handle_ubx_message(&ubx_state);
         break;
 
       default:
@@ -86,5 +184,6 @@ void task_gps(void *p)
         break;
     }
   }
+  (void) state;
 }
 #endif // CONFIG_USE_GPS

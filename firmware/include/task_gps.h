@@ -10,6 +10,9 @@
 #define __TASK_GPS_H
 
 enum gps_event_t {
+  EVT_GPS_RESET,
+  EVT_GPS_UBX_WAITING,
+  EVT_GPS_CFG,
   EVT_GPS_START,
   EVT_GPS_SLEEP,
   EVT_GPS_UPDATE_RTC

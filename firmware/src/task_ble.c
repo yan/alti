@@ -55,7 +55,7 @@ static void exchange_commands(struct nrf8001_cmd_s *outgoing, struct nrf8001_cmd
   if (incoming->length > 0) {
     struct global_event_s evt;
     evt.type = GLOBAL_EVT_NRF8001_EVENT;
-    evt.payload = (event_payload_t) incoming;
+    evt.payload.nrf8001_cmd = *incoming;
     xQueueSend(g.main_queue_g, &evt, portMAX_DELAY);
   }
 }

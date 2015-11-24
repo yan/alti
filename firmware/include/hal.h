@@ -22,7 +22,6 @@ enum pinmode_e {
   PINMODE_INPUT
 };
 
-
 #define BYTEORDER_LSB   0
 #define BYTEORDER_MSB   1
 
@@ -57,13 +56,10 @@ void arch_enable_usart_interrupt(usart_t port);
 void arch_disable_usart_interrupt(usart_t port);
 
 /** High level config functions */
-void config_isr(int port);
 
 void arch_config_ble(void);
 
 void arch_config_clocks(void);
-
-void arch_config_io(void);
 
 void arch_config_nvic(void);
 
@@ -73,6 +69,10 @@ void timer_config(pwm_timer_t timer, int channel, int options);
 void arch_init_timer(pwm_timer_t timer, uint32_t channel, uint32_t prescaler, uint32_t period);
 
 void arch_timer_set(pwm_timer_t timer, uint32_t channel, uint32_t value);
+
+void timer_disable(pwm_timer_t timer);
+
+void timer_enable(pwm_timer_t timer);
 
 /** SPI functions */
 void spi_config(spi_t port, int options);
@@ -88,13 +88,6 @@ uint8_t arch_spi_xfer(spi_t port, uint8_t cmd);
 void arch_spi_enable(spi_t port);
 
 /** Device-specific */
-void enable_piezo(void);
-
-void disable_piezo(void);
-
-void enable_pulse(void);
-
-void disable_pulse(void);
 
 void batt_sense_enable(void);
 

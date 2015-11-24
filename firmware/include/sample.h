@@ -19,6 +19,10 @@ struct accel_sample_s {
   int16_t accel[3];
 }__attribute__((packed));
 
+struct baro_sample_s {
+  ms5611_mbarc_t mbarc;
+}__attribute__((packed));
+
 struct sensor_packet_s {
   uint32_t ticks;
 

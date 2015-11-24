@@ -47,29 +47,27 @@ void task_sensor(void *p)
       //
     } else {
       // Start spamming
-      sleep_period = MS_TO_TICKS(200);
+      sleep_period = MS_TO_TICKS(50);
     }
 
     if (received_event & SENSOR_REQUEST_AIR_PRESSURE) {
       result = ms5611_get_mbarc(4);
 
-      evt.type = GLOBAL_EVT_AIR_PRESSURE;
-      evt.payload = (event_payload_t) (intptr_t) result;
+      evt.type = GLOBAL_EVT_SENSOR_BARO;
+      evt.payload.baro_sample.mbarc = result;
 
-      xQueueSend(g.main_queue_g, &evt, 0);
+      xQueueSend(g.main_queue_g, &evt, portMAX_DELAY);
     }
 
 #if CONFIG_USE_ACCEL
     if (received_event & SENSOR_REQUEST_ACCEL) {
       // save result
-      result = bmx055_read(BMX055_ACCEL, DIR_X);
-      result = bmx055_read(BMX055_ACCEL, DIR_Y);
-      result = bmx055_read(BMX055_ACCEL, DIR_Z);
+      evt.type = GLOBAL_EVT_SENSOR_ACCEL;
+      evt.payload.accel_sample.accel[0] = bmx055_read(BMX055_ACCEL, DIR_X);
+      evt.payload.accel_sample.accel[1] = bmx055_read(BMX055_ACCEL, DIR_Y);
+      evt.payload.accel_sample.accel[2] = bmx055_read(BMX055_ACCEL, DIR_Z);
 
-      evt.type = GLOBAL_EVT_AIR_PRESSURE;
-      evt.payload = (event_payload_t) (intptr_t) result;
-
-      xQueueSend(g.main_queue_g, &evt, 0);
+      xQueueSend(g.main_queue_g, &evt, portMAX_DELAY);
     }
 #endif // CONFIG_USE_ACCEL
 

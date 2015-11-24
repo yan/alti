@@ -177,7 +177,6 @@ static void handle_pipe_status(struct nrf8001_cmd_s *evt)
   }
 
   response_evt.type = GLOBAL_EVT_NRF8001_PIPES_CHANGED;
-  response_evt.payload = (event_payload_t) 0;
 
   xQueueSend(g.main_queue_g, &response_evt, 0);
 }

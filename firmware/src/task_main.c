@@ -47,9 +47,21 @@ void task_main(void *p)
         state = GLOBAL_STATE_RESET;
         break;
 
-      case GLOBAL_EVT_AIR_PRESSURE: {
-        unsigned int pressure = (unsigned int) evt.payload;
+      case GLOBAL_EVT_SENSOR_GPS: {
+        unsigned int accuracy = (unsigned int) evt.payload.gps_sample.accuracy;
         const uint8_t tx_pipe = PIPE_AERO_PRESSURE_BAROMETRIC_PRESSURE_TX;
+
+        if (PIPE_OPEN(tx_pipe)) {
+          ble_tx(tx_pipe, (void*)&accuracy, sizeof(accuracy));
+        }
+
+      }
+      break;
+      case GLOBAL_EVT_SENSOR_BARO: {
+        unsigned int pressure = (unsigned int) evt.payload.baro_sample.mbarc;
+        const uint8_t tx_pipe = PIPE_AERO_PRESSURE_BAROMETRIC_PRESSURE_TX;
+
+        break;
 
         // log the data
         {
@@ -73,6 +85,7 @@ void task_main(void *p)
         BaseType_t type = 0; //= SENSOR_REQUEST_ACCEL;
         if (PIPE_OPEN(PIPE_AERO_PRESSURE_BAROMETRIC_PRESSURE_TX)) {
           //new_rate = 100 / portTICK_PERIOD_MS;
+          //type |= SENSOR_REQUEST_AIR_PRESSURE;
           type |= SENSOR_REQUEST_ACCEL;
           dbg_print("Starting to send pressure\n");
         } else {
@@ -92,7 +105,7 @@ void task_main(void *p)
         break;
 
       case GLOBAL_EVT_NRF8001_EVENT: 
-        nrf8001_handle_event((struct nrf8001_cmd_s *) evt.payload);
+        nrf8001_handle_event(&evt.payload.nrf8001_cmd);
         break;
 
       case GLOBAL_EVT_LAST:

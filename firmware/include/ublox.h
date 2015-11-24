@@ -108,6 +108,22 @@ typedef uint8_t U1;
     #define MSG_ID_TIM_SVIN 0x04
     #define MSG_ID_TIM_VRFY 0x06
 
+#define TXREADY_THRESH_MASK                                0xFF80
+#define TXREADY_THRESH_SHIFT                               7
+#define TXREADY_PIN_MASK                                   0x007C
+#define TXREADY_PIN_SHIFT                                  2
+#define TXREADY_POL_MASK                                   0x0002
+#define TXREADY_POL_SHIFT                                  1
+#define TXREADY_EN_MASK                                    0x0001
+#define TXREADY_EN_SHIFT                                   0
+
+#define MODE_NSTOPBITS_MASK                                0x3000
+#define MODE_NSTOPBITS_SHIFT                               12
+#define MODE_PARITY_MASK                                   0x0E00
+#define MODE_PARITY_SHIFT                                  9
+#define MODE_CHARLEN_MASK                                  0x00C0
+#define MODE_CHARLEN_SHIFT                                 6
+
 
 struct ubx_header_s {
   uint8_t msg_class;
@@ -203,22 +219,6 @@ struct ublox_prt_cfg_s {
   U1 reserved2[2];
 } __attribute__((packed));
 
-#define TXREADY_THRESH_MASK                                0xFF80
-#define TXREADY_THRESH_SHIFT                               7
-#define TXREADY_PIN_MASK                                   0x007C
-#define TXREADY_PIN_SHIFT                                  2
-#define TXREADY_POL_MASK                                   0x0002
-#define TXREADY_POL_SHIFT                                  1
-#define TXREADY_EN_MASK                                    0x0001
-#define TXREADY_EN_SHIFT                                   0
-
-#define MODE_NSTOPBITS_MASK                                0x3000
-#define MODE_NSTOPBITS_SHIFT                               12
-#define MODE_PARITY_MASK                                   0x0E00
-#define MODE_PARITY_SHIFT                                  9
-#define MODE_CHARLEN_MASK                                  0x00C0
-#define MODE_CHARLEN_SHIFT                                 6
-
 struct ublox_cfg_pm2_s {
   U1 version;
   U1 reserved[3];
@@ -299,4 +299,5 @@ int ublox_get_rate(void);
 int ublox_reset(void);
 
 int ublox_sleep(void);
+
 #endif // __UBLOX_H

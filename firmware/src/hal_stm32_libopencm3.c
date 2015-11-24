@@ -4,6 +4,17 @@
 
 #ifdef OPENCM3
 
+#include <libopencm3/cm3/scb.h>
+#include <libopencm3/cm3/nvic.h>
+#include <libopencm3/stm32/gpio.h>
+#include <libopencm3/stm32/usart.h>
+#include <libopencm3/stm32/exti.h>
+#include <libopencm3/stm32/spi.h>
+#include <libopencm3/stm32/i2c.h>
+#include <libopencm3/stm32/rcc.h>
+#include <libopencm3/stm32/rtc.h>
+#include <libopencm3/stm32/adc.h>
+
 #include <hal.h>
 #include <nrf8001.h>
 #include <util.h>
@@ -22,17 +33,6 @@
 #if CONFIG_USE_USART_ISR
 #include <ublox.h>
 #endif
-
-#include <libopencm3/cm3/scb.h>
-#include <libopencm3/cm3/nvic.h>
-#include <libopencm3/stm32/gpio.h>
-#include <libopencm3/stm32/usart.h>
-#include <libopencm3/stm32/exti.h>
-#include <libopencm3/stm32/spi.h>
-#include <libopencm3/stm32/i2c.h>
-#include <libopencm3/stm32/rcc.h>
-#include <libopencm3/stm32/rtc.h>
-#include <libopencm3/stm32/adc.h>
 
 
 void pin_set(gpio_t port, pin_t pin)
@@ -177,35 +177,8 @@ void arch_usart_send(usart_t port, uint8_t data)
 
 uint16_t arch_usart_recv(usart_t port)
 {
-  uint16_t value = 0;
+  return usart_recv_blocking(port);
 
-#if CONFIG_USE_USART_ISR
-  (void) port;
-  BaseType_t status;
-
-  if (g.usart_isr_state.read_offset == g.usart_isr_state.until_offset) {
-    // Blocking here should fill up the buffer again
-    status = xSemaphoreTake(g.usart_mutex_g, portMAX_DELAY);
-    if (status != pdPASS) {
-      // TODO: Is this reachable with portMAX_DELAY? What do we do here?
-    }
-  }
-
-  /* Make sure we filled the receive buffer */
-  // assert(g.usart_isr_state.read_offset != g.usart_isr_state.write_offset);
-    
-  portENTER_CRITICAL();
-
-  value = (uint8_t) g.usart_isr_state.buffer[g.usart_isr_state.read_offset];
-  g.usart_isr_state.read_offset =
-    (g.usart_isr_state.read_offset + 1) % USART_ISR_BUFFER_LEN; 
-
-  portEXIT_CRITICAL();
-
-#else
-  value = usart_recv_blocking(port);
-#endif
-  return value;
 }
 
 void arch_enable_usart_interrupt(usart_t port)
@@ -229,166 +202,9 @@ void arch_disable_usart_interrupt(usart_t port)
   usart_disable_rx_interrupt(port);
 }
 
-#if CONFIG_USE_USART_ISR
-/**
- * @brief ISR that's hit when there's new USART data waiting to be read. Reads 
- * a byte into a global buffer. This unfortunately has some parsing logic of 
- * UBX message types such that it only gives the semaphore after it received a
- * full message. This is done in order to minimize power consumption.
- *
- * XXX: Make sure the recv port is correct
- */
-void usart1_isr(void)
-{
-  struct usart_isr_state_s *s = &g.usart_isr_state;
-  uint8_t value;
-
-  /* Do nothing if there's an error condition */
-  if ((USART_SR(UBLOX_UART) & USART_SR_RXNE) == 0) {
-    return;
-  }
-
-#define RESET_STATE do {                          \
-  s->read_state = USART_ISR_STATE_WAITING;        \
-  s->read_offset = s->write_offset;               \
-} while(0)
-  value = usart_recv(UBLOX_UART);
-
-  switch (s->read_state) {
-    case USART_ISR_STATE_WAITING:
-      if (value == UBX_SYNC_BYTE_1) {
-        s->read_state = USART_ISR_STATE_READ_SYNC1;
-      } else {
-        /* If we're waiting for the first sync byte, and it's not it, just
-         * ignore the character
-         * */
-        return;
-      }
-      break;
-    case USART_ISR_STATE_READ_SYNC1:
-      if (value == UBX_SYNC_BYTE_2) {
-        s->read_state++;
-      } else {
-        s->read_state = USART_ISR_STATE_WAITING;
-        /* Failed two sync bytes, again, ignore the character */
-        return;
-      }
-      break;
-    case USART_ISR_STATE_READ_SYNC2:
-      //Checksum only covers msg_class and onwards
-      s->running_checksum[0] = 0;
-      s->running_checksum[1] = 0;
-      s->read_state++;
-      break;
-    case USART_ISR_STATE_READ_CLASS:
-      s->read_state++;
-      break;
-    case USART_ISR_STATE_READ_ID:
-      s->remaining = value;
-      s->read_state++;
-      break;
-    case USART_ISR_STATE_READ_LSB_LEN:
-      s->remaining += value << 8;
-
-      /* Cap the message size we're capable of reading to the buffer size.
-       * This is a good place to put a breakpoint in case messages of that size
-       * actually happen
-       */
-      if (s->remaining > USART_ISR_BUFFER_LEN) {
-        RESET_STATE;
-        return;
-      }
-
-      s->read_state++;
-      break;
-
-    case USART_ISR_STATE_READING: 
-        s->remaining--;
-        if (s->remaining == 0) {
-          s->read_state++;
-        }
-        break;
-    case USART_ISR_STATE_CK1:
-        if (s->running_checksum[0] == value) {
-          s->read_state++;
-        } else {
-          RESET_STATE;
-          return;
-        }
-        return;
-    case USART_ISR_STATE_CK2: {
-        BaseType_t higher_awoken;
-        if (s->running_checksum[1] == value) { 
-          // we're done reading, reset state, counters, and give semaphore
-          s->read_state = USART_ISR_STATE_WAITING;
-          s->until_offset = s->write_offset;
-          xSemaphoreGiveFromISR(g.usart_mutex_g, &higher_awoken);
-          portYIELD_FROM_ISR(higher_awoken);
-        } else {
-          RESET_STATE;
-        }
-      }
-      return;
-  }
-
-  s->running_checksum[0] = s->running_checksum[0]
-    + value; 
-  s->running_checksum[1] = s->running_checksum[1]
-    + s->running_checksum[0]; 
-
-  s->buffer[s->write_offset] = value; 
-  s->write_offset = (s->write_offset + 1) % USART_ISR_BUFFER_LEN;
-}
-#endif // CONFIG_USE_USART_ISR
 
 /* =========================================================================== */
 /* =========================================================================== */
-
-void arch_config_io(void)
-{
-  unsigned i;
-  /* Configure SPI for nrf8001 and flash */
-  pin_config(BT_STORE_GPIO, BT_STORE_PINS, PINMODE_AF_5);
-  arch_spi_config(BT_STORE);
-
-  /* Configure SPI for ms5611 and bmx055 */
-  pin_config(SENSORS_GPIO, SENSORS_PINS, PINMODE_AF_5);
-  arch_spi_config(SENSORS);
-  
-  /* Configure UART for ublox GPS */
-  arch_config_uart(UBLOX_MAX7_BUS, 9600);
-
-  /* Configure all enable pins */
-#define __PIN(name) { name ## _GPIO, name }
-  struct {
-    gpio_t port;
-    pin_t pin;
-  } init_pins[] = {
-    __PIN(MS5611_EN),
-    __PIN(BMX055_EN_ACC),
-    __PIN(BMX055_EN_GYRO),
-    __PIN(BMX055_EN_MAG),
-    __PIN(ADESTO_FLASH_CS),
-    __PIN(STATUS_LED),
-    __PIN(UBLOX_MAX7_RESET),
-    __PIN(WARN_LED_A),
-    __PIN(WARN_LED_B),
-    __PIN(PIEZO_EN),
-    // __PIN(PIEZO_OUT),
-  };
-#undef __PIN
-
-  for (i = 0; i < sizeof(init_pins)/sizeof(init_pins[0]); i++) {
-    pin_config(init_pins[i].port, init_pins[i].pin, PINMODE_OUTPUT);
-    pin_set(init_pins[i].port, init_pins[i].pin);
-  }
-
-}
-
-void config_isr(int port)
-{
-  (void) port;
-}
 
 
 void arch_config_nvic(void)
@@ -502,44 +318,30 @@ void arch_spi_enable(spi_t port)
   spi_enable(port);
 }
 
-
-void enable_piezo(void)
+void timer_disable(pwm_timer_t timer)
 {
+  switch (timer) {
+    case TIM2:
+      rcc_peripheral_disable_clock(&RCC_APB1ENR, RCC_APB1ENR_TIM2EN);
+      break;
+    case TIM4:
+      rcc_peripheral_disable_clock(&RCC_APB1ENR, RCC_APB1ENR_TIM4EN);
+  }
+  timer_disable_counter(PIEZO_OUT_TIMER);
+}
 
-  pin_config(PIEZO_EN_GPIO, PIEZO_EN, PINMODE_OUTPUT);
-  pin_set(PIEZO_EN_GPIO, PIEZO_EN);
-
-  pin_config(PIEZO_OUT_GPIO, PIEZO_OUT, PINMODE_AF_2);
-
-  pin_clear(PIEZO_OUT_GPIO, PIEZO_OUT);
-
+void timer_enable(pwm_timer_t timer)
+{
+  switch (timer) {
+    case TIM2:
+      rcc_peripheral_enable_clock(&RCC_APB1ENR, RCC_APB1ENR_TIM2EN);
+      break;
+    case TIM4:
+      rcc_peripheral_enable_clock(&RCC_APB1ENR, RCC_APB1ENR_TIM4EN);
+  }
   timer_enable_counter(PIEZO_OUT_TIMER);
 }
 
-void disable_piezo(void)
-{
-  rcc_peripheral_disable_clock(&RCC_APB1ENR, RCC_APB1ENR_TIM4EN);
-
-  timer_disable_counter(PIEZO_OUT_TIMER);
-
-  pin_config(PIEZO_EN_GPIO, PIEZO_EN, PINMODE_OUTPUT);
-  pin_clear(PIEZO_EN_GPIO, PIEZO_EN);
-  pin_clear(PIEZO_OUT_GPIO, PIEZO_OUT);
-}
-
-void enable_pulse(void)
-{
-  pin_config(STATUS_LED_GPIO, STATUS_LED, PINMODE_AF_1);
-
-  timer_enable_counter(STATUS_LED_TIMER);
-}
-
-
-void disable_pulse(void)
-{
-  timer_disable_counter(STATUS_LED_TIMER);
-  pin_config(STATUS_LED_GPIO, STATUS_LED, PINMODE_OUTPUT);
-}
 
 void batt_sense_enable(void)
 {

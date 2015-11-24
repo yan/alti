@@ -74,12 +74,6 @@ void arch_config_io(void)
 {
 }
 
-void config_isr(int port)
-{
-  (void) port;
-}
-
-
 void arch_config_nvic(void)
 {
 }

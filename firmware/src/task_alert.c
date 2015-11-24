@@ -7,6 +7,7 @@
 #include <queue.h>
 
 #include <hal.h>
+#include <periph.h>
 #include <globals.h>
 #include <pins.h>
 #include <util.h>
