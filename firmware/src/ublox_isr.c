@@ -30,15 +30,16 @@ void usart_isr(void)
   uint8_t value;
 
   /* Do nothing if there's an error condition */
-  if ((USART_SR(UBLOX_UART) & USART_SR_RXNE) == 0) {
+  if (usart_can_recv(UBLOX_UART)) {
     return;
   }
+
+  value = arch_usart_recv(UBLOX_UART);
 
 #define RESET_STATE do {                          \
   s->state = USART_ISR_STATE_WAITING;             \
   s->read_offset = s->write_offset;               \
 } while(0)
-  value = usart_recv(UBLOX_UART);
 
   switch (s->state) {
     case USART_ISR_STATE_WAITING:
@@ -142,18 +143,41 @@ void usart_isr(void)
 struct ubx_header_s *ublox_wait_for_message(void)
 {
   BaseType_t event, status;
-  do {
-    status = xQueuePeek(g.gps_queue_g, &event, portMAX_DELAY);
-    if (status != pdPASS) {
-      continue;
-    }
 
-    if (event != EVT_GPS_UBX_WAITING) {
-      continue;
-    }
+  /* We must enter a critical section to make sure no new events get pushed
+   * between peek and receive.
+   *
+   * The GPS queue is likely empty when peek is called, so it should block
+   * for the next message to arrive.
+   * */
+
+#define EXIT_CRIT_AND_CONTINUE                 \
+    do {                                       \
+      delay_ms(1);                             \
+      portEXIT_CRITICAL();                     \
+      continue;                                \
+    } while(0)
+
+  for (;;)
+  {
+    portENTER_CRITICAL();
+
+    status = xQueuePeek(g.gps_queue_g, &event, portMAX_DELAY);
+
+    if (status != pdPASS)
+      EXIT_CRIT_AND_CONTINUE;
+
+    if (event != EVT_GPS_UBX_WAITING)
+      EXIT_CRIT_AND_CONTINUE;
 
     break;
-  } while(1);
+  }
+
+  status = xQueueReceive(g.gps_queue_g, &event, portMAX_DELAY);
+
+  assert(status == pdPASS);
+
+  portEXIT_CRITICAL();
 
   return ublox_get_incoming_message();
 }

@@ -69,7 +69,7 @@ void enable_pulse(void)
 {
   pin_config(STATUS_LED_GPIO, STATUS_LED, PINMODE_AF_1);
 
-  timer_enable_counter(STATUS_LED_TIMER);
+  timer_enable(STATUS_LED_TIMER);
 }
 
 

@@ -7,6 +7,10 @@
 
 #define CONFIG_USE_ACCEL          ( 1 )
 
+#define CONFIG_USE_GYRO           ( 1 )
+
+#define CONFIG_USE_MAG            ( 1 )
+
 #define CONFIG_USE_USART_ISR      ( 1 )
 
 #define CONFIG_UBLOX_BAUD_RATE    ( 115200 * 2 )

@@ -2,7 +2,7 @@
 
 ifeq ($(LIBNAME)$(BINARY),)
 
-LIBNAME = stm32l1stdperiphlib
+LIBNAME = stm32l1_stdperiphlib
 
 SRC      = misc.c               stm32l1xx_exti.c            stm32l1xx_pwr.c
 SRC     += stm32l1xx_adc.c      stm32l1xx_flash.c           stm32l1xx_rcc.c

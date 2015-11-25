@@ -19,6 +19,8 @@ typedef enum event_type_e {
   GLOBAL_EVT_RCVD_SPI,
 
   GLOBAL_EVT_SENSOR_ACCEL,
+  GLOBAL_EVT_SENSOR_GYRO,
+  GLOBAL_EVT_SENSOR_MAG,
   GLOBAL_EVT_SENSOR_BARO,
   GLOBAL_EVT_SENSOR_GPS,
 
@@ -37,14 +39,26 @@ typedef enum event_type_e {
 
 
 typedef union {
+#if CONFIG_USE_ACCEL
   /** @brief Accelerometer result data */
   struct accel_sample_s accel_sample;
+#endif
+
+#if CONFIG_USE_GYRO
+  struct gyro_sample_s gyro_sample;
+#endif
+
+#if CONFIG_USE_MAG
+  struct mag_sample_s mag_sample;
+#endif
 
   /** @brief Barometric sensor data */
   struct baro_sample_s baro_sample;
 
+#if CONFIG_USE_GPS
   /** @brief A sample of GPS position data */
   struct gps_sample_s gps_sample;
+#endif
 
   /** @brief BLE packet */
   struct nrf8001_cmd_s nrf8001_cmd;
@@ -69,15 +83,5 @@ struct global_event_s {
   enum event_type_e type;
   event_payload_t payload;
 };
-
-/**
- *
- *
- */
-typedef enum global_state_e {
-  GLOBAL_STATE_RESET,
-  GLOBAL_STATE_BLE_SETUP,
-  GLOBAL_STATE_IDLE
-} global_state_t;
 
 #endif

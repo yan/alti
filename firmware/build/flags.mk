@@ -83,8 +83,10 @@ endif
 
 # Need libdirs even when testing
 LDFLAGS		+= -L$(LIB_DIR)
-LDFLAGS         += -L$(MISC_LIB_DIR)
 LDFLAGS		+= -L$(SUPPORT_DIR)
+ifneq ($(MISC_LIB_DIR),)
+LDFLAGS         += -L$(MISC_LIB_DIR)
+endif
 
 ###############################################################################
 # Semihosting support

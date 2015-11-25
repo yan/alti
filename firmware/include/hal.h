@@ -51,6 +51,8 @@ void arch_config_uart(usart_t port, int baud);
 
 uint16_t arch_usart_recv(usart_t port);
 
+void arch_usart_set_baud(usart_t port, int baud);
+
 void arch_enable_usart_interrupt(usart_t port);
 
 void arch_disable_usart_interrupt(usart_t port);

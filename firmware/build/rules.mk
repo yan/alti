@@ -28,9 +28,8 @@ endif
 
 ###############################################################################
 # Source files
-
-OBJS ?= $(addprefix $(OBJ_DIR)/, $(SRC:%.c=%.o))
-
+OBJ_1 := $(SRC:%.s=%.o)
+OBJS ?= $(addprefix $(OBJ_DIR)/, $(OBJ_1:%.c=%.o))
 
 include build/flags.mk
 
@@ -45,6 +44,7 @@ ifeq ($(LIBNAME),)
 .SECONDARY:
 
 all: output_dirs elf
+	@echo $(OBJS)
 
 elf: $(OBJ_DIR)/$(BINARY).elf
 bin: $(OBJ_DIR)/$(BINARY).bin
@@ -106,6 +106,10 @@ endif
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	@printf "  CC      $(*).c\n"
 	$(Q)$(CC) $(CFLAGS) $(CPPFLAGS) $(ARCH_FLAGS) -o $@ -c $<
+
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.s
+	@printf "  AS      $(*).s\n"
+	$(Q)$(AS)  -o $@ -c $<
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cxx
 	@printf "  CXX     $(*).cxx\n"

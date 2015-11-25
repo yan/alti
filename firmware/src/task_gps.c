@@ -72,6 +72,9 @@ static void handle_ubx_message(struct ubx_state_s *state)
 
   }
 
+  /**
+   * Response to a request asking what the measuring rate is
+   */
   if (IS(MSG_CLASS_CFG, MSG_ID_CFG_RATE)) {
     uint16_t *response = (uint16_t*) content;
     
@@ -80,6 +83,9 @@ static void handle_ubx_message(struct ubx_state_s *state)
     (void) response;
   }
 
+  /**
+   * A PVT nav solution
+   */
   if (IS(MSG_CLASS_NAV, MSG_ID_NAV_PVT)) {
     struct ubx_nav_pvt_solution_s *body = (struct ubx_nav_pvt_solution_s*)content;;
     struct global_event_s evt;

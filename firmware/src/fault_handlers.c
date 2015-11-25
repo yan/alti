@@ -6,6 +6,7 @@
 
 #ifndef TESTING
 
+
 void mem_manage_handler(void) __attribute__ (( naked ));
 void bus_fault_handler(void) __attribute__ (( naked ));
 void hard_fault_handler(void) __attribute__ (( naked ));

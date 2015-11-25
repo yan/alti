@@ -87,7 +87,7 @@ static void ublox_send(uint8_t class_id, uint8_t msg_id, uint8_t *buf, size_t le
   msg.length = length;
 
   // TODO: Try commenting this out
-  usart_wait_send_ready(UBLOX_UART);
+  //     usart_wait_send_ready(UBLOX_UART);
 
   usart_send_buf(UBLOX_UART, (uint8_t*)sync_bytes, sizeof sync_bytes);
   usart_send_buf(UBLOX_UART, (uint8_t*)&msg, sizeof msg);
@@ -388,12 +388,14 @@ static int ublox_update_port_settings(usart_t port, uint32_t baud)
 
   ublox_send(MSG_CLASS_CFG, MSG_ID_CFG_PRT, (uint8_t*)config, sizeof(*config));
 
+#if 0
   /** */
   while ((USART_SR(port) & USART_SR_TC) == 0)
     ;
+#endif
 
   if (baud != 0) {
-    usart_set_baudrate(port, baud);
+    arch_usart_set_baud(port, baud);
   }
 
   ublox_expect_response(MSG_CLASS_ACK, MSG_ID_ACK_ACK);

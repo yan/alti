@@ -18,8 +18,6 @@
 
 #include <stm32l1xx_conf.h>
 
-void arch_config_uart(usart_t port, int baud);
-
 void EXTI3_IRQHandler(void);
 
 void pin_set(gpio_t port, pin_t pin)
@@ -149,6 +147,55 @@ void arch_config_uart(usart_t port, int baud)
   USART_Cmd(port, ENABLE);
 }
 
+void arch_usart_set_baud(usart_t port, int baud)
+{
+  /* Straight from stm32l1xx_usart.c */
+
+  RCC_ClocksTypeDef RCC_Clocks;
+  uint16_t tmpreg = port->BRR;
+  uint32_t apbclock = 0x00;
+  uint32_t integerdivider = 0x00;
+  uint32_t fractionaldivider = 0x00;
+
+  RCC_GetClocksFreq(&RCC_Clocks);
+  if (port == USART1) 
+  {
+    apbclock = RCC_Clocks.PCLK2_Frequency;
+  }
+  else
+  {
+    apbclock = RCC_Clocks.PCLK1_Frequency;
+  }
+  
+  /* Determine the integer part */
+  if ((port->CR1 & USART_CR1_OVER8) != 0)
+  {
+    /* Integer part computing in case Oversampling mode is 8 Samples */
+    integerdivider = ((25 * apbclock) / (2 * (baud)));    
+  }
+  else /* if ((port->CR1 & CR1_OVER8_Set) == 0) */
+  {
+    /* Integer part computing in case Oversampling mode is 16 Samples */
+    integerdivider = ((25 * apbclock) / (4 * (baud)));    
+  }
+  tmpreg = (integerdivider / 100) << 4;
+  
+  /* Determine the fractional part */
+  fractionaldivider = integerdivider - (100 * (tmpreg >> 4));
+  
+  /* Implement the fractional part in the register */
+  if ((port->CR1 & USART_CR1_OVER8) != 0)
+  {
+    tmpreg |= ((((fractionaldivider * 8) + 50) / 100)) & ((uint8_t)0x07);
+  }
+  else /* if ((port->CR1 & CR1_OVER8_Set) == 0) */
+  {
+    tmpreg |= ((((fractionaldivider * 16) + 50) / 100)) & ((uint8_t)0x0F);
+  }
+ 
+  /* Write to USART BRR */
+  port->BRR = (uint16_t)tmpreg;
+}
 
 void arch_config_nvic(void)
 {
@@ -201,8 +248,20 @@ void arch_init_timer(pwm_timer_t timer, uint32_t channel, uint32_t prescaler, ui
 
 void arch_timer_set(pwm_timer_t timer, uint32_t channel, uint32_t value)
 {
-  /** TODO: move this to HAL */
-  timer_set_oc_value(timer, channel, value);
+  switch (channel) {
+    case 1:
+      TIM_SetCompare1(timer, value);
+      break;
+    case 2:
+      TIM_SetCompare2(timer, value);
+      break;
+    case 3:
+      TIM_SetCompare3(timer, value);
+      break;
+    case 4:
+      TIM_SetCompare4(timer, value);
+      break;
+  }
 }
 
 /**
@@ -212,36 +271,34 @@ void arch_timer_set(pwm_timer_t timer, uint32_t channel, uint32_t value)
  * @param port 1 for SPI1 or 2 for SPI2
  * @param byte_order 0 for LSB first, 1 for MSB first
  */
-void arch_spi_config(spi_t port, uint16_t byte_order)
+void arch_spi_config(spi_t port)
 {
-  port = ((port == 1) ? SPI1 : SPI2);
+  SPI_InitTypeDef SPI_InitStruct;
 
-  byte_order = !!byte_order;
+  SPI_InitStruct.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_4;
+  SPI_InitStruct.SPI_CPHA = SPI_CPHA_1Edge;
+  SPI_InitStruct.SPI_CPOL = SPI_CPOL_Low;
+  SPI_InitStruct.SPI_CRCPolynomial = 0; // TODO: What is this??
+  SPI_InitStruct.SPI_DataSize = SPI_DataSize_8b;
+  SPI_InitStruct.SPI_Direction = SPI_Direction_2Lines_FullDuplex;
+  SPI_InitStruct.SPI_FirstBit = SPI_FirstBit_MSB;
+  SPI_InitStruct.SPI_Mode = SPI_Mode_Master;
+  SPI_InitStruct.SPI_NSS = SPI_NSS_Soft;
 
-  spi_reset(port);
-  spi_init_master(port,
-                  SPI_CR1_BAUDRATE_FPCLK_DIV_4,
-                  SPI_CR1_CPOL_CLK_TO_0_WHEN_IDLE,
-                  SPI_CR1_CPHA_CLK_TRANSITION_1,
-                  SPI_CR1_DFF_8BIT,
-                  byte_order ? SPI_CR1_MSBFIRST : SPI_CR1_LSBFIRST);
-
-  spi_enable_software_slave_management(port);
-  spi_disable_ss_output(port);
-  spi_set_nss_high(port);
-
-  spi_enable(port);
+  SPI_Init(port, &SPI_InitStruct);
+  
+  arch_spi_enable(port);
 }
 
 
 void spi_set_msb(spi_t port)
 {
-  spi_send_msb_first(port);
+  port->CR1 &= ~SPI_FirstBit_LSB;
 }
 
 void spi_set_lsb(spi_t port)
 {
-  spi_send_lsb_first(port);
+  port->CR1 |= SPI_FirstBit_LSB;
 }
 
 /**
@@ -249,7 +306,13 @@ void spi_set_lsb(spi_t port)
  */
 uint8_t arch_spi_xfer(spi_t port, uint8_t cmd)
 {
-  return spi_xfer(port, cmd);
+  SPI_I2S_SendData(port, cmd);
+
+  while (!(port->SR & SPI_I2S_FLAG_RXNE))
+    ;
+
+  return SPI_I2S_ReceiveData(port);
+
 }
 
 /**
@@ -259,11 +322,34 @@ uint8_t arch_spi_xfer(spi_t port, uint8_t cmd)
  */
 void arch_spi_enable(spi_t port)
 {
-  rcc_periph_clock_enable((port == 2) ? RCC_SPI2 : RCC_SPI1);
+  if (port == SPI1) {
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_SPI1, ENABLE);
+  } else {
+    RCC_APB1PeriphClockCmd(RCC_APB1Periph_SPI2, ENABLE);
+  }
 
-  port = ((port == 2) ? SPI2 : SPI1);
-  spi_enable(port);
+  SPI_Cmd(port, ENABLE);
 }
 
+void timer_disable(pwm_timer_t timer)
+{
+  if (timer == TIM2) {
+    RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, DISABLE);
+  } else if (timer == TIM4) {
+    RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4, DISABLE);
+  }
+
+  TIM_Cmd(timer, DISABLE);
+}
+
+void timer_enable(pwm_timer_t timer)
+{
+  if (timer == TIM2) {
+    RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
+  } else if (timer == TIM4) {
+    RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4, ENABLE);
+  }
+  TIM_Cmd(timer, ENABLE);
+}
 #endif // ifdef STM32_STDPERIPH_LIB
 

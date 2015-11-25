@@ -170,6 +170,11 @@ void arch_config_uart(usart_t port, int baud)
   usart_enable(port);
 }
 
+void arch_usart_set_baud(usart_t port, int baud)
+{
+  usart_set_baudrate(port, baud);
+}
+
 void arch_usart_send(usart_t port, uint8_t data)
 {
   usart_send_blocking(port, data);
@@ -177,7 +182,7 @@ void arch_usart_send(usart_t port, uint8_t data)
 
 uint16_t arch_usart_recv(usart_t port)
 {
-  return usart_recv_blocking(port);
+  return usart_recv(port);
 
 }
 

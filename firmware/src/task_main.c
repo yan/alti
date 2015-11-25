@@ -14,6 +14,7 @@
 #include <globals.h>
 #include <nrf8001.h>
 #include <events.h>
+#include <state.h>
 #include <util.h>
 #include <logger.h>
 
@@ -36,7 +37,13 @@ void task_main(void *p)
   for (;;) {
     status = xQueueReceive(g.main_queue_g, &evt, MAIN_EVENT_LOOP_TIMEOUT);
 
+
+    /* We had no events, we're probably sleeping. Wake up, poll baro, and 
+     * determine if we need to wake up.
+     */
     if (status == pdFAIL) {
+      if (state == GLOBAL_STATE_SLEEP) {
+      }
       continue;
     }
 
@@ -82,7 +89,7 @@ void task_main(void *p)
       /* Bluetooth events */
       case GLOBAL_EVT_NRF8001_PIPES_CHANGED: {
         // unsigned int new_rate;
-        BaseType_t type = 0; //= SENSOR_REQUEST_ACCEL;
+        BaseType_t type = 0;
         if (PIPE_OPEN(PIPE_AERO_PRESSURE_BAROMETRIC_PRESSURE_TX)) {
           //new_rate = 100 / portTICK_PERIOD_MS;
           //type |= SENSOR_REQUEST_AIR_PRESSURE;
