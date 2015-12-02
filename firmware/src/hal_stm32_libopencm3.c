@@ -35,6 +35,8 @@
 #endif
 
 
+// void exti3_isr(void);
+
 void pin_set(gpio_t port, pin_t pin)
 {
   gpio_set(port, pin);

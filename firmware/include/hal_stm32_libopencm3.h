@@ -16,8 +16,8 @@ typedef uint32_t gpio_af_mode_t;
 #define bus_fault_handler bus_fault_handler
 #define hard_fault_handler hard_fault_handler
 #define usage_fault_handler usage_fault_handler
-#endif
 #define usart_isr usart1_isr
+#endif
 
 #define usart_can_recv(port) ((USART_SR(port) & USART_SR_RXNE) != 0)
 

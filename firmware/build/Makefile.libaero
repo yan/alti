@@ -18,8 +18,9 @@ SRC   += task_alert.c			task_ble.c			task_main.c
 SRC   += task_sensor.c			ublox.c				util.c
 SRC   += logger.c			task_gps.c			ublox_isr.c
 SRC   += periph.c
+SRC   += init.c
 
-SRC   += startup_stm32l1xx_hd.s
+# SRC   += startup_stm32l1xx_hd.s
 
 include build/Makefile.libfreertos
 include build/alternatives.mk

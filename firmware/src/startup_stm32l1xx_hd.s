@@ -122,7 +122,7 @@ Infinite_Loop:
 * must be placed on this to ensure that it ends up at physical address
 * 0x0000.0000.
 *******************************************************************************/    
-  .section .isr_vector,"a",%progbits
+  .section .vectors,"a",%progbits
   .type g_pfnVectors, %object
   .size g_pfnVectors, .-g_pfnVectors
     

@@ -18,7 +18,7 @@
 
 #include <stm32l1xx_conf.h>
 
-void EXTI3_IRQHandler(void);
+void __attribute__((weak)) exti3_isr(void);
 
 void pin_set(gpio_t port, pin_t pin)
 {
@@ -112,7 +112,8 @@ void arch_config_clocks(void)
 
   /* Enable LSE and wait until it's ready */
   RCC_LSEConfig(RCC_LSE_ON);
-  while (RCC_GetFlagStatus(RCC_FLAG_LSERDY) == RESET) { }
+  while (RCC_GetFlagStatus(RCC_FLAG_LSERDY) != SET)
+    ;
 
   /* Set the RTC to use the LSE */
   RCC_RTCCLKConfig(RCC_RTCCLKSource_LSE);
@@ -121,7 +122,7 @@ void arch_config_clocks(void)
   RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOB, ENABLE);
 
   RCC_GetClocksFreq(&RCC_Clocks);
-  g.rcc_clock_freq = RCC_Clocks.PCLK1_Frequency;
+  g.rcc_clock_freq = RCC_Clocks.SYSCLK_Frequency;
 
 }
 
@@ -152,6 +153,7 @@ void arch_usart_set_baud(usart_t port, int baud)
   /* Straight from stm32l1xx_usart.c */
 
   RCC_ClocksTypeDef RCC_Clocks;
+
   uint16_t tmpreg = port->BRR;
   uint32_t apbclock = 0x00;
   uint32_t integerdivider = 0x00;
@@ -203,7 +205,7 @@ void arch_config_nvic(void)
   NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
 }
 
-void EXTI3_IRQHandler(void)
+void exti3_isr(void)
 {
   /* exti_reset_request(EXTI_PR & EXTI3); */
   EXTI_ClearITPendingBit(EXTI_Line3);
