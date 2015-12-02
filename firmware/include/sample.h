@@ -40,6 +40,26 @@ struct mag_sample_s {
 } __attribute__((packed));
 #endif
 
+/**
+ * @brief The header for an 'event'. Likely a jump.
+ */
+struct event_header_s {
+  /** @brief The unique id of this event */
+  uint32_t event_id;
+  /** @brief Number of samples associated with this event */
+  uint32_t samples;
+  /** @brief Size of each sample */
+  uint16_t sample_size;
+  /** @brief Bitmask representing what features were enabled during logging */
+  uint16_t features;
+  /** @brief Milliseconds since Jan 1, 1970 to the start of this event */
+  uint64_t rtc_start;
+
+};
+
+/**
+ * @brief
+ */
 struct sensor_packet_s {
   uint32_t ticks;
 
