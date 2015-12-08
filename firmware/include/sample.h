@@ -50,11 +50,11 @@ struct event_header_s {
   uint32_t samples;
   /** @brief Size of each sample */
   uint16_t sample_size;
-  /** @brief Bitmask representing what features were enabled during logging */
+  /** @brief Bitmask representing what features were enabled during logging.
+   * Set to CONFIG_FEATURES */
   uint16_t features;
   /** @brief Milliseconds since Jan 1, 1970 to the start of this event */
   uint64_t rtc_start;
-
 };
 
 /**

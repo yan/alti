@@ -25,16 +25,15 @@
 
 #include <services.h>
 
-int g_given = 0, g_events_received = 0, g_events_processed = 0;
-
 void task_main(void *p)
 {
   (void) p;
   portBASE_TYPE status;
-  struct global_event_s evt;
   enum global_state_e state = GLOBAL_STATE_RESET;
+  // struct event_header_s current_event;
 
   for (;;) {
+    struct global_event_s evt;
     status = xQueueReceive(g.main_queue_g, &evt, MAIN_EVENT_LOOP_TIMEOUT);
 
 
@@ -47,7 +46,7 @@ void task_main(void *p)
       continue;
     }
 
-    g_events_received++;
+    counter_add_event(COUNTER_EVENTS_RECEIVED);
 
     switch (evt.type) {
       case GLOBAL_EVT_RESET:
@@ -107,7 +106,7 @@ void task_main(void *p)
 
       case GLOBAL_EVT_NRF8001_RDY: {
         xSemaphoreGive(g.ble_data_g->semphr);
-        g_given++;
+        counter_add_event(COUNTER_GIVEN);
       }
         break;
 
@@ -125,7 +124,7 @@ void task_main(void *p)
 
     (void) state;
 
-    g_events_processed++;
+    counter_add_event(COUNTER_EVENTS_PROCESSED);
   }
 
   (void) state; // XXX Remove me once we start using this

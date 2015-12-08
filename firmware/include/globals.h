@@ -12,6 +12,7 @@
 #include <config.h>
 #include <features.h>
 #include <ublox_isr.h>
+#include <counters.h>
 
 #define WRITE_BUFFER_LEN        512
 
@@ -56,8 +57,14 @@ struct globals {
   /** @brief */
   void *sensor_queue_g;
 
+#if CONFIG_USE_GPS
   /** @brief */
   void *gps_queue_g;
+#endif
+
+#if CONFIG_USE_COUNTERS
+  struct counters_s counters;
+#endif
 
 #if CONFIG_USE_USART_ISR
   /* USART interupt mutex for gps */

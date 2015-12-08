@@ -150,8 +150,9 @@ void arch_config_uart(usart_t port, int baud)
 
 void arch_usart_set_baud(usart_t port, int baud)
 {
-  /* Straight from stm32l1xx_usart.c */
-
+  /* Straight from stm32l1xx_usart.c. This code is not reachable without having
+   * to re-initialize the UART device
+   */
   RCC_ClocksTypeDef RCC_Clocks;
 
   uint16_t tmpreg = port->BRR;

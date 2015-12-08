@@ -43,7 +43,7 @@ else
 OPT_FLAGS	+= -O3 -Os
 endif
 
-CFLAGS		+= $(OPT_FLAGS)
+CFLAGS		+= $(OPT_FLAGS) -std=c11
 CFLAGS		+= -Wextra -Wshadow -Wimplicit-function-declaration
 CFLAGS		+= -Wredundant-decls -Wmissing-prototypes -Wstrict-prototypes
 CFLAGS          += -Wno-unused-function

@@ -1,6 +1,7 @@
 /**
  * Copyright 2015 Yan Ivnitskiy
  */
+
 #include <aero.h>
 
 #include <string.h>
