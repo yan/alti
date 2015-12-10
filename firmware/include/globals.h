@@ -13,8 +13,10 @@
 #include <features.h>
 #include <ublox_isr.h>
 #include <counters.h>
+#include <flash.h>
 
-#define WRITE_BUFFER_LEN        512
+// #define WRITE_BUFFER_LEN        512
+#define WRITE_BUFFER_LEN         STORAGE_PAGE_SIZE
 
 
 /**
@@ -39,10 +41,10 @@ struct persisted_config_s {
 } __attribute__((packed));
 
 
-typedef struct ble_task_data_s {
+struct ble_task_data_s {
   void *in;
   void *semphr;
-} ble_task_data_t;
+};
 
 struct globals {
   /** @brief FreeRTOSConfig.h uses this to refer to the clock rate */

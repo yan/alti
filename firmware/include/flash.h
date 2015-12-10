@@ -9,6 +9,10 @@
 #include <stdint.h>
 #include <stddef.h>
 
+/** Adesto AT45DB641E */
+#define STORAGE_PAGE_SIZE             ( 256 )
+#define STORAGE_SIZE                  ( STORAGE_PAGE_SIZE * 32768 )
+
 /** Magic values */
 #define CONFIG_ADDR                                 0x0000
 

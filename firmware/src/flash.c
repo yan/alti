@@ -131,19 +131,19 @@ int test_flash(void)
 {
   int i = 0;
 
-  flash_read(0, g.flash_buffer.data, 512);
+  flash_read(0, g.flash_buffer.data, STORAGE_PAGE_SIZE);
 
-  for (i = 0; i < 512; i++) {
+  for (i = 0; i < STORAGE_PAGE_SIZE; i++) {
     g.flash_buffer.data[i] = i % 256;
   }
 
-  flash_write(0, g.flash_buffer.data, 512);
+  flash_write(0, g.flash_buffer.data, STORAGE_PAGE_SIZE);
 
-  memset(g.flash_buffer.data, '\0', 512);
+  memset(g.flash_buffer.data, '\0', STORAGE_PAGE_SIZE);
 
-  flash_read(0, g.flash_buffer.data, 512);
+  flash_read(0, g.flash_buffer.data, STORAGE_PAGE_SIZE);
 
-  for (i = 0; i < 512; i++) {
+  for (i = 0; i < STORAGE_PAGE_SIZE; i++) {
     if (g.flash_buffer.data[i] != i % 256) {
       return 1;
     }

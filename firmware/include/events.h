@@ -16,7 +16,8 @@
 typedef enum event_type_e {
   GLOBAL_EVT_RESET,
 
-  GLOBAL_EVT_RCVD_SPI,
+  /** @brief Marks that we should sample sensors and log data */
+  GLOBAL_EVT_SHOULD_SAMPLE,
 
   GLOBAL_EVT_SENSOR_ACCEL,
   GLOBAL_EVT_SENSOR_GYRO,
