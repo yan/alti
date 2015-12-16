@@ -29,9 +29,9 @@
 #if defined(TESTING) && TESTING
 
 #else
-#if ENABLE_SEMIHOSTING
+#  if defined(ENABLE_SEMIHOSTING) && ENABLE_SEMIHOSTING
 extern void initialise_monitor_handles(void);
-#endif
+#  endif
 
 static void config_tasks(void);
 static void config_main_task(void);
@@ -121,7 +121,7 @@ static void config_sensor_task(void)
   g.sensor_queue_g = xQueueCreate(CONFIG_TASK_SENSOR_QUEUE_LEN,
       sizeof(BaseType_t));
 
-  configASSERT(g.sensor_queue_g != NULL);
+  assert(g.sensor_queue_g != NULL);
 
 #if ( configQUEUE_REGISTRY_SIZE > 0 )
   vQueueAddToRegistry(g.sensor_queue_g, "sensor");
@@ -130,7 +130,7 @@ static void config_sensor_task(void)
   status = xTaskCreate(task_sensor, "sensor", CONFIG_TASK_SENSOR_STACK_DEPTH,
       g.sensor_queue_g, CONFIG_TASK_SENSOR_PRIORITY, &sensor_handle);
 
-  configASSERT(status == pdPASS);
+  assert(status == pdPASS);
 }
 
 #if CONFIG_USE_GPS
@@ -142,7 +142,7 @@ static void config_gps_task(void)
   g.gps_queue_g = xQueueCreate(CONFIG_TASK_GPS_QUEUE_LEN,
       sizeof(BaseType_t));
 
-  configASSERT(g.gps_queue_g != NULL);
+  assert(g.gps_queue_g != NULL);
 
 #if ( configQUEUE_REGISTRY_SIZE > 0 )
   vQueueAddToRegistry(g.gps_queue_g, "gps");
@@ -151,7 +151,7 @@ static void config_gps_task(void)
   status = xTaskCreate(task_gps, "gps", CONFIG_TASK_GPS_STACK_DEPTH,
       g.gps_queue_g, CONFIG_TASK_GPS_PRIORITY, &gps_handle);
 
-  configASSERT(status == pdPASS);
+  assert(status == pdPASS);
 }
 #endif // CONFIG_USE_GPS
 #endif // TESTING

@@ -24,7 +24,7 @@ void config_globals(void)
 
 #if CONFIG_USE_USART_ISR
   g.usart_mutex_g = xSemaphoreCreateBinary();
-  configASSERT(g.usart_mutex_g != NULL);
+  assert(g.usart_mutex_g != NULL);
 
   memset((void*)&g.usart_isr_state, '\0', sizeof(g.usart_isr_state));
 #endif

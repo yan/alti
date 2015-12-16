@@ -209,7 +209,7 @@ static void handle_connected(struct nrf8001_cmd_s *evt)
  */
 void nrf8001_handle_event(struct nrf8001_cmd_s *event)
 {
-  configASSERT(event != NULL);
+  assert(event != NULL);
 
   dbg_print("Event = %x, response opcode: %x, status = %x\n", event->opcode, event->data[0], event->data[1]);
 

@@ -78,8 +78,8 @@ void ble_tx(uint8_t pipe, uint8_t *data, size_t length)
   static struct nrf8001_cmd_s cmd;
   size_t i;
 
-  configASSERT(length < (NRF8001_MAX_CMD_LENGTH - 1));
-  configASSERT(PIPE_OPEN(pipe));
+  assert(length < (NRF8001_MAX_CMD_LENGTH - 1));
+  assert(PIPE_OPEN(pipe));
 
   cmd.opcode = ACI_CMD_SEND_DATA;
   cmd.length = 1 + length;
