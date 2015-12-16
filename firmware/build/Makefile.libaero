@@ -9,7 +9,7 @@ SRC_DIR = src/
 SRC    = aero.c				bmx055.c			config.c
 SRC   += filter.c			flash.c				globals.c
 ifneq ($(TESTING),1)
-SRC   += hal_stm32_libopencm3.c		hal_stm32_stdperiphlib.c	logger.c
+SRC   += hal_stm32_libopencm3.c		hal_stm32_stdperiphlib.c
 else
 SRC   += hal_stm32_test.c
 endif
@@ -17,7 +17,7 @@ SRC   += ms5611.c			nrf8001.c			spi.c
 SRC   += task_alert.c			task_ble.c			task_main.c
 SRC   += task_sensor.c			ublox.c				util.c
 SRC   += logger.c			task_gps.c			ublox_isr.c
-SRC   += periph.c
+SRC   += periph.c	logger.c
 SRC   += init.c
 
 # SRC   += startup_stm32l1xx_hd.s

@@ -153,7 +153,7 @@ int test_flash(void)
 
 static void busy_wait_for_ready(void)
 {
-  struct status_register_s status_reg = {0};
+  struct status_register_s status_reg;
 
   status_reg.ready = 0;
 

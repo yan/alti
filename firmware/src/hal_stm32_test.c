@@ -70,10 +70,6 @@ void arch_config_clocks(void)
 {
 }
 
-void arch_config_io(void)
-{
-}
-
 void arch_config_nvic(void)
 {
 }
@@ -138,23 +134,5 @@ uint8_t arch_spi_xfer(spi_t port, uint8_t cmd)
 void arch_spi_enable(spi_t port)
 {
   (void) port;
-}
-
-
-void enable_piezo(void)
-{
-}
-
-void disable_piezo(void)
-{
-}
-
-void enable_pulse(void)
-{
-}
-
-
-void disable_pulse(void)
-{
 }
 

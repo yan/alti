@@ -20,14 +20,18 @@
 #define GPIO11              (GPIO_START + 11)
 #define GPIO12              (GPIO_START + 12)
 #define GPIO13              (GPIO_START + 13)
+#define GPIO14              (GPIO_START + 14)
+#define GPIO15              (GPIO_START + 15)
 
 #define TIM_START           20
 #define TIM0                (TIM_START + 0)
 #define TIM1                (TIM_START + 1)
 #define TIM2                (TIM_START + 2)
 #define TIM3                (TIM_START + 3)
+#define TIM4                (TIM_START + 4)
 
 #define TIM_OC_START        30
+#define TIM_OC(x)           (TIM_OC_START + x)
 #define TIM_OC0             (TIM_OC_START + 0)
 #define TIM_OC1             (TIM_OC_START + 1)
 #define TIM_OC2             (TIM_OC_START + 2)

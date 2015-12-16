@@ -67,6 +67,7 @@ static void logger_flush_buffer(uint32_t addr)
   g.flash_buffer.write_offset = 0;
 }
 
+#if 0
 /**
  * @brief Get the last event recorded; trashes the flash buffer.
  *
@@ -133,6 +134,7 @@ static size_t logger_read(uint32_t addr, uint8_t *dst, size_t len)
   return 1;
 
 }
+#endif
 
 /**
  * @brief ...

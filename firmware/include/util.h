@@ -7,7 +7,7 @@
 #define __UTIL_H
 
 #include <stdint.h>
-#if defined(ENABLE_SEMIHOSTING) && ENABLE_SEMIHOSTING
+#if ((defined(ENABLE_SEMIHOSTING) && ENABLE_SEMIHOSTING) || defined (TESTING))
 #  include <stdio.h>
 #endif
 

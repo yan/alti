@@ -337,6 +337,7 @@ int ublox_set_measuring_rate(uint16_t ms)
   return 1;
 }
 
+#if 0
 static struct ublox_cfg_pm2_s *ublox_get_power_mgmt(void)
 {
   struct ubx_header_s *head;
@@ -358,6 +359,7 @@ static struct ublox_cfg_pm2_s *ublox_get_power_mgmt(void)
 
   return body;
 }
+#endif
 
 static int ublox_update_port_settings(usart_t port, uint32_t baud)
 {

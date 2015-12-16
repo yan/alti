@@ -9,19 +9,22 @@ OUTPUT_DIRS     ?= $(OBJ_DIR) $(LIB_DIR)
 TO_CLEAN        = $(OBJ_DIR)/*
 LDSCRIPT	= $(SUPPORT_DIR)/stm32l15xxb.ld
 DONT_ARCHIVE    ?= 
+ANALYZE	?= 0
 
 ###############################################################################
 # Executables
 
 ifneq ($(TESTING),1)
-PREFIX		?= arm-none-eabi-
-CC		:= $(PREFIX)gcc
-CXX		:= $(PREFIX)g++
+  PREFIX		?= arm-none-eabi-
+  CC		:= $(PREFIX)gcc
+  CXX		:= $(PREFIX)g++
 else
-PREFIX		?= 
-CC              := clang
-CXX		:= clang
-CFLAGS          := --analyze
+  PREFIX		?= 
+  CC              := clang
+  CXX		:= clang
+  ifeq ($(ANALYZE),1)
+    CFLAGS          := --analyze
+  endif
 endif
 
 CXX		:= $(PREFIX)g++

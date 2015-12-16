@@ -7,7 +7,8 @@ ifneq ($(TESTING),1)
   else
     LIB := opencm3_stm32l1
   endif
+
+  LDLIBS += $(LIB)
+  include build/Makefile.lib$(LIB)
 endif
 
-LDLIBS += $(LIB)
-include build/Makefile.lib$(LIB)

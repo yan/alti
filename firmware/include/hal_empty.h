@@ -15,4 +15,6 @@ typedef uint32_t usart_t;
 #define hard_fault_handler hard_fault_handler
 #define usage_fault_handler usage_fault_handler
 
+#define usart_can_recv(port) (1)
+
 #endif // __HAL_EMPTY
