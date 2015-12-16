@@ -2,6 +2,7 @@ firmware/build/obj/**
 firmware/build/lib/**
 firmware/build/pid/**
 firmware/pdf
+firmware/tags
 .DS_Store
 *bak
 **.pyc
