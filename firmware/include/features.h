@@ -27,6 +27,8 @@
 /* Speed to run the ublox gps module at */
 #define CONFIG_UBLOX_BAUD_RATE    ( 230400 )
 
+/* Add debugging checks for handling flash */
+#define ENABLE_FLASH_DEBUG        ( 1 )
 
 
 

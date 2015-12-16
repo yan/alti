@@ -1,0 +1,1703 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+ACCEL	src/bmx055.c	/^  ACCEL,$/;"	e	enum:sensor_e	file:
+ACI_AD_LOC_SVCUUID_128_MAX_COUNT	include/aci.h	/^#define ACI_AD_LOC_SVCUUID_128_MAX_COUNT /;"	d
+ACI_AD_LOC_SVCUUID_16_MAX_COUNT	include/aci.h	/^#define ACI_AD_LOC_SVCUUID_16_MAX_COUNT /;"	d
+ACI_AD_PACKET_MAX_LEN	include/aci.h	/^#define ACI_AD_PACKET_MAX_LEN /;"	d
+ACI_AD_PACKET_MAX_USER_LEN	include/aci.h	/^#define ACI_AD_PACKET_MAX_USER_LEN /;"	d
+ACI_AD_SOL_SVCUUID_128_MAX_COUNT	include/aci.h	/^#define ACI_AD_SOL_SVCUUID_128_MAX_COUNT /;"	d
+ACI_AD_SOL_SVCUUID_16_MAX_COUNT	include/aci.h	/^#define ACI_AD_SOL_SVCUUID_16_MAX_COUNT /;"	d
+ACI_APP_LATENCY_DISABLE	include/aci.h	/^  ACI_APP_LATENCY_DISABLE = 0,$/;"	e	enum:__anon18
+ACI_APP_LATENCY_ENABLE	include/aci.h	/^  ACI_APP_LATENCY_ENABLE = 1$/;"	e	enum:__anon18
+ACI_ASSERT_SIZE	include/aci.h	/^#define ACI_ASSERT_SIZE(/;"	d
+ACI_BD_ADDR_TYPE_INVALID	include/aci.h	/^  ACI_BD_ADDR_TYPE_INVALID  = 0x00,$/;"	e	enum:__anon7
+ACI_BD_ADDR_TYPE_PUBLIC	include/aci.h	/^  ACI_BD_ADDR_TYPE_PUBLIC  = 0x01,$/;"	e	enum:__anon7
+ACI_BD_ADDR_TYPE_RANDOM_PRIVATE_RESOLVABLE	include/aci.h	/^  ACI_BD_ADDR_TYPE_RANDOM_PRIVATE_RESOLVABLE  = 0x03,$/;"	e	enum:__anon7
+ACI_BD_ADDR_TYPE_RANDOM_PRIVATE_UNRESOLVABLE	include/aci.h	/^  ACI_BD_ADDR_TYPE_RANDOM_PRIVATE_UNRESOLVABLE  = 0x04$/;"	e	enum:__anon7
+ACI_BD_ADDR_TYPE_RANDOM_STATIC	include/aci.h	/^  ACI_BD_ADDR_TYPE_RANDOM_STATIC  = 0x02,$/;"	e	enum:__anon7
+ACI_BOND_STATUS_FAILED	include/aci.h	/^  ACI_BOND_STATUS_FAILED                              = 0x01,$/;"	e	enum:__anon22
+ACI_BOND_STATUS_FAILED_AUTHENTICATION_REQ	include/aci.h	/^  ACI_BOND_STATUS_FAILED_AUTHENTICATION_REQ          = 0x83,$/;"	e	enum:__anon22
+ACI_BOND_STATUS_FAILED_CONFIRM_VALUE	include/aci.h	/^  ACI_BOND_STATUS_FAILED_CONFIRM_VALUE               = 0x84,$/;"	e	enum:__anon22
+ACI_BOND_STATUS_FAILED_ENCRYPTION_KEY_SIZE	include/aci.h	/^  ACI_BOND_STATUS_FAILED_ENCRYPTION_KEY_SIZE         = 0x86,$/;"	e	enum:__anon22
+ACI_BOND_STATUS_FAILED_INVALID_PARAMETERS	include/aci.h	/^  ACI_BOND_STATUS_FAILED_INVALID_PARAMETERS          = 0x8A$/;"	e	enum:__anon22
+ACI_BOND_STATUS_FAILED_OOB_UNAVAILABLE	include/aci.h	/^  ACI_BOND_STATUS_FAILED_OOB_UNAVAILABLE             = 0x82,$/;"	e	enum:__anon22
+ACI_BOND_STATUS_FAILED_PAIRING_UNSUPPORTED	include/aci.h	/^  ACI_BOND_STATUS_FAILED_PAIRING_UNSUPPORTED         = 0x85,$/;"	e	enum:__anon22
+ACI_BOND_STATUS_FAILED_PASSKEY_ENTRY_FAILED	include/aci.h	/^  ACI_BOND_STATUS_FAILED_PASSKEY_ENTRY_FAILED        = 0x81,$/;"	e	enum:__anon22
+ACI_BOND_STATUS_FAILED_REPEATED_ATTEMPTS	include/aci.h	/^  ACI_BOND_STATUS_FAILED_REPEATED_ATTEMPTS           = 0x89,$/;"	e	enum:__anon22
+ACI_BOND_STATUS_FAILED_SMP_CMD_UNSUPPORTED	include/aci.h	/^  ACI_BOND_STATUS_FAILED_SMP_CMD_UNSUPPORTED         = 0x87,$/;"	e	enum:__anon22
+ACI_BOND_STATUS_FAILED_TIMED_OUT	include/aci.h	/^  ACI_BOND_STATUS_FAILED_TIMED_OUT                    = 0x02,$/;"	e	enum:__anon22
+ACI_BOND_STATUS_FAILED_UNSPECIFIED_REASON	include/aci.h	/^  ACI_BOND_STATUS_FAILED_UNSPECIFIED_REASON          = 0x88,$/;"	e	enum:__anon22
+ACI_BOND_STATUS_SOURCE_INVALID	include/aci.h	/^  ACI_BOND_STATUS_SOURCE_INVALID                  = 0x00,$/;"	e	enum:__anon23
+ACI_BOND_STATUS_SOURCE_LOCAL	include/aci.h	/^  ACI_BOND_STATUS_SOURCE_LOCAL                    = 0x01,$/;"	e	enum:__anon23
+ACI_BOND_STATUS_SOURCE_REMOTE	include/aci.h	/^  ACI_BOND_STATUS_SOURCE_REMOTE                   = 0x02$/;"	e	enum:__anon23
+ACI_BOND_STATUS_SUCCESS	include/aci.h	/^  ACI_BOND_STATUS_SUCCESS                             = 0x00,$/;"	e	enum:__anon22
+ACI_CLOCK_ACCURACY_100_PPM	include/aci.h	/^  ACI_CLOCK_ACCURACY_100_PPM = 0x03,$/;"	e	enum:__anon17
+ACI_CLOCK_ACCURACY_150_PPM	include/aci.h	/^  ACI_CLOCK_ACCURACY_150_PPM = 0x02,$/;"	e	enum:__anon17
+ACI_CLOCK_ACCURACY_20_PPM	include/aci.h	/^  ACI_CLOCK_ACCURACY_20_PPM  = 0x07$/;"	e	enum:__anon17
+ACI_CLOCK_ACCURACY_250_PPM	include/aci.h	/^  ACI_CLOCK_ACCURACY_250_PPM = 0x01,$/;"	e	enum:__anon17
+ACI_CLOCK_ACCURACY_30_PPM	include/aci.h	/^  ACI_CLOCK_ACCURACY_30_PPM  = 0x06,$/;"	e	enum:__anon17
+ACI_CLOCK_ACCURACY_500_PPM	include/aci.h	/^  ACI_CLOCK_ACCURACY_500_PPM = 0x00,$/;"	e	enum:__anon17
+ACI_CLOCK_ACCURACY_50_PPM	include/aci.h	/^  ACI_CLOCK_ACCURACY_50_PPM  = 0x05,$/;"	e	enum:__anon17
+ACI_CLOCK_ACCURACY_75_PPM	include/aci.h	/^  ACI_CLOCK_ACCURACY_75_PPM  = 0x04,$/;"	e	enum:__anon17
+ACI_CMDS_H__	include/aci_cmds.h	/^#define ACI_CMDS_H__$/;"	d
+ACI_CMD_BOND	include/aci_cmds.h	/^  ACI_CMD_BOND                    = 0x10,$/;"	e	enum:__anon25
+ACI_CMD_BOND_SECURITY_REQUEST	include/aci_cmds.h	/^  ACI_CMD_BOND_SECURITY_REQUEST   = 0x1D,$/;"	e	enum:__anon25
+ACI_CMD_BROADCAST	include/aci_cmds.h	/^  ACI_CMD_BROADCAST               = 0x1C,$/;"	e	enum:__anon25
+ACI_CMD_CHANGE_TIMING	include/aci_cmds.h	/^  ACI_CMD_CHANGE_TIMING           = 0x13,$/;"	e	enum:__anon25
+ACI_CMD_CLOSE_REMOTE_PIPE	include/aci_cmds.h	/^  ACI_CMD_CLOSE_REMOTE_PIPE       = 0x1F,$/;"	e	enum:__anon25
+ACI_CMD_CONNECT	include/aci_cmds.h	/^  ACI_CMD_CONNECT                 = 0x0F,$/;"	e	enum:__anon25
+ACI_CMD_CONNECT_DIRECT	include/aci_cmds.h	/^  ACI_CMD_CONNECT_DIRECT          = 0x1E,$/;"	e	enum:__anon25
+ACI_CMD_DISCONNECT	include/aci_cmds.h	/^  ACI_CMD_DISCONNECT              = 0x11,$/;"	e	enum:__anon25
+ACI_CMD_DTM_CMD	include/aci_cmds.h	/^  ACI_CMD_DTM_CMD                 = 0x03,$/;"	e	enum:__anon25
+ACI_CMD_ECHO	include/aci_cmds.h	/^  ACI_CMD_ECHO                    = 0x02,$/;"	e	enum:__anon25
+ACI_CMD_GET_BATTERY_LEVEL	include/aci_cmds.h	/^  ACI_CMD_GET_BATTERY_LEVEL       = 0x0B,$/;"	e	enum:__anon25
+ACI_CMD_GET_DEVICE_ADDRESS	include/aci_cmds.h	/^  ACI_CMD_GET_DEVICE_ADDRESS      = 0x0A,$/;"	e	enum:__anon25
+ACI_CMD_GET_DEVICE_VERSION	include/aci_cmds.h	/^  ACI_CMD_GET_DEVICE_VERSION      = 0x09,$/;"	e	enum:__anon25
+ACI_CMD_GET_TEMPERATURE	include/aci_cmds.h	/^  ACI_CMD_GET_TEMPERATURE         = 0x0C,$/;"	e	enum:__anon25
+ACI_CMD_INVALID	include/aci_cmds.h	/^  ACI_CMD_INVALID                 = 0xFF$/;"	e	enum:__anon25
+ACI_CMD_OPEN_ADV_PIPE	include/aci_cmds.h	/^  ACI_CMD_OPEN_ADV_PIPE           = 0x1B,$/;"	e	enum:__anon25
+ACI_CMD_OPEN_REMOTE_PIPE	include/aci_cmds.h	/^  ACI_CMD_OPEN_REMOTE_PIPE        = 0x14,$/;"	e	enum:__anon25
+ACI_CMD_RADIO_RESET	include/aci_cmds.h	/^  ACI_CMD_RADIO_RESET          = 0x0E,$/;"	e	enum:__anon25
+ACI_CMD_READ_DYNAMIC_DATA	include/aci_cmds.h	/^  ACI_CMD_READ_DYNAMIC_DATA       = 0x07,$/;"	e	enum:__anon25
+ACI_CMD_REQUEST_DATA	include/aci_cmds.h	/^  ACI_CMD_REQUEST_DATA            = 0x17,$/;"	e	enum:__anon25
+ACI_CMD_SEND_DATA	include/aci_cmds.h	/^  ACI_CMD_SEND_DATA               = 0x15,$/;"	e	enum:__anon25
+ACI_CMD_SEND_DATA_ACK	include/aci_cmds.h	/^  ACI_CMD_SEND_DATA_ACK           = 0x16,$/;"	e	enum:__anon25
+ACI_CMD_SEND_DATA_NACK	include/aci_cmds.h	/^  ACI_CMD_SEND_DATA_NACK          = 0x18,$/;"	e	enum:__anon25
+ACI_CMD_SETUP	include/aci_cmds.h	/^  ACI_CMD_SETUP                   = 0x06,$/;"	e	enum:__anon25
+ACI_CMD_SET_APP_LATENCY	include/aci_cmds.h	/^  ACI_CMD_SET_APP_LATENCY         = 0x19,$/;"	e	enum:__anon25
+ACI_CMD_SET_KEY	include/aci_cmds.h	/^  ACI_CMD_SET_KEY                 = 0x1A,$/;"	e	enum:__anon25
+ACI_CMD_SET_LOCAL_DATA	include/aci_cmds.h	/^  ACI_CMD_SET_LOCAL_DATA          = 0x0D,$/;"	e	enum:__anon25
+ACI_CMD_SET_TX_POWER	include/aci_cmds.h	/^  ACI_CMD_SET_TX_POWER            = 0x12,$/;"	e	enum:__anon25
+ACI_CMD_SLEEP	include/aci_cmds.h	/^  ACI_CMD_SLEEP                   = 0x04,$/;"	e	enum:__anon25
+ACI_CMD_TEST	include/aci_cmds.h	/^  ACI_CMD_TEST                    = 0x01,$/;"	e	enum:__anon25
+ACI_CMD_WAKEUP	include/aci_cmds.h	/^  ACI_CMD_WAKEUP                  = 0x05,$/;"	e	enum:__anon25
+ACI_CMD_WRITE_DYNAMIC_DATA	include/aci_cmds.h	/^  ACI_CMD_WRITE_DYNAMIC_DATA      = 0x08,$/;"	e	enum:__anon25
+ACI_CUSTOM_AD_TYPE_MAX_COUNT	include/aci.h	/^#define ACI_CUSTOM_AD_TYPE_MAX_COUNT /;"	d
+ACI_CUSTOM_AD_TYPE_MAX_DATA_LENGTH	include/aci.h	/^#define ACI_CUSTOM_AD_TYPE_MAX_DATA_LENGTH /;"	d
+ACI_DEVICE_INVALID	include/aci.h	/^  ACI_DEVICE_INVALID   =0x00,$/;"	e	enum:__anon9
+ACI_DEVICE_MAX_PIPES	include/aci.h	/^#define ACI_DEVICE_MAX_PIPES /;"	d
+ACI_DEVICE_OUTPUT_POWER_0DBM	include/aci.h	/^  ACI_DEVICE_OUTPUT_POWER_0DBM  = 0x03  \/**< Output power set to 0dBm   - DEFAULT*\/$/;"	e	enum:__anon8
+ACI_DEVICE_OUTPUT_POWER_MINUS_12DBM	include/aci.h	/^  ACI_DEVICE_OUTPUT_POWER_MINUS_12DBM = 0x01, \/**< Output power set to -12dBm *\/$/;"	e	enum:__anon8
+ACI_DEVICE_OUTPUT_POWER_MINUS_18DBM	include/aci.h	/^  ACI_DEVICE_OUTPUT_POWER_MINUS_18DBM = 0x00, \/**< Output power set to -18dBm *\/$/;"	e	enum:__anon8
+ACI_DEVICE_OUTPUT_POWER_MINUS_6DBM	include/aci.h	/^  ACI_DEVICE_OUTPUT_POWER_MINUS_6DBM  = 0x02, \/**< Output power set to -6dBm  *\/$/;"	e	enum:__anon8
+ACI_DEVICE_SETUP	include/aci.h	/^  ACI_DEVICE_SETUP     =0x02,$/;"	e	enum:__anon9
+ACI_DEVICE_SLEEP	include/aci.h	/^  ACI_DEVICE_SLEEP     =0x04$/;"	e	enum:__anon9
+ACI_DEVICE_STANDBY	include/aci.h	/^  ACI_DEVICE_STANDBY   =0x03,$/;"	e	enum:__anon9
+ACI_DEVICE_TEST	include/aci.h	/^  ACI_DEVICE_TEST      =0x01,$/;"	e	enum:__anon9
+ACI_DYNAMIC_DATA_SIZE	include/services.h	/^#define ACI_DYNAMIC_DATA_SIZE /;"	d
+ACI_ECHO_DATA_MAX_LEN	include/aci.h	/^#define ACI_ECHO_DATA_MAX_LEN /;"	d
+ACI_EVTS_H__	include/aci_evts.h	/^#define ACI_EVTS_H__$/;"	d
+ACI_EVT_BOND_STATUS	include/aci_evts.h	/^  ACI_EVT_BOND_STATUS                 = 0x87,$/;"	e	enum:__anon50
+ACI_EVT_CMD_RSP	include/aci_evts.h	/^  ACI_EVT_CMD_RSP                     = 0x84,$/;"	e	enum:__anon50
+ACI_EVT_CONNECTED	include/aci_evts.h	/^  ACI_EVT_CONNECTED                   = 0x85,$/;"	e	enum:__anon50
+ACI_EVT_DATA_ACK	include/aci_evts.h	/^  ACI_EVT_DATA_ACK                    = 0x8B,$/;"	e	enum:__anon50
+ACI_EVT_DATA_CREDIT	include/aci_evts.h	/^  ACI_EVT_DATA_CREDIT                 = 0x8A,$/;"	e	enum:__anon50
+ACI_EVT_DATA_RECEIVED	include/aci_evts.h	/^  ACI_EVT_DATA_RECEIVED               = 0x8C,$/;"	e	enum:__anon50
+ACI_EVT_DEVICE_STARTED	include/aci_evts.h	/^  ACI_EVT_DEVICE_STARTED              = 0x81,$/;"	e	enum:__anon50
+ACI_EVT_DISCONNECTED	include/aci_evts.h	/^  ACI_EVT_DISCONNECTED                = 0x86,$/;"	e	enum:__anon50
+ACI_EVT_DISPLAY_PASSKEY	include/aci_evts.h	/^  ACI_EVT_DISPLAY_PASSKEY             = 0x8E,$/;"	e	enum:__anon50
+ACI_EVT_ECHO	include/aci_evts.h	/^  ACI_EVT_ECHO                        = 0x82,$/;"	e	enum:__anon50
+ACI_EVT_HW_ERROR	include/aci_evts.h	/^  ACI_EVT_HW_ERROR                  = 0x83,$/;"	e	enum:__anon50
+ACI_EVT_INVALID	include/aci_evts.h	/^  ACI_EVT_INVALID                     = 0x00,$/;"	e	enum:__anon50
+ACI_EVT_KEY_REQUEST	include/aci_evts.h	/^  ACI_EVT_KEY_REQUEST                 = 0x8F$/;"	e	enum:__anon50
+ACI_EVT_PIPE_ERROR	include/aci_evts.h	/^  ACI_EVT_PIPE_ERROR                  = 0x8D,$/;"	e	enum:__anon50
+ACI_EVT_PIPE_STATUS	include/aci_evts.h	/^  ACI_EVT_PIPE_STATUS             = 0x88,$/;"	e	enum:__anon50
+ACI_EVT_TIMING	include/aci_evts.h	/^  ACI_EVT_TIMING                      = 0x89,$/;"	e	enum:__anon50
+ACI_GAP_DEVNAME_MAX_LEN	include/aci.h	/^#define ACI_GAP_DEVNAME_MAX_LEN /;"	d
+ACI_GATT_FORMAT_2BIT	include/aci.h	/^  ACI_GATT_FORMAT_2BIT        = 0x02, \/**< Not Supported *\/$/;"	e	enum:__anon19
+ACI_GATT_FORMAT_BOOLEAN	include/aci.h	/^  ACI_GATT_FORMAT_BOOLEAN     = 0x01, \/**< Not Supported *\/$/;"	e	enum:__anon19
+ACI_GATT_FORMAT_DUINT16	include/aci.h	/^  ACI_GATT_FORMAT_DUINT16     = 0x18,$/;"	e	enum:__anon19
+ACI_GATT_FORMAT_FLOAT	include/aci.h	/^  ACI_GATT_FORMAT_FLOAT       = 0x17,$/;"	e	enum:__anon19
+ACI_GATT_FORMAT_FLOAT32	include/aci.h	/^  ACI_GATT_FORMAT_FLOAT32     = 0x14,$/;"	e	enum:__anon19
+ACI_GATT_FORMAT_FLOAT64	include/aci.h	/^  ACI_GATT_FORMAT_FLOAT64     = 0x15,$/;"	e	enum:__anon19
+ACI_GATT_FORMAT_NIBBLE	include/aci.h	/^  ACI_GATT_FORMAT_NIBBLE      = 0x03, \/**< Not Supported *\/$/;"	e	enum:__anon19
+ACI_GATT_FORMAT_NONE	include/aci.h	/^  ACI_GATT_FORMAT_NONE        = 0x00, \/**< No characteristic format available *\/$/;"	e	enum:__anon19
+ACI_GATT_FORMAT_SFLOAT	include/aci.h	/^  ACI_GATT_FORMAT_SFLOAT      = 0x16,$/;"	e	enum:__anon19
+ACI_GATT_FORMAT_SINT12	include/aci.h	/^  ACI_GATT_FORMAT_SINT12      = 0x0D,$/;"	e	enum:__anon19
+ACI_GATT_FORMAT_SINT128	include/aci.h	/^  ACI_GATT_FORMAT_SINT128     = 0x13,$/;"	e	enum:__anon19
+ACI_GATT_FORMAT_SINT16	include/aci.h	/^  ACI_GATT_FORMAT_SINT16      = 0x0E,$/;"	e	enum:__anon19
+ACI_GATT_FORMAT_SINT24	include/aci.h	/^  ACI_GATT_FORMAT_SINT24      = 0x0F,$/;"	e	enum:__anon19
+ACI_GATT_FORMAT_SINT32	include/aci.h	/^  ACI_GATT_FORMAT_SINT32      = 0x10,$/;"	e	enum:__anon19
+ACI_GATT_FORMAT_SINT48	include/aci.h	/^  ACI_GATT_FORMAT_SINT48      = 0x11,$/;"	e	enum:__anon19
+ACI_GATT_FORMAT_SINT64	include/aci.h	/^  ACI_GATT_FORMAT_SINT64      = 0x12,$/;"	e	enum:__anon19
+ACI_GATT_FORMAT_SINT8	include/aci.h	/^  ACI_GATT_FORMAT_SINT8       = 0x0C,$/;"	e	enum:__anon19
+ACI_GATT_FORMAT_STRUCT	include/aci.h	/^  ACI_GATT_FORMAT_STRUCT      = 0x1B$/;"	e	enum:__anon19
+ACI_GATT_FORMAT_UINT12	include/aci.h	/^  ACI_GATT_FORMAT_UINT12      = 0x05,$/;"	e	enum:__anon19
+ACI_GATT_FORMAT_UINT128	include/aci.h	/^  ACI_GATT_FORMAT_UINT128     = 0x0B,$/;"	e	enum:__anon19
+ACI_GATT_FORMAT_UINT16	include/aci.h	/^  ACI_GATT_FORMAT_UINT16      = 0x06,$/;"	e	enum:__anon19
+ACI_GATT_FORMAT_UINT24	include/aci.h	/^  ACI_GATT_FORMAT_UINT24      = 0x07,$/;"	e	enum:__anon19
+ACI_GATT_FORMAT_UINT32	include/aci.h	/^  ACI_GATT_FORMAT_UINT32      = 0x08,$/;"	e	enum:__anon19
+ACI_GATT_FORMAT_UINT48	include/aci.h	/^  ACI_GATT_FORMAT_UINT48      = 0x09,$/;"	e	enum:__anon19
+ACI_GATT_FORMAT_UINT64	include/aci.h	/^  ACI_GATT_FORMAT_UINT64      = 0x0A,$/;"	e	enum:__anon19
+ACI_GATT_FORMAT_UINT8	include/aci.h	/^  ACI_GATT_FORMAT_UINT8       = 0x04,$/;"	e	enum:__anon19
+ACI_GATT_FORMAT_UTF16S	include/aci.h	/^  ACI_GATT_FORMAT_UTF16S      = 0x1A,$/;"	e	enum:__anon19
+ACI_GATT_FORMAT_UTF8S	include/aci.h	/^  ACI_GATT_FORMAT_UTF8S       = 0x19,$/;"	e	enum:__anon19
+ACI_GATT_NAMESPACE_BTSIG	include/aci.h	/^  ACI_GATT_NAMESPACE_BTSIG    = 0x01 \/**< Bluetooth SIG *\/$/;"	e	enum:__anon20
+ACI_GATT_NAMESPACE_INVALID	include/aci.h	/^  ACI_GATT_NAMESPACE_INVALID  = 0x00,$/;"	e	enum:__anon20
+ACI_HW_ERROR_FATAL	include/aci.h	/^  ACI_HW_ERROR_FATAL    = 0x01$/;"	e	enum:__anon16
+ACI_HW_ERROR_NONE	include/aci.h	/^  ACI_HW_ERROR_NONE     = 0x00,$/;"	e	enum:__anon16
+ACI_H__	include/aci.h	/^#define ACI_H__$/;"	d
+ACI_KEY_TYPE_INVALID	include/aci.h	/^  ACI_KEY_TYPE_INVALID  = 0x00,$/;"	e	enum:__anon21
+ACI_KEY_TYPE_PASSKEY	include/aci.h	/^  ACI_KEY_TYPE_PASSKEY  = 0x01$/;"	e	enum:__anon21
+ACI_PACKET_MAX_LEN	include/aci.h	/^#define ACI_PACKET_MAX_LEN /;"	d
+ACI_PERMISSIONS_LINK_AUTHENTICATED	include/aci.h	/^  ACI_PERMISSIONS_LINK_AUTHENTICATED =0x01$/;"	e	enum:__anon12
+ACI_PERMISSIONS_NONE	include/aci.h	/^  ACI_PERMISSIONS_NONE               =0x00,$/;"	e	enum:__anon12
+ACI_PIPE_INVALID	include/aci.h	/^#define ACI_PIPE_INVALID /;"	d
+ACI_PIPE_RX_DATA_MAX_LEN	include/aci.h	/^#define ACI_PIPE_RX_DATA_MAX_LEN /;"	d
+ACI_PIPE_TX_DATA_MAX_LEN	include/aci.h	/^#define ACI_PIPE_TX_DATA_MAX_LEN /;"	d
+ACI_PPCP_MAX_CONN_INTVL_MAX	include/aci.h	/^    #define ACI_PPCP_MAX_CONN_INTVL_MAX /;"	d
+ACI_PPCP_MAX_CONN_INTVL_MIN	include/aci.h	/^    #define ACI_PPCP_MAX_CONN_INTVL_MIN /;"	d
+ACI_PPCP_MAX_CONN_INTVL_NONE	include/aci.h	/^    #define ACI_PPCP_MAX_CONN_INTVL_NONE /;"	d
+ACI_PPCP_MIN_CONN_INTVL_MAX	include/aci.h	/^    #define ACI_PPCP_MIN_CONN_INTVL_MAX /;"	d
+ACI_PPCP_MIN_CONN_INTVL_MIN	include/aci.h	/^    #define ACI_PPCP_MIN_CONN_INTVL_MIN /;"	d
+ACI_PPCP_MIN_CONN_INTVL_NONE	include/aci.h	/^    #define ACI_PPCP_MIN_CONN_INTVL_NONE /;"	d
+ACI_PPCP_SLAVE_LATENCY_MAX	include/aci.h	/^    #define ACI_PPCP_SLAVE_LATENCY_MAX /;"	d
+ACI_PPCP_TIMEOUT_MULT_MAX	include/aci.h	/^    #define ACI_PPCP_TIMEOUT_MULT_MAX /;"	d
+ACI_PPCP_TIMEOUT_MULT_MIN	include/aci.h	/^    #define ACI_PPCP_TIMEOUT_MULT_MIN /;"	d
+ACI_PPCP_TIMEOUT_MULT_NONE	include/aci.h	/^    #define ACI_PPCP_TIMEOUT_MULT_NONE /;"	d
+ACI_REASON_BAD_TIMING	include/aci.h	/^  ACI_REASON_BAD_TIMING     =0x02 \/*<Use this to disconnect and inform the peer, that the timing on the link is not acceptable for the device, you need to wait for the "disconnected" event *\/$/;"	e	enum:__anon10
+ACI_REASON_TERMINATE	include/aci.h	/^  ACI_REASON_TERMINATE      =0x01, \/**< Use this to disconnect (does a terminate request), you need to wait for the "disconnected" event *\/$/;"	e	enum:__anon10
+ACI_RX	include/aci.h	/^  ACI_RX           = 0x0008,$/;"	e	enum:__anon6
+ACI_RX_ACK	include/aci.h	/^  ACI_RX_ACK       = 0x0010,$/;"	e	enum:__anon6
+ACI_RX_ACK_AUTO	include/aci.h	/^  ACI_RX_ACK_AUTO  = 0x0400$/;"	e	enum:__anon6
+ACI_RX_REQ	include/aci.h	/^  ACI_RX_REQ       = 0x0040,$/;"	e	enum:__anon6
+ACI_RX_SIGN	include/aci.h	/^  ACI_RX_SIGN      = 0x0200,$/;"	e	enum:__anon6
+ACI_SEC_ENCKEY_SIZE_MAX	include/aci.h	/^#define ACI_SEC_ENCKEY_SIZE_MAX /;"	d
+ACI_SEC_ENCKEY_SIZE_MIN	include/aci.h	/^#define ACI_SEC_ENCKEY_SIZE_MIN /;"	d
+ACI_SET	include/aci.h	/^  ACI_SET          = 0x0080,$/;"	e	enum:__anon6
+ACI_STATUS_ERROR_ADVT_TIMEOUT	include/aci.h	/^  ACI_STATUS_ERROR_ADVT_TIMEOUT                             = 0x93,$/;"	e	enum:__anon24
+ACI_STATUS_ERROR_BOND_REQUIRED	include/aci.h	/^  ACI_STATUS_ERROR_BOND_REQUIRED                            = 0x8D,$/;"	e	enum:__anon24
+ACI_STATUS_ERROR_BUSY	include/aci.h	/^  ACI_STATUS_ERROR_BUSY                                     = 0x86,$/;"	e	enum:__anon24
+ACI_STATUS_ERROR_CMD_UNKNOWN	include/aci.h	/^  ACI_STATUS_ERROR_CMD_UNKNOWN                              = 0x82,$/;"	e	enum:__anon24
+ACI_STATUS_ERROR_CRC_MISMATCH	include/aci.h	/^  ACI_STATUS_ERROR_CRC_MISMATCH                             = 0x88,$/;"	e	enum:__anon24
+ACI_STATUS_ERROR_CREDIT_NOT_AVAILABLE	include/aci.h	/^  ACI_STATUS_ERROR_CREDIT_NOT_AVAILABLE                     = 0x91,$/;"	e	enum:__anon24
+ACI_STATUS_ERROR_DATA_SIZE	include/aci.h	/^  ACI_STATUS_ERROR_DATA_SIZE                                = 0x8F,$/;"	e	enum:__anon24
+ACI_STATUS_ERROR_DEVICE_STATE_INVALID	include/aci.h	/^  ACI_STATUS_ERROR_DEVICE_STATE_INVALID                     = 0x83,$/;"	e	enum:__anon24
+ACI_STATUS_ERROR_INTERNAL	include/aci.h	/^  ACI_STATUS_ERROR_INTERNAL                                 = 0x81,$/;"	e	enum:__anon24
+ACI_STATUS_ERROR_INVALID_DATA	include/aci.h	/^  ACI_STATUS_ERROR_INVALID_DATA                             = 0x87,$/;"	e	enum:__anon24
+ACI_STATUS_ERROR_INVALID_KEY_DATA	include/aci.h	/^  ACI_STATUS_ERROR_INVALID_KEY_DATA                         = 0x98,$/;"	e	enum:__anon24
+ACI_STATUS_ERROR_INVALID_KEY_SIZE	include/aci.h	/^  ACI_STATUS_ERROR_INVALID_KEY_SIZE                         = 0x97,$/;"	e	enum:__anon24
+ACI_STATUS_ERROR_INVALID_LENGTH	include/aci.h	/^  ACI_STATUS_ERROR_INVALID_LENGTH                           = 0x84,$/;"	e	enum:__anon24
+ACI_STATUS_ERROR_INVALID_PARAMETER	include/aci.h	/^  ACI_STATUS_ERROR_INVALID_PARAMETER                        = 0x85,$/;"	e	enum:__anon24
+ACI_STATUS_ERROR_INVALID_SEQ_NO	include/aci.h	/^  ACI_STATUS_ERROR_INVALID_SEQ_NO                           = 0x8A,$/;"	e	enum:__anon24
+ACI_STATUS_ERROR_LOCK_FAILED	include/aci.h	/^  ACI_STATUS_ERROR_LOCK_FAILED                              = 0x8C,$/;"	e	enum:__anon24
+ACI_STATUS_ERROR_PEER_ATT_ERROR	include/aci.h	/^  ACI_STATUS_ERROR_PEER_ATT_ERROR                           = 0x92,$/;"	e	enum:__anon24
+ACI_STATUS_ERROR_PEER_SMP_ERROR	include/aci.h	/^  ACI_STATUS_ERROR_PEER_SMP_ERROR                           = 0x94,$/;"	e	enum:__anon24
+ACI_STATUS_ERROR_PIPE_INVALID	include/aci.h	/^  ACI_STATUS_ERROR_PIPE_INVALID                             = 0x90,$/;"	e	enum:__anon24
+ACI_STATUS_ERROR_PIPE_STATE_INVALID	include/aci.h	/^  ACI_STATUS_ERROR_PIPE_STATE_INVALID                       = 0x96,$/;"	e	enum:__anon24
+ACI_STATUS_ERROR_PIPE_TYPE_INVALID	include/aci.h	/^  ACI_STATUS_ERROR_PIPE_TYPE_INVALID                        = 0x95,$/;"	e	enum:__anon24
+ACI_STATUS_ERROR_REJECTED	include/aci.h	/^  ACI_STATUS_ERROR_REJECTED                                 = 0x8E,$/;"	e	enum:__anon24
+ACI_STATUS_ERROR_SETUP_LOCKED	include/aci.h	/^  ACI_STATUS_ERROR_SETUP_LOCKED                             = 0x8B,$/;"	e	enum:__anon24
+ACI_STATUS_ERROR_UNKNOWN	include/aci.h	/^  ACI_STATUS_ERROR_UNKNOWN                                  = 0x80,$/;"	e	enum:__anon24
+ACI_STATUS_ERROR_UNSUPPORTED_SETUP_FORMAT	include/aci.h	/^  ACI_STATUS_ERROR_UNSUPPORTED_SETUP_FORMAT                 = 0x89,$/;"	e	enum:__anon24
+ACI_STATUS_EXTENDED	include/aci.h	/^  ACI_STATUS_EXTENDED                                       = 0x03,$/;"	e	enum:__anon24
+ACI_STATUS_RESERVED_END	include/aci.h	/^  ACI_STATUS_RESERVED_END                                   = 0xFF$/;"	e	enum:__anon24
+ACI_STATUS_RESERVED_START	include/aci.h	/^  ACI_STATUS_RESERVED_START                                 = 0xF0,$/;"	e	enum:__anon24
+ACI_STATUS_SUCCESS	include/aci.h	/^  ACI_STATUS_SUCCESS                                        = 0x00,$/;"	e	enum:__anon24
+ACI_STATUS_TRANSACTION_COMPLETE	include/aci.h	/^  ACI_STATUS_TRANSACTION_COMPLETE                           = 0x02,$/;"	e	enum:__anon24
+ACI_STATUS_TRANSACTION_CONTINUE	include/aci.h	/^  ACI_STATUS_TRANSACTION_CONTINUE                           = 0x01,$/;"	e	enum:__anon24
+ACI_STORE_INVALID	include/aci.h	/^  ACI_STORE_INVALID = 0x0,$/;"	e	enum:__anon5
+ACI_STORE_LOCAL	include/aci.h	/^  ACI_STORE_LOCAL= 0x01,$/;"	e	enum:__anon5
+ACI_STORE_REMOTE	include/aci.h	/^  ACI_STORE_REMOTE= 0x02$/;"	e	enum:__anon5
+ACI_TEST_MODE_DTM_ACI	include/aci.h	/^  ACI_TEST_MODE_DTM_ACI     = 0x02,$/;"	e	enum:__anon11
+ACI_TEST_MODE_DTM_UART	include/aci.h	/^  ACI_TEST_MODE_DTM_UART    = 0x01,$/;"	e	enum:__anon11
+ACI_TEST_MODE_EXIT	include/aci.h	/^  ACI_TEST_MODE_EXIT        = 0xFF$/;"	e	enum:__anon11
+ACI_TX	include/aci.h	/^  ACI_TX           = 0x0002,$/;"	e	enum:__anon6
+ACI_TX_ACK	include/aci.h	/^  ACI_TX_ACK       = 0x0004,$/;"	e	enum:__anon6
+ACI_TX_BROADCAST	include/aci.h	/^  ACI_TX_BROADCAST = 0x0001,$/;"	e	enum:__anon6
+ACI_TX_REQ	include/aci.h	/^  ACI_TX_REQ       = 0x0020,$/;"	e	enum:__anon6
+ACI_TX_SIGN	include/aci.h	/^  ACI_TX_SIGN      = 0x0100,$/;"	e	enum:__anon6
+ACI_VERSION	include/aci.h	/^#define ACI_VERSION /;"	d
+ACI_VS_UUID_128_MAX_COUNT	include/aci.h	/^#define ACI_VS_UUID_128_MAX_COUNT /;"	d
+ADESTO_AUX_AUTO_REWRITE_BUF_1	include/flash.h	/^#define ADESTO_AUX_AUTO_REWRITE_BUF_1 /;"	d
+ADESTO_AUX_AUTO_REWRITE_BUF_2	include/flash.h	/^#define ADESTO_AUX_AUTO_REWRITE_BUF_2 /;"	d
+ADESTO_AUX_DEEP_POWER_DOWN	include/flash.h	/^#define ADESTO_AUX_DEEP_POWER_DOWN /;"	d
+ADESTO_AUX_MEM_TO_BUF1_CMP	include/flash.h	/^#define ADESTO_AUX_MEM_TO_BUF1_CMP /;"	d
+ADESTO_AUX_MEM_TO_BUF1_XFER	include/flash.h	/^#define ADESTO_AUX_MEM_TO_BUF1_XFER /;"	d
+ADESTO_AUX_MEM_TO_BUF2_CMP	include/flash.h	/^#define ADESTO_AUX_MEM_TO_BUF2_CMP /;"	d
+ADESTO_AUX_MEM_TO_BUF2_XFER	include/flash.h	/^#define ADESTO_AUX_MEM_TO_BUF2_XFER /;"	d
+ADESTO_AUX_MFGR_DEVICE_READ	include/flash.h	/^#define ADESTO_AUX_MFGR_DEVICE_READ /;"	d
+ADESTO_AUX_RESUME_DEEP_POWER_DOWN	include/flash.h	/^#define ADESTO_AUX_RESUME_DEEP_POWER_DOWN /;"	d
+ADESTO_AUX_STATUS_REGISTER_READ	include/flash.h	/^#define ADESTO_AUX_STATUS_REGISTER_READ /;"	d
+ADESTO_AUX_ULTRA_DEEP_POWER_DOWN	include/flash.h	/^#define ADESTO_AUX_ULTRA_DEEP_POWER_DOWN /;"	d
+ADESTO_FLASH_BUS	include/pins.h	/^#define ADESTO_FLASH_BUS /;"	d
+ADESTO_FLASH_CS	include/pins.h	/^#define ADESTO_FLASH_CS /;"	d
+ADESTO_FLASH_CS_GPIO	include/pins.h	/^#define ADESTO_FLASH_CS_GPIO /;"	d
+ADESTO_FLASH_LSB	include/pins.h	/^#define ADESTO_FLASH_LSB /;"	d
+ADESTO_FLASH_RESET	include/pins.h	/^#define ADESTO_FLASH_RESET /;"	d
+ADESTO_FLASH_RESET_GPIO	include/pins.h	/^#define ADESTO_FLASH_RESET_GPIO /;"	d
+ADESTO_READ_BUFFER_1_HF	include/flash.h	/^#define ADESTO_READ_BUFFER_1_HF /;"	d
+ADESTO_READ_BUFFER_1_LF	include/flash.h	/^#define ADESTO_READ_BUFFER_1_LF /;"	d
+ADESTO_READ_BUFFER_2_HF	include/flash.h	/^#define ADESTO_READ_BUFFER_2_HF /;"	d
+ADESTO_READ_BUFFER_2_LF	include/flash.h	/^#define ADESTO_READ_BUFFER_2_LF /;"	d
+ADESTO_READ_CONTINUOUS_ARR_READ_HF1	include/flash.h	/^#define ADESTO_READ_CONTINUOUS_ARR_READ_HF1 /;"	d
+ADESTO_READ_CONTINUOUS_ARR_READ_HF2	include/flash.h	/^#define ADESTO_READ_CONTINUOUS_ARR_READ_HF2 /;"	d
+ADESTO_READ_CONTINUOUS_ARR_READ_LF	include/flash.h	/^#define ADESTO_READ_CONTINUOUS_ARR_READ_LF /;"	d
+ADESTO_READ_CONTINUOUS_ARR_READ_LP	include/flash.h	/^#define ADESTO_READ_CONTINUOUS_ARR_READ_LP /;"	d
+ADESTO_READ_MAIN_MEM_PAGE	include/flash.h	/^#define ADESTO_READ_MAIN_MEM_PAGE /;"	d
+ADESTO_WRITE_BLOCK_ERASE	include/flash.h	/^#define ADESTO_WRITE_BLOCK_ERASE /;"	d
+ADESTO_WRITE_BUFFER_1	include/flash.h	/^#define ADESTO_WRITE_BUFFER_1 /;"	d
+ADESTO_WRITE_BUFFER_1_TO_MEM_WO_ER	include/flash.h	/^#define ADESTO_WRITE_BUFFER_1_TO_MEM_WO_ER /;"	d
+ADESTO_WRITE_BUFFER_1_TO_MEM_W_ER	include/flash.h	/^#define ADESTO_WRITE_BUFFER_1_TO_MEM_W_ER /;"	d
+ADESTO_WRITE_BUFFER_2	include/flash.h	/^#define ADESTO_WRITE_BUFFER_2 /;"	d
+ADESTO_WRITE_BUFFER_2_TO_MEM_WO_ER	include/flash.h	/^#define ADESTO_WRITE_BUFFER_2_TO_MEM_WO_ER /;"	d
+ADESTO_WRITE_BUFFER_2_TO_MEM_W_ER	include/flash.h	/^#define ADESTO_WRITE_BUFFER_2_TO_MEM_W_ER /;"	d
+ADESTO_WRITE_BYTE_PAGE_THROUGH_BUF1_WO_ER	include/flash.h	/^#define ADESTO_WRITE_BYTE_PAGE_THROUGH_BUF1_WO_ER /;"	d
+ADESTO_WRITE_CHIP_ERASE_CMD1	include/flash.h	/^#define ADESTO_WRITE_CHIP_ERASE_CMD1 /;"	d
+ADESTO_WRITE_CHIP_ERASE_CMD2	include/flash.h	/^#define ADESTO_WRITE_CHIP_ERASE_CMD2 /;"	d
+ADESTO_WRITE_CHIP_ERASE_CMD3	include/flash.h	/^#define ADESTO_WRITE_CHIP_ERASE_CMD3 /;"	d
+ADESTO_WRITE_CHIP_ERASE_CMD4	include/flash.h	/^#define ADESTO_WRITE_CHIP_ERASE_CMD4 /;"	d
+ADESTO_WRITE_MEM_THROUGH_BUF1_W_ER	include/flash.h	/^#define ADESTO_WRITE_MEM_THROUGH_BUF1_W_ER /;"	d
+ADESTO_WRITE_MEM_THROUGH_BUF2_W_ER	include/flash.h	/^#define ADESTO_WRITE_MEM_THROUGH_BUF2_W_ER /;"	d
+ADESTO_WRITE_PAGE_ERASE	include/flash.h	/^#define ADESTO_WRITE_PAGE_ERASE /;"	d
+ADESTO_WRITE_PROGRAM_RESUME	include/flash.h	/^#define ADESTO_WRITE_PROGRAM_RESUME /;"	d
+ADESTO_WRITE_PROGRAM_SUSPEND	include/flash.h	/^#define ADESTO_WRITE_PROGRAM_SUSPEND /;"	d
+ADESTO_WRITE_SECTOR_ERASE	include/flash.h	/^#define ADESTO_WRITE_SECTOR_ERASE /;"	d
+ALARM_LEN	include/alarm.h	/^#define ALARM_LEN /;"	d
+ALERT_BUZZ	include/task_alert.h	/^  ALERT_BUZZ$/;"	e	enum:task_alert_event_e
+ALERT_HIGH_DECREASING	include/task_alert.h	/^  ALERT_HIGH_DECREASING,$/;"	e	enum:task_alert_event_e
+ALERT_HIGH_INCREASING	include/task_alert.h	/^  ALERT_HIGH_INCREASING,$/;"	e	enum:task_alert_event_e
+ALERT_LOW_BLINK	include/task_alert.h	/^  ALERT_LOW_BLINK,$/;"	e	enum:task_alert_event_e
+ALERT_LOW_OFF	include/task_alert.h	/^  ALERT_LOW_OFF,$/;"	e	enum:task_alert_event_e
+ALERT_LOW_ON	include/task_alert.h	/^  ALERT_LOW_ON,$/;"	e	enum:task_alert_event_e
+ALERT_LOW_PULSE	include/task_alert.h	/^  ALERT_LOW_PULSE,$/;"	e	enum:task_alert_event_e
+ALERT_VIBRATE	include/task_alert.h	/^  ALERT_VIBRATE,$/;"	e	enum:task_alert_event_e
+Alti_VERSION_MAJOR	include/config.h	/^#define Alti_VERSION_MAJOR /;"	d
+Alti_VERSION_MINOR	include/config.h	/^#define Alti_VERSION_MINOR /;"	d
+BATT_SENSE	include/pins.h	/^#define BATT_SENSE /;"	d
+BATT_SENSE_GPIO	include/pins.h	/^#define BATT_SENSE_GPIO /;"	d
+BBIO_PERIPH	src/init.c	/^#define BBIO_PERIPH(/;"	d	file:
+BBIO_SRAM	src/init.c	/^#define BBIO_SRAM(/;"	d	file:
+BEGIN_DECLS	src/init.c	/^# define BEGIN_DECLS /;"	d	file:
+BEGIN_DECLS	src/init.c	/^# define BEGIN_DECLS$/;"	d	file:
+BIT0	src/init.c	/^#define BIT0 /;"	d	file:
+BIT1	src/init.c	/^#define BIT1 /;"	d	file:
+BIT10	src/init.c	/^#define BIT10 /;"	d	file:
+BIT11	src/init.c	/^#define BIT11 /;"	d	file:
+BIT12	src/init.c	/^#define BIT12 /;"	d	file:
+BIT13	src/init.c	/^#define BIT13 /;"	d	file:
+BIT14	src/init.c	/^#define BIT14 /;"	d	file:
+BIT15	src/init.c	/^#define BIT15 /;"	d	file:
+BIT16	src/init.c	/^#define BIT16 /;"	d	file:
+BIT17	src/init.c	/^#define BIT17 /;"	d	file:
+BIT18	src/init.c	/^#define BIT18 /;"	d	file:
+BIT19	src/init.c	/^#define BIT19 /;"	d	file:
+BIT2	src/init.c	/^#define BIT2 /;"	d	file:
+BIT20	src/init.c	/^#define BIT20 /;"	d	file:
+BIT21	src/init.c	/^#define BIT21 /;"	d	file:
+BIT22	src/init.c	/^#define BIT22 /;"	d	file:
+BIT23	src/init.c	/^#define BIT23 /;"	d	file:
+BIT24	src/init.c	/^#define BIT24 /;"	d	file:
+BIT25	src/init.c	/^#define BIT25 /;"	d	file:
+BIT26	src/init.c	/^#define BIT26 /;"	d	file:
+BIT27	src/init.c	/^#define BIT27 /;"	d	file:
+BIT28	src/init.c	/^#define BIT28 /;"	d	file:
+BIT29	src/init.c	/^#define BIT29 /;"	d	file:
+BIT3	src/init.c	/^#define BIT3 /;"	d	file:
+BIT30	src/init.c	/^#define BIT30 /;"	d	file:
+BIT31	src/init.c	/^#define BIT31 /;"	d	file:
+BIT4	src/init.c	/^#define BIT4 /;"	d	file:
+BIT5	src/init.c	/^#define BIT5 /;"	d	file:
+BIT6	src/init.c	/^#define BIT6 /;"	d	file:
+BIT7	src/init.c	/^#define BIT7 /;"	d	file:
+BIT8	src/init.c	/^#define BIT8 /;"	d	file:
+BIT9	src/init.c	/^#define BIT9 /;"	d	file:
+BLE_EXTI_ISR_PRIORITY	include/config.h	/^#define BLE_EXTI_ISR_PRIORITY /;"	d
+BMX055_ACCEL	include/bmx055.h	/^  BMX055_ACCEL,$/;"	e	enum:bmx055_device_e
+BMX055_ACC_X_LSB_ADDR	include/bmx055.h	/^#define BMX055_ACC_X_LSB_ADDR /;"	d
+BMX055_ACC_X_MSB_ADDR	include/bmx055.h	/^#define BMX055_ACC_X_MSB_ADDR /;"	d
+BMX055_ACC_Y_LSB_ADDR	include/bmx055.h	/^#define BMX055_ACC_Y_LSB_ADDR /;"	d
+BMX055_ACC_Y_MSB_ADDR	include/bmx055.h	/^#define BMX055_ACC_Y_MSB_ADDR /;"	d
+BMX055_ACC_Z_LSB_ADDR	include/bmx055.h	/^#define BMX055_ACC_Z_LSB_ADDR /;"	d
+BMX055_ACC_Z_MSB_ADDR	include/bmx055.h	/^#define BMX055_ACC_Z_MSB_ADDR /;"	d
+BMX055_BUS	include/pins.h	/^#define BMX055_BUS /;"	d
+BMX055_EN_ACC	include/pins.h	/^#define BMX055_EN_ACC /;"	d
+BMX055_EN_ACC_GPIO	include/pins.h	/^#define BMX055_EN_ACC_GPIO /;"	d
+BMX055_EN_GYRO	include/pins.h	/^#define BMX055_EN_GYRO /;"	d
+BMX055_EN_GYRO_GPIO	include/pins.h	/^#define BMX055_EN_GYRO_GPIO /;"	d
+BMX055_EN_MAG	include/pins.h	/^#define BMX055_EN_MAG /;"	d
+BMX055_EN_MAG_GPIO	include/pins.h	/^#define BMX055_EN_MAG_GPIO /;"	d
+BMX055_GYRO	include/bmx055.h	/^  BMX055_GYRO,$/;"	e	enum:bmx055_device_e
+BMX055_LSB	include/pins.h	/^#define BMX055_LSB /;"	d
+BMX055_MAG	include/bmx055.h	/^  BMX055_MAG$/;"	e	enum:bmx055_device_e
+BTLE_DEVICE_ADDRESS_SIZE	include/aci.h	/^#define BTLE_DEVICE_ADDRESS_SIZE /;"	d
+BT_STORE	include/pins.h	/^#define BT_STORE /;"	d
+BT_STORE_GPIO	include/pins.h	/^#define BT_STORE_GPIO /;"	d
+BT_STORE_MISO	include/pins.h	/^#define BT_STORE_MISO /;"	d
+BT_STORE_MISO_GPIO	include/pins.h	/^#define BT_STORE_MISO_GPIO /;"	d
+BT_STORE_MOSI	include/pins.h	/^#define BT_STORE_MOSI /;"	d
+BT_STORE_MOSI_GPIO	include/pins.h	/^#define BT_STORE_MOSI_GPIO /;"	d
+BT_STORE_PINS	include/pins.h	/^#define BT_STORE_PINS /;"	d
+BT_STORE_SCK	include/pins.h	/^#define BT_STORE_SCK /;"	d
+BT_STORE_SCK_GPIO	include/pins.h	/^#define BT_STORE_SCK_GPIO /;"	d
+BYTEORDER_LSB	include/hal.h	/^#define BYTEORDER_LSB /;"	d
+BYTEORDER_MSB	include/hal.h	/^#define BYTEORDER_MSB /;"	d
+C	src/ms5611.c	/^} __attribute__((packed)) C;$/;"	v	typeref:struct:ms5611_C_s
+C0_reserved	src/ms5611.c	/^      coefficient_t C0_reserved;$/;"	m	struct:ms5611_C_s::__anon2::__anon3	file:
+C1_pressure_sensitivity	src/ms5611.c	/^      coefficient_t C1_pressure_sensitivity;$/;"	m	struct:ms5611_C_s::__anon2::__anon3	file:
+C2_pressure_offset	src/ms5611.c	/^      coefficient_t C2_pressure_offset;$/;"	m	struct:ms5611_C_s::__anon2::__anon3	file:
+C3_temp_press_sensitivity	src/ms5611.c	/^      coefficient_t C3_temp_press_sensitivity;$/;"	m	struct:ms5611_C_s::__anon2::__anon3	file:
+C4_temp_press_offset	src/ms5611.c	/^      coefficient_t C4_temp_press_offset;$/;"	m	struct:ms5611_C_s::__anon2::__anon3	file:
+C5_ref_temp	src/ms5611.c	/^      coefficient_t C5_ref_temp;$/;"	m	struct:ms5611_C_s::__anon2::__anon3	file:
+C6_temp_coefficient_temp	src/ms5611.c	/^      coefficient_t C6_temp_coefficient_temp;$/;"	m	struct:ms5611_C_s::__anon2::__anon3	file:
+C7_crc	src/ms5611.c	/^      coefficient_t C7_crc;$/;"	m	struct:ms5611_C_s::__anon2::__anon3	file:
+CHG	include/pins.h	/^#define CHG /;"	d
+CHG_GPIO	include/pins.h	/^#define CHG_GPIO /;"	d
+CONFIG_ADDR	include/flash.h	/^#define CONFIG_ADDR /;"	d
+CONFIG_ENABLE_LP_FILTER	include/features.h	/^#define CONFIG_ENABLE_LP_FILTER /;"	d
+CONFIG_FEATURES	include/features.h	/^#define CONFIG_FEATURES /;"	d
+CONFIG_TASK_ALERT_PRIORITY	include/FreeRTOSConfig.h	/^#define CONFIG_TASK_ALERT_PRIORITY /;"	d
+CONFIG_TASK_ALERT_QUEUE_LEN	include/FreeRTOSConfig.h	/^#define CONFIG_TASK_ALERT_QUEUE_LEN /;"	d
+CONFIG_TASK_ALERT_STACK_DEPTH	include/FreeRTOSConfig.h	/^#  define CONFIG_TASK_ALERT_STACK_DEPTH /;"	d
+CONFIG_TASK_ALERT_STACK_DEPTH	include/FreeRTOSConfig.h	/^#  undef CONFIG_TASK_ALERT_STACK_DEPTH$/;"	d
+CONFIG_TASK_ALERT_STACK_DEPTH	include/FreeRTOSConfig.h	/^#define CONFIG_TASK_ALERT_STACK_DEPTH /;"	d
+CONFIG_TASK_BLE_PRIORITY	include/FreeRTOSConfig.h	/^#define CONFIG_TASK_BLE_PRIORITY /;"	d
+CONFIG_TASK_BLE_QUEUE_LEN	include/FreeRTOSConfig.h	/^#define CONFIG_TASK_BLE_QUEUE_LEN /;"	d
+CONFIG_TASK_BLE_STACK_DEPTH	include/FreeRTOSConfig.h	/^#  define CONFIG_TASK_BLE_STACK_DEPTH /;"	d
+CONFIG_TASK_BLE_STACK_DEPTH	include/FreeRTOSConfig.h	/^#  undef  CONFIG_TASK_BLE_STACK_DEPTH$/;"	d
+CONFIG_TASK_BLE_STACK_DEPTH	include/FreeRTOSConfig.h	/^#define CONFIG_TASK_BLE_STACK_DEPTH /;"	d
+CONFIG_TASK_GPS_PRIORITY	include/FreeRTOSConfig.h	/^#define CONFIG_TASK_GPS_PRIORITY /;"	d
+CONFIG_TASK_GPS_QUEUE_LEN	include/FreeRTOSConfig.h	/^#define CONFIG_TASK_GPS_QUEUE_LEN /;"	d
+CONFIG_TASK_GPS_STACK_DEPTH	include/FreeRTOSConfig.h	/^#  define CONFIG_TASK_GPS_STACK_DEPTH /;"	d
+CONFIG_TASK_GPS_STACK_DEPTH	include/FreeRTOSConfig.h	/^#  undef CONFIG_TASK_GPS_STACK_DEPTH$/;"	d
+CONFIG_TASK_GPS_STACK_DEPTH	include/FreeRTOSConfig.h	/^#define CONFIG_TASK_GPS_STACK_DEPTH /;"	d
+CONFIG_TASK_MAIN_PRIORITY	include/FreeRTOSConfig.h	/^#define CONFIG_TASK_MAIN_PRIORITY /;"	d
+CONFIG_TASK_MAIN_QUEUE_LEN	include/FreeRTOSConfig.h	/^#define CONFIG_TASK_MAIN_QUEUE_LEN /;"	d
+CONFIG_TASK_MAIN_STACK_DEPTH	include/FreeRTOSConfig.h	/^#  define CONFIG_TASK_MAIN_STACK_DEPTH /;"	d
+CONFIG_TASK_MAIN_STACK_DEPTH	include/FreeRTOSConfig.h	/^#  undef CONFIG_TASK_MAIN_STACK_DEPTH$/;"	d
+CONFIG_TASK_MAIN_STACK_DEPTH	include/FreeRTOSConfig.h	/^#define CONFIG_TASK_MAIN_STACK_DEPTH /;"	d
+CONFIG_TASK_SENSOR_PRIORITY	include/FreeRTOSConfig.h	/^#define CONFIG_TASK_SENSOR_PRIORITY /;"	d
+CONFIG_TASK_SENSOR_QUEUE_LEN	include/FreeRTOSConfig.h	/^#define CONFIG_TASK_SENSOR_QUEUE_LEN /;"	d
+CONFIG_TASK_SENSOR_STACK_DEPTH	include/FreeRTOSConfig.h	/^#  define CONFIG_TASK_SENSOR_STACK_DEPTH /;"	d
+CONFIG_TASK_SENSOR_STACK_DEPTH	include/FreeRTOSConfig.h	/^#  undef CONFIG_TASK_SENSOR_STACK_DEPTH$/;"	d
+CONFIG_TASK_SENSOR_STACK_DEPTH	include/FreeRTOSConfig.h	/^#define CONFIG_TASK_SENSOR_STACK_DEPTH /;"	d
+CONFIG_UBLOX_BAUD_RATE	include/features.h	/^#define CONFIG_UBLOX_BAUD_RATE /;"	d
+CONFIG_USE_ACCEL	include/features.h	/^#define CONFIG_USE_ACCEL /;"	d
+CONFIG_USE_COUNTERS	include/features.h	/^#define CONFIG_USE_COUNTERS /;"	d
+CONFIG_USE_GPS	include/features.h	/^#define CONFIG_USE_GPS /;"	d
+CONFIG_USE_GYRO	include/features.h	/^#define CONFIG_USE_GYRO /;"	d
+CONFIG_USE_MAG	include/features.h	/^#define CONFIG_USE_MAG /;"	d
+CONFIG_USE_USART_ISR	include/features.h	/^#  define CONFIG_USE_USART_ISR /;"	d
+CONFIG_USE_USART_ISR	include/features.h	/^#  undef CONFIG_USE_USART_ISR$/;"	d
+CONFIG_USE_USART_ISR	include/features.h	/^#define CONFIG_USE_USART_ISR /;"	d
+COUNTER_EVENTS_PROCESSED	include/counters.h	/^  COUNTER_EVENTS_PROCESSED,$/;"	e	enum:counter_name_e
+COUNTER_EVENTS_RECEIVED	include/counters.h	/^  COUNTER_EVENTS_RECEIVED,$/;"	e	enum:counter_name_e
+COUNTER_GIVEN	include/counters.h	/^  COUNTER_GIVEN,$/;"	e	enum:counter_name_e
+COUNTER_LAST	include/counters.h	/^  COUNTER_LAST$/;"	e	enum:counter_name_e
+CopyDataInit	src/startup_stm32l1xx_hd.s	/^CopyDataInit:$/;"	l
+DEBUG_BASE	src/init.c	/^#define DEBUG_BASE /;"	d	file:
+DEFAULT_TASK_PRIORITY	include/FreeRTOSConfig.h	/^#define DEFAULT_TASK_PRIORITY /;"	d
+DIR_X	include/bmx055.h	/^  DIR_X,$/;"	e	enum:direction_e
+DIR_Y	include/bmx055.h	/^  DIR_Y,$/;"	e	enum:direction_e
+DIR_Z	include/bmx055.h	/^  DIR_Z$/;"	e	enum:direction_e
+DWT_BASE	src/init.c	/^#define DWT_BASE /;"	d	file:
+DWT_CYCCNT	include/util.h	/^#define DWT_CYCCNT /;"	d
+DYN_MODEL_AIRBORNE_1G	include/ublox.h	/^  DYN_MODEL_AIRBORNE_1G = 6,$/;"	e	enum:dynamic_platform_model_e
+DYN_MODEL_AIRBORNE_2G	include/ublox.h	/^  DYN_MODEL_AIRBORNE_2G = 7,$/;"	e	enum:dynamic_platform_model_e
+DYN_MODEL_AIRBORNE_4G	include/ublox.h	/^  DYN_MODEL_AIRBORNE_4G = 8$/;"	e	enum:dynamic_platform_model_e
+DYN_MODEL_AUTOMOTIVE	include/ublox.h	/^  DYN_MODEL_AUTOMOTIVE = 4,$/;"	e	enum:dynamic_platform_model_e
+DYN_MODEL_PEDESTRIAN	include/ublox.h	/^  DYN_MODEL_PEDESTRIAN = 3,$/;"	e	enum:dynamic_platform_model_e
+DYN_MODEL_PORTABLE	include/ublox.h	/^  DYN_MODEL_PORTABLE = 0,$/;"	e	enum:dynamic_platform_model_e
+DYN_MODEL_SEA	include/ublox.h	/^  DYN_MODEL_SEA = 5,$/;"	e	enum:dynamic_platform_model_e
+DYN_MODEL_STATIONARY	include/ublox.h	/^  DYN_MODEL_STATIONARY = 2,$/;"	e	enum:dynamic_platform_model_e
+Default_Handler	src/startup_stm32l1xx_hd.s	/^Default_Handler:$/;"	l
+END_DECLS	src/init.c	/^# define END_DECLS /;"	d	file:
+END_DECLS	src/init.c	/^# define END_DECLS$/;"	d	file:
+EVENT_HEADER_SIZE	include/sample.h	/^#define EVENT_HEADER_SIZE /;"	d
+EVT_GPS_CFG	include/task_gps.h	/^  EVT_GPS_CFG,$/;"	e	enum:gps_event_t
+EVT_GPS_RESET	include/task_gps.h	/^  EVT_GPS_RESET,$/;"	e	enum:gps_event_t
+EVT_GPS_SLEEP	include/task_gps.h	/^  EVT_GPS_SLEEP,$/;"	e	enum:gps_event_t
+EVT_GPS_START	include/task_gps.h	/^  EVT_GPS_START,$/;"	e	enum:gps_event_t
+EVT_GPS_UBX_WAITING	include/task_gps.h	/^  EVT_GPS_UBX_WAITING,$/;"	e	enum:gps_event_t
+EVT_GPS_UPDATE_RTC	include/task_gps.h	/^  EVT_GPS_UPDATE_RTC$/;"	e	enum:gps_event_t
+EXIT_CRIT_AND_CONTINUE	src/ublox_isr.c	/^#define EXIT_CRIT_AND_CONTINUE /;"	d	file:
+FILTER_LEN	include/filter.h	/^#define FILTER_LEN /;"	d
+FIXTYPE_2D_FIX	include/ublox.h	/^  FIXTYPE_2D_FIX,$/;"	e	enum:ublox_fixtype_e
+FIXTYPE_3D_FIX	include/ublox.h	/^  FIXTYPE_3D_FIX,$/;"	e	enum:ublox_fixtype_e
+FIXTYPE_DEAD_RECKONING	include/ublox.h	/^  FIXTYPE_DEAD_RECKONING,$/;"	e	enum:ublox_fixtype_e
+FIXTYPE_GPS_DEAD_RECKONING	include/ublox.h	/^  FIXTYPE_GPS_DEAD_RECKONING,$/;"	e	enum:ublox_fixtype_e
+FIXTYPE_NO_FIX	include/ublox.h	/^  FIXTYPE_NO_FIX = 0x00,$/;"	e	enum:ublox_fixtype_e
+FIXTYPE_TIME_ONLY	include/ublox.h	/^  FIXTYPE_TIME_ONLY$/;"	e	enum:ublox_fixtype_e
+FPB_BASE	src/init.c	/^#define FPB_BASE /;"	d	file:
+FREERTOS_CONFIG_H	include/FreeRTOSConfig.h	/^#define FREERTOS_CONFIG_H$/;"	d
+FillZerobss	src/startup_stm32l1xx_hd.s	/^FillZerobss:$/;"	l
+GAP_PPCP_CONN_TIMEOUT	include/services.h	/^#define GAP_PPCP_CONN_TIMEOUT /;"	d
+GAP_PPCP_MAX_CONN_INT	include/services.h	/^#define GAP_PPCP_MAX_CONN_INT /;"	d
+GAP_PPCP_MIN_CONN_INT	include/services.h	/^#define GAP_PPCP_MIN_CONN_INT /;"	d
+GAP_PPCP_SLAVE_LATENCY	include/services.h	/^#define GAP_PPCP_SLAVE_LATENCY /;"	d
+GET_ZT_STRING	src/ublox.c	/^#define GET_ZT_STRING(/;"	d	file:
+GET_ZT_STRING	src/ublox.c	/^#undef GET_ZT_STRING$/;"	d	file:
+GLOBAL_EVT_GPS_FINISH	include/events.h	/^  GLOBAL_EVT_GPS_FINISH,$/;"	e	enum:event_type_e
+GLOBAL_EVT_GPS_START	include/events.h	/^  GLOBAL_EVT_GPS_START,$/;"	e	enum:event_type_e
+GLOBAL_EVT_GPS_STARTED	include/events.h	/^  GLOBAL_EVT_GPS_STARTED,$/;"	e	enum:event_type_e
+GLOBAL_EVT_LAST	include/events.h	/^  GLOBAL_EVT_LAST$/;"	e	enum:event_type_e
+GLOBAL_EVT_NRF8001_EVENT	include/events.h	/^  GLOBAL_EVT_NRF8001_EVENT,$/;"	e	enum:event_type_e
+GLOBAL_EVT_NRF8001_FIRST	include/events.h	/^  GLOBAL_EVT_NRF8001_FIRST,$/;"	e	enum:event_type_e
+GLOBAL_EVT_NRF8001_LAST	include/events.h	/^  GLOBAL_EVT_NRF8001_LAST,$/;"	e	enum:event_type_e
+GLOBAL_EVT_NRF8001_PIPES_CHANGED	include/events.h	/^  GLOBAL_EVT_NRF8001_PIPES_CHANGED,$/;"	e	enum:event_type_e
+GLOBAL_EVT_NRF8001_RDY	include/events.h	/^  GLOBAL_EVT_NRF8001_RDY,$/;"	e	enum:event_type_e
+GLOBAL_EVT_RESET	include/events.h	/^  GLOBAL_EVT_RESET,$/;"	e	enum:event_type_e
+GLOBAL_EVT_SENSOR_ACCEL	include/events.h	/^  GLOBAL_EVT_SENSOR_ACCEL,$/;"	e	enum:event_type_e
+GLOBAL_EVT_SENSOR_BARO	include/events.h	/^  GLOBAL_EVT_SENSOR_BARO,$/;"	e	enum:event_type_e
+GLOBAL_EVT_SENSOR_GPS	include/events.h	/^  GLOBAL_EVT_SENSOR_GPS,$/;"	e	enum:event_type_e
+GLOBAL_EVT_SENSOR_GYRO	include/events.h	/^  GLOBAL_EVT_SENSOR_GYRO,$/;"	e	enum:event_type_e
+GLOBAL_EVT_SENSOR_MAG	include/events.h	/^  GLOBAL_EVT_SENSOR_MAG,$/;"	e	enum:event_type_e
+GLOBAL_EVT_SHOULD_SAMPLE	include/events.h	/^  GLOBAL_EVT_SHOULD_SAMPLE,$/;"	e	enum:event_type_e
+GLOBAL_STATE_ACTIVE	include/state.h	/^  GLOBAL_STATE_ACTIVE$/;"	e	enum:global_state_e
+GLOBAL_STATE_BLE_SETUP	include/state.h	/^  GLOBAL_STATE_BLE_SETUP,$/;"	e	enum:global_state_e
+GLOBAL_STATE_PERIODIC	include/state.h	/^  GLOBAL_STATE_PERIODIC,$/;"	e	enum:global_state_e
+GLOBAL_STATE_RESET	include/state.h	/^  GLOBAL_STATE_RESET,$/;"	e	enum:global_state_e
+GLOBAL_STATE_SLEEP	include/state.h	/^  GLOBAL_STATE_SLEEP,$/;"	e	enum:global_state_e
+GPIO	include/empty_pins.h	/^#define GPIO(/;"	d
+GPIO	include/stm32l1_opencm3_pins.h	/^#define GPIO(/;"	d
+GPIO	include/stm32l1_stdperiphlib_pins.h	/^#define GPIO(/;"	d
+GPIO0	include/empty_pins.h	/^#define GPIO0 /;"	d
+GPIO1	include/empty_pins.h	/^#define GPIO1 /;"	d
+GPIO10	include/empty_pins.h	/^#define GPIO10 /;"	d
+GPIO11	include/empty_pins.h	/^#define GPIO11 /;"	d
+GPIO12	include/empty_pins.h	/^#define GPIO12 /;"	d
+GPIO13	include/empty_pins.h	/^#define GPIO13 /;"	d
+GPIO2	include/empty_pins.h	/^#define GPIO2 /;"	d
+GPIO3	include/empty_pins.h	/^#define GPIO3 /;"	d
+GPIO4	include/empty_pins.h	/^#define GPIO4 /;"	d
+GPIO5	include/empty_pins.h	/^#define GPIO5 /;"	d
+GPIO6	include/empty_pins.h	/^#define GPIO6 /;"	d
+GPIO7	include/empty_pins.h	/^#define GPIO7 /;"	d
+GPIO8	include/empty_pins.h	/^#define GPIO8 /;"	d
+GPIO9	include/empty_pins.h	/^#define GPIO9 /;"	d
+GPIOA	include/empty_pins.h	/^#define GPIOA /;"	d
+GPIOB	include/empty_pins.h	/^#define GPIOB /;"	d
+GPIOC	include/empty_pins.h	/^#define GPIOC /;"	d
+GPIOD	include/empty_pins.h	/^#define GPIOD /;"	d
+GPIOE	include/empty_pins.h	/^#define GPIOE /;"	d
+GPIOG	include/empty_pins.h	/^#define GPIOG /;"	d
+GPIOH	include/empty_pins.h	/^#define GPIOH /;"	d
+GPIO_AF	include/stm32l1_opencm3_pins.h	/^#define GPIO_AF(/;"	d
+GPIO_AF	include/stm32l1_stdperiphlib_pins.h	/^#define GPIO_AF(/;"	d
+GPIO_PORT_START	include/empty_pins.h	/^#define GPIO_PORT_START /;"	d
+GPIO_START	include/empty_pins.h	/^#define GPIO_START /;"	d
+GYRO	src/bmx055.c	/^  GYRO$/;"	e	enum:sensor_e	file:
+HDR_CHKSM_LENGTH	include/ublox.h	/^#define HDR_CHKSM_LENGTH /;"	d
+I1	include/ublox.h	/^typedef int8_t I1;$/;"	t
+I2	include/ublox.h	/^typedef int16_t I2;$/;"	t
+I4	include/ublox.h	/^typedef int32_t I4;$/;"	t
+ID_BASE	src/init.c	/^#define ID_BASE /;"	d	file:
+INCLUDE_eTaskGetState	include/FreeRTOSConfig.h	/^#define INCLUDE_eTaskGetState /;"	d
+INCLUDE_pcTaskGetTaskName	include/FreeRTOSConfig.h	/^#define INCLUDE_pcTaskGetTaskName /;"	d
+INCLUDE_uxTaskGetStackHighWaterMark	include/FreeRTOSConfig.h	/^#define INCLUDE_uxTaskGetStackHighWaterMark /;"	d
+INCLUDE_uxTaskPriorityGet	include/FreeRTOSConfig.h	/^#define INCLUDE_uxTaskPriorityGet /;"	d
+INCLUDE_vTaskDelay	include/FreeRTOSConfig.h	/^#define INCLUDE_vTaskDelay /;"	d
+INCLUDE_vTaskDelayUntil	include/FreeRTOSConfig.h	/^#define INCLUDE_vTaskDelayUntil /;"	d
+INCLUDE_vTaskDelete	include/FreeRTOSConfig.h	/^#define INCLUDE_vTaskDelete /;"	d
+INCLUDE_vTaskPrioritySet	include/FreeRTOSConfig.h	/^#define INCLUDE_vTaskPrioritySet /;"	d
+INCLUDE_vTaskSuspend	include/FreeRTOSConfig.h	/^#define INCLUDE_vTaskSuspend /;"	d
+INCLUDE_xEventGroupSetBitFromISR	include/FreeRTOSConfig.h	/^#define INCLUDE_xEventGroupSetBitFromISR /;"	d
+INCLUDE_xResumeFromISR	include/FreeRTOSConfig.h	/^#define INCLUDE_xResumeFromISR /;"	d
+INCLUDE_xTaskGetCurrentTaskHandle	include/FreeRTOSConfig.h	/^#define INCLUDE_xTaskGetCurrentTaskHandle /;"	d
+INCLUDE_xTaskGetIdleTaskHandle	include/FreeRTOSConfig.h	/^#define INCLUDE_xTaskGetIdleTaskHandle /;"	d
+INCLUDE_xTaskGetSchedulerState	include/FreeRTOSConfig.h	/^#define INCLUDE_xTaskGetSchedulerState /;"	d
+INCLUDE_xTimerGetTimerDaemonTaskHandle	include/FreeRTOSConfig.h	/^#define INCLUDE_xTimerGetTimerDaemonTaskHandle /;"	d
+INCLUDE_xTimerPendFunctionCall	include/FreeRTOSConfig.h	/^#define INCLUDE_xTimerPendFunctionCall /;"	d
+IRQ_HANDLERS	src/init.c	/^#define IRQ_HANDLERS /;"	d	file:
+IS	src/task_gps.c	/^#define IS(/;"	d	file:
+ITM_BASE	src/init.c	/^#define ITM_BASE /;"	d	file:
+ITR_BASE	src/init.c	/^#define ITR_BASE /;"	d	file:
+Infinite_Loop	src/startup_stm32l1xx_hd.s	/^Infinite_Loop:$/;"	l
+LIBOPENCM3_DEPRECATED	src/init.c	/^#		define LIBOPENCM3_DEPRECATED(/;"	d	file:
+LIBOPENCM3_DEPRECATED	src/init.c	/^#	define LIBOPENCM3_DEPRECATED(/;"	d	file:
+LoopCopyDataInit	src/startup_stm32l1xx_hd.s	/^LoopCopyDataInit:$/;"	l
+LoopFillZerobss	src/startup_stm32l1xx_hd.s	/^LoopFillZerobss:$/;"	l
+MAG	src/bmx055.c	/^  MAG,$/;"	e	enum:sensor_e	file:
+MAIN_EVENT_LOOP_TIMEOUT	include/config.h	/^#define MAIN_EVENT_LOOP_TIMEOUT /;"	d
+MAX	include/util.h	/^#define MAX(/;"	d
+MAX_RECEIVED	src/ublox.c	/^#define MAX_RECEIVED /;"	d	file:
+MAX_RETRIES	src/ublox.c	/^#define MAX_RETRIES /;"	d	file:
+MIN	include/util.h	/^#define MIN(/;"	d
+MMIO16	src/init.c	/^#define MMIO16(/;"	d	file:
+MMIO32	src/init.c	/^#define MMIO32(/;"	d	file:
+MMIO64	src/init.c	/^#define MMIO64(/;"	d	file:
+MMIO8	src/init.c	/^#define MMIO8(/;"	d	file:
+MODE_CHARLEN_MASK	include/ublox.h	/^#define MODE_CHARLEN_MASK /;"	d
+MODE_CHARLEN_SHIFT	include/ublox.h	/^#define MODE_CHARLEN_SHIFT /;"	d
+MODE_NSTOPBITS_MASK	include/ublox.h	/^#define MODE_NSTOPBITS_MASK /;"	d
+MODE_NSTOPBITS_SHIFT	include/ublox.h	/^#define MODE_NSTOPBITS_SHIFT /;"	d
+MODE_PARITY_MASK	include/ublox.h	/^#define MODE_PARITY_MASK /;"	d
+MODE_PARITY_SHIFT	include/ublox.h	/^#define MODE_PARITY_SHIFT /;"	d
+MPU_BASE	src/init.c	/^#define MPU_BASE /;"	d	file:
+MS5611_ADDR	include/ms5611.h	/^#define MS5611_ADDR /;"	d
+MS5611_BUS	include/pins.h	/^#define MS5611_BUS /;"	d
+MS5611_CMD_ADC_READ	include/ms5611.h	/^#define MS5611_CMD_ADC_READ /;"	d
+MS5611_CMD_D1_BASE	include/ms5611.h	/^#define MS5611_CMD_D1_BASE /;"	d
+MS5611_CMD_D2_BASE	include/ms5611.h	/^#define MS5611_CMD_D2_BASE /;"	d
+MS5611_CMD_PROM_READ_BASE	include/ms5611.h	/^#define MS5611_CMD_PROM_READ_BASE /;"	d
+MS5611_CMD_PROM_READ_LAST	include/ms5611.h	/^#define MS5611_CMD_PROM_READ_LAST /;"	d
+MS5611_CMD_RESET	include/ms5611.h	/^#define MS5611_CMD_RESET /;"	d
+MS5611_EN	include/pins.h	/^#define MS5611_EN /;"	d
+MS5611_EN_GPIO	include/pins.h	/^#define MS5611_EN_GPIO /;"	d
+MS5611_LSB	include/pins.h	/^#define MS5611_LSB /;"	d
+MS5611_PROM_CRC_MASK	include/ms5611.h	/^#define MS5611_PROM_CRC_MASK /;"	d
+MS5611_USE_COMPENSATION	include/ms5611.h	/^#define MS5611_USE_COMPENSATION /;"	d
+MS5611_VERIFY_RECVD	include/ms5611.h	/^#define MS5611_VERIFY_RECVD /;"	d
+MSG_CLASS_ACK	include/ublox.h	/^#define MSG_CLASS_ACK /;"	d
+MSG_CLASS_AID	include/ublox.h	/^#define MSG_CLASS_AID /;"	d
+MSG_CLASS_CFG	include/ublox.h	/^#define MSG_CLASS_CFG /;"	d
+MSG_CLASS_ESF	include/ublox.h	/^#define MSG_CLASS_ESF /;"	d
+MSG_CLASS_INF	include/ublox.h	/^#define MSG_CLASS_INF /;"	d
+MSG_CLASS_MON	include/ublox.h	/^#define MSG_CLASS_MON /;"	d
+MSG_CLASS_NAV	include/ublox.h	/^#define MSG_CLASS_NAV /;"	d
+MSG_CLASS_RXM	include/ublox.h	/^#define MSG_CLASS_RXM /;"	d
+MSG_CLASS_TIM	include/ublox.h	/^#define MSG_CLASS_TIM /;"	d
+MSG_ID_ACK_ACK	include/ublox.h	/^    #define MSG_ID_ACK_ACK /;"	d
+MSG_ID_ACK_NAK	include/ublox.h	/^    #define MSG_ID_ACK_NAK /;"	d
+MSG_ID_AID_ALM	include/ublox.h	/^    #define MSG_ID_AID_ALM /;"	d
+MSG_ID_AID_ALP	include/ublox.h	/^    #define MSG_ID_AID_ALP /;"	d
+MSG_ID_AID_ALPSRV	include/ublox.h	/^    #define MSG_ID_AID_ALPSRV /;"	d
+MSG_ID_AID_AOP	include/ublox.h	/^    #define MSG_ID_AID_AOP /;"	d
+MSG_ID_AID_DATA	include/ublox.h	/^    #define MSG_ID_AID_DATA /;"	d
+MSG_ID_AID_EPH	include/ublox.h	/^    #define MSG_ID_AID_EPH /;"	d
+MSG_ID_AID_HUI	include/ublox.h	/^    #define MSG_ID_AID_HUI /;"	d
+MSG_ID_AID_INI	include/ublox.h	/^    #define MSG_ID_AID_INI /;"	d
+MSG_ID_AID_REQ	include/ublox.h	/^    #define MSG_ID_AID_REQ /;"	d
+MSG_ID_CFG_ANT	include/ublox.h	/^    #define MSG_ID_CFG_ANT /;"	d
+MSG_ID_CFG_CNFGR	include/ublox.h	/^    #define MSG_ID_CFG_CNFGR /;"	d
+MSG_ID_CFG_DAT	include/ublox.h	/^    #define MSG_ID_CFG_DAT /;"	d
+MSG_ID_CFG_EKF	include/ublox.h	/^    #define MSG_ID_CFG_EKF /;"	d
+MSG_ID_CFG_ESFGWT	include/ublox.h	/^    #define MSG_ID_CFG_ESFGWT /;"	d
+MSG_ID_CFG_FXN	include/ublox.h	/^    #define MSG_ID_CFG_FXN /;"	d
+MSG_ID_CFG_ITFM	include/ublox.h	/^    #define MSG_ID_CFG_ITFM /;"	d
+MSG_ID_CFG_MSG	include/ublox.h	/^    #define MSG_ID_CFG_MSG /;"	d
+MSG_ID_CFG_NAV5	include/ublox.h	/^    #define MSG_ID_CFG_NAV5 /;"	d
+MSG_ID_CFG_NAVX5	include/ublox.h	/^    #define MSG_ID_CFG_NAVX5 /;"	d
+MSG_ID_CFG_NMEA	include/ublox.h	/^    #define MSG_ID_CFG_NMEA /;"	d
+MSG_ID_CFG_NVS	include/ublox.h	/^    #define MSG_ID_CFG_NVS /;"	d
+MSG_ID_CFG_PM	include/ublox.h	/^    #define MSG_ID_CFG_PM /;"	d
+MSG_ID_CFG_PM2	include/ublox.h	/^    #define MSG_ID_CFG_PM2 /;"	d
+MSG_ID_CFG_PRT	include/ublox.h	/^    #define MSG_ID_CFG_PRT /;"	d
+MSG_ID_CFG_RATE	include/ublox.h	/^    #define MSG_ID_CFG_RATE /;"	d
+MSG_ID_CFG_RINV	include/ublox.h	/^    #define MSG_ID_CFG_RINV /;"	d
+MSG_ID_CFG_RST	include/ublox.h	/^    #define MSG_ID_CFG_RST /;"	d
+MSG_ID_CFG_RXM	include/ublox.h	/^    #define MSG_ID_CFG_RXM /;"	d
+MSG_ID_CFG_SBAS	include/ublox.h	/^    #define MSG_ID_CFG_SBAS /;"	d
+MSG_ID_CFG_TMODE	include/ublox.h	/^    #define MSG_ID_CFG_TMODE /;"	d
+MSG_ID_CFG_TMODE2	include/ublox.h	/^    #define MSG_ID_CFG_TMODE2 /;"	d
+MSG_ID_CFG_TP	include/ublox.h	/^    #define MSG_ID_CFG_TP /;"	d
+MSG_ID_CFG_TP5	include/ublox.h	/^    #define MSG_ID_CFG_TP5 /;"	d
+MSG_ID_CFG_USB	include/ublox.h	/^    #define MSG_ID_CFG_USB /;"	d
+MSG_ID_ESF_MEAS	include/ublox.h	/^    #define MSG_ID_ESF_MEAS /;"	d
+MSG_ID_ESF_STATUS	include/ublox.h	/^    #define MSG_ID_ESF_STATUS /;"	d
+MSG_ID_INF_DEBUG	include/ublox.h	/^    #define MSG_ID_INF_DEBUG /;"	d
+MSG_ID_INF_ERROR	include/ublox.h	/^    #define MSG_ID_INF_ERROR /;"	d
+MSG_ID_INF_NOTICE	include/ublox.h	/^    #define MSG_ID_INF_NOTICE /;"	d
+MSG_ID_INF_TEST	include/ublox.h	/^    #define MSG_ID_INF_TEST /;"	d
+MSG_ID_INF_WARNING	include/ublox.h	/^    #define MSG_ID_INF_WARNING /;"	d
+MSG_ID_MON_HW	include/ublox.h	/^    #define MSG_ID_MON_HW /;"	d
+MSG_ID_MON_HW2	include/ublox.h	/^    #define MSG_ID_MON_HW2 /;"	d
+MSG_ID_MON_IO	include/ublox.h	/^    #define MSG_ID_MON_IO /;"	d
+MSG_ID_MON_MSGPP	include/ublox.h	/^    #define MSG_ID_MON_MSGPP /;"	d
+MSG_ID_MON_RXBUF	include/ublox.h	/^    #define MSG_ID_MON_RXBUF /;"	d
+MSG_ID_MON_RXR	include/ublox.h	/^    #define MSG_ID_MON_RXR /;"	d
+MSG_ID_MON_TXBUF	include/ublox.h	/^    #define MSG_ID_MON_TXBUF /;"	d
+MSG_ID_MON_VER	include/ublox.h	/^    #define MSG_ID_MON_VER /;"	d
+MSG_ID_NAV_AOPSTATUS	include/ublox.h	/^    #define MSG_ID_NAV_AOPSTATUS /;"	d
+MSG_ID_NAV_CLOCK	include/ublox.h	/^    #define MSG_ID_NAV_CLOCK /;"	d
+MSG_ID_NAV_DGPS	include/ublox.h	/^    #define MSG_ID_NAV_DGPS /;"	d
+MSG_ID_NAV_DOP	include/ublox.h	/^    #define MSG_ID_NAV_DOP /;"	d
+MSG_ID_NAV_EKFSTATUS	include/ublox.h	/^    #define MSG_ID_NAV_EKFSTATUS /;"	d
+MSG_ID_NAV_POSECEF	include/ublox.h	/^    #define MSG_ID_NAV_POSECEF /;"	d
+MSG_ID_NAV_POSLLH	include/ublox.h	/^    #define MSG_ID_NAV_POSLLH /;"	d
+MSG_ID_NAV_PVT	include/ublox.h	/^    #define MSG_ID_NAV_PVT /;"	d
+MSG_ID_NAV_SBAS	include/ublox.h	/^    #define MSG_ID_NAV_SBAS /;"	d
+MSG_ID_NAV_SOL	include/ublox.h	/^    #define MSG_ID_NAV_SOL /;"	d
+MSG_ID_NAV_STATUS	include/ublox.h	/^    #define MSG_ID_NAV_STATUS /;"	d
+MSG_ID_NAV_SVINFO	include/ublox.h	/^    #define MSG_ID_NAV_SVINFO /;"	d
+MSG_ID_NAV_TIMEGPS	include/ublox.h	/^    #define MSG_ID_NAV_TIMEGPS /;"	d
+MSG_ID_NAV_TIMEUTC	include/ublox.h	/^    #define MSG_ID_NAV_TIMEUTC /;"	d
+MSG_ID_NAV_VELECEF	include/ublox.h	/^    #define MSG_ID_NAV_VELECEF /;"	d
+MSG_ID_NAV_VELNED	include/ublox.h	/^    #define MSG_ID_NAV_VELNED /;"	d
+MSG_ID_RXM_ALM	include/ublox.h	/^    #define MSG_ID_RXM_ALM /;"	d
+MSG_ID_RXM_EPH	include/ublox.h	/^    #define MSG_ID_RXM_EPH /;"	d
+MSG_ID_RXM_PMREQ	include/ublox.h	/^    #define MSG_ID_RXM_PMREQ /;"	d
+MSG_ID_RXM_RAW	include/ublox.h	/^    #define MSG_ID_RXM_RAW /;"	d
+MSG_ID_RXM_SFRB	include/ublox.h	/^    #define MSG_ID_RXM_SFRB /;"	d
+MSG_ID_RXM_SVSI	include/ublox.h	/^    #define MSG_ID_RXM_SVSI /;"	d
+MSG_ID_TIM_SVIN	include/ublox.h	/^    #define MSG_ID_TIM_SVIN /;"	d
+MSG_ID_TIM_TM2	include/ublox.h	/^    #define MSG_ID_TIM_TM2 /;"	d
+MSG_ID_TIM_TP	include/ublox.h	/^    #define MSG_ID_TIM_TP /;"	d
+MSG_ID_TIM_VRFY	include/ublox.h	/^    #define MSG_ID_TIM_VRFY /;"	d
+MS_TO_TICKS	include/util.h	/^#define MS_TO_TICKS(/;"	d
+NAV_FIXSTAT_DPGS	include/ublox.h	/^  NAV_FIXSTAT_DPGS = 0x01,$/;"	e	enum:ublox_nav_fixstat_e
+NAV_FIXSTAT_MAP_MATCHING	include/ublox.h	/^  NAV_FIXSTAT_MAP_MATCHING = 0xA0$/;"	e	enum:ublox_nav_fixstat_e
+NAV_FLAGS_DIFF_SOLN	include/ublox.h	/^  NAV_FLAGS_DIFF_SOLN = 0x02,$/;"	e	enum:ublox_nav_flags_e
+NAV_FLAGS_FIX_OK	include/ublox.h	/^  NAV_FLAGS_FIX_OK = 0x01,$/;"	e	enum:ublox_nav_flags_e
+NAV_FLAGS_TOWSET	include/ublox.h	/^  NAV_FLAGS_TOWSET = 0x08$/;"	e	enum:ublox_nav_flags_e
+NAV_FLAGS_WKNSET	include/ublox.h	/^  NAV_FLAGS_WKNSET = 0x04,$/;"	e	enum:ublox_nav_flags_e
+NB_SETUP_MESSAGES	include/services.h	/^#define NB_SETUP_MESSAGES /;"	d
+NRF8001_ACTIVE	include/pins.h	/^#define NRF8001_ACTIVE /;"	d
+NRF8001_ACTIVE_GPIO	include/pins.h	/^#define NRF8001_ACTIVE_GPIO /;"	d
+NRF8001_BUS	include/pins.h	/^#define NRF8001_BUS /;"	d
+NRF8001_DEBUG	src/nrf8001.c	/^#define NRF8001_DEBUG /;"	d	file:
+NRF8001_LSB	include/pins.h	/^#define NRF8001_LSB /;"	d
+NRF8001_MAX_CMD_LENGTH	include/nrf8001.h	/^#define NRF8001_MAX_CMD_LENGTH /;"	d
+NRF8001_RDYN	include/pins.h	/^#define NRF8001_RDYN /;"	d
+NRF8001_RDYN_GPIO	include/pins.h	/^#define NRF8001_RDYN_GPIO /;"	d
+NRF8001_REQN	include/pins.h	/^#define NRF8001_REQN /;"	d
+NRF8001_REQN_GPIO	include/pins.h	/^#define NRF8001_REQN_GPIO /;"	d
+NRF8001_RST	include/pins.h	/^#define NRF8001_RST /;"	d
+NRF8001_RST_GPIO	include/pins.h	/^#define NRF8001_RST_GPIO /;"	d
+NUMBER_OF_PIPES	include/services.h	/^#define NUMBER_OF_PIPES /;"	d
+NVIC_ADC1_IRQ	src/init.c	/^#define NVIC_ADC1_IRQ /;"	d	file:
+NVIC_AES_IRQ	src/init.c	/^#define NVIC_AES_IRQ /;"	d	file:
+NVIC_BASE	src/init.c	/^#define NVIC_BASE /;"	d	file:
+NVIC_COMP_ACQ_IRQ	src/init.c	/^#define NVIC_COMP_ACQ_IRQ /;"	d	file:
+NVIC_COMP_IRQ	src/init.c	/^#define NVIC_COMP_IRQ /;"	d	file:
+NVIC_DAC_IRQ	src/init.c	/^#define NVIC_DAC_IRQ /;"	d	file:
+NVIC_DMA1_CHANNEL1_IRQ	src/init.c	/^#define NVIC_DMA1_CHANNEL1_IRQ /;"	d	file:
+NVIC_DMA1_CHANNEL2_IRQ	src/init.c	/^#define NVIC_DMA1_CHANNEL2_IRQ /;"	d	file:
+NVIC_DMA1_CHANNEL3_IRQ	src/init.c	/^#define NVIC_DMA1_CHANNEL3_IRQ /;"	d	file:
+NVIC_DMA1_CHANNEL4_IRQ	src/init.c	/^#define NVIC_DMA1_CHANNEL4_IRQ /;"	d	file:
+NVIC_DMA1_CHANNEL5_IRQ	src/init.c	/^#define NVIC_DMA1_CHANNEL5_IRQ /;"	d	file:
+NVIC_DMA1_CHANNEL6_IRQ	src/init.c	/^#define NVIC_DMA1_CHANNEL6_IRQ /;"	d	file:
+NVIC_DMA1_CHANNEL7_IRQ	src/init.c	/^#define NVIC_DMA1_CHANNEL7_IRQ /;"	d	file:
+NVIC_DMA2_CH1_IRQ	src/init.c	/^#define NVIC_DMA2_CH1_IRQ /;"	d	file:
+NVIC_DMA2_CH2_IRQ	src/init.c	/^#define NVIC_DMA2_CH2_IRQ /;"	d	file:
+NVIC_DMA2_CH3_IRQ	src/init.c	/^#define NVIC_DMA2_CH3_IRQ /;"	d	file:
+NVIC_DMA2_CH4_IRQ	src/init.c	/^#define NVIC_DMA2_CH4_IRQ /;"	d	file:
+NVIC_DMA2_CH5_IRQ	src/init.c	/^#define NVIC_DMA2_CH5_IRQ /;"	d	file:
+NVIC_EXTI0_IRQ	src/init.c	/^#define NVIC_EXTI0_IRQ /;"	d	file:
+NVIC_EXTI15_10_IRQ	src/init.c	/^#define NVIC_EXTI15_10_IRQ /;"	d	file:
+NVIC_EXTI1_IRQ	src/init.c	/^#define NVIC_EXTI1_IRQ /;"	d	file:
+NVIC_EXTI2_IRQ	src/init.c	/^#define NVIC_EXTI2_IRQ /;"	d	file:
+NVIC_EXTI3_IRQ	src/init.c	/^#define NVIC_EXTI3_IRQ /;"	d	file:
+NVIC_EXTI4_IRQ	src/init.c	/^#define NVIC_EXTI4_IRQ /;"	d	file:
+NVIC_EXTI9_5_IRQ	src/init.c	/^#define NVIC_EXTI9_5_IRQ /;"	d	file:
+NVIC_FLASH_IRQ	src/init.c	/^#define NVIC_FLASH_IRQ /;"	d	file:
+NVIC_I2C1_ER_IRQ	src/init.c	/^#define NVIC_I2C1_ER_IRQ /;"	d	file:
+NVIC_I2C1_EV_IRQ	src/init.c	/^#define NVIC_I2C1_EV_IRQ /;"	d	file:
+NVIC_I2C2_ER_IRQ	src/init.c	/^#define NVIC_I2C2_ER_IRQ /;"	d	file:
+NVIC_I2C2_EV_IRQ	src/init.c	/^#define NVIC_I2C2_EV_IRQ /;"	d	file:
+NVIC_IRQ_COUNT	src/init.c	/^#define NVIC_IRQ_COUNT /;"	d	file:
+NVIC_LCD_IRQ	src/init.c	/^#define NVIC_LCD_IRQ /;"	d	file:
+NVIC_PVD_IRQ	src/init.c	/^#define NVIC_PVD_IRQ /;"	d	file:
+NVIC_RCC_IRQ	src/init.c	/^#define NVIC_RCC_IRQ /;"	d	file:
+NVIC_RTC_ALARM_IRQ	src/init.c	/^#define NVIC_RTC_ALARM_IRQ /;"	d	file:
+NVIC_RTC_WKUP_IRQ	src/init.c	/^#define NVIC_RTC_WKUP_IRQ /;"	d	file:
+NVIC_SDIO_IRQ	src/init.c	/^#define NVIC_SDIO_IRQ /;"	d	file:
+NVIC_SPI1_IRQ	src/init.c	/^#define NVIC_SPI1_IRQ /;"	d	file:
+NVIC_SPI2_IRQ	src/init.c	/^#define NVIC_SPI2_IRQ /;"	d	file:
+NVIC_SPI3_IRQ	src/init.c	/^#define NVIC_SPI3_IRQ /;"	d	file:
+NVIC_TAMPER_STAMP_IRQ	src/init.c	/^#define NVIC_TAMPER_STAMP_IRQ /;"	d	file:
+NVIC_TIM10_IRQ	src/init.c	/^#define NVIC_TIM10_IRQ /;"	d	file:
+NVIC_TIM11_IRQ	src/init.c	/^#define NVIC_TIM11_IRQ /;"	d	file:
+NVIC_TIM2_IRQ	src/init.c	/^#define NVIC_TIM2_IRQ /;"	d	file:
+NVIC_TIM3_IRQ	src/init.c	/^#define NVIC_TIM3_IRQ /;"	d	file:
+NVIC_TIM4_IRQ	src/init.c	/^#define NVIC_TIM4_IRQ /;"	d	file:
+NVIC_TIM5_IRQ	src/init.c	/^#define NVIC_TIM5_IRQ /;"	d	file:
+NVIC_TIM6_IRQ	src/init.c	/^#define NVIC_TIM6_IRQ /;"	d	file:
+NVIC_TIM7_IRQ	src/init.c	/^#define NVIC_TIM7_IRQ /;"	d	file:
+NVIC_TIM9_IRQ	src/init.c	/^#define NVIC_TIM9_IRQ /;"	d	file:
+NVIC_UART4_IRQ	src/init.c	/^#define NVIC_UART4_IRQ /;"	d	file:
+NVIC_UART5_IRQ	src/init.c	/^#define NVIC_UART5_IRQ /;"	d	file:
+NVIC_USART1_IRQ	src/init.c	/^#define NVIC_USART1_IRQ /;"	d	file:
+NVIC_USART2_IRQ	src/init.c	/^#define NVIC_USART2_IRQ /;"	d	file:
+NVIC_USART3_IRQ	src/init.c	/^#define NVIC_USART3_IRQ /;"	d	file:
+NVIC_USB_FS_WAKEUP_IRQ	src/init.c	/^#define NVIC_USB_FS_WAKEUP_IRQ /;"	d	file:
+NVIC_USB_HP_IRQ	src/init.c	/^#define NVIC_USB_HP_IRQ /;"	d	file:
+NVIC_USB_LP_IRQ	src/init.c	/^#define NVIC_USB_LP_IRQ /;"	d	file:
+NVIC_WWDG_IRQ	src/init.c	/^#define NVIC_WWDG_IRQ /;"	d	file:
+OP_READ	src/bmx055.c	/^  OP_READ,$/;"	e	enum:operation_e	file:
+OP_WRITE	src/bmx055.c	/^  OP_WRITE$/;"	e	enum:operation_e	file:
+PG	include/pins.h	/^#define PG /;"	d
+PG_GPIO	include/pins.h	/^#define PG_GPIO /;"	d
+PIEZO_EN	include/pins.h	/^#define PIEZO_EN /;"	d
+PIEZO_EN_GPIO	include/pins.h	/^#define PIEZO_EN_GPIO /;"	d
+PIEZO_OUT	include/pins.h	/^#define PIEZO_OUT /;"	d
+PIEZO_OUT_AF	include/pins.h	/^#define PIEZO_OUT_AF /;"	d
+PIEZO_OUT_CHANNEL	include/pins.h	/^#define PIEZO_OUT_CHANNEL /;"	d
+PIEZO_OUT_GPIO	include/pins.h	/^#define PIEZO_OUT_GPIO /;"	d
+PIEZO_OUT_TIMER	include/pins.h	/^#define PIEZO_OUT_TIMER /;"	d
+PIN	include/empty_pins.h	/^#define PIN(/;"	d
+PIN	include/stm32l1_opencm3_pins.h	/^#define PIN(/;"	d
+PIN	include/stm32l1_stdperiphlib_pins.h	/^#define PIN(/;"	d
+PINMODE_AF_1	include/hal.h	/^  PINMODE_AF_1 = 1,$/;"	e	enum:pinmode_e
+PINMODE_AF_2	include/hal.h	/^  PINMODE_AF_2,$/;"	e	enum:pinmode_e
+PINMODE_AF_3	include/hal.h	/^  PINMODE_AF_3,$/;"	e	enum:pinmode_e
+PINMODE_AF_4	include/hal.h	/^  PINMODE_AF_4,$/;"	e	enum:pinmode_e
+PINMODE_AF_5	include/hal.h	/^  PINMODE_AF_5,$/;"	e	enum:pinmode_e
+PINMODE_AF_6	include/hal.h	/^  PINMODE_AF_6,$/;"	e	enum:pinmode_e
+PINMODE_AF_7	include/hal.h	/^  PINMODE_AF_7,$/;"	e	enum:pinmode_e
+PINMODE_AF_8	include/hal.h	/^  PINMODE_AF_8,$/;"	e	enum:pinmode_e
+PINMODE_INPUT	include/hal.h	/^  PINMODE_INPUT$/;"	e	enum:pinmode_e
+PINMODE_OUTPUT	include/hal.h	/^  PINMODE_OUTPUT,$/;"	e	enum:pinmode_e
+PIN_SRC	include/empty_pins.h	/^#define PIN_SRC(/;"	d
+PIN_SRC	include/stm32l1_opencm3_pins.h	/^#define PIN_SRC(/;"	d
+PIN_SRC	include/stm32l1_stdperiphlib_pins.h	/^#define PIN_SRC(/;"	d
+PIPE_AERO_PRESSURE_BAROMETRIC_PRESSURE_SET	include/services.h	/^#define PIPE_AERO_PRESSURE_BAROMETRIC_PRESSURE_SET /;"	d
+PIPE_AERO_PRESSURE_BAROMETRIC_PRESSURE_SET_MAX_SIZE	include/services.h	/^#define PIPE_AERO_PRESSURE_BAROMETRIC_PRESSURE_SET_MAX_SIZE /;"	d
+PIPE_AERO_PRESSURE_BAROMETRIC_PRESSURE_TX	include/services.h	/^#define PIPE_AERO_PRESSURE_BAROMETRIC_PRESSURE_TX /;"	d
+PIPE_AERO_PRESSURE_BAROMETRIC_PRESSURE_TX_MAX_SIZE	include/services.h	/^#define PIPE_AERO_PRESSURE_BAROMETRIC_PRESSURE_TX_MAX_SIZE /;"	d
+PIPE_CLOSED	include/nrf8001.h	/^#define PIPE_CLOSED(/;"	d
+PIPE_OPEN	include/nrf8001.h	/^#define PIPE_OPEN(/;"	d
+PPBI_BASE	src/init.c	/^#define PPBI_BASE /;"	d	file:
+PROTO_NMEA	include/ublox.h	/^  PROTO_NMEA = 0x02,$/;"	e	enum:ubx_proto_mask_e
+PROTO_RTCM	include/ublox.h	/^  PROTO_RTCM = 0x04$/;"	e	enum:ubx_proto_mask_e
+PROTO_UBX	include/ublox.h	/^  PROTO_UBX = 0x01,$/;"	e	enum:ubx_proto_mask_e
+RESET_STATE	src/ublox_isr.c	/^#define RESET_STATE /;"	d	file:
+SCB_BASE	src/init.c	/^#define SCB_BASE /;"	d	file:
+SCS_BASE	src/init.c	/^#define SCS_BASE /;"	d	file:
+SENSORS	include/pins.h	/^#define SENSORS /;"	d
+SENSORS_GPIO	include/pins.h	/^#define SENSORS_GPIO /;"	d
+SENSORS_MISO	include/pins.h	/^#define SENSORS_MISO /;"	d
+SENSORS_MISO_GPIO	include/pins.h	/^#define SENSORS_MISO_GPIO /;"	d
+SENSORS_MOSI	include/pins.h	/^#define SENSORS_MOSI /;"	d
+SENSORS_MOSI_GPIO	include/pins.h	/^#define SENSORS_MOSI_GPIO /;"	d
+SENSORS_PINS	include/pins.h	/^#define SENSORS_PINS /;"	d
+SENSORS_SCK	include/pins.h	/^#define SENSORS_SCK /;"	d
+SENSORS_SCK_GPIO	include/pins.h	/^#define SENSORS_SCK_GPIO /;"	d
+SENSOR_REQUEST_ACCEL	include/task_sensor.h	/^#define SENSOR_REQUEST_ACCEL /;"	d
+SENSOR_REQUEST_AIR_PRESSURE	include/task_sensor.h	/^#define SENSOR_REQUEST_AIR_PRESSURE /;"	d
+SENSOR_REQUEST_GYRO	include/task_sensor.h	/^#define SENSOR_REQUEST_GYRO /;"	d
+SENSOR_REQUEST_MAG	include/task_sensor.h	/^#define SENSOR_REQUEST_MAG /;"	d
+SENSOR_REQUEST_STOP	include/task_sensor.h	/^#define SENSOR_REQUEST_STOP /;"	d
+SERVICES_PIPE_TYPE_MAPPING_CONTENT	include/services.h	/^#define SERVICES_PIPE_TYPE_MAPPING_CONTENT /;"	d
+SETUP_FORMAT	include/services.h	/^#define SETUP_FORMAT /;"	d
+SETUP_ID	include/services.h	/^#define SETUP_ID /;"	d
+SETUP_MESSAGES_CONTENT	include/services.h	/^#define SETUP_MESSAGES_CONTENT /;"	d
+SETUP_MESSAGES_H__	include/services.h	/^#define SETUP_MESSAGES_H__$/;"	d
+SPI0	include/empty_pins.h	/^#define SPI0 /;"	d
+SPI1	include/empty_pins.h	/^#define SPI1 /;"	d
+SPI2	include/empty_pins.h	/^#define SPI2 /;"	d
+SPI_START	include/empty_pins.h	/^#define SPI_START /;"	d
+STATE_ERROR	src/nrf8001.c	/^  STATE_ERROR$/;"	e	enum:nrf8001_state_e	file:
+STATE_IDLE	src/nrf8001.c	/^  STATE_IDLE,$/;"	e	enum:nrf8001_state_e	file:
+STATE_SETUP	src/nrf8001.c	/^  STATE_SETUP,$/;"	e	enum:nrf8001_state_e	file:
+STATE_STANDBY	src/nrf8001.c	/^  STATE_STANDBY,$/;"	e	enum:nrf8001_state_e	file:
+STATUS_LED	include/pins.h	/^#define STATUS_LED /;"	d
+STATUS_LED_AF	include/pins.h	/^#define STATUS_LED_AF /;"	d
+STATUS_LED_CHANNEL	include/pins.h	/^#define STATUS_LED_CHANNEL /;"	d
+STATUS_LED_GPIO	include/pins.h	/^#define STATUS_LED_GPIO /;"	d
+STATUS_LED_TIMER	include/pins.h	/^#define STATUS_LED_TIMER /;"	d
+STIR_BASE	src/init.c	/^#define STIR_BASE /;"	d	file:
+SYS_TICK_BASE	src/init.c	/^#define SYS_TICK_BASE /;"	d	file:
+TASK_ALERT_STATE_BLINKING	src/task_alert.c	/^  TASK_ALERT_STATE_BLINKING,$/;"	e	enum:task_alert_state_e	file:
+TASK_ALERT_STATE_OFF	src/task_alert.c	/^  TASK_ALERT_STATE_OFF,$/;"	e	enum:task_alert_state_e	file:
+TASK_ALERT_STATE_ON	src/task_alert.c	/^  TASK_ALERT_STATE_ON,$/;"	e	enum:task_alert_state_e	file:
+TASK_ALERT_STATE_PULSING	src/task_alert.c	/^  TASK_ALERT_STATE_PULSING$/;"	e	enum:task_alert_state_e	file:
+TIM0	include/empty_pins.h	/^#define TIM0 /;"	d
+TIM1	include/empty_pins.h	/^#define TIM1 /;"	d
+TIM2	include/empty_pins.h	/^#define TIM2 /;"	d
+TIM3	include/empty_pins.h	/^#define TIM3 /;"	d
+TIM_OC	include/stm32l1_opencm3_pins.h	/^#define TIM_OC(/;"	d
+TIM_OC	include/stm32l1_stdperiphlib_pins.h	/^#define TIM_OC(/;"	d
+TIM_OC0	include/empty_pins.h	/^#define TIM_OC0 /;"	d
+TIM_OC1	include/empty_pins.h	/^#define TIM_OC1 /;"	d
+TIM_OC2	include/empty_pins.h	/^#define TIM_OC2 /;"	d
+TIM_OC3	include/empty_pins.h	/^#define TIM_OC3 /;"	d
+TIM_OC4	include/empty_pins.h	/^#define TIM_OC4 /;"	d
+TIM_OC_START	include/empty_pins.h	/^#define TIM_OC_START /;"	d
+TIM_START	include/empty_pins.h	/^#define TIM_START /;"	d
+TOTAL_EVENT_SIZE	include/sample.h	/^#define TOTAL_EVENT_SIZE(/;"	d
+TPIU_BASE	src/init.c	/^#define TPIU_BASE /;"	d	file:
+TXREADY_EN_MASK	include/ublox.h	/^#define TXREADY_EN_MASK /;"	d
+TXREADY_EN_SHIFT	include/ublox.h	/^#define TXREADY_EN_SHIFT /;"	d
+TXREADY_PIN_MASK	include/ublox.h	/^#define TXREADY_PIN_MASK /;"	d
+TXREADY_PIN_SHIFT	include/ublox.h	/^#define TXREADY_PIN_SHIFT /;"	d
+TXREADY_POL_MASK	include/ublox.h	/^#define TXREADY_POL_MASK /;"	d
+TXREADY_POL_SHIFT	include/ublox.h	/^#define TXREADY_POL_SHIFT /;"	d
+TXREADY_THRESH_MASK	include/ublox.h	/^#define TXREADY_THRESH_MASK /;"	d
+TXREADY_THRESH_SHIFT	include/ublox.h	/^#define TXREADY_THRESH_SHIFT /;"	d
+U1	include/ublox.h	/^typedef uint8_t U1;$/;"	t
+U2	include/ublox.h	/^typedef uint16_t U2;$/;"	t
+U4	include/ublox.h	/^typedef uint32_t U4;$/;"	t
+UBLOX_MAX7_BUS	include/pins.h	/^#define UBLOX_MAX7_BUS /;"	d
+UBLOX_MAX7_EXT_INT	include/pins.h	/^#define UBLOX_MAX7_EXT_INT /;"	d
+UBLOX_MAX7_EXT_INT_GPIO	include/pins.h	/^#define UBLOX_MAX7_EXT_INT_GPIO /;"	d
+UBLOX_MAX7_LSB	include/pins.h	/^#define UBLOX_MAX7_LSB /;"	d
+UBLOX_MAX7_RESET	include/pins.h	/^#define UBLOX_MAX7_RESET /;"	d
+UBLOX_MAX7_RESET_GPIO	include/pins.h	/^#define UBLOX_MAX7_RESET_GPIO /;"	d
+UBLOX_MAX7_TIMEPULSE	include/pins.h	/^#define UBLOX_MAX7_TIMEPULSE /;"	d
+UBLOX_MAX7_TIMEPULSE_GPIO	include/pins.h	/^#define UBLOX_MAX7_TIMEPULSE_GPIO /;"	d
+UBLOX_UART	include/pins.h	/^#define UBLOX_UART /;"	d
+UBLOX_UART_GPIO	include/pins.h	/^#define UBLOX_UART_GPIO /;"	d
+UBLOX_UART_PINS	include/pins.h	/^#define UBLOX_UART_PINS /;"	d
+UBLOX_UART_RX	include/pins.h	/^#define UBLOX_UART_RX /;"	d
+UBLOX_UART_RX_GPIO	include/pins.h	/^#define UBLOX_UART_RX_GPIO /;"	d
+UBLOX_UART_TX	include/pins.h	/^#define UBLOX_UART_TX /;"	d
+UBLOX_UART_TX_GPIO	include/pins.h	/^#define UBLOX_UART_TX_GPIO /;"	d
+UBX_SYNC_BYTE_1	include/ublox.h	/^#define UBX_SYNC_BYTE_1 /;"	d
+UBX_SYNC_BYTE_2	include/ublox.h	/^#define UBX_SYNC_BYTE_2 /;"	d
+USART0	include/empty_pins.h	/^#define USART0 /;"	d
+USART1	include/empty_pins.h	/^#define USART1 /;"	d
+USART_ISR_BUFFER_LEN	include/ublox_isr.h	/^#define USART_ISR_BUFFER_LEN /;"	d
+USART_ISR_PRIORITY	include/config.h	/^#define USART_ISR_PRIORITY /;"	d
+USART_ISR_STATE_CK1	include/ublox_isr.h	/^  USART_ISR_STATE_CK1,$/;"	e	enum:state_e
+USART_ISR_STATE_CK2	include/ublox_isr.h	/^  USART_ISR_STATE_CK2,$/;"	e	enum:state_e
+USART_ISR_STATE_READING	include/ublox_isr.h	/^  USART_ISR_STATE_READING,$/;"	e	enum:state_e
+USART_ISR_STATE_READ_CLASS	include/ublox_isr.h	/^  USART_ISR_STATE_READ_CLASS,$/;"	e	enum:state_e
+USART_ISR_STATE_READ_ID	include/ublox_isr.h	/^  USART_ISR_STATE_READ_ID,$/;"	e	enum:state_e
+USART_ISR_STATE_READ_LSB_LEN	include/ublox_isr.h	/^  USART_ISR_STATE_READ_LSB_LEN,$/;"	e	enum:state_e
+USART_ISR_STATE_READ_SYNC1	include/ublox_isr.h	/^  USART_ISR_STATE_READ_SYNC1,$/;"	e	enum:state_e
+USART_ISR_STATE_READ_SYNC2	include/ublox_isr.h	/^  USART_ISR_STATE_READ_SYNC2,$/;"	e	enum:state_e
+USART_ISR_STATE_WAITING	include/ublox_isr.h	/^  USART_ISR_STATE_WAITING,$/;"	e	enum:state_e
+USART_START	include/empty_pins.h	/^#define USART_START /;"	d
+WARN_LED_A	include/pins.h	/^#define WARN_LED_A /;"	d
+WARN_LED_A_GPIO	include/pins.h	/^#define WARN_LED_A_GPIO /;"	d
+WARN_LED_B	include/pins.h	/^#define WARN_LED_B /;"	d
+WARN_LED_B_GPIO	include/pins.h	/^#define WARN_LED_B_GPIO /;"	d
+WEAK	src/init.c	/^#define WEAK /;"	d	file:
+WRITE_BUFFER_LEN	include/globals.h	/^#define WRITE_BUFFER_LEN /;"	d
+X1	include/ublox.h	/^typedef uint8_t X1;$/;"	t
+X2	include/ublox.h	/^typedef uint16_t X2;$/;"	t
+X4	include/ublox.h	/^typedef uint32_t X4;$/;"	t
+_C	src/ms5611.c	/^    coefficient_t _C[8];$/;"	m	union:ms5611_C_s::__anon2	file:
+__ADESTO_FLASH_H	include/flash.h	/^#define __ADESTO_FLASH_H$/;"	d
+__ALARM_H	include/alarm.h	/^#define __ALARM_H$/;"	d
+__BMX055_H	include/bmx055.h	/^#define __BMX055_H$/;"	d
+__CONFIG_H	include/config.h	/^#define __CONFIG_H$/;"	d
+__COUNTERS_H	include/counters.h	/^#define __COUNTERS_H$/;"	d
+__EMPTY_PINS_H	include/empty_pins.h	/^#define __EMPTY_PINS_H$/;"	d
+__EVENTS_H	include/events.h	/^#define __EVENTS_H$/;"	d
+__FEATURES_H	include/features.h	/^#define __FEATURES_H$/;"	d
+__FILTER_H	include/filter.h	/^#define __FILTER_H$/;"	d
+__GLOBALS_H	include/globals.h	/^#define __GLOBALS_H$/;"	d
+__HAL_EMPTY	include/hal_empty.h	/^#define __HAL_EMPTY$/;"	d
+__HAL_H	include/hal.h	/^#define __HAL_H$/;"	d
+__HAL_STM32_LIBOPENCM3	include/hal_stm32_libopencm3.h	/^#define __HAL_STM32_LIBOPENCM3$/;"	d
+__HAL_STM32_STDPERIPHLIB	include/hal_stm32_stdperiphlib.h	/^#define __HAL_STM32_STDPERIPHLIB$/;"	d
+__LOGGER_H	include/logger.h	/^#define __LOGGER_H$/;"	d
+__MS5611_H	include/ms5611.h	/^#define __MS5611_H$/;"	d
+__NRF8001_H	include/nrf8001.h	/^#define __NRF8001_H$/;"	d
+__PERIPH_H	include/periph.h	/^#define __PERIPH_H$/;"	d
+__PIN	src/periph.c	/^#define __PIN(/;"	d	file:
+__PIN	src/periph.c	/^#undef __PIN$/;"	d	file:
+__PINS_DEF	include/pins.h	/^#define __PINS_DEF$/;"	d
+__SAMPLE_H	include/sample.h	/^#define __SAMPLE_H$/;"	d
+__SPI_H	include/spi.h	/^#define __SPI_H$/;"	d
+__STATE_H	include/state.h	/^#define __STATE_H$/;"	d
+__STM32L1_PINS_H	include/stm32l1_opencm3_pins.h	/^#define __STM32L1_PINS_H$/;"	d
+__STM32L1_PINS_H	include/stm32l1_stdperiphlib_pins.h	/^#define __STM32L1_PINS_H$/;"	d
+__STM32L1xx_CONF_H	include/stm32l1xx_conf.h	/^#define __STM32L1xx_CONF_H$/;"	d
+__TASK_ALERT_LED_H	include/task_alert.h	/^#define __TASK_ALERT_LED_H$/;"	d
+__TASK_BLE_H	include/task_ble.h	/^#define __TASK_BLE_H$/;"	d
+__TASK_GPS_H	include/task_gps.h	/^#define __TASK_GPS_H$/;"	d
+__TASK_MAIN_H	include/task_main.h	/^#define __TASK_MAIN_H$/;"	d
+__TASK_SENSOR_H	include/task_sensor.h	/^#define __TASK_SENSOR_H$/;"	d
+__TRANSFER_MACROS_H	include/transfer_macros.h	/^#define __TRANSFER_MACROS_H$/;"	d
+__UBLOX_H	include/ublox.h	/^#define __UBLOX_H$/;"	d
+__UBLOX_ISR_H	include/ublox_isr.h	/^#define __UBLOX_ISR_H$/;"	d
+__UTIL_H	include/util.h	/^#define __UTIL_H$/;"	d
+__current_address	include/sample.h	/^  uint32_t __current_address;$/;"	m	struct:event_header_s
+__finished_logging	include/sample.h	/^    uint16_t __finished_logging : 1;$/;"	m	struct:event_header_s::__anon78
+__start_address	include/sample.h	/^  uint32_t __start_address;$/;"	m	struct:event_header_s
+__started	include/sample.h	/^    uint16_t __started : 1;$/;"	m	struct:event_header_s::__anon78
+__written	include/sample.h	/^    uint16_t __written : 1;$/;"	m	struct:event_header_s::__anon78
+_aci_packed_	include/aci.h	/^#define _aci_packed_ /;"	d
+_ready	src/flash.c	/^  uint8_t _ready : 1;$/;"	m	struct:status_register_s	file:
+_reserved	src/flash.c	/^  uint8_t _reserved : 1;$/;"	m	struct:status_register_s	file:
+_reserved1	include/ublox.h	/^  U1 _reserved1; \/*    *\/$/;"	m	struct:ubx_nav_solution_s
+_reserved1	include/ublox.h	/^  U1 _reserved1;$/;"	m	struct:ubx_nav_pvt_solution_s
+_reserved2	include/ublox.h	/^  U1 _reserved2[6];$/;"	m	struct:ubx_nav_pvt_solution_s
+_reserved2	include/ublox.h	/^  U4 _reserved2; \/*    *\/$/;"	m	struct:ubx_nav_solution_s
+_reserved3	include/ublox.h	/^  U1 _reserved3[4];$/;"	m	struct:ubx_nav_pvt_solution_s
+_temp	src/ms5611.c	/^static int32_t _temp;$/;"	v	file:
+accel	include/sample.h	/^  int16_t accel[3];$/;"	m	struct:accel_sample_s
+accel_sample	include/events.h	/^  struct accel_sample_s accel_sample;$/;"	m	union:__anon77	typeref:struct:__anon77::accel_sample_s
+accel_sample	include/sample.h	/^  struct accel_sample_s accel_sample;$/;"	m	struct:sensor_packet_s	typeref:struct:sensor_packet_s::accel_sample_s
+accel_sample_s	include/sample.h	/^struct accel_sample_s {$/;"	s
+accuracy	include/sample.h	/^  int32_t accuracy;$/;"	m	struct:gps_sample_s
+aci_app_latency_mode_t	include/aci.h	/^} _aci_packed_ aci_app_latency_mode_t;$/;"	t	typeref:enum:__anon18
+aci_bd_addr_type_t	include/aci.h	/^} _aci_packed_ aci_bd_addr_type_t;$/;"	t	typeref:enum:__anon7
+aci_bond_status_code_t	include/aci.h	/^} _aci_packed_ aci_bond_status_code_t;$/;"	t	typeref:enum:__anon22
+aci_bond_status_source_t	include/aci.h	/^} _aci_packed_ aci_bond_status_source_t;$/;"	t	typeref:enum:__anon23
+aci_clock_accuracy_t	include/aci.h	/^} _aci_packed_ aci_clock_accuracy_t;$/;"	t	typeref:enum:__anon17
+aci_cmd_opcode_t	include/aci_cmds.h	/^} _aci_packed_ aci_cmd_opcode_t;$/;"	t	typeref:enum:__anon25
+aci_cmd_params_bond_t	include/aci_cmds.h	/^} _aci_packed_ aci_cmd_params_bond_t;$/;"	t	typeref:struct:__anon33
+aci_cmd_params_broadcast_t	include/aci_cmds.h	/^} _aci_packed_ aci_cmd_params_broadcast_t;$/;"	t	typeref:struct:__anon46
+aci_cmd_params_change_timing_t	include/aci_cmds.h	/^} _aci_packed_ aci_cmd_params_change_timing_t;$/;"	t	typeref:struct:__anon36
+aci_cmd_params_close_remote_pipe_t	include/aci_cmds.h	/^} _aci_packed_ aci_cmd_params_close_remote_pipe_t;$/;"	t	typeref:struct:__anon47
+aci_cmd_params_connect_t	include/aci_cmds.h	/^} _aci_packed_ aci_cmd_params_connect_t;$/;"	t	typeref:struct:__anon32
+aci_cmd_params_disconnect_t	include/aci_cmds.h	/^} _aci_packed_ aci_cmd_params_disconnect_t;$/;"	t	typeref:struct:__anon34
+aci_cmd_params_dtm_cmd_t	include/aci_cmds.h	/^} _aci_packed_ aci_cmd_params_dtm_cmd_t;$/;"	t	typeref:struct:__anon28
+aci_cmd_params_echo_t	include/aci_cmds.h	/^} _aci_packed_ aci_cmd_params_echo_t;$/;"	t	typeref:struct:__anon27
+aci_cmd_params_open_adv_pipe_t	include/aci_cmds.h	/^} _aci_packed_ aci_cmd_params_open_adv_pipe_t;$/;"	t	typeref:struct:__anon45
+aci_cmd_params_open_remote_pipe_t	include/aci_cmds.h	/^} _aci_packed_ aci_cmd_params_open_remote_pipe_t;$/;"	t	typeref:struct:__anon37
+aci_cmd_params_request_data_t	include/aci_cmds.h	/^} _aci_packed_ aci_cmd_params_request_data_t;$/;"	t	typeref:struct:__anon40
+aci_cmd_params_send_data_ack_t	include/aci_cmds.h	/^} _aci_packed_ aci_cmd_params_send_data_ack_t;$/;"	t	typeref:struct:__anon39
+aci_cmd_params_send_data_nack_t	include/aci_cmds.h	/^} _aci_packed_ aci_cmd_params_send_data_nack_t;$/;"	t	typeref:struct:__anon41
+aci_cmd_params_send_data_t	include/aci_cmds.h	/^} _aci_packed_ aci_cmd_params_send_data_t;$/;"	t	typeref:struct:__anon38
+aci_cmd_params_set_app_latency_t	include/aci_cmds.h	/^} _aci_packed_ aci_cmd_params_set_app_latency_t;$/;"	t	typeref:struct:__anon42
+aci_cmd_params_set_key_t	include/aci_cmds.h	/^} _aci_packed_ aci_cmd_params_set_key_t;$/;"	t	typeref:struct:__anon43
+aci_cmd_params_set_local_data_t	include/aci_cmds.h	/^} _aci_packed_ aci_cmd_params_set_local_data_t;$/;"	t	typeref:struct:__anon31
+aci_cmd_params_set_tx_power_t	include/aci_cmds.h	/^} _aci_packed_ aci_cmd_params_set_tx_power_t;$/;"	t	typeref:struct:__anon35
+aci_cmd_params_setup_t	include/aci_cmds.h	/^} _aci_packed_ aci_cmd_params_setup_t;$/;"	t	typeref:struct:__anon29
+aci_cmd_params_test_t	include/aci_cmds.h	/^} _aci_packed_ aci_cmd_params_test_t;$/;"	t	typeref:struct:__anon26
+aci_cmd_params_write_dynamic_data_t	include/aci_cmds.h	/^} _aci_packed_ aci_cmd_params_write_dynamic_data_t;$/;"	t	typeref:struct:__anon30
+aci_cmd_t	include/aci_cmds.h	/^} _aci_packed_ aci_cmd_t;$/;"	t	typeref:struct:__anon48
+aci_data	include/aci.h	/^  uint8_t aci_data[ACI_PIPE_RX_DATA_MAX_LEN];$/;"	m	struct:__anon15
+aci_data	include/aci.h	/^  uint8_t aci_data[ACI_PIPE_TX_DATA_MAX_LEN];$/;"	m	struct:__anon14
+aci_device_operation_mode_t	include/aci.h	/^} _aci_packed_ aci_device_operation_mode_t;$/;"	t	typeref:enum:__anon9
+aci_device_output_power_t	include/aci.h	/^} _aci_packed_ aci_device_output_power_t;$/;"	t	typeref:enum:__anon8
+aci_disconnect_reason_t	include/aci.h	/^} _aci_packed_ aci_disconnect_reason_t;$/;"	t	typeref:enum:__anon10
+aci_evt_cmd_rsp_params_dtm_cmd_t	include/aci_evts.h	/^} _aci_packed_ aci_evt_cmd_rsp_params_dtm_cmd_t;$/;"	t	typeref:struct:__anon53
+aci_evt_cmd_rsp_params_get_battery_level_t	include/aci_evts.h	/^} _aci_packed_ aci_evt_cmd_rsp_params_get_battery_level_t;$/;"	t	typeref:struct:__anon57
+aci_evt_cmd_rsp_params_get_device_address_t	include/aci_evts.h	/^} _aci_packed_ aci_evt_cmd_rsp_params_get_device_address_t;$/;"	t	typeref:struct:__anon56
+aci_evt_cmd_rsp_params_get_device_version_t	include/aci_evts.h	/^} _aci_packed_ aci_evt_cmd_rsp_params_get_device_version_t;$/;"	t	typeref:struct:__anon55
+aci_evt_cmd_rsp_params_get_temperature_t	include/aci_evts.h	/^} _aci_packed_ aci_evt_cmd_rsp_params_get_temperature_t;$/;"	t	typeref:struct:__anon58
+aci_evt_cmd_rsp_read_dynamic_data_t	include/aci_evts.h	/^} _aci_packed_ aci_evt_cmd_rsp_read_dynamic_data_t;$/;"	t	typeref:struct:__anon54
+aci_evt_opcode_t	include/aci_evts.h	/^} _aci_packed_ aci_evt_opcode_t;$/;"	t	typeref:enum:__anon50
+aci_evt_params_bond_status_t	include/aci_evts.h	/^} _aci_packed_ aci_evt_params_bond_status_t;$/;"	t	typeref:struct:__anon63
+aci_evt_params_cmd_rsp_t	include/aci_evts.h	/^} _aci_packed_ aci_evt_params_cmd_rsp_t;$/;"	t	typeref:struct:__anon59
+aci_evt_params_connected_t	include/aci_evts.h	/^} _aci_packed_ aci_evt_params_connected_t;$/;"	t	typeref:struct:__anon61
+aci_evt_params_data_ack_t	include/aci_evts.h	/^} _aci_packed_ aci_evt_params_data_ack_t;$/;"	t	typeref:struct:__anon67
+aci_evt_params_data_credit_t	include/aci_evts.h	/^} _aci_packed_ aci_evt_params_data_credit_t;$/;"	t	typeref:struct:__anon66
+aci_evt_params_data_received_t	include/aci_evts.h	/^} _aci_packed_ aci_evt_params_data_received_t;$/;"	t	typeref:struct:__anon68
+aci_evt_params_device_started_t	include/aci_evts.h	/^} _aci_packed_ aci_evt_params_device_started_t;$/;"	t	typeref:struct:__anon51
+aci_evt_params_disconnected_t	include/aci_evts.h	/^} _aci_packed_ aci_evt_params_disconnected_t;$/;"	t	typeref:struct:__anon62
+aci_evt_params_display_passkey_t	include/aci_evts.h	/^} _aci_packed_ aci_evt_params_display_passkey_t;$/;"	t	typeref:struct:__anon72
+aci_evt_params_echo_t	include/aci_evts.h	/^} _aci_packed_ aci_evt_params_echo_t;$/;"	t	typeref:struct:__anon74
+aci_evt_params_hw_error_t	include/aci_evts.h	/^} _aci_packed_ aci_evt_params_hw_error_t;$/;"	t	typeref:struct:__anon52
+aci_evt_params_key_request_t	include/aci_evts.h	/^} _aci_packed_ aci_evt_params_key_request_t;$/;"	t	typeref:struct:__anon73
+aci_evt_params_pipe_error_t	include/aci_evts.h	/^} _aci_packed_ aci_evt_params_pipe_error_t;$/;"	t	typeref:struct:__anon70
+aci_evt_params_pipe_status_t	include/aci_evts.h	/^} _aci_packed_ aci_evt_params_pipe_status_t;$/;"	t	typeref:struct:__anon64
+aci_evt_params_timing_t	include/aci_evts.h	/^} _aci_packed_ aci_evt_params_timing_t;$/;"	t	typeref:struct:__anon65
+aci_evt_t	include/aci_evts.h	/^} _aci_packed_ aci_evt_t;$/;"	t	typeref:struct:__anon75
+aci_gap_ppcp_t	include/aci.h	/^#define aci_gap_ppcp_t /;"	d
+aci_gatt_format_t	include/aci.h	/^} _aci_packed_ aci_gatt_format_t;$/;"	t	typeref:enum:__anon19
+aci_gatt_namespace_t	include/aci.h	/^} _aci_packed_ aci_gatt_namespace_t;$/;"	t	typeref:enum:__anon20
+aci_hw_error_t	include/aci.h	/^} _aci_packed_ aci_hw_error_t;$/;"	t	typeref:enum:__anon16
+aci_key_type_t	include/aci.h	/^} _aci_packed_ aci_key_type_t;$/;"	t	typeref:enum:__anon21
+aci_ll_conn_params_t	include/aci.h	/^} _aci_packed_ aci_ll_conn_params_t;$/;"	t	typeref:struct:__anon13
+aci_permissions_t	include/aci.h	/^} _aci_packed_ aci_permissions_t;$/;"	t	typeref:enum:__anon12
+aci_pipe_store_t	include/aci.h	/^} _aci_packed_ aci_pipe_store_t;$/;"	t	typeref:enum:__anon5
+aci_pipe_type_t	include/aci.h	/^} _aci_packed_ aci_pipe_type_t;$/;"	t	typeref:enum:__anon6
+aci_rx_data_t	include/aci.h	/^} _aci_packed_ aci_rx_data_t;$/;"	t	typeref:struct:__anon15
+aci_status	include/aci_evts.h	/^  aci_status_code_t   aci_status;$/;"	m	struct:__anon62
+aci_status_code_t	include/aci.h	/^} _aci_packed_ aci_status_code_t;$/;"	t	typeref:enum:__anon24
+aci_test_mode_change_t	include/aci.h	/^} _aci_packed_ aci_test_mode_change_t;$/;"	t	typeref:enum:__anon11
+aci_tx_data_t	include/aci.h	/^} _aci_packed_ aci_tx_data_t;$/;"	t	typeref:struct:__anon14
+aci_version	include/aci_evts.h	/^  uint8_t   aci_version;$/;"	m	struct:__anon55
+adc1_isr	src/init.c	/^#pragma weak adc1_isr /;"	d	file:
+adv_interval	include/aci_cmds.h	/^  uint16_t        adv_interval;     \/**< 16 bits of advertising interval for general discovery *\/$/;"	m	struct:__anon32
+adv_interval	include/aci_cmds.h	/^  uint16_t        adv_interval;     \/**< 16 bits of advertising interval for general discovery *\/$/;"	m	struct:__anon33
+adv_interval	include/aci_cmds.h	/^  uint16_t        adv_interval;     \/**< 16 bits of advertising interval for general discovery *\/$/;"	m	struct:__anon46
+aero_main	src/aero.c	/^aero_main(void)$/;"	f
+aes_isr	src/init.c	/^#pragma weak aes_isr /;"	d	file:
+alarm_s	include/alarm.h	/^struct alarm_s {$/;"	s
+alarms	include/globals.h	/^  struct alarm_s alarms[ALARM_LEN];$/;"	m	struct:persisted_config_s	typeref:struct:persisted_config_s::alarm_s
+alert_queue_g	include/globals.h	/^  void *alert_queue_g;$/;"	m	struct:globals
+arch_config_ble	src/hal_stm32_libopencm3.c	/^void arch_config_ble(void)$/;"	f
+arch_config_ble	src/hal_stm32_stdperiphlib.c	/^void arch_config_ble(void)$/;"	f
+arch_config_ble	src/hal_stm32_test.c	/^void arch_config_ble(void)$/;"	f
+arch_config_clocks	src/hal_stm32_libopencm3.c	/^void arch_config_clocks(void)$/;"	f
+arch_config_clocks	src/hal_stm32_stdperiphlib.c	/^void arch_config_clocks(void)$/;"	f
+arch_config_clocks	src/hal_stm32_test.c	/^void arch_config_clocks(void)$/;"	f
+arch_config_io	src/hal_stm32_test.c	/^void arch_config_io(void)$/;"	f
+arch_config_io	src/periph.c	/^void arch_config_io(void)$/;"	f
+arch_config_nvic	src/hal_stm32_libopencm3.c	/^void arch_config_nvic(void)$/;"	f
+arch_config_nvic	src/hal_stm32_stdperiphlib.c	/^void arch_config_nvic(void)$/;"	f
+arch_config_nvic	src/hal_stm32_test.c	/^void arch_config_nvic(void)$/;"	f
+arch_config_uart	src/hal_stm32_libopencm3.c	/^void arch_config_uart(usart_t port, int baud)$/;"	f
+arch_config_uart	src/hal_stm32_stdperiphlib.c	/^void arch_config_uart(usart_t port, int baud)$/;"	f
+arch_disable_usart_interrupt	src/hal_stm32_libopencm3.c	/^void arch_disable_usart_interrupt(usart_t port)$/;"	f
+arch_enable_usart_interrupt	src/hal_stm32_libopencm3.c	/^void arch_enable_usart_interrupt(usart_t port)$/;"	f
+arch_init_timer	src/hal_stm32_libopencm3.c	/^void arch_init_timer(pwm_timer_t timer, uint32_t channel, uint32_t prescaler, uint32_t period)$/;"	f
+arch_init_timer	src/hal_stm32_stdperiphlib.c	/^void arch_init_timer(pwm_timer_t timer, uint32_t channel, uint32_t prescaler, uint32_t period)$/;"	f
+arch_init_timer	src/hal_stm32_test.c	/^void arch_init_timer(pwm_timer_t timer, uint32_t channel, uint32_t prescaler, uint32_t period)$/;"	f
+arch_spi_config	src/hal_stm32_libopencm3.c	/^void arch_spi_config(spi_t port)$/;"	f
+arch_spi_config	src/hal_stm32_stdperiphlib.c	/^void arch_spi_config(spi_t port)$/;"	f
+arch_spi_config	src/hal_stm32_test.c	/^void arch_spi_config(spi_t port)$/;"	f
+arch_spi_enable	src/hal_stm32_libopencm3.c	/^void arch_spi_enable(spi_t port)$/;"	f
+arch_spi_enable	src/hal_stm32_stdperiphlib.c	/^void arch_spi_enable(spi_t port)$/;"	f
+arch_spi_enable	src/hal_stm32_test.c	/^void arch_spi_enable(spi_t port)$/;"	f
+arch_spi_xfer	src/hal_stm32_libopencm3.c	/^uint8_t arch_spi_xfer(spi_t port, uint8_t cmd)$/;"	f
+arch_spi_xfer	src/hal_stm32_stdperiphlib.c	/^uint8_t arch_spi_xfer(spi_t port, uint8_t cmd)$/;"	f
+arch_spi_xfer	src/hal_stm32_test.c	/^uint8_t arch_spi_xfer(spi_t port, uint8_t cmd)$/;"	f
+arch_timer_set	src/hal_stm32_libopencm3.c	/^void arch_timer_set(uint32_t timer, uint32_t channel, uint32_t value)$/;"	f
+arch_timer_set	src/hal_stm32_stdperiphlib.c	/^void arch_timer_set(pwm_timer_t timer, uint32_t channel, uint32_t value)$/;"	f
+arch_timer_set	src/hal_stm32_test.c	/^void arch_timer_set(uint32_t timer, uint32_t channel, uint32_t value)$/;"	f
+arch_usart_recv	src/hal_stm32_libopencm3.c	/^uint16_t arch_usart_recv(usart_t port)$/;"	f
+arch_usart_recv	src/hal_stm32_stdperiphlib.c	/^uint16_t arch_usart_recv(usart_t port)$/;"	f
+arch_usart_recv	src/hal_stm32_test.c	/^uint16_t arch_usart_recv(usart_t port)$/;"	f
+arch_usart_send	src/hal_stm32_libopencm3.c	/^void arch_usart_send(usart_t port, uint8_t data)$/;"	f
+arch_usart_send	src/hal_stm32_stdperiphlib.c	/^void arch_usart_send(usart_t port, uint8_t data)$/;"	f
+arch_usart_send	src/hal_stm32_test.c	/^void arch_usart_send(usart_t port, uint8_t data)$/;"	f
+arch_usart_set_baud	src/hal_stm32_libopencm3.c	/^void arch_usart_set_baud(usart_t port, int baud)$/;"	f
+arch_usart_set_baud	src/hal_stm32_stdperiphlib.c	/^void arch_usart_set_baud(usart_t port, int baud)$/;"	f
+assert	include/util.h	/^#define assert(/;"	d
+assert_param	include/stm32l1xx_conf.h	/^  #define assert_param(/;"	d
+baro_sample	include/events.h	/^  struct baro_sample_s baro_sample;$/;"	m	union:__anon77	typeref:struct:__anon77::baro_sample_s
+baro_sample_s	include/sample.h	/^struct baro_sample_s {$/;"	s
+batt_sans_sample	src/hal_stm32_libopencm3.c	/^uint16_t batt_sans_sample(void)$/;"	f
+batt_sense_disable	src/hal_stm32_libopencm3.c	/^void batt_sense_disable(void)$/;"	f
+batt_sense_enable	src/hal_stm32_libopencm3.c	/^void batt_sense_enable(void)$/;"	f
+battery_level	include/aci_evts.h	/^  uint16_t battery_level;$/;"	m	struct:__anon57
+baudRate	include/ublox.h	/^  U4 baudRate;$/;"	m	struct:ublox_prt_cfg_s
+bd_addr_own	include/aci_evts.h	/^  uint8_t  bd_addr_own[BTLE_DEVICE_ADDRESS_SIZE];$/;"	m	struct:__anon56
+bd_addr_type	include/aci_evts.h	/^  aci_bd_addr_type_t bd_addr_type;$/;"	m	struct:__anon56
+ble_data_g	include/globals.h	/^  struct ble_task_data_s *ble_data_g;$/;"	m	struct:globals	typeref:struct:globals::ble_task_data_s
+ble_send_cmd	src/task_ble.c	/^void ble_send_cmd(struct nrf8001_cmd_s *cmd)$/;"	f
+ble_task_data_s	include/globals.h	/^typedef struct ble_task_data_s {$/;"	s
+ble_task_data_t	include/globals.h	/^} ble_task_data_t;$/;"	t	typeref:struct:ble_task_data_s
+ble_tx	src/task_ble.c	/^void ble_tx(uint8_t pipe, uint8_t *data, size_t length)$/;"	f
+blocking_handler	src/init.c	/^void blocking_handler(void)$/;"	f
+bmx055_device_e	include/bmx055.h	/^enum bmx055_device_e {$/;"	g
+bmx055_get	src/bmx055.c	/^#define bmx055_get(/;"	d	file:
+bmx055_init	src/bmx055.c	/^void bmx055_init(void)$/;"	f
+bmx055_read	src/bmx055.c	/^int16_t bmx055_read(enum bmx055_device_e device, enum direction_e direction)$/;"	f
+bmx055_reset	src/bmx055.c	/^int bmx055_reset(void)$/;"	f
+bmx055_write	src/bmx055.c	/^#define bmx055_write(/;"	d	file:
+bmx055_xfer	src/bmx055.c	/^bmx055_xfer(enum operation_e op, enum sensor_e sensor, uint8_t reg, uint8_t *val)$/;"	f	file:
+bond	include/aci_cmds.h	/^    aci_cmd_params_bond_t                       bond;$/;"	m	union:__anon48::__anon49
+bond_status	include/aci_evts.h	/^    aci_evt_params_bond_status_t                        bond_status;$/;"	m	union:__anon75::__anon76
+broadcast	include/aci_cmds.h	/^    aci_cmd_params_broadcast_t                  broadcast;$/;"	m	union:__anon48::__anon49
+btle_status	include/aci_evts.h	/^  uint8_t btle_status;$/;"	m	struct:__anon62
+buffer	include/ublox_isr.h	/^  uint8_t buffer[USART_ISR_BUFFER_LEN];$/;"	m	struct:usart_isr_state_s
+bus_fault	src/init.c	/^	vector_table_entry_t bus_fault;           \/* not in CM0 *\/$/;"	m	struct:__anon1	file:
+bus_fault_handler	include/hal_empty.h	/^#define bus_fault_handler /;"	d
+bus_fault_handler	src/fault_handlers.c	/^void bus_fault_handler(void)$/;"	f
+bus_fault_handler	src/init.c	/^#pragma weak bus_fault_handler /;"	d	file:
+busy_wait_for_ready	src/flash.c	/^static void busy_wait_for_ready(void)$/;"	f	file:
+calculateCheckSum	src/ublox.c	/^static void calculateCheckSum(uint8_t *in, size_t length, uint8_t* dest) {$/;"	f	file:
+change_timing	include/aci_cmds.h	/^    aci_cmd_params_change_timing_t              change_timing;$/;"	m	union:__anon48::__anon49
+charLen	include/ublox.h	/^    uint32_t charLen   : 2;$/;"	m	struct:ublox_prt_cfg_s::__anon80
+class_and_id	src/task_gps.c	/^  uint8_t class_and_id[2];$/;"	m	struct:ubx_state_s	file:
+close_remote_pipe	include/aci_cmds.h	/^    aci_cmd_params_close_remote_pipe_t          close_remote_pipe;$/;"	m	union:__anon48::__anon49
+cmd_buf	src/nrf8001.c	/^struct nrf8001_cmd_s cmd_buf;$/;"	v	typeref:struct:nrf8001_cmd_s
+cmd_lsb	include/aci_cmds.h	/^  uint8_t                 cmd_lsb;$/;"	m	struct:__anon28
+cmd_msb	include/aci_cmds.h	/^  uint8_t                 cmd_msb;$/;"	m	struct:__anon28
+cmd_opcode	include/aci_cmds.h	/^  aci_cmd_opcode_t cmd_opcode; \/**< enum aci_cmd_opcode_t -> Opcode of the ACI command *\/$/;"	m	struct:__anon48
+cmd_opcode	include/aci_evts.h	/^  aci_cmd_opcode_t cmd_opcode; \/**< Command opcode for which the event response is being sent *\/$/;"	m	struct:__anon59
+cmd_rsp	include/aci_evts.h	/^    aci_evt_params_cmd_rsp_t                            cmd_rsp;$/;"	m	union:__anon75::__anon76
+cmd_status	include/aci_evts.h	/^  aci_status_code_t cmd_status; \/**< Status of the command that was sent. Used in the context of the command. *\/$/;"	m	struct:__anon59
+cmp_result	src/flash.c	/^  uint8_t cmp_result : 1;$/;"	m	struct:status_register_s	file:
+coefficient_t	src/ms5611.c	/^typedef uint16_t coefficient_t;$/;"	t	file:
+comp_acq_isr	src/init.c	/^#pragma weak comp_acq_isr /;"	d	file:
+comp_isr	src/init.c	/^#pragma weak comp_isr /;"	d	file:
+configASSERT	include/FreeRTOSConfig.h	/^#define configASSERT(/;"	d
+configCHECK_FOR_STACK_OVERFLOW	include/FreeRTOSConfig.h	/^#define configCHECK_FOR_STACK_OVERFLOW /;"	d
+configCPU_CLOCK_HZ	include/FreeRTOSConfig.h	/^#define configCPU_CLOCK_HZ /;"	d
+configENABLE_BACKWARD_COMPATIBILITY	include/FreeRTOSConfig.h	/^#define configENABLE_BACKWARD_COMPATIBILITY /;"	d
+configGENERATE_RUN_TIME_STATS	include/FreeRTOSConfig.h	/^#define configGENERATE_RUN_TIME_STATS /;"	d
+configIDLE_SHOULD_YIELD	include/FreeRTOSConfig.h	/^#define configIDLE_SHOULD_YIELD /;"	d
+configINCLUDE_APPLICATION_DEFINED_PRIVILEGED_FUNCTIONS	include/FreeRTOSConfig.h	/^#define configINCLUDE_APPLICATION_DEFINED_PRIVILEGED_FUNCTIONS /;"	d
+configKERNEL_INTERRUPT_PRIORITY	include/FreeRTOSConfig.h	/^#define configKERNEL_INTERRUPT_PRIORITY /;"	d
+configLIBRARY_LOWEST_INTERRUPT_PRIORITY	include/FreeRTOSConfig.h	/^#define configLIBRARY_LOWEST_INTERRUPT_PRIORITY /;"	d
+configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY	include/FreeRTOSConfig.h	/^#define configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY /;"	d
+configMAX_CO_ROUTINE_PRIORITIES	include/FreeRTOSConfig.h	/^#define configMAX_CO_ROUTINE_PRIORITIES /;"	d
+configMAX_PRIORITIES	include/FreeRTOSConfig.h	/^#define configMAX_PRIORITIES /;"	d
+configMAX_SYSCALL_INTERRUPT_PRIORITY	include/FreeRTOSConfig.h	/^#define configMAX_SYSCALL_INTERRUPT_PRIORITY /;"	d
+configMAX_TASK_NAME_LEN	include/FreeRTOSConfig.h	/^#define configMAX_TASK_NAME_LEN /;"	d
+configMINIMAL_STACK_SIZE	include/FreeRTOSConfig.h	/^#define configMINIMAL_STACK_SIZE /;"	d
+configPRIO_BITS	include/FreeRTOSConfig.h	/^        #define configPRIO_BITS /;"	d
+configQUEUE_REGISTRY_SIZE	include/FreeRTOSConfig.h	/^#define configQUEUE_REGISTRY_SIZE /;"	d
+configTICK_RATE_HZ	include/FreeRTOSConfig.h	/^#define configTICK_RATE_HZ /;"	d
+configTIMER_QUEUE_LENGTH	include/FreeRTOSConfig.h	/^#define configTIMER_QUEUE_LENGTH /;"	d
+configTIMER_TASK_PRIORITY	include/FreeRTOSConfig.h	/^#define configTIMER_TASK_PRIORITY /;"	d
+configTIMER_TASK_STACK_DEPTH	include/FreeRTOSConfig.h	/^#define configTIMER_TASK_STACK_DEPTH /;"	d
+configTOTAL_HEAP_SIZE	include/FreeRTOSConfig.h	/^#  define configTOTAL_HEAP_SIZE /;"	d
+configTOTAL_HEAP_SIZE	include/FreeRTOSConfig.h	/^#  undef configTOTAL_HEAP_SIZE$/;"	d
+configTOTAL_HEAP_SIZE	include/FreeRTOSConfig.h	/^#define configTOTAL_HEAP_SIZE /;"	d
+configUSE_16_BIT_TICKS	include/FreeRTOSConfig.h	/^#define configUSE_16_BIT_TICKS /;"	d
+configUSE_ALTERNATIVE_API	include/FreeRTOSConfig.h	/^#define configUSE_ALTERNATIVE_API /;"	d
+configUSE_COUNTING_SEMAPHORES	include/FreeRTOSConfig.h	/^#define configUSE_COUNTING_SEMAPHORES /;"	d
+configUSE_CO_ROUTINES	include/FreeRTOSConfig.h	/^#define configUSE_CO_ROUTINES /;"	d
+configUSE_IDLE_HOOK	include/FreeRTOSConfig.h	/^#define configUSE_IDLE_HOOK /;"	d
+configUSE_MALLOC_FAILED_HOOK	include/FreeRTOSConfig.h	/^#define configUSE_MALLOC_FAILED_HOOK /;"	d
+configUSE_MUTEXES	include/FreeRTOSConfig.h	/^#define configUSE_MUTEXES /;"	d
+configUSE_NEWLIB_REENTRANT	include/FreeRTOSConfig.h	/^#define configUSE_NEWLIB_REENTRANT /;"	d
+configUSE_PORT_OPTIMISED_TASK_SELECTION	include/FreeRTOSConfig.h	/^#define configUSE_PORT_OPTIMISED_TASK_SELECTION /;"	d
+configUSE_PREEMPTION	include/FreeRTOSConfig.h	/^#define configUSE_PREEMPTION /;"	d
+configUSE_QUEUE_SETS	include/FreeRTOSConfig.h	/^#define configUSE_QUEUE_SETS /;"	d
+configUSE_RECURSIVE_MUTEXES	include/FreeRTOSConfig.h	/^#define configUSE_RECURSIVE_MUTEXES /;"	d
+configUSE_STATS_FORMATTING_FUNCTIONS	include/FreeRTOSConfig.h	/^#define configUSE_STATS_FORMATTING_FUNCTIONS /;"	d
+configUSE_TICKLESS_IDLE	include/FreeRTOSConfig.h	/^#define configUSE_TICKLESS_IDLE /;"	d
+configUSE_TICK_HOOK	include/FreeRTOSConfig.h	/^#define configUSE_TICK_HOOK /;"	d
+configUSE_TIMERS	include/FreeRTOSConfig.h	/^#define configUSE_TIMERS /;"	d
+configUSE_TIME_SLICING	include/FreeRTOSConfig.h	/^#define configUSE_TIME_SLICING /;"	d
+configUSE_TRACE_FACILITY	include/FreeRTOSConfig.h	/^#define configUSE_TRACE_FACILITY /;"	d
+config_alert_task	src/aero.c	/^static void config_alert_task(void)$/;"	f	file:
+config_ble_task	src/aero.c	/^static void config_ble_task(void)$/;"	f	file:
+config_flash	src/flash.c	/^void config_flash(void)$/;"	f
+config_get_alarm	src/config.c	/^struct alarm_s config_get_alarm(unsigned alarm_idx)$/;"	f
+config_globals	src/config.c	/^void config_globals(void)$/;"	f
+config_gps	src/task_gps.c	/^void config_gps(void)$/;"	f
+config_gps_task	src/aero.c	/^static void config_gps_task(void)$/;"	f	file:
+config_load_persistent	src/config.c	/^void config_load_persistent(void)$/;"	f
+config_main_task	src/aero.c	/^static void config_main_task(void)$/;"	f	file:
+config_nrf8001	src/nrf8001.c	/^void config_nrf8001(void)$/;"	f
+config_nrf8001_isr	src/nrf8001.c	/^static void config_nrf8001_isr(void)$/;"	f	file:
+config_nrf8001_pins	src/nrf8001.c	/^static void config_nrf8001_pins(void)$/;"	f	file:
+config_sensor	src/task_sensor.c	/^void config_sensor(void)$/;"	f
+config_sensor_task	src/aero.c	/^static void config_sensor_task(void)$/;"	f	file:
+config_set_alarm	src/config.c	/^void config_set_alarm(unsigned alarm_idx, struct alarm_s alarm)$/;"	f
+config_store_persistent	src/config.c	/^void config_store_persistent(void)$/;"	f
+config_tasks	src/aero.c	/^static void config_tasks(void)$/;"	f	file:
+configuration_id	include/aci_evts.h	/^  uint16_t  configuration_id;$/;"	m	struct:__anon55
+conn_params	include/aci_cmds.h	/^  aci_ll_conn_params_t    conn_params;$/;"	m	struct:__anon36
+conn_rf_interval	include/aci_evts.h	/^  uint16_t conn_rf_interval;  \/**< rf_interval = conn_rf_interval * 1.25 ms Range:0x0006 to 0x0C80 *\/$/;"	m	struct:__anon61
+conn_rf_interval	include/aci_evts.h	/^  uint16_t conn_rf_interval;  \/**< rf_interval = conn_rf_interval * 1.25 ms Range:0x0006 to 0x0C80 *\/$/;"	m	struct:__anon65
+conn_rf_timeout	include/aci_evts.h	/^  uint16_t conn_rf_timeout; \/**< Timeout as a multiple of 10ms i.e timeout = conn_rf_timeout * 10ms Range: 0x000A to 0x0C80 *\/$/;"	m	struct:__anon61
+conn_rf_timeout	include/aci_evts.h	/^  uint16_t conn_rf_timeout; \/**< Timeout as a multiple of 10ms i.e timeout = conn_rf_timeout * 10ms Range: 0x000A to 0x0C80 *\/$/;"	m	struct:__anon65
+conn_slave_rf_latency	include/aci_evts.h	/^  uint16_t conn_slave_rf_latency; \/**< Number of RF events the slave can skip *\/$/;"	m	struct:__anon61
+conn_slave_rf_latency	include/aci_evts.h	/^  uint16_t conn_slave_rf_latency; \/**< Number of RF events the slave can skip *\/$/;"	m	struct:__anon65
+connect	include/aci_cmds.h	/^    aci_cmd_params_connect_t                    connect;$/;"	m	union:__anon48::__anon49
+connected	include/aci_evts.h	/^    aci_evt_params_connected_t                          connected;$/;"	m	union:__anon75::__anon76
+content	include/aci_evts.h	/^  uint8_t content[1];$/;"	m	struct:__anon69
+counter_add_event	include/counters.h	/^#  define counter_add_event(/;"	d
+counter_name_e	include/counters.h	/^enum counter_name_e {$/;"	g
+counters	include/globals.h	/^  struct counters_s counters;$/;"	m	struct:globals	typeref:struct:globals::counters_s
+counters_s	include/counters.h	/^struct counters_s {$/;"	s
+cpu_cycle_count	src/util.c	/^uint32_t cpu_cycle_count(void)$/;"	f
+credit	include/aci_evts.h	/^  uint8_t credit;$/;"	m	struct:__anon66
+credit_available	include/aci_evts.h	/^  uint8_t credit_available; \/**< Flow control credit available for this specific FW build *\/$/;"	m	struct:__anon51
+dac_isr	src/init.c	/^#pragma weak dac_isr /;"	d	file:
+data	include/events.h	/^  void *data;$/;"	m	union:__anon77
+data	include/globals.h	/^  uint8_t data[WRITE_BUFFER_LEN];$/;"	m	struct:protected_buffer_s
+data	include/nrf8001.h	/^  uint8_t data[30];$/;"	m	struct:nrf8001_cmd_s
+data_ack	include/aci_evts.h	/^    aci_evt_params_data_ack_t                           data_ack;$/;"	m	union:__anon75::__anon76
+data_credit	include/aci_evts.h	/^    aci_evt_params_data_credit_t                        data_credit;$/;"	m	union:__anon75::__anon76
+data_received	include/aci_evts.h	/^    aci_evt_params_data_received_t                      data_received;$/;"	m	union:__anon75::__anon76
+day	include/ublox.h	/^  U1 month, day, hour, min, sec;$/;"	m	struct:ubx_nav_pvt_solution_s
+dbg_print	include/util.h	/^#  define dbg_print(/;"	d
+dbg_print	src/nrf8001.c	/^#  define dbg_print(/;"	d	file:
+dbg_print	src/nrf8001.c	/^#  undef dbg_print$/;"	d	file:
+debug_monitor	src/init.c	/^	vector_table_entry_t debug_monitor;       \/* not in CM0 *\/$/;"	m	struct:__anon1	file:
+debug_monitor_handler	src/init.c	/^#pragma weak debug_monitor_handler /;"	d	file:
+delay_ms	src/util.c	/^void delay_ms(uint32_t ms)$/;"	f
+density_code	src/flash.c	/^  uint8_t density_code : 4;$/;"	m	struct:status_register_s	file:
+dev_addr	include/aci_evts.h	/^  uint8_t  dev_addr[BTLE_DEVICE_ADDRESS_SIZE];$/;"	m	struct:__anon61
+dev_addr_type	include/aci_evts.h	/^  aci_bd_addr_type_t dev_addr_type;$/;"	m	struct:__anon61
+device_mode	include/aci_evts.h	/^  aci_device_operation_mode_t device_mode; \/**< Mode in which the device is being started *\/$/;"	m	struct:__anon51
+device_power	include/aci_cmds.h	/^  aci_device_output_power_t   device_power; \/**< enum aci_device_output_power_t *\/$/;"	m	struct:__anon35
+device_started	include/aci_evts.h	/^    aci_evt_params_device_started_t                     device_started;$/;"	m	union:__anon75::__anon76
+direction_e	include/bmx055.h	/^enum direction_e {$/;"	g
+disable_piezo	src/hal_stm32_test.c	/^void disable_piezo(void)$/;"	f
+disable_piezo	src/periph.c	/^void disable_piezo(void)$/;"	f
+disable_pulse	src/hal_stm32_test.c	/^void disable_pulse(void)$/;"	f
+disable_pulse	src/periph.c	/^void disable_pulse(void)$/;"	f
+disconnect	include/aci_cmds.h	/^    aci_cmd_params_disconnect_t                 disconnect;$/;"	m	union:__anon48::__anon49
+disconnected	include/aci_evts.h	/^    aci_evt_params_disconnected_t                       disconnected;$/;"	m	union:__anon75::__anon76
+display_passkey	include/aci_evts.h	/^    aci_evt_params_display_passkey_t                    display_passkey;$/;"	m	union:__anon75::__anon76
+dma1_channel1_isr	src/init.c	/^#pragma weak dma1_channel1_isr /;"	d	file:
+dma1_channel2_isr	src/init.c	/^#pragma weak dma1_channel2_isr /;"	d	file:
+dma1_channel3_isr	src/init.c	/^#pragma weak dma1_channel3_isr /;"	d	file:
+dma1_channel4_isr	src/init.c	/^#pragma weak dma1_channel4_isr /;"	d	file:
+dma1_channel5_isr	src/init.c	/^#pragma weak dma1_channel5_isr /;"	d	file:
+dma1_channel6_isr	src/init.c	/^#pragma weak dma1_channel6_isr /;"	d	file:
+dma1_channel7_isr	src/init.c	/^#pragma weak dma1_channel7_isr /;"	d	file:
+dma2_ch1_isr	src/init.c	/^#pragma weak dma2_ch1_isr /;"	d	file:
+dma2_ch2_isr	src/init.c	/^#pragma weak dma2_ch2_isr /;"	d	file:
+dma2_ch3_isr	src/init.c	/^#pragma weak dma2_ch3_isr /;"	d	file:
+dma2_ch4_isr	src/init.c	/^#pragma weak dma2_ch4_isr /;"	d	file:
+dma2_ch5_isr	src/init.c	/^#pragma weak dma2_ch5_isr /;"	d	file:
+dtm_cmd	include/aci_cmds.h	/^    aci_cmd_params_dtm_cmd_t                    dtm_cmd;$/;"	m	union:__anon48::__anon49
+dtm_cmd	include/aci_evts.h	/^    aci_evt_cmd_rsp_params_dtm_cmd_t dtm_cmd;$/;"	m	union:__anon59::__anon60
+dynamic_data	include/aci_cmds.h	/^  uint8_t                 dynamic_data[1];$/;"	m	struct:__anon30
+dynamic_data	include/aci_evts.h	/^  uint8_t dynamic_data[1];$/;"	m	struct:__anon54
+dynamic_platform_model_e	include/ublox.h	/^enum dynamic_platform_model_e {$/;"	g
+easing_f	src/task_alert.c	/^static uint32_t easing_f(uint32_t offset)$/;"	f	file:
+ecefVX	include/ublox.h	/^  I4 ecefVX, ecefVY, ecefVZ; \/*    *\/$/;"	m	struct:ubx_nav_solution_s
+ecefVY	include/ublox.h	/^  I4 ecefVX, ecefVY, ecefVZ; \/*    *\/$/;"	m	struct:ubx_nav_solution_s
+ecefVZ	include/ublox.h	/^  I4 ecefVX, ecefVY, ecefVZ; \/*    *\/$/;"	m	struct:ubx_nav_solution_s
+ecefX	include/ublox.h	/^  I4 ecefX, ecefY, ecefZ; \/*    *\/$/;"	m	struct:ubx_nav_solution_s
+ecefY	include/ublox.h	/^  I4 ecefX, ecefY, ecefZ; \/*    *\/$/;"	m	struct:ubx_nav_solution_s
+ecefZ	include/ublox.h	/^  I4 ecefX, ecefY, ecefZ; \/*    *\/$/;"	m	struct:ubx_nav_solution_s
+echo	include/aci_cmds.h	/^    aci_cmd_params_echo_t                       echo;$/;"	m	union:__anon48::__anon49
+echo	include/aci_evts.h	/^    aci_evt_params_echo_t                               echo;$/;"	m	union:__anon75::__anon76
+echo_data	include/aci_cmds.h	/^  uint8_t echo_data[ACI_ECHO_DATA_MAX_LEN];$/;"	m	struct:__anon27
+echo_data	include/aci_evts.h	/^  uint8_t echo_data[ACI_ECHO_DATA_MAX_LEN];$/;"	m	struct:__anon74
+en	include/ublox.h	/^    uint16_t en    : 1;$/;"	m	struct:ublox_prt_cfg_s::__anon79
+enable_piezo	src/hal_stm32_test.c	/^void enable_piezo(void)$/;"	f
+enable_piezo	src/periph.c	/^void enable_piezo(void)$/;"	f
+enable_pulse	src/hal_stm32_test.c	/^void enable_pulse(void)$/;"	f
+enable_pulse	src/periph.c	/^void enable_pulse(void)$/;"	f
+erase_suspend	src/flash.c	/^  uint8_t erase_suspend : 1;$/;"	m	struct:status_register_s	file:
+error	src/flash.c	/^  uint8_t error : 1;$/;"	m	struct:status_register_s	file:
+error_code	include/aci_cmds.h	/^  uint8_t error_code;$/;"	m	struct:__anon41
+error_code	include/aci_evts.h	/^  uint8_t error_code;$/;"	m	struct:__anon70
+error_data	include/aci_evts.h	/^    error_data_t  error_data;$/;"	m	union:__anon70::__anon71
+error_data_t	include/aci_evts.h	/^} _aci_packed_ error_data_t;$/;"	t	typeref:struct:__anon69
+event_header_s	include/sample.h	/^struct event_header_s {$/;"	s
+event_id	include/sample.h	/^  uint32_t event_id;$/;"	m	struct:event_header_s
+event_payload_t	include/events.h	/^} event_payload_t;$/;"	t	typeref:union:__anon77
+event_type_e	include/events.h	/^typedef enum event_type_e {$/;"	g
+event_type_t	include/events.h	/^} event_type_t;$/;"	t	typeref:enum:event_type_e
+events	src/logger.c	/^  uint32_t events;$/;"	m	struct:storage_header_s	file:
+events_received	src/nrf8001.c	/^  uint32_t events_received;$/;"	m	struct:nrf8001_state_s	file:
+evt_lsb	include/aci_evts.h	/^  uint8_t  evt_lsb;$/;"	m	struct:__anon53
+evt_msb	include/aci_evts.h	/^  uint8_t  evt_msb;$/;"	m	struct:__anon53
+evt_opcode	include/aci_evts.h	/^  aci_evt_opcode_t evt_opcode;$/;"	m	struct:__anon75
+exchange_commands	src/task_ble.c	/^static void exchange_commands(struct nrf8001_cmd_s *outgoing, struct nrf8001_cmd_s *incoming)$/;"	f	file:
+exti0_isr	src/init.c	/^#pragma weak exti0_isr /;"	d	file:
+exti15_10_isr	src/init.c	/^#pragma weak exti15_10_isr /;"	d	file:
+exti1_isr	src/init.c	/^#pragma weak exti1_isr /;"	d	file:
+exti2_isr	src/init.c	/^#pragma weak exti2_isr /;"	d	file:
+exti3_isr	src/hal_stm32_libopencm3.c	/^void exti3_isr(void)$/;"	f
+exti3_isr	src/hal_stm32_stdperiphlib.c	/^void exti3_isr(void)$/;"	f
+exti3_isr	src/hal_stm32_test.c	/^void exti3_isr(void)$/;"	f
+exti3_isr	src/init.c	/^#pragma weak exti3_isr /;"	d	file:
+exti4_isr	src/init.c	/^#pragma weak exti4_isr /;"	d	file:
+exti9_5_isr	src/init.c	/^#pragma weak exti9_5_isr /;"	d	file:
+fTOW	include/ublox.h	/^  I4 fTOW; \/*    *\/$/;"	m	struct:ubx_nav_solution_s
+features	include/sample.h	/^  uint16_t features;$/;"	m	struct:event_header_s
+file_name	include/aci_evts.h	/^  uint8_t file_name[20];$/;"	m	struct:__anon52
+filter_add_value	src/filter.c	/^filter_value_t filter_add_value( filter_state_t *state, filter_value_t value)$/;"	f
+filter_get_value	src/filter.c	/^filter_value_t filter_get_value( filter_state_t *state )$/;"	f
+filter_init_state	src/filter.c	/^void filter_init_state( filter_state_t *state )$/;"	f
+filter_state_s	include/filter.h	/^typedef struct filter_state_s {$/;"	s
+filter_state_t	include/filter.h	/^} filter_state_t;$/;"	t	typeref:struct:filter_state_s
+filter_value_t	include/filter.h	/^typedef uint32_t filter_value_t;$/;"	t
+fixStat	include/ublox.h	/^  X1 fixStat;$/;"	m	struct:ubx_nav_status_s
+fixType	include/ublox.h	/^  U1 fixType;$/;"	m	struct:ubx_nav_pvt_solution_s
+flags	include/ublox.h	/^  X1 flags; $/;"	m	struct:ubx_nav_status_s
+flags	include/ublox.h	/^  X1 flags; \/*    *\/$/;"	m	struct:ubx_nav_solution_s
+flags	include/ublox.h	/^  X1 flags;$/;"	m	struct:ubx_nav_pvt_solution_s
+flags	include/ublox.h	/^  X2 flags;$/;"	m	struct:ublox_prt_cfg_s
+flags	include/ublox.h	/^  X4 flags;$/;"	m	struct:ublox_cfg_pm2_s
+flags	src/task_gps.c	/^  } flags;$/;"	m	struct:ubx_state_s	typeref:struct:ubx_state_s::__anon4	file:
+flags2	include/ublox.h	/^  X1 flags2; $/;"	m	struct:ubx_nav_status_s
+flash_buffer	include/globals.h	/^  struct protected_buffer_s flash_buffer;$/;"	m	struct:globals	typeref:struct:globals::protected_buffer_s
+flash_commit_buffer	src/flash.c	/^static void flash_commit_buffer(uint32_t address)$/;"	f	file:
+flash_isr	src/init.c	/^#pragma weak flash_isr /;"	d	file:
+flash_read	src/flash.c	/^void flash_read(uint32_t addr, uint8_t *data, size_t size)$/;"	f
+flash_read_status	src/flash.c	/^static void flash_read_status(struct status_register_s *dest)$/;"	f	file:
+flash_reset	src/flash.c	/^inline static void flash_reset(void)$/;"	f	file:
+flash_write	src/flash.c	/^void flash_write(uint32_t addr, uint8_t *data, size_t size)$/;"	f
+flash_write_buffer	src/flash.c	/^static void flash_write_buffer(uint8_t *data, size_t size)$/;"	f	file:
+free_offset	src/logger.c	/^  uint32_t free_offset;$/;"	m	struct:storage_header_s	file:
+funcp_t	src/init.c	/^typedef void (*funcp_t) (void);$/;"	t	file:
+g	src/globals.c	/^struct globals g;$/;"	v	typeref:struct:globals
+gSpeed	include/ublox.h	/^  I4 gSpeed;$/;"	m	struct:ubx_nav_pvt_solution_s
+g_gotsemphrs	src/task_ble.c	/^int g_received = 0, g_gotsemphrs = 0;$/;"	v
+g_isr_hit	src/nrf8001.c	/^int g_isr_hit = 0;$/;"	v
+g_nrf_events_received	src/nrf8001.c	/^int g_nrf_events_received = 0;$/;"	v
+g_pfnVectors	src/startup_stm32l1xx_hd.s	/^g_pfnVectors:$/;"	l
+g_received	src/task_ble.c	/^int g_received = 0, g_gotsemphrs = 0;$/;"	v
+get_battery_level	include/aci_evts.h	/^    aci_evt_cmd_rsp_params_get_battery_level_t  get_battery_level;$/;"	m	union:__anon59::__anon60
+get_device_address	include/aci_evts.h	/^    aci_evt_cmd_rsp_params_get_device_address_t get_device_address;$/;"	m	union:__anon59::__anon60
+get_device_version	include/aci_evts.h	/^    aci_evt_cmd_rsp_params_get_device_version_t get_device_version;$/;"	m	union:__anon59::__anon60
+get_temperature	include/aci_evts.h	/^    aci_evt_cmd_rsp_params_get_temperature_t    get_temperature;$/;"	m	union:__anon59::__anon60
+global_event_s	include/events.h	/^struct global_event_s {$/;"	s
+global_state_e	include/state.h	/^typedef enum global_state_e {$/;"	g
+global_state_t	include/state.h	/^} global_state_t;$/;"	t	typeref:enum:global_state_e
+globals	include/globals.h	/^struct globals {$/;"	s
+gpio_af_mode_t	include/hal_stm32_libopencm3.h	/^typedef uint32_t gpio_af_mode_t;$/;"	t
+gpio_af_mode_t	include/hal_stm32_stdperiphlib.h	/^typedef uint8_t       gpio_af_mode_t;$/;"	t
+gpio_t	include/hal_empty.h	/^typedef uint32_t gpio_t;$/;"	t
+gpio_t	include/hal_stm32_libopencm3.h	/^typedef uint32_t gpio_t;$/;"	t
+gpio_t	include/hal_stm32_stdperiphlib.h	/^typedef GPIO_TypeDef  *gpio_t;$/;"	t
+gpsFix	include/ublox.h	/^  U1 gpsFix; $/;"	m	struct:ubx_nav_status_s
+gpsFix	include/ublox.h	/^  U1 gpsFix; \/*    *\/$/;"	m	struct:ubx_nav_solution_s
+gps_event_t	include/task_gps.h	/^enum gps_event_t {$/;"	g
+gps_queue_g	include/globals.h	/^  void *gps_queue_g;$/;"	m	struct:globals
+gps_sample	include/events.h	/^  struct gps_sample_s gps_sample;$/;"	m	union:__anon77	typeref:struct:__anon77::gps_sample_s
+gps_sample	include/sample.h	/^  struct gps_sample_s gps_sample;$/;"	m	struct:sensor_packet_s	typeref:struct:sensor_packet_s::gps_sample_s
+gps_sample_s	include/sample.h	/^struct gps_sample_s {$/;"	s
+gridOffset	include/ublox.h	/^  U4 gridOffset;$/;"	m	struct:ublox_cfg_pm2_s
+ground_speed	include/sample.h	/^  int32_t ground_speed;$/;"	m	struct:gps_sample_s
+gyro	include/sample.h	/^  int16_t gyro[3];$/;"	m	struct:gyro_sample_s
+gyro_sample	include/events.h	/^  struct gyro_sample_s gyro_sample;$/;"	m	union:__anon77	typeref:struct:__anon77::gyro_sample_s
+gyro_sample	include/sample.h	/^  struct gyro_sample_s gyro_sample;$/;"	m	struct:sensor_packet_s	typeref:struct:sensor_packet_s::gyro_sample_s
+gyro_sample_s	include/sample.h	/^struct gyro_sample_s {$/;"	s
+hAcc	include/ublox.h	/^  U4 hAcc, vAcc;$/;"	m	struct:ubx_nav_pvt_solution_s
+hMSL	include/ublox.h	/^  I4 hMSL;$/;"	m	struct:ubx_nav_pvt_solution_s
+handle_connected	src/nrf8001.c	/^static void handle_connected(struct nrf8001_cmd_s *evt)$/;"	f	file:
+handle_pipe_status	src/nrf8001.c	/^static void handle_pipe_status(struct nrf8001_cmd_s *evt)$/;"	f	file:
+handle_ubx_message	src/task_gps.c	/^static void handle_ubx_message(struct ubx_state_s *state)$/;"	f	file:
+hard_fault	src/init.c	/^	vector_table_entry_t hard_fault;$/;"	m	struct:__anon1	file:
+hard_fault_handler	include/hal_empty.h	/^#define hard_fault_handler /;"	d
+hard_fault_handler	src/fault_handlers.c	/^void hard_fault_handler(void)$/;"	f
+hard_fault_handler	src/init.c	/^#pragma weak hard_fault_handler /;"	d	file:
+headVeh	include/ublox.h	/^  I4 headVeh;$/;"	m	struct:ubx_nav_pvt_solution_s
+heading	include/sample.h	/^  int32_t heading;$/;"	m	struct:gps_sample_s
+heading	include/ublox.h	/^  I4 heading;$/;"	m	struct:ubx_nav_pvt_solution_s
+headingAcc	include/ublox.h	/^  U4 headingAcc;$/;"	m	struct:ubx_nav_pvt_solution_s
+height	include/ublox.h	/^  I4 height;$/;"	m	struct:ubx_nav_pvt_solution_s
+hour	include/ublox.h	/^  U1 month, day, hour, min, sec;$/;"	m	struct:ubx_nav_pvt_solution_s
+hw_error	include/aci_evts.h	/^    aci_evt_params_hw_error_t                           hw_error;$/;"	m	union:__anon75::__anon76
+hw_error	include/aci_evts.h	/^  aci_hw_error_t hw_error;  \/**< Hardware Error if available for the start *\/$/;"	m	struct:__anon51
+i2c1_er_isr	src/init.c	/^#pragma weak i2c1_er_isr /;"	d	file:
+i2c1_ev_isr	src/init.c	/^#pragma weak i2c1_ev_isr /;"	d	file:
+i2c2_er_isr	src/init.c	/^#pragma weak i2c2_er_isr /;"	d	file:
+i2c2_ev_isr	src/init.c	/^#pragma weak i2c2_ev_isr /;"	d	file:
+iTOW	include/ublox.h	/^  U4 iTOW; \/*    *\/$/;"	m	struct:ubx_nav_solution_s
+iTOW	include/ublox.h	/^  U4 iTOW;$/;"	m	struct:ubx_nav_pvt_solution_s
+iTOW	include/ublox.h	/^  U4 iTOW;$/;"	m	struct:ubx_nav_status_s
+in	include/globals.h	/^  void *in;$/;"	m	struct:ble_task_data_s
+inProtoMask	include/ublox.h	/^  X2 inProtoMask;$/;"	m	struct:ublox_prt_cfg_s
+initial_sp_value	src/init.c	/^	unsigned int *initial_sp_value; \/**< Initial stack pointer value. *\/$/;"	m	struct:__anon1	file:
+irq	src/init.c	/^	vector_table_entry_t irq[NVIC_IRQ_COUNT];$/;"	m	struct:__anon1	file:
+key	include/aci_cmds.h	/^  } _aci_packed_ key;$/;"	m	struct:__anon43	typeref:union:__anon43::__anon44
+key_request	include/aci_evts.h	/^    aci_evt_params_key_request_t                        key_request;$/;"	m	union:__anon75::__anon76
+key_type	include/aci_cmds.h	/^  aci_key_type_t key_type;$/;"	m	struct:__anon43
+key_type	include/aci_evts.h	/^  aci_key_type_t key_type;$/;"	m	struct:__anon73
+keys_exchanged_master	include/aci_evts.h	/^  uint8_t keys_exchanged_master;$/;"	m	struct:__anon63
+keys_exchanged_slave	include/aci_evts.h	/^  uint8_t keys_exchanged_slave;$/;"	m	struct:__anon63
+last_written_jump	include/globals.h	/^  uint32_t last_written_jump;$/;"	m	struct:persisted_config_s
+lat	include/sample.h	/^  int32_t lat, lon;$/;"	m	struct:gps_sample_s
+lat	include/ublox.h	/^  I4 lon, lat;$/;"	m	struct:ubx_nav_pvt_solution_s
+latency	include/aci_cmds.h	/^  uint16_t latency;$/;"	m	struct:__anon42
+lcd_isr	src/init.c	/^#pragma weak lcd_isr /;"	d	file:
+len	include/aci_cmds.h	/^  uint8_t len;        \/**< Length of the ACI command *\/$/;"	m	struct:__anon48
+len	include/aci_evts.h	/^  uint8_t len;$/;"	m	struct:__anon75
+length	include/nrf8001.h	/^  uint8_t length;$/;"	m	struct:nrf8001_cmd_s
+length	include/ublox.h	/^  uint16_t length;$/;"	m	struct:ubx_header_s
+line_num	include/aci_evts.h	/^  uint16_t line_num;$/;"	m	struct:__anon52
+lock	include/globals.h	/^  void *lock;$/;"	m	struct:protected_buffer_s
+logged_jumps	include/globals.h	/^  uint32_t logged_jumps;$/;"	m	struct:persisted_config_s
+logger_end_event	src/logger.c	/^void logger_end_event(struct event_header_s *event)$/;"	f
+logger_flush_buffer	src/logger.c	/^static void logger_flush_buffer(uint32_t *addr)$/;"	f	file:
+logger_format_storage	src/logger.c	/^void logger_format_storage(void)$/;"	f
+logger_read_sample	src/logger.c	/^void logger_read_sample(struct event_header_s *event, uint32_t n)$/;"	f
+logger_start_event	src/logger.c	/^void logger_start_event(struct event_header_s *event)$/;"	f
+logger_write_packet	src/logger.c	/^void logger_write_packet(struct event_header_s *event, struct sensor_packet_s *packet)$/;"	f
+lon	include/sample.h	/^  int32_t lat, lon;$/;"	m	struct:gps_sample_s
+lon	include/ublox.h	/^  I4 lon, lat;$/;"	m	struct:ubx_nav_pvt_solution_s
+mag	include/sample.h	/^  int16_t mag[3]; \/* TODO: Fix naming to make sure it matches mag data *\/$/;"	m	struct:mag_sample_s
+mag_sample	include/events.h	/^  struct mag_sample_s mag_sample;$/;"	m	union:__anon77	typeref:struct:__anon77::mag_sample_s
+mag_sample	include/sample.h	/^  struct mag_sample_s mag_sample;$/;"	m	struct:sensor_packet_s	typeref:struct:sensor_packet_s::mag_sample_s
+mag_sample_s	include/sample.h	/^struct mag_sample_s {$/;"	s
+main	src/main.c	/^int main(void)$/;"	f
+main_queue_g	include/globals.h	/^  void *main_queue_g;$/;"	m	struct:globals
+master_clock_accuracy	include/aci_evts.h	/^  aci_clock_accuracy_t master_clock_accuracy; \/**< Clock accuracy of Bluetooth master: Enumerated list of values from 500 ppm to 20 ppm *\/$/;"	m	struct:__anon61
+max_conn_interval	include/aci.h	/^  uint16_t max_conn_interval;   \/**< Maximum connection interval requested from peer *\/$/;"	m	struct:__anon13
+mbarc	include/alarm.h	/^  uint32_t mbarc : 29;$/;"	m	struct:alarm_s
+mbarc	include/sample.h	/^  ms5611_mbarc_t mbarc;$/;"	m	struct:baro_sample_s
+mbarc	include/sample.h	/^  ms5611_mbarc_t mbarc;$/;"	m	struct:sensor_packet_s
+mem_manage_handler	include/hal_empty.h	/^#define mem_manage_handler /;"	d
+mem_manage_handler	src/fault_handlers.c	/^void mem_manage_handler(void)$/;"	f
+mem_manage_handler	src/init.c	/^#pragma weak mem_manage_handler /;"	d	file:
+memory_manage_fault	src/init.c	/^	vector_table_entry_t memory_manage_fault; \/* not in CM0 *\/$/;"	m	struct:__anon1	file:
+min	include/ublox.h	/^  U1 month, day, hour, min, sec;$/;"	m	struct:ubx_nav_pvt_solution_s
+minAcqTime	include/ublox.h	/^  U2 minAcqTime;$/;"	m	struct:ublox_cfg_pm2_s
+min_conn_interval	include/aci.h	/^  uint16_t min_conn_interval;   \/**< Minimum connection interval requested from peer *\/$/;"	m	struct:__anon13
+mode	include/aci_cmds.h	/^  aci_app_latency_mode_t mode;$/;"	m	struct:__anon42
+mode	include/ublox.h	/^  }mode;$/;"	m	struct:ublox_prt_cfg_s	typeref:struct:ublox_prt_cfg_s::__anon80
+month	include/ublox.h	/^  U1 month, day, hour, min, sec;$/;"	m	struct:ubx_nav_pvt_solution_s
+ms5611_C_s	src/ms5611.c	/^struct ms5611_C_s {$/;"	s	file:
+ms5611_get16	src/ms5611.c	/^static uint16_t ms5611_get16(uint8_t cmd)$/;"	f	file:
+ms5611_get_last_temp	src/ms5611.c	/^uint32_t ms5611_get_last_temp()$/;"	f
+ms5611_get_mbarc	src/ms5611.c	/^ms5611_mbarc_t ms5611_get_mbarc(uint8_t precision)$/;"	f
+ms5611_get_temp	src/ms5611.c	/^uint32_t ms5611_get_temp(uint8_t precision)$/;"	f
+ms5611_init	src/ms5611.c	/^void ms5611_init(void)$/;"	f
+ms5611_mbarc_t	include/ms5611.h	/^typedef uint32_t ms5611_mbarc_t;$/;"	t
+ms5611_read_adc	src/ms5611.c	/^static uint32_t ms5611_read_adc(uint8_t cmd)$/;"	f	file:
+ms5611_reset	src/ms5611.c	/^void ms5611_reset(void)$/;"	f
+ms5611_verify_prom	src/ms5611.c	/^uint16_t ms5611_verify_prom(void)$/;"	f
+msg_class	include/ublox.h	/^  uint8_t msg_class;$/;"	m	struct:ubx_header_s
+msg_id	include/ublox.h	/^  uint8_t msg_id;$/;"	m	struct:ubx_header_s
+msss	include/ublox.h	/^  U4 msss;$/;"	m	struct:ubx_nav_status_s
+nStopBits	include/ublox.h	/^    uint32_t nStopBits : 2;$/;"	m	struct:ublox_prt_cfg_s::__anon80
+n_values	include/filter.h	/^  int n_values;$/;"	m	struct:filter_state_s
+name	include/globals.h	/^  char name[16];$/;"	m	struct:persisted_config_s
+nano	include/ublox.h	/^  I4 nano;$/;"	m	struct:ubx_nav_pvt_solution_s
+nmi	src/init.c	/^	vector_table_entry_t nmi;$/;"	m	struct:__anon1	file:
+nmi_handler	src/init.c	/^#pragma weak nmi_handler /;"	d	file:
+nrf8001_cmd	include/events.h	/^  struct nrf8001_cmd_s nrf8001_cmd;$/;"	m	union:__anon77	typeref:struct:__anon77::nrf8001_cmd_s
+nrf8001_cmd_s	include/nrf8001.h	/^struct nrf8001_cmd_s {$/;"	s
+nrf8001_connect	src/nrf8001.c	/^static void nrf8001_connect(void) {$/;"	f	file:
+nrf8001_exchange_cmds	src/nrf8001.c	/^void nrf8001_exchange_cmds(struct nrf8001_cmd_s *out, struct nrf8001_cmd_s *in)$/;"	f
+nrf8001_handle_event	src/nrf8001.c	/^void nrf8001_handle_event(struct nrf8001_cmd_s *event)$/;"	f
+nrf8001_isr	src/nrf8001.c	/^void nrf8001_isr(void)$/;"	f
+nrf8001_reset	src/nrf8001.c	/^static void nrf8001_reset(void)$/;"	f	file:
+nrf8001_setup	src/nrf8001.c	/^static void nrf8001_setup(void)$/;"	f	file:
+nrf8001_state_e	src/nrf8001.c	/^enum nrf8001_state_e {$/;"	g	file:
+nrf8001_state_s	src/nrf8001.c	/^struct nrf8001_state_s {$/;"	s	file:
+null_handler	src/init.c	/^void null_handler(void)$/;"	f
+numSV	include/ublox.h	/^  U1 numSV; \/*    *\/$/;"	m	struct:ubx_nav_solution_s
+numSV	include/ublox.h	/^  U1 numSV;$/;"	m	struct:ubx_nav_pvt_solution_s
+offsetof	include/sample.h	/^#define offsetof(/;"	d
+onTime	include/ublox.h	/^  U2 onTime;$/;"	m	struct:ublox_cfg_pm2_s
+oob_key	include/aci_cmds.h	/^    uint8_t oob_key[16];$/;"	m	union:__anon43::__anon44
+opcode	include/nrf8001.h	/^  uint8_t opcode;$/;"	m	struct:nrf8001_cmd_s
+open_adv_pipe	include/aci_cmds.h	/^    aci_cmd_params_open_adv_pipe_t              open_adv_pipe;$/;"	m	union:__anon48::__anon49
+open_remote_pipe	include/aci_cmds.h	/^    aci_cmd_params_open_remote_pipe_t           open_remote_pipe;$/;"	m	union:__anon48::__anon49
+operation_e	src/bmx055.c	/^enum operation_e {$/;"	g	file:
+outProtoMask	include/ublox.h	/^  X2 outProtoMask;$/;"	m	struct:ublox_prt_cfg_s
+pAcc	include/ublox.h	/^  U4 pAcc; \/*    *\/$/;"	m	struct:ubx_nav_solution_s
+pDOP	include/ublox.h	/^  U2 pDOP; \/*    *\/$/;"	m	struct:ubx_nav_solution_s
+pDOP	include/ublox.h	/^  U2 pDOP;$/;"	m	struct:ubx_nav_pvt_solution_s
+padding	include/aci_evts.h	/^    uint8_t                                     padding[29];  $/;"	m	union:__anon59::__anon60
+page_size_config	src/flash.c	/^  uint8_t page_size_config : 1;$/;"	m	struct:status_register_s	file:
+params	include/aci_cmds.h	/^  } _aci_packed_ params;$/;"	m	struct:__anon48	typeref:union:__anon48::__anon49
+params	include/aci_evts.h	/^  } _aci_packed_ params;$/;"	m	struct:__anon59	typeref:union:__anon59::__anon60
+params	include/aci_evts.h	/^  } _aci_packed_ params;$/;"	m	struct:__anon70	typeref:union:__anon70::__anon71
+params	include/aci_evts.h	/^  } _aci_packed_ params;$/;"	m	struct:__anon75	typeref:union:__anon75::__anon76
+parity	include/ublox.h	/^    uint32_t parity    : 3;$/;"	m	struct:ublox_prt_cfg_s::__anon80
+passkey	include/aci_cmds.h	/^    uint8_t passkey[6];$/;"	m	union:__anon43::__anon44
+passkey	include/aci_evts.h	/^  uint8_t passkey[6];$/;"	m	struct:__anon72
+payload	include/events.h	/^  event_payload_t payload;$/;"	m	struct:global_event_s
+pend_sv	src/init.c	/^	vector_table_entry_t pend_sv;$/;"	m	struct:__anon1	file:
+pend_sv_handler	src/init.c	/^#pragma weak pend_sv_handler /;"	d	file:
+persisted_config	include/globals.h	/^  struct persisted_config_s persisted_config;$/;"	m	struct:globals	typeref:struct:globals::persisted_config_s
+persisted_config_s	include/globals.h	/^struct persisted_config_s {$/;"	s
+pin	include/ublox.h	/^    uint16_t pin   : 5;$/;"	m	struct:ublox_prt_cfg_s::__anon79
+pin_clear	src/hal_stm32_libopencm3.c	/^void pin_clear(gpio_t port, pin_t pin)$/;"	f
+pin_clear	src/hal_stm32_stdperiphlib.c	/^void pin_clear(gpio_t port, pin_t pin)$/;"	f
+pin_clear	src/hal_stm32_test.c	/^void pin_clear(gpio_t port, pin_t pin)$/;"	f
+pin_config	src/hal_stm32_libopencm3.c	/^void pin_config(gpio_t port, pin_t pin, int options)$/;"	f
+pin_config	src/hal_stm32_stdperiphlib.c	/^void pin_config(gpio_t port, pin_t pin, int options)$/;"	f
+pin_config	src/hal_stm32_test.c	/^void pin_config(gpio_t port, pin_t pin, int options)$/;"	f
+pin_set	src/hal_stm32_libopencm3.c	/^void pin_set(gpio_t port, pin_t pin)$/;"	f
+pin_set	src/hal_stm32_stdperiphlib.c	/^void pin_set(gpio_t port, pin_t pin)$/;"	f
+pin_set	src/hal_stm32_test.c	/^void pin_set(gpio_t port, pin_t pin)$/;"	f
+pin_t	include/hal_empty.h	/^typedef uint32_t pin_t;$/;"	t
+pin_t	include/hal_stm32_libopencm3.h	/^typedef uint32_t pin_t;$/;"	t
+pin_t	include/hal_stm32_stdperiphlib.h	/^typedef uint16_t       pin_t;$/;"	t
+pin_toggle	src/hal_stm32_libopencm3.c	/^void pin_toggle(gpio_t port, pin_t pin)$/;"	f
+pin_toggle	src/hal_stm32_stdperiphlib.c	/^void pin_toggle(gpio_t port, pin_t pin)$/;"	f
+pin_toggle	src/hal_stm32_test.c	/^void pin_toggle(gpio_t port, pin_t pin)$/;"	f
+pinmode_e	include/hal.h	/^enum pinmode_e {$/;"	g
+pipe_error	include/aci_evts.h	/^    aci_evt_params_pipe_error_t                         pipe_error;$/;"	m	union:__anon75::__anon76
+pipe_number	include/aci.h	/^  uint8_t pipe_number;$/;"	m	struct:__anon14
+pipe_number	include/aci.h	/^  uint8_t pipe_number;$/;"	m	struct:__anon15
+pipe_number	include/aci_cmds.h	/^  uint8_t pipe_number;$/;"	m	struct:__anon37
+pipe_number	include/aci_cmds.h	/^  uint8_t pipe_number;$/;"	m	struct:__anon39
+pipe_number	include/aci_cmds.h	/^  uint8_t pipe_number;$/;"	m	struct:__anon40
+pipe_number	include/aci_cmds.h	/^  uint8_t pipe_number;$/;"	m	struct:__anon41
+pipe_number	include/aci_cmds.h	/^  uint8_t pipe_number;$/;"	m	struct:__anon47
+pipe_number	include/aci_evts.h	/^  uint8_t pipe_number;$/;"	m	struct:__anon67
+pipe_number	include/aci_evts.h	/^  uint8_t pipe_number;$/;"	m	struct:__anon70
+pipe_status	include/aci_evts.h	/^    aci_evt_params_pipe_status_t                        pipe_status;$/;"	m	union:__anon75::__anon76
+pipes	include/aci_cmds.h	/^  uint8_t pipes[8];$/;"	m	struct:__anon45
+pipes_closed	include/globals.h	/^  uint8_t pipes_open[8], pipes_closed[8];$/;"	m	struct:globals
+pipes_closed_bitmap	include/aci_evts.h	/^  uint8_t  pipes_closed_bitmap[8];$/;"	m	struct:__anon64
+pipes_open	include/globals.h	/^  uint8_t pipes_open[8], pipes_closed[8];$/;"	m	struct:globals
+pipes_open_bitmap	include/aci_evts.h	/^  uint8_t  pipes_open_bitmap[8];$/;"	m	struct:__anon64
+pol	include/ublox.h	/^    uint16_t pol   : 1;$/;"	m	struct:ublox_prt_cfg_s::__anon79
+pop_registers_from_fault_stack	src/fault_handlers.c	/^void  __attribute__ ((noinline)) pop_registers_from_fault_stack(unsigned int * hardfault_args)$/;"	f
+port	src/task_gps.c	/^  usart_t port;$/;"	m	struct:ubx_state_s	file:
+portID	include/ublox.h	/^  U1 portID;$/;"	m	struct:ublox_prt_cfg_s
+protected_buffer_s	include/globals.h	/^struct protected_buffer_s {$/;"	s
+pvd_isr	src/init.c	/^#pragma weak pvd_isr /;"	d	file:
+pwm_timer_t	include/hal_empty.h	/^typedef uint32_t pwm_timer_t;$/;"	t
+pwm_timer_t	include/hal_stm32_libopencm3.h	/^typedef uint32_t pwm_timer_t;$/;"	t
+pwm_timer_t	include/hal_stm32_stdperiphlib.h	/^typedef TIM_TypeDef   *pwm_timer_t;$/;"	t
+rcc_clock_freq	include/globals.h	/^  uint32_t rcc_clock_freq;$/;"	m	struct:globals
+rcc_isr	src/init.c	/^#pragma weak rcc_isr /;"	d	file:
+read16	include/transfer_macros.h	/^#  define read16(/;"	d
+read24	include/transfer_macros.h	/^#  define read24(/;"	d
+read32	include/transfer_macros.h	/^#  define read32(/;"	d
+read8	include/transfer_macros.h	/^#  define read8(/;"	d
+read_dynamic_data	include/aci_evts.h	/^    aci_evt_cmd_rsp_read_dynamic_data_t read_dynamic_data;$/;"	m	union:__anon59::__anon60
+read_offset	include/ublox_isr.h	/^  uint8_t read_offset;$/;"	m	struct:usart_isr_state_s
+ready	src/flash.c	/^  uint8_t ready : 1;$/;"	m	struct:status_register_s	file:
+reason	include/aci_cmds.h	/^  aci_disconnect_reason_t         reason; \/**< enum aci_disconnect_reason_t *\/$/;"	m	struct:__anon34
+remaining	include/ublox_isr.h	/^  uint16_t remaining;$/;"	m	struct:usart_isr_state_s
+request_data	include/aci_cmds.h	/^    aci_cmd_params_request_data_t               request_data;$/;"	m	union:__anon48::__anon49
+reserved	include/ublox.h	/^  U1 reserved[3];$/;"	m	struct:ublox_cfg_pm2_s
+reserved	src/flash.c	/^  uint8_t reserved : 1;$/;"	m	struct:status_register_s	file:
+reserved0	include/ublox.h	/^    uint32_t reserved0 : 6;$/;"	m	struct:ublox_prt_cfg_s::__anon80
+reserved1	include/ublox.h	/^    uint32_t reserved1 : 1;$/;"	m	struct:ublox_prt_cfg_s::__anon80
+reserved1	include/ublox.h	/^  U1 reserved1;$/;"	m	struct:ublox_prt_cfg_s
+reserved10	include/ublox.h	/^  U2 reserved10;$/;"	m	struct:ublox_cfg_pm2_s
+reserved11	include/ublox.h	/^  U4 reserved11;$/;"	m	struct:ublox_cfg_pm2_s
+reserved2	include/ublox.h	/^    uint32_t reserved2 : 18;$/;"	m	struct:ublox_prt_cfg_s::__anon80
+reserved2	include/ublox.h	/^  U1 reserved2[2];$/;"	m	struct:ublox_prt_cfg_s
+reserved4	include/ublox.h	/^  U2 reserved4[2];$/;"	m	struct:ublox_cfg_pm2_s
+reserved6	include/ublox.h	/^  U4 reserved6[2];$/;"	m	struct:ublox_cfg_pm2_s
+reserved8	include/ublox.h	/^  U1 reserved8[2];$/;"	m	struct:ublox_cfg_pm2_s
+reserved_x001c	src/init.c	/^	vector_table_entry_t reserved_x001c[4];$/;"	m	struct:__anon1	file:
+reserved_x0034	src/init.c	/^	vector_table_entry_t reserved_x0034;$/;"	m	struct:__anon1	file:
+reset	src/init.c	/^	vector_table_entry_t reset;$/;"	m	struct:__anon1	file:
+reset_handler	src/init.c	/^void WEAK __attribute__ ((naked)) reset_handler(void)$/;"	f
+reset_handler	src/startup_stm32l1xx_hd.s	/^reset_handler:$/;"	l
+rtc_alarm_isr	src/init.c	/^#pragma weak rtc_alarm_isr /;"	d	file:
+rtc_start	include/sample.h	/^  uint64_t rtc_start;$/;"	m	struct:event_header_s
+rtc_wkup_isr	src/init.c	/^#pragma weak rtc_wkup_isr /;"	d	file:
+running_avg	include/filter.h	/^  filter_value_t running_avg;$/;"	m	struct:filter_state_s
+running_checksum	include/ublox_isr.h	/^  uint8_t running_checksum[2];$/;"	m	struct:usart_isr_state_s
+rx_data	include/aci_evts.h	/^  aci_rx_data_t rx_data;$/;"	m	struct:__anon68
+sAcc	include/ublox.h	/^  U4 sAcc; \/*    *\/$/;"	m	struct:ubx_nav_solution_s
+sAcc	include/ublox.h	/^  U4 sAcc;$/;"	m	struct:ubx_nav_pvt_solution_s
+s_nrf8001_state	src/nrf8001.c	/^} s_nrf8001_state = {$/;"	v	typeref:struct:nrf8001_state_s
+s_null_cmd	src/task_ble.c	/^const char s_null_cmd[sizeof(struct nrf8001_cmd_s)] = { 0 };$/;"	v
+sample_size	include/sample.h	/^  uint16_t sample_size;$/;"	m	struct:event_header_s
+samples	include/sample.h	/^  uint32_t samples;$/;"	m	struct:event_header_s
+sdio_isr	src/init.c	/^#pragma weak sdio_isr /;"	d	file:
+searchPeriod	include/ublox.h	/^  U4 searchPeriod;$/;"	m	struct:ublox_cfg_pm2_s
+sec	include/ublox.h	/^  U1 month, day, hour, min, sec;$/;"	m	struct:ubx_nav_pvt_solution_s
+secmode1_bitmap	include/aci_evts.h	/^  uint8_t secmode1_bitmap;$/;"	m	struct:__anon63
+secmode2_bitmap	include/aci_evts.h	/^  uint8_t secmode2_bitmap;$/;"	m	struct:__anon63
+sector_lockdown	src/flash.c	/^  uint8_t sector_lockdown : 1;$/;"	m	struct:status_register_s	file:
+sector_protect_status	src/flash.c	/^  uint8_t sector_protect_status : 1;$/;"	m	struct:status_register_s	file:
+semphr	include/globals.h	/^  void *semphr;$/;"	m	struct:ble_task_data_s
+send_alert	src/task_alert.c	/^void send_alert(uint16_t type, uint16_t argument)$/;"	f
+send_byte	include/transfer_macros.h	/^#  define send_byte(/;"	d
+send_data	include/aci_cmds.h	/^    aci_cmd_params_send_data_t                  send_data;$/;"	m	union:__anon48::__anon49
+send_data_ack	include/aci_cmds.h	/^    aci_cmd_params_send_data_ack_t              send_data_ack;$/;"	m	union:__anon48::__anon49
+send_data_nack	include/aci_cmds.h	/^    aci_cmd_params_send_data_nack_t             send_data_nack;$/;"	m	union:__anon48::__anon49
+sensor_e	src/bmx055.c	/^enum sensor_e {$/;"	g	file:
+sensor_event_t	include/task_sensor.h	/^typedef uint16_t sensor_event_t;$/;"	t
+sensor_packet_s	include/sample.h	/^struct sensor_packet_s {$/;"	s
+sensor_queue_g	include/globals.h	/^  void *sensor_queue_g;$/;"	m	struct:globals
+seq_no	include/aci_cmds.h	/^  uint8_t                 seq_no;$/;"	m	struct:__anon30
+seq_no	include/aci_evts.h	/^  uint8_t seq_no;$/;"	m	struct:__anon54
+set_app_latency	include/aci_cmds.h	/^    aci_cmd_params_set_app_latency_t            set_app_latency;$/;"	m	union:__anon48::__anon49
+set_key	include/aci_cmds.h	/^    aci_cmd_params_set_key_t                    set_key;$/;"	m	union:__anon48::__anon49
+set_local_data	include/aci_cmds.h	/^    aci_cmd_params_set_local_data_t             set_local_data;$/;"	m	union:__anon48::__anon49
+set_tx_power	include/aci_cmds.h	/^    aci_cmd_params_set_tx_power_t               set_tx_power;$/;"	m	union:__anon48::__anon49
+setup	include/aci_cmds.h	/^    aci_cmd_params_setup_t                      setup;$/;"	m	union:__anon48::__anon49
+setup_data	include/aci_cmds.h	/^  uint8_t                 setup_data[1];$/;"	m	struct:__anon29
+setup_format	include/aci_evts.h	/^  uint8_t   setup_format;$/;"	m	struct:__anon55
+setup_id	include/aci_evts.h	/^  uint32_t  setup_id;$/;"	m	struct:__anon55
+setup_msg_idx	src/nrf8001.c	/^  unsigned int setup_msg_idx;$/;"	m	struct:nrf8001_state_s	file:
+setup_status	include/aci_evts.h	/^  uint8_t   setup_status;$/;"	m	struct:__anon55
+slave_latency	include/aci.h	/^  uint16_t slave_latency;       \/**< Connection interval latency requested from peer *\/$/;"	m	struct:__anon13
+spi1_isr	src/init.c	/^#pragma weak spi1_isr /;"	d	file:
+spi2_isr	src/init.c	/^#pragma weak spi2_isr /;"	d	file:
+spi3_isr	src/init.c	/^#pragma weak spi3_isr /;"	d	file:
+spi_config	src/hal_stm32_libopencm3.c	/^void spi_config(spi_t port, int options)$/;"	f
+spi_config	src/hal_stm32_stdperiphlib.c	/^void spi_config(spi_t port, int options)$/;"	f
+spi_config	src/hal_stm32_test.c	/^void spi_config(spi_t port, int options)$/;"	f
+spi_exchange_buf	src/spi.c	/^void spi_exchange_buf(spi_t port, uint8_t *out, uint8_t *in, uint32_t length)$/;"	f
+spi_read16	include/spi.h	/^#define spi_read16(/;"	d
+spi_read24	include/spi.h	/^#define spi_read24(/;"	d
+spi_read32	include/spi.h	/^#define spi_read32(/;"	d
+spi_read_octets	src/spi.c	/^uint32_t spi_read_octets(spi_t port, unsigned octets, uint32_t byte_order)$/;"	f
+spi_recv_buf	include/spi.h	/^#define spi_recv_buf(/;"	d
+spi_send_buf	include/spi.h	/^#define spi_send_buf(/;"	d
+spi_set_lsb	src/hal_stm32_libopencm3.c	/^void spi_set_lsb(spi_t port)$/;"	f
+spi_set_lsb	src/hal_stm32_stdperiphlib.c	/^void spi_set_lsb(spi_t port)$/;"	f
+spi_set_lsb	src/hal_stm32_test.c	/^void spi_set_lsb(spi_t port)$/;"	f
+spi_set_msb	src/hal_stm32_libopencm3.c	/^void spi_set_msb(spi_t port)$/;"	f
+spi_set_msb	src/hal_stm32_stdperiphlib.c	/^void spi_set_msb(spi_t port)$/;"	f
+spi_set_msb	src/hal_stm32_test.c	/^void spi_set_msb(spi_t port)$/;"	f
+spi_t	include/hal_empty.h	/^typedef uint32_t spi_t;$/;"	t
+spi_t	include/hal_stm32_libopencm3.h	/^typedef uint32_t spi_t;$/;"	t
+spi_t	include/hal_stm32_stdperiphlib.h	/^typedef SPI_TypeDef   *spi_t;$/;"	t
+state	include/alarm.h	/^  uint32_t state : 3;$/;"	m	struct:alarm_s
+state	include/ublox_isr.h	/^  enum state_e state;$/;"	m	struct:usart_isr_state_s	typeref:enum:usart_isr_state_s::state_e
+state	src/nrf8001.c	/^  enum nrf8001_state_e state;$/;"	m	struct:nrf8001_state_s	typeref:enum:nrf8001_state_s::nrf8001_state_e	file:
+state	src/nrf8001.c	/^} state = STATE_IDLE;$/;"	v	typeref:enum:nrf8001_state_e
+state_e	include/ublox_isr.h	/^enum state_e {$/;"	g
+status_code	include/aci_evts.h	/^  aci_bond_status_code_t status_code;$/;"	m	struct:__anon63
+status_register_s	src/flash.c	/^struct status_register_s {$/;"	s	file:
+status_source	include/aci_evts.h	/^  aci_bond_status_source_t status_source;$/;"	m	struct:__anon63
+step_pulse	src/task_alert.c	/^static void step_pulse(void)$/;"	f	file:
+storage_header_s	src/logger.c	/^struct storage_header_s {$/;"	s	file:
+suspend_status_b1	src/flash.c	/^  uint8_t suspend_status_b1 : 1;$/;"	m	struct:status_register_s	file:
+suspend_status_b2	src/flash.c	/^  uint8_t suspend_status_b2 : 1;$/;"	m	struct:status_register_s	file:
+sv_call	src/init.c	/^	vector_table_entry_t sv_call;$/;"	m	struct:__anon1	file:
+sv_call_handler	src/init.c	/^#pragma weak sv_call_handler /;"	d	file:
+swap_endian	include/util.h	/^#define swap_endian(/;"	d
+sys_tick_handler	src/init.c	/^#pragma weak sys_tick_handler /;"	d	file:
+systick	src/init.c	/^	vector_table_entry_t systick;$/;"	m	struct:__anon1	file:
+tAcc	include/ublox.h	/^  U4 tAcc;$/;"	m	struct:ubx_nav_pvt_solution_s
+tamper_stamp_isr	src/init.c	/^#pragma weak tamper_stamp_isr /;"	d	file:
+task_alert_config	src/task_alert.c	/^static void task_alert_config(void)$/;"	f	file:
+task_alert_event_e	include/task_alert.h	/^typedef enum task_alert_event_e {$/;"	g
+task_alert_event_t	include/task_alert.h	/^} task_alert_event_t;$/;"	t	typeref:enum:task_alert_event_e
+task_alert_led	src/task_alert.c	/^void task_alert_led(void *p)$/;"	f
+task_alert_state_e	src/task_alert.c	/^enum task_alert_state_e {$/;"	g	file:
+task_ble	src/task_ble.c	/^void task_ble(void *p)$/;"	f
+task_gps	src/task_gps.c	/^void task_gps(void *p)$/;"	f
+task_main	src/task_main.c	/^void task_main(void *p)$/;"	f
+task_sensor	src/task_sensor.c	/^void task_sensor(void *p)$/;"	f
+temperature_value	include/aci_evts.h	/^  int16_t temperature_value;$/;"	m	struct:__anon58
+test	include/aci_cmds.h	/^    aci_cmd_params_test_t                       test;$/;"	m	union:__anon48::__anon49
+test_flash	src/flash.c	/^int test_flash(void)$/;"	f
+test_mode_change	include/aci_cmds.h	/^  aci_test_mode_change_t test_mode_change; \/**< enum aci_test_mode_change_t *\/$/;"	m	struct:__anon26
+thres	include/ublox.h	/^    uint16_t thres : 9;$/;"	m	struct:ublox_prt_cfg_s::__anon79
+ticks	include/sample.h	/^  uint32_t ticks;$/;"	m	struct:sensor_packet_s
+tim10_isr	src/init.c	/^#pragma weak tim10_isr /;"	d	file:
+tim11_isr	src/init.c	/^#pragma weak tim11_isr /;"	d	file:
+tim2_isr	src/init.c	/^#pragma weak tim2_isr /;"	d	file:
+tim3_isr	src/init.c	/^#pragma weak tim3_isr /;"	d	file:
+tim4_isr	src/init.c	/^#pragma weak tim4_isr /;"	d	file:
+tim5_isr	src/init.c	/^#pragma weak tim5_isr /;"	d	file:
+tim6_isr	src/init.c	/^#pragma weak tim6_isr /;"	d	file:
+tim7_isr	src/init.c	/^#pragma weak tim7_isr /;"	d	file:
+tim9_isr	src/init.c	/^#pragma weak tim9_isr /;"	d	file:
+timeout	include/aci_cmds.h	/^  uint16_t        timeout;  \/**< 0x0000 (no timeout) to 0x3FFF *\/$/;"	m	struct:__anon32
+timeout	include/aci_cmds.h	/^  uint16_t        timeout;  \/**< 0x0000 (no timeout) to 0x3FFF *\/$/;"	m	struct:__anon33
+timeout	include/aci_cmds.h	/^  uint16_t        timeout;  \/**< 0x0000 (no timeout) to 0x3FFF *\/$/;"	m	struct:__anon46
+timeout_mult	include/aci.h	/^  uint16_t timeout_mult;        \/**< Link supervisor timeout multiplier requested from peer *\/$/;"	m	struct:__anon13
+timer_config	src/hal_stm32_libopencm3.c	/^void timer_config(pwm_timer_t timer, int channel, int options)$/;"	f
+timer_config	src/hal_stm32_stdperiphlib.c	/^void timer_config(pwm_timer_t timer, int channel, int options)$/;"	f
+timer_config	src/hal_stm32_test.c	/^void timer_config(pwm_timer_t timer, int channel, int options)$/;"	f
+timer_disable	src/hal_stm32_libopencm3.c	/^void timer_disable(pwm_timer_t timer)$/;"	f
+timer_disable	src/hal_stm32_stdperiphlib.c	/^void timer_disable(pwm_timer_t timer)$/;"	f
+timer_enable	src/hal_stm32_libopencm3.c	/^void timer_enable(pwm_timer_t timer)$/;"	f
+timer_enable	src/hal_stm32_stdperiphlib.c	/^void timer_enable(pwm_timer_t timer)$/;"	f
+timing	include/aci_evts.h	/^    aci_evt_params_timing_t                             timing;$/;"	m	union:__anon75::__anon76
+ttff	include/ublox.h	/^  U4 ttff;$/;"	m	struct:ubx_nav_status_s
+txReady	include/ublox.h	/^  } txReady;$/;"	m	struct:ublox_prt_cfg_s	typeref:struct:ublox_prt_cfg_s::__anon79
+tx_data	include/aci_cmds.h	/^  aci_tx_data_t tx_data;$/;"	m	struct:__anon31
+tx_data	include/aci_cmds.h	/^  aci_tx_data_t tx_data;$/;"	m	struct:__anon38
+type	include/events.h	/^  enum event_type_e type;$/;"	m	struct:global_event_s	typeref:enum:global_event_s::event_type_e
+uart4_isr	src/init.c	/^#pragma weak uart4_isr /;"	d	file:
+uart5_isr	src/init.c	/^#pragma weak uart5_isr /;"	d	file:
+ublox_cfg_pm2_s	include/ublox.h	/^struct ublox_cfg_pm2_s {$/;"	s
+ublox_expect_response	src/ublox.c	/^static struct ubx_header_s *ublox_expect_response(uint8_t msg_class, uint8_t msg_id)$/;"	f	file:
+ublox_fixtype_e	include/ublox.h	/^enum ublox_fixtype_e {$/;"	g
+ublox_get	src/ublox.c	/^int ublox_get(struct gps_sample_s *sample)$/;"	f
+ublox_get_incoming_message	src/ublox_isr.c	/^struct ubx_header_s *ublox_get_incoming_message(void)$/;"	f
+ublox_get_power_mgmt	src/ublox.c	/^static struct ublox_cfg_pm2_s *ublox_get_power_mgmt(void)$/;"	f	file:
+ublox_get_rate	src/ublox.c	/^int ublox_get_rate(void)$/;"	f
+ublox_init	src/ublox.c	/^int ublox_init(uint32_t baudRate)$/;"	f
+ublox_nav_fixstat_e	include/ublox.h	/^enum ublox_nav_fixstat_e {$/;"	g
+ublox_nav_flags_e	include/ublox.h	/^enum ublox_nav_flags_e {$/;"	g
+ublox_ping	src/ublox.c	/^static int ublox_ping(void)$/;"	f	file:
+ublox_poll	src/ublox.c	/^#define ublox_poll(/;"	d	file:
+ublox_prt_cfg_s	include/ublox.h	/^struct ublox_prt_cfg_s {$/;"	s
+ublox_reset	src/ublox.c	/^int ublox_reset(void)$/;"	f
+ublox_send	src/ublox.c	/^static void ublox_send(uint8_t class_id, uint8_t msg_id, uint8_t *buf, size_t length)$/;"	f	file:
+ublox_set_measuring_rate	src/ublox.c	/^int ublox_set_measuring_rate(uint16_t ms)$/;"	f
+ublox_sleep	src/ublox.c	/^int ublox_sleep(void)$/;"	f
+ublox_start_updates	src/ublox.c	/^int ublox_start_updates(int rate)$/;"	f
+ublox_update_port_settings	src/ublox.c	/^static int ublox_update_port_settings(usart_t port, uint32_t baud)$/;"	f	file:
+ublox_wait_for_message	src/ublox_isr.c	/^struct ubx_header_s *ublox_wait_for_message(void)$/;"	f
+ubx_header_s	include/ublox.h	/^struct ubx_header_s {$/;"	s
+ubx_nav_pvt_solution_s	include/ublox.h	/^struct ubx_nav_pvt_solution_s {$/;"	s
+ubx_nav_solution_s	include/ublox.h	/^struct ubx_nav_solution_s {$/;"	s
+ubx_nav_status_s	include/ublox.h	/^struct ubx_nav_status_s {$/;"	s
+ubx_proto_mask_e	include/ublox.h	/^enum ubx_proto_mask_e {$/;"	g
+ubx_state_s	src/task_gps.c	/^struct ubx_state_s {$/;"	s	file:
+updatePeriod	include/ublox.h	/^  U4 updatePeriod;$/;"	m	struct:ublox_cfg_pm2_s
+usage_fault	src/init.c	/^	vector_table_entry_t usage_fault;         \/* not in CM0 *\/$/;"	m	struct:__anon1	file:
+usage_fault_handler	include/hal_empty.h	/^#define usage_fault_handler /;"	d
+usage_fault_handler	src/fault_handlers.c	/^void usage_fault_handler(void)$/;"	f
+usage_fault_handler	src/init.c	/^#pragma weak usage_fault_handler /;"	d	file:
+usart1_isr	src/init.c	/^#pragma weak usart1_isr /;"	d	file:
+usart2_isr	src/init.c	/^#pragma weak usart2_isr /;"	d	file:
+usart3_isr	src/init.c	/^#pragma weak usart3_isr /;"	d	file:
+usart_can_recv	include/hal_stm32_libopencm3.h	/^#define usart_can_recv(/;"	d
+usart_can_recv	include/hal_stm32_stdperiphlib.h	/^#define usart_can_recv(/;"	d
+usart_given	src/task_gps.c	/^BaseType_t usart_given = 0;$/;"	v
+usart_isr	src/ublox_isr.c	/^void usart_isr(void)$/;"	f
+usart_isr_state	include/globals.h	/^  struct usart_isr_state_s usart_isr_state;$/;"	m	struct:globals	typeref:struct:globals::usart_isr_state_s
+usart_isr_state_s	include/ublox_isr.h	/^struct usart_isr_state_s {$/;"	s
+usart_mutex_g	include/globals.h	/^  void *usart_mutex_g;$/;"	m	struct:globals
+usart_send_buf	src/ublox.c	/^static void usart_send_buf(usart_t port, const uint8_t *buf, size_t length)$/;"	f	file:
+usart_t	include/hal_empty.h	/^typedef uint32_t usart_t;$/;"	t
+usart_t	include/hal_stm32_libopencm3.h	/^typedef uint32_t usart_t;$/;"	t
+usart_t	include/hal_stm32_stdperiphlib.h	/^typedef USART_TypeDef *usart_t;$/;"	t
+usb_fs_wakeup_isr	src/init.c	/^#pragma weak usb_fs_wakeup_isr /;"	d	file:
+usb_hp_isr	src/init.c	/^#pragma weak usb_hp_isr /;"	d	file:
+usb_lp_isr	src/init.c	/^#pragma weak usb_lp_isr /;"	d	file:
+vAcc	include/ublox.h	/^  U4 hAcc, vAcc;$/;"	m	struct:ubx_nav_pvt_solution_s
+vApplicationMallocFailedHook	src/hooks.c	/^void vApplicationMallocFailedHook(void)$/;"	f
+vApplicationStackOverflowHook	src/hooks.c	/^void vApplicationStackOverflowHook(TaskHandle_t *pxTask, signed char *pcTaskName)$/;"	f
+vPortSVCHandler	include/FreeRTOSConfig.h	/^#define vPortSVCHandler /;"	d
+valid	include/ublox.h	/^  X1 valid;$/;"	m	struct:ubx_nav_pvt_solution_s
+vals	include/counters.h	/^  uint32_t vals[COUNTER_LAST];$/;"	m	struct:counters_s
+vector_table	src/init.c	/^vector_table_t vector_table = {$/;"	v
+vector_table_entry_t	src/init.c	/^typedef void (*vector_table_entry_t)(void);$/;"	t	file:
+vector_table_t	src/init.c	/^} vector_table_t;$/;"	t	typeref:struct:__anon1	file:
+velD	include/ublox.h	/^  I4 velN, velE, velD;$/;"	m	struct:ubx_nav_pvt_solution_s
+velE	include/ublox.h	/^  I4 velN, velE, velD;$/;"	m	struct:ubx_nav_pvt_solution_s
+velN	include/ublox.h	/^  I4 velN, velE, velD;$/;"	m	struct:ubx_nav_pvt_solution_s
+version	include/ublox.h	/^  U1 version;$/;"	m	struct:ublox_cfg_pm2_s
+waiting_for_ack	src/task_gps.c	/^    uint32_t waiting_for_ack : 1;$/;"	m	struct:ubx_state_s::__anon4	file:
+week	include/ublox.h	/^  I2 week; \/*    *\/$/;"	m	struct:ubx_nav_solution_s
+write_dynamic_data	include/aci_cmds.h	/^    aci_cmd_params_write_dynamic_data_t         write_dynamic_data;$/;"	m	union:__anon48::__anon49
+write_offset	include/globals.h	/^  unsigned int write_offset;$/;"	m	struct:protected_buffer_s
+write_offset	include/ublox_isr.h	/^  uint8_t write_offset;$/;"	m	struct:usart_isr_state_s
+wwdg_isr	src/init.c	/^#pragma weak wwdg_isr /;"	d	file:
+xPortPendSVHandler	include/FreeRTOSConfig.h	/^#define xPortPendSVHandler /;"	d
+xPortSysTickHandler	include/FreeRTOSConfig.h	/^#define xPortSysTickHandler /;"	d
+year	include/ublox.h	/^  U2 year;$/;"	m	struct:ubx_nav_pvt_solution_s

@@ -24,8 +24,6 @@ struct event_header_s {
   uint16_t features;
   /** @brief Milliseconds since Jan 1, 1970 to the start of this event */
   uint64_t rtc_start;
-  /** @brief The addres of the last event */
-  uint32_t last_event;
 
   /** @brief Private field that will be set to the start offset of this event
    * in storage
@@ -47,7 +45,7 @@ struct event_header_s {
   
 #define TOTAL_EVENT_SIZE(ev)  \
   (((ev).samples * (ev).sample_size) + EVENT_HEADER_SIZE)
-  
+
 
 void logger_format_storage(void);
 
@@ -57,7 +55,7 @@ void logger_end_event(struct event_header_s *event);
 
 void logger_read_sample(struct event_header_s *event, uint32_t n);
 
-void logger_write_packet(struct event_header_s *event, struct sensor_packet_s *packet);
+void logger_write_sample(struct event_header_s *event, struct sensor_packet_s *packet);
 
 
 

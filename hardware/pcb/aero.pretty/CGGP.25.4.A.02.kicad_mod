@@ -27,4 +27,9 @@
     (clearance 0.5))
   (pad 1 thru_hole circle (at 0 2.55) (size 1.2 1.2) (drill 1.2) (layers F.Cu)
     (clearance 0.9) (zone_connect 1))
+  (model /Users/user/projects/alti/hardware/pcb/aero.pretty/cggp.25.4.a.02.wrl
+    (at (xyz 0 0 0))
+    (scale (xyz 1 1 1))
+    (rotate (xyz 0 0 0))
+  )
 )

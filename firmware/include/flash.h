@@ -11,6 +11,7 @@
 
 /** Adesto AT45DB641E */
 #define STORAGE_PAGE_SIZE             ( 256 )
+#define STORAGE_PAGE_MASK             ( STORAGE_PAGE_SIZE - 1 )
 #define STORAGE_SIZE                  ( STORAGE_PAGE_SIZE * 32768 )
 
 /** Magic values */

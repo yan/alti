@@ -75,7 +75,7 @@ void task_main(void *p)
             .mbarc = (ms5611_mbarc_t) pressure,
             .ticks = xTaskGetTickCount()
           };
-          logger_write_packet(NULL, &packet);
+          logger_write_sample(NULL, &packet);
         }
 
         // Send the data via ble

@@ -3,7 +3,8 @@
  * TODO:
  *  1) Finish naïve event logging
  *  2) Make events wrap around and delete old events
- *
+ *  3) Document when the flash buffer is preserved and when overwritten
+ *  4) This is in serious need of unit tests
  *
  */
 #include <FreeRTOS.h>
@@ -11,12 +12,22 @@
 
 #include <string.h>
 
+#include <util.h>
 #include <config.h>
 #include <logger.h>
 #include <sample.h>
 #include <flash.h>
 #include <globals.h>
 #include <sample.h>
+
+/** @brief The address of the storage header */
+const uint32_t HEADER_ADDR = 0x00;
+
+/** @brief Type of the sentinel value. */
+typedef uint32_t sentinel_t;
+
+/** @brief Value to prepend events with to detect wrap-around */
+const sentinel_t SENTINEL_VALUE = 0xAABBCCDD;
 
 
 /**
@@ -38,44 +49,123 @@ struct storage_header_s {
  * @brief Flush the current flash buffer to |*addr| in flash. Bump *addr the 
  * page size after writing.
  */
-static void logger_flush_buffer(uint32_t *addr)
+static void logger_flush_buffer(uint32_t addr)
 {
   dbg_print("Writing to flash");
 
-  flash_write(*addr, g.flash_buffer.data, WRITE_BUFFER_LEN);
+#if ENABLE_FLASH_DEBUG
+  assert(addr >= g.flash_buffer.address);
+  assert(addr <  g.flash_buffer.address + STORAGE_PAGE_SIZE);
+#endif
+
+  flash_write(addr, g.flash_buffer.data, STORAGE_PAGE_SIZE);
 
   /* XXX: This clearing isn't needed; put it behind an ifdef or fill it with a
    * filler byte for debugging
    */
-  memset(g.flash_buffer.data, '\0', WRITE_BUFFER_LEN);
+  memset(g.flash_buffer.data, '\0', STORAGE_PAGE_SIZE);
   g.flash_buffer.write_offset = 0;
-
-  *addr += WRITE_BUFFER_LEN;
 }
 
+/**
+ * @brief Get the last event recorded; trashes the flash buffer.
+ *
+ */
+static uint32_t logger_get_last_event(void)
+{
+  struct storage_header_s *first_page = (void *) &g.flash_buffer.data[0];
+
+  flash_read(HEADER_ADDR, (uint8_t*) first_page, STORAGE_PAGE_SIZE);
+
+#if ENABLE_FLASH_DEBUG
+  g.flash_buffer.valid = 0;
+#endif
+
+  assert(first_page->last_event < STORAGE_SIZE);
+
+  return first_page->last_event;
+}
+
+/**
+ * @brief Read some data from storage, crossing page boundaries if necessary. 
+ * Can only be used to read non-header data, as it this handles wrap around.
+ */
+static size_t logger_read(uint32_t addr, uint8_t *dst, size_t len)
+{
+  assert(addr < STORAGE_SIZE);
+  assert(dst != NULL);
+
+  uint32_t page_addr = addr & STORAGE_PAGE_MASK;
+  uint32_t remaining_in_page = (page_addr + STORAGE_PAGE_SIZE) - addr;
+  uint32_t page_offset = addr - page_addr;
+  size_t to_read;
+
+  while (len > 0) {
+    flash_read(page_addr, &g.flash_buffer.data[0], STORAGE_PAGE_SIZE);
+
+    to_read = MIN(remaining_in_page, len);
+
+    if (dst != &g.flash_buffer.data[page_offset]) {
+      memcpy(dst, &g.flash_buffer.data[page_offset], to_read);
+    }
+
+    /* Short circuit the common case */
+    if (len == to_read) {
+      break;
+    }
+
+    dst += to_read;
+    len -= to_read;
+    page_addr += STORAGE_PAGE_SIZE;
+
+    /* Next page will be completely read in from beginning */
+    remaining_in_page = STORAGE_PAGE_SIZE;
+    page_offset = 0;
+
+    /* Wrap around to the start of second page on overflow, as the first page is
+     * 'fs' header
+     */
+    if (page_addr > STORAGE_SIZE) {
+      page_addr = STORAGE_PAGE_SIZE;
+    }
+  }
+
+  return 1;
+
+}
+
+/**
+ * @brief ...
+ *
+ *
+ */
 void logger_format_storage(void)
 {
-  uint32_t zero_addr = 0;
+  struct {
+    struct storage_header_s header;
+    sentinel_t sentinel;
+    struct event_header_s first_event;
+  } __attribute__((packed)) *first_page = (void*) g.flash_buffer.data;
 
   xSemaphoreTake(g.flash_buffer.lock, portMAX_DELAY);
   {
-    struct storage_header_s *first_page = (void *) g.flash_buffer.data;
-    struct event_header_s *first_event = (void*) (first_page + 1);
 
-    memset(g.flash_buffer.data, '\0', WRITE_BUFFER_LEN);
+    memset(g.flash_buffer.data, '\0', STORAGE_PAGE_SIZE);
 
     /* Set all header vals here */
-    first_page->free_offset = WRITE_BUFFER_LEN;
-    first_page->last_event = sizeof(struct storage_header_s);
+    first_page->header.free_offset = STORAGE_PAGE_SIZE;
+    first_page->header.last_event = sizeof(struct storage_header_s);
 
-    first_event->event_id = 0;
-    first_event->samples = 0;
-    first_event->sample_size = 0;
-    first_event->features = 0;
-    first_event->rtc_start = 0;
-    first_event->last_event = 0;
+    first_page->sentinel = SENTINEL_VALUE;
 
-    logger_flush_buffer(&zero_addr);
+    first_page->first_event.event_id = 0;
+    first_page->first_event.samples = 0;
+    first_page->first_event.sample_size = 0;
+    first_page->first_event.features = 0;
+    first_page->first_event.rtc_start = 0;
+
+    /* Write to the beginning of storage */
+    logger_flush_buffer(HEADER_ADDR);
   }
   xSemaphoreGive(g.flash_buffer.lock);
 }
@@ -100,10 +190,17 @@ void logger_start_event(struct event_header_s *event)
   {
     struct storage_header_s *first_page = (void *) g.flash_buffer.data;
 
-    flash_read(0, (uint8_t*) first_page, WRITE_BUFFER_LEN);
+    /* Read the header to see where we need to write to */
+    flash_read(HEADER_ADDR, g.flash_buffer.data, STORAGE_PAGE_SIZE);
 
-    /* Make room for the event header */
-    addr = first_page->free_offset + EVENT_HEADER_SIZE;
+    /* Load the page containing free address into buffer */
+    addr = first_page->free_offset;
+
+    /* XXX: Handle read errors better */
+    assert(addr < STORAGE_SIZE);
+
+    flash_read(addr & STORAGE_PAGE_MASK, g.flash_buffer.data, STORAGE_PAGE_SIZE);
+
 
   }
   xSemaphoreGive(g.flash_buffer.lock);
@@ -137,43 +234,71 @@ void logger_read_sample(struct event_header_s *event, uint32_t n)
   (void) n;
 }
 
+static void logger_write(uint32_t address, uint8_t *data, size_t len)
+{
+  size_t remaining;
+  uint8_t *dst = (uint8_t*) &g.flash_buffer.data[g.flash_buffer.write_offset];
+
+  assert(data != NULL);
+  assert(len > 0);
+
+  remaining = STORAGE_PAGE_SIZE - g.flash_buffer.write_offset;
+
+  /* If the length exceeds how much space we have in the buffer, */
+  while (len > remaining) {
+
+    /* 1. Copy as many bytes we have available (coudld be zero) */
+    memcpy(dst, data, remaining);
+
+#if ENABLE_FLASH_DEBUG
+    assert(g.flash_buffer.address = (address & STORAGE_PAGE_MASK));
+#endif
+
+    /* 2. Flush the buffer to storage at the correct address */
+    logger_flush_buffer(address & STORAGE_PAGE_MASK);
+
+#if ENABLE_FLASH_DEBUG
+    g.flash_buffer.address += STORAGE_PAGE_SIZE;
+    memset(g.flash_buffer.data, '\0', STORAGE_PAGE_SIZE);
+#endif
+
+    /* 3. Reset the flash buffer for the next page */
+    g.flash_buffer.write_offset = 0;
+    dst = &g.flash_buffer.data[0];
+
+    /* 4. Realign the data we need to write. Remaining is now again a
+     * full page
+     */
+    data = data + remaining;
+    address = address + remaining;
+    len = len - remaining;
+    remaining = STORAGE_PAGE_SIZE;
+
+  }
+
+  /* At this point, we have enough space in the current buffer */
+  memcpy(dst, data, len);
+
+  g.flash_buffer.write_offset += len;
+}
+
 /**
  *
- *
- *
  */
-void logger_write_packet(struct event_header_s *event, struct sensor_packet_s *packet)
+void logger_write_sample(struct event_header_s *event, struct sensor_packet_s *packet)
 {
-  size_t remaining = WRITE_BUFFER_LEN - g.flash_buffer.write_offset,
-         to_write = sizeof(*packet);
-  uint8_t *src = (uint8_t*)  packet,
-          *dst = (uint8_t*) &g.flash_buffer.data[g.flash_buffer.write_offset];
 
-  if (event == NULL) {
-    return;
-  }
+  assert(event != NULL);
+  assert(packet != NULL);
 
   /* TODO: Revisit adding a real timeout here */
   xSemaphoreTake(g.flash_buffer.lock, portMAX_DELAY);
 
-  /* If we can't fit a sample packet in what's left,  */
-  if (remaining < to_write) {
+  logger_write(event->__current_address, (uint8_t*) packet, sizeof(*packet));
 
-    /* 1. Fill up the remainder of the page with a part of the packet */
-    memcpy(dst, src, remaining);
+  event->__current_address += sizeof(*packet);
 
-    /* 2. Flush buffer to storage */
-    logger_flush_buffer(&event->__current_address);
-
-    /* 3. If there's a packet remainder, it'll be written after */
-    to_write = to_write - remaining;
-    src = src + remaining;
-    dst = &g.flash_buffer.data[g.flash_buffer.write_offset];
-  }
-
-  memcpy(dst, src, to_write);
-
-  g.flash_buffer.write_offset += to_write;
+  event->samples += 1;
   
   xSemaphoreGive(g.flash_buffer.lock);
 }
