@@ -5,6 +5,9 @@
  *
  */
 
+#include <features.h>
+
+#if CONFIG_USE_GPS
 
 #include <stdint.h>
 #include <inttypes.h>
@@ -13,10 +16,8 @@
 #include <pins.h>
 #include <util.h>
 #include <ublox_isr.h>
-
-//#if defined(STM32L1) || defined(TESTING)
-#  include <hal.h>
-//#endif
+#include <hal.h>
+#include <sample.h>
 
 #define MAX_RECEIVED 1024
 
@@ -422,3 +423,5 @@ int ublox_sleep(void)
 
   return 1;
 }
+
+#endif // CONFIG_USE_GPS

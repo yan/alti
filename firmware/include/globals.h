@@ -11,9 +11,12 @@
 #include <alarm.h>
 #include <config.h>
 #include <features.h>
-#include <ublox_isr.h>
 #include <counters.h>
 #include <flash.h>
+
+#if CONFIG_USE_GPS
+#include <ublox_isr.h>
+#endif
 
 // #define WRITE_BUFFER_LEN        512
 #define WRITE_BUFFER_LEN         STORAGE_PAGE_SIZE
@@ -76,7 +79,7 @@ struct globals {
   struct counters_s counters;
 #endif
 
-#if CONFIG_USE_USART_ISR
+#if CONFIG_USE_GPS && CONFIG_USE_USART_ISR
   /* USART interupt mutex for gps */
   void *usart_mutex_g;
 

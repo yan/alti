@@ -11,6 +11,8 @@
 #include <util.h>
 #include <spi.h>
 
+#if !TESTING
+
 struct status_register_s {
   uint8_t page_size_config : 1;
   uint8_t sector_protect_status : 1;
@@ -95,6 +97,17 @@ static void flash_read_status(struct status_register_s *dest)
   pin_set(ADESTO_FLASH_CS_GPIO, ADESTO_FLASH_CS);
 
 }
+static void busy_wait_for_ready(void)
+{
+  struct status_register_s status_reg;
+
+  status_reg.ready = 0;
+
+  while (!status_reg.ready) {
+    flash_read_status(&status_reg);
+  }
+}
+
 void flash_read(uint32_t addr, uint8_t *data, size_t size)
 {
   spi_set_msb(ADESTO_FLASH_BUS);
@@ -127,6 +140,44 @@ void flash_write(uint32_t addr, uint8_t *data, size_t size)
   busy_wait_for_ready();
 }
 
+void config_flash(void)
+{
+
+  pin_config(ADESTO_FLASH_RESET_GPIO, ADESTO_FLASH_RESET, PINMODE_OUTPUT);
+  pin_config(ADESTO_FLASH_CS_GPIO, ADESTO_FLASH_CS, PINMODE_OUTPUT);
+
+  pin_set(ADESTO_FLASH_RESET_GPIO, ADESTO_FLASH_RESET);
+  pin_set(ADESTO_FLASH_CS_GPIO, ADESTO_FLASH_CS);
+
+  /* Reset the flash memory and wait until it's ready */
+  flash_reset();
+  busy_wait_for_ready();
+
+  /**
+   * XXX: Only uncomment below in testing ; this blows away the entire first
+   * sector.
+   *
+   * assert(test_flash() == 0);
+   */
+  
+  dbg_print("Finished configuring flash memory.\n");
+}
+
+#else // !TESTING
+uint8_t __testing_storage[STORAGE_SIZE] = {0};
+void flash_read(uint32_t addr, uint8_t *data, size_t size)
+{
+  assert(addr + size < STORAGE_SIZE);
+  memcpy(data, &__testing_storage[addr], size);
+}
+
+void flash_write(uint32_t addr, uint8_t *data, size_t size)
+{
+  assert(addr + size < STORAGE_SIZE);
+  memcpy(&__testing_storage[addr], data, size);
+}
+#endif
+
 int test_flash(void)
 {
   int i = 0;
@@ -151,36 +202,4 @@ int test_flash(void)
   return 0;
 }
 
-static void busy_wait_for_ready(void)
-{
-  struct status_register_s status_reg;
 
-  status_reg.ready = 0;
-
-  while (!status_reg.ready) {
-    flash_read_status(&status_reg);
-  }
-}
-
-void config_flash(void)
-{
-
-  pin_config(ADESTO_FLASH_RESET_GPIO, ADESTO_FLASH_RESET, PINMODE_OUTPUT);
-  pin_config(ADESTO_FLASH_CS_GPIO, ADESTO_FLASH_CS, PINMODE_OUTPUT);
-
-  pin_set(ADESTO_FLASH_RESET_GPIO, ADESTO_FLASH_RESET);
-  pin_set(ADESTO_FLASH_CS_GPIO, ADESTO_FLASH_CS);
-
-  /* Reset the flash memory and wait until it's ready */
-  flash_reset();
-  busy_wait_for_ready();
-
-  /**
-   * XXX: Only uncomment below in testing ; this blows away the entire first
-   * sector.
-   *
-   * assert(test_flash() == 0);
-   */
-  
-  dbg_print("Finished configuring flash memory.\n");
-}

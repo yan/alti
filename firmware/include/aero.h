@@ -1,2 +1,2 @@
 
-int aero_main(void);
+int aero_main(int argc, char *argv[]);

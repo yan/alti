@@ -1,7 +1,5 @@
-
 #ifndef __UBLOX_ISR_H
 #define __UBLOX_ISR_H
-
 
 #define USART_ISR_BUFFER_LEN    128
 
@@ -44,6 +42,5 @@ struct usart_isr_state_s {
 
   /* The UBX message reading state that the ISR can be in */
   enum state_e state;
-
 };
 #endif

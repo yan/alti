@@ -26,9 +26,19 @@ const uint32_t HEADER_ADDR = 0x00;
 /** @brief Type of the sentinel value. */
 typedef uint32_t sentinel_t;
 
+/** @brief The address of the first data page (skip the first two pages) */
+const uint32_t DATA_START_ADDR = 2 * STORAGE_PAGE_SIZE;
+
 /** @brief Value to prepend events with to detect wrap-around */
 const sentinel_t SENTINEL_VALUE = 0xAABBCCDD;
 
+#if TESTING
+#  define TAKE_SEMPHR
+#  define GIVE_SEMPHR
+#else
+#  define TAKE_SEMPHR         xSemaphoreTake(g.flash_buffer.lock, portMAX_DELAY)
+#  define GIVE_SEMPHR       xSemaphoreGive(g.flash_buffer.lock)
+#endif // TESTING
 
 /**
  * @brief The first page of storage has some basic info.
@@ -51,7 +61,7 @@ struct storage_header_s {
  */
 static void logger_flush_buffer(uint32_t addr)
 {
-  dbg_print("Writing to flash");
+  dbg_print("Writing to flash\n");
 
 #if ENABLE_FLASH_DEBUG
   assert(addr >= g.flash_buffer.address);
@@ -123,11 +133,9 @@ static size_t logger_read(uint32_t addr, uint8_t *dst, size_t len)
     remaining_in_page = STORAGE_PAGE_SIZE;
     page_offset = 0;
 
-    /* Wrap around to the start of second page on overflow, as the first page is
-     * 'fs' header
-     */
+    /* Wrap around to the start of data section */
     if (page_addr > STORAGE_SIZE) {
-      page_addr = STORAGE_PAGE_SIZE;
+      page_addr = DATA_START_ADDR;
     }
   }
 
@@ -149,7 +157,7 @@ void logger_format_storage(void)
     struct event_header_s first_event;
   } __attribute__((packed)) *first_page = (void*) g.flash_buffer.data;
 
-  xSemaphoreTake(g.flash_buffer.lock, portMAX_DELAY);
+  TAKE_SEMPHR;
   {
 
     memset(g.flash_buffer.data, '\0', STORAGE_PAGE_SIZE);
@@ -169,7 +177,7 @@ void logger_format_storage(void)
     /* Write to the beginning of storage */
     logger_flush_buffer(HEADER_ADDR);
   }
-  xSemaphoreGive(g.flash_buffer.lock);
+  GIVE_SEMPHR;
 }
 
 
@@ -188,7 +196,7 @@ void logger_start_event(struct event_header_s *event)
   }
 
 
-  xSemaphoreTake(g.flash_buffer.lock, portMAX_DELAY);
+  TAKE_SEMPHR;
   {
     struct storage_header_s *first_page = (void *) g.flash_buffer.data;
 
@@ -205,7 +213,7 @@ void logger_start_event(struct event_header_s *event)
 
 
   }
-  xSemaphoreGive(g.flash_buffer.lock);
+  GIVE_SEMPHR;
 
   event->__start_address = addr;
   event->__current_address = 0;
@@ -294,7 +302,7 @@ void logger_write_sample(struct event_header_s *event, struct sensor_packet_s *p
   assert(packet != NULL);
 
   /* TODO: Revisit adding a real timeout here */
-  xSemaphoreTake(g.flash_buffer.lock, portMAX_DELAY);
+  TAKE_SEMPHR;
 
   logger_write(event->__current_address, (uint8_t*) packet, sizeof(*packet));
 
@@ -302,5 +310,5 @@ void logger_write_sample(struct event_header_s *event, struct sensor_packet_s *p
 
   event->samples += 1;
   
-  xSemaphoreGive(g.flash_buffer.lock);
+  GIVE_SEMPHR;
 }

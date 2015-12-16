@@ -10,6 +10,7 @@ TO_CLEAN        = $(OBJ_DIR)/*
 LDSCRIPT	= $(SUPPORT_DIR)/stm32l15xxb.ld
 DONT_ARCHIVE    ?= 
 ANALYZE	?= 0
+ENABLE_SEMIHOSTING ?= 0
 
 ###############################################################################
 # Executables
@@ -66,6 +67,7 @@ CPPFLAGS	+= -MD
 CPPFLAGS	+= -Wall -Wundef -Werror
 CPPFLAGS        += $(USER_CPPFLAGS)
 CPPFLAGS	+= -Iinclude
+CPPFLAGS  += -DENABLE_SEMIHOSTING=$(ENABLE_SEMIHOSTING)
 CPPFLAGS	+= $(DEFS)
 
 ###############################################################################
@@ -97,7 +99,6 @@ GDB_CMDS = support/gdb_commands
 ifeq ($(ENABLE_SEMIHOSTING), 1)
   LDFLAGS += --specs=rdimon.specs -lc -lrdimon
   LDSYSLIBS += rdimon
-  CPPFLAGS += -DENABLE_SEMIHOSTING=1
   $(shell grep -q semihosting $(GDB_CMDS) || echo 'mon arm semihosting enable' >> $(GDB_CMDS))
 else
   $(shell [ -f $(GDB_CMDS) ] && sed -i '' '/mon arm semihosting/d' $(GDB_CMDS))

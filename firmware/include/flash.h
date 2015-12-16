@@ -66,7 +66,9 @@
 #define ADESTO_AUX_MFGR_DEVICE_READ                 0x9F
 
 
+#if !TESTING
 void config_flash(void);
+#endif
 int test_flash(void);
 void flash_read(uint32_t addr, uint8_t *data, size_t size);
 void flash_write(uint32_t addr, uint8_t *data, size_t size);

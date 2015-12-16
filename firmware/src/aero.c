@@ -26,12 +26,9 @@
 #include <task_gps.h>
 
 
-#if defined(TESTING) && TESTING
-
-#else
-#  if defined(ENABLE_SEMIHOSTING) && ENABLE_SEMIHOSTING
+#if ENABLE_SEMIHOSTING
 extern void initialise_monitor_handles(void);
-#  endif
+#endif
 
 static void config_tasks(void);
 static void config_main_task(void);
@@ -154,17 +151,15 @@ static void config_gps_task(void)
   assert(status == pdPASS);
 }
 #endif // CONFIG_USE_GPS
-#endif // TESTING
 
 int
-aero_main(void)
+aero_main(int argc, char *argv[])
 {
-#if defined(TESTING) && TESTING
 
+  (void) argc;
+  (void) argv;
 
-#else 
-
-#if defined(ENABLE_SEMIHOSTING) && ENABLE_SEMIHOSTING
+#if ENABLE_SEMIHOSTING
   initialise_monitor_handles();
 #endif
 
@@ -181,7 +176,6 @@ aero_main(void)
 
   /* NOTREACHED */
   for (;;) { }
-#endif // TESTING
 
   return 0;
 }

@@ -16,7 +16,6 @@ typedef uint8_t X1;
 typedef uint8_t U1;
 
 //! Header prepended to ubx binary messages
-#define HDR_CHKSM_LENGTH 8 //(includes "sync1 sync2 classid msgid length checksum")
 #define UBX_SYNC_BYTE_1 0xB5
 #define UBX_SYNC_BYTE_2 0x62
     
@@ -277,8 +276,12 @@ int ublox_init(uint32_t baudRate);
 
 /**
  * @brief Receiving a navigation solution (blocking)
+ *
+ * XXX: Figure out why just having 'struct gps_sample_s *sample' in arg list
+ *      doesn't compile.
  */
-int ublox_get(struct gps_sample_s *sample);
+typedef struct gps_sample_s gps_sample_t;
+int ublox_get(gps_sample_t *sample);
 
 /**
  * @brief Ask module to start sending navigational messages.

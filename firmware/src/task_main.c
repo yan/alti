@@ -53,8 +53,10 @@ void task_main(void *p)
         state = GLOBAL_STATE_RESET;
         break;
 
+#if CONFIG_USE_GPS
       case GLOBAL_EVT_SENSOR_GPS: {
         unsigned int accuracy = (unsigned int) evt.payload.gps_sample.accuracy;
+
         const uint8_t tx_pipe = PIPE_AERO_PRESSURE_BAROMETRIC_PRESSURE_TX;
 
         if (PIPE_OPEN(tx_pipe)) {
@@ -63,6 +65,7 @@ void task_main(void *p)
 
       }
       break;
+#endif // CONFIG_USE_GPS
       case GLOBAL_EVT_SENSOR_BARO: {
         unsigned int pressure = (unsigned int) evt.payload.baro_sample.mbarc;
         const uint8_t tx_pipe = PIPE_AERO_PRESSURE_BAROMETRIC_PRESSURE_TX;
