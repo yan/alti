@@ -46,7 +46,18 @@ ifeq ($(LIBNAME),)
 all: output_dirs elf
 	@echo $(OBJS)
 
+ifeq ($(TESTING),1)
+elf: $(OBJ_DIR)/$(BINARY).elf support/gtest
+
+GTEST = release-1.7.0.tar.gz
+support/gtest:
+	curl -L -o support/$(GTEST) https://github.com/google/googletest/archive/$(GTEST)
+	mkdir support/gtest
+	tar xfz support/$(GTEST) -C support/gtest/ --strip-components=1
+else
 elf: $(OBJ_DIR)/$(BINARY).elf
+endif
+
 bin: $(OBJ_DIR)/$(BINARY).bin
 hex: $(OBJ_DIR)/$(BINARY).hex
 srec: $(OBJ_DIR)/$(BINARY).srec

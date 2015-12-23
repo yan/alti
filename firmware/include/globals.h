@@ -28,15 +28,11 @@
  */
 struct protected_buffer_s {
   void *lock;
-#if ENABLE_FLASH_DEBUG
   unsigned int address;
   struct {
-    unsigned int valid : 1;
+    unsigned int dirty : 1;
     unsigned int write_offset : sizeof(unsigned int) * 8 - 1;
   };
-#else 
-  unsigned int write_offset;
-#endif
   uint8_t data[WRITE_BUFFER_LEN];
 };
 

@@ -40,6 +40,90 @@ const sentinel_t SENTINEL_VALUE = 0xAABBCCDD;
 #  define GIVE_SEMPHR       xSemaphoreGive(g.flash_buffer.lock)
 #endif // TESTING
 
+/** ========================================================================= */
+/* These functions should be moved elsewhere once working */
+
+enum { OP_READ, OP_WRITE };
+
+void flash_cache_flush(void);
+void flash_cached_read(uint8_t op, uint32_t addr, uint8_t *data, size_t len)
+{
+  void transferred = 0;
+  uint32_t page_addr = addr & STORAGE_PAGE_MASK;
+  uint32_t page_offset = addr - page_addr;
+
+  /* We're about to read but have a dirty buffer, flush it */
+  if (g.flash_buffer.dirty) {
+    flash_write(page_addr, g.flash_buffer.data, STORAGE_PAGE_SIZE);
+    g.flash_buffer.dirty = 0;
+  }
+
+  while (transferred < len) {
+    size_t remaining = MIN(STORAGE_PAGE_SIZE - page_offset, len);
+
+    if (g.flash_buffer.address                     <= addr &&
+        g.flash_buffer.address + STORAGE_PAGE_SIZE >  addr + len) {
+
+      memcpy(data, 
+
+
+
+}
+void flash_cached_write(uint8_t op, uint32_t addr, uint8_t *data, size_t len)
+{
+  void transferred = 0;
+  uint32_t page_addr = addr & STORAGE_PAGE_MASK;
+}
+
+void flash_cached_op(uint8_t op, uint32_t addr, uint8_t *data, size_t len)
+{
+  size_t transferred = 0;
+
+
+
+
+
+  /* First check if the operation is entirely within our region */
+  if (g.flash_buffer.address                     <= addr &&
+      g.flash_buffer.address + STORAGE_PAGE_SIZE >  addr + len) {
+  {
+    if (op == OP_READ) {
+
+      /* Make sure we have the write page in the buffer */
+      if (g.flash_buffer.address != page_addr) {
+        flash_read(page_addr, g.flash_buffer.data, STORAGE_PAGE_SIZE);
+        g.flash_buffer.dirty = 0;
+      }
+
+        flash_read(g.flash_buffer.address
+  }
+
+  while (transferred < len) {
+    /* At least some part of the requested data is in the current cache */
+    if (g.flash_buffer.address                     <= addr &&
+        g.flash_buffer.address + STORAGE_PAGE_SIZE >  addr) {
+      if (op == OP_WRITE) {
+        size_t remaining = STORAGE_PAGE_SIZE - g.flash_buffer.write_offset;
+        size_t to_copy = MIN(remaining, len);
+        
+        
+        
+      }
+
+    } else {
+    }
+  }
+}
+
+#define flash_cached_write(addr, data, len) flash_cached_op(OP_WRITE, addr, data, len)
+#define flash_cached_read(addr, data, len) flash_cached_op(OP_READ, addr, data, len)
+
+void flash_cache_flush(void)
+{
+}
+/** ========================================================================= */
+
+
 /**
  * @brief The first page of storage has some basic info.
  *
@@ -56,8 +140,7 @@ struct storage_header_s {
 };
 
 /**
- * @brief Flush the current flash buffer to |*addr| in flash. Bump *addr the 
- * page size after writing.
+ * @brief Flush the current flash buffer to |*addr| in flash.
  */
 static void logger_flush_buffer(uint32_t addr)
 {
@@ -77,11 +160,11 @@ static void logger_flush_buffer(uint32_t addr)
   g.flash_buffer.write_offset = 0;
 }
 
-#if 0
 /**
  * @brief Get the last event recorded; trashes the flash buffer.
  *
  */
+#if 0
 static uint32_t logger_get_last_event(void)
 {
   struct storage_header_s *first_page = (void *) &g.flash_buffer.data[0];
@@ -96,6 +179,7 @@ static uint32_t logger_get_last_event(void)
 
   return first_page->last_event;
 }
+#endif
 
 /**
  * @brief Read some data from storage, crossing page boundaries if necessary. 
@@ -134,7 +218,7 @@ static size_t logger_read(uint32_t addr, uint8_t *dst, size_t len)
     page_offset = 0;
 
     /* Wrap around to the start of data section */
-    if (page_addr > STORAGE_SIZE) {
+    if (page_addr >= STORAGE_SIZE) {
       page_addr = DATA_START_ADDR;
     }
   }
@@ -142,7 +226,6 @@ static size_t logger_read(uint32_t addr, uint8_t *dst, size_t len)
   return 1;
 
 }
-#endif
 
 /**
  * @brief ...
@@ -182,7 +265,9 @@ void logger_format_storage(void)
 
 
 /**
- *
+ * @brief Start a new event, initializing |event| in the process.
+ * 
+ * @param event An allocated event instance.
  */
 void logger_start_event(struct event_header_s *event)
 {
@@ -238,12 +323,6 @@ void logger_end_event(struct event_header_s *event)
   (void) event;
 }
 
-void logger_read_sample(struct event_header_s *event, uint32_t n)
-{
-  (void) event;
-  (void) n;
-}
-
 static void logger_write(uint32_t address, uint8_t *data, size_t len)
 {
   size_t remaining;
@@ -261,7 +340,7 @@ static void logger_write(uint32_t address, uint8_t *data, size_t len)
     memcpy(dst, data, remaining);
 
 #if ENABLE_FLASH_DEBUG
-    assert(g.flash_buffer.address = (address & STORAGE_PAGE_MASK));
+    assert(g.flash_buffer.address == (address & STORAGE_PAGE_MASK));
 #endif
 
     /* 2. Flush the buffer to storage at the correct address */
@@ -284,6 +363,10 @@ static void logger_write(uint32_t address, uint8_t *data, size_t len)
     len = len - remaining;
     remaining = STORAGE_PAGE_SIZE;
 
+    /* Wrap around to the start of data section */
+    if (address >= STORAGE_SIZE) {
+      address = DATA_START_ADDR;
+    }
   }
 
   /* At this point, we have enough space in the current buffer */
@@ -310,5 +393,25 @@ void logger_write_sample(struct event_header_s *event, struct sensor_packet_s *p
 
   event->samples += 1;
   
+  GIVE_SEMPHR;
+}
+
+void logger_read_sample(struct event_header_s *event, uint32_t n, struct sensor_packet_s *dest)
+{
+  assert(event != NULL);
+  assert(dest != NULL);
+
+  uint32_t source = event->__start_address + sizeof(*dest) * n;
+
+  if (source >= STORAGE_SIZE) {
+    source = (source % STORAGE_SIZE) + DATA_START_ADDR;
+  }
+
+  assert(source < STORAGE_SIZE);
+
+  TAKE_SEMPHR;
+
+  logger_read(source, (uint8_t*)dest, sizeof(*dest));
+
   GIVE_SEMPHR;
 }

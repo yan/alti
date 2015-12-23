@@ -29,7 +29,7 @@ enum pinmode_e {
 #  include "hal_stm32_libopencm3.h"
 #elif defined(STM32L1) && defined(STM32_STDPERIPH_LIB)
 #  include "hal_stm32_stdperiphlib.h"
-#elif defined(TESTING)
+#elif (TESTING)
 #  include "hal_empty.h"
 #else
 #  error "Unsupported architecture"

@@ -7,7 +7,7 @@
 #define __UTIL_H
 
 #include <stdint.h>
-#if ((defined(ENABLE_SEMIHOSTING) && ENABLE_SEMIHOSTING) || defined (TESTING))
+#if ((defined(ENABLE_SEMIHOSTING) && ENABLE_SEMIHOSTING) || (TESTING))
 #  include <stdio.h>
 #endif
 
@@ -36,7 +36,7 @@ uint32_t cpu_cycle_count(void);
    ((x<<24) & 0xff000000))  
     
 
-#if ((defined(ENABLE_SEMIHOSTING) && ENABLE_SEMIHOSTING) || defined(TESTING))
+#if ((defined(ENABLE_SEMIHOSTING) && ENABLE_SEMIHOSTING) || (TESTING))
 #  define dbg_print(args...) printf(args)
 #else
 #  define dbg_print(args...)

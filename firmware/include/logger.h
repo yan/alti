@@ -53,7 +53,7 @@ void logger_start_event(struct event_header_s *event);
 
 void logger_end_event(struct event_header_s *event);
 
-void logger_read_sample(struct event_header_s *event, uint32_t n);
+void logger_read_sample(struct event_header_s *event, uint32_t n, struct sensor_packet_s *dest);
 
 void logger_write_sample(struct event_header_s *event, struct sensor_packet_s *packet);
 

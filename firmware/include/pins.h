@@ -6,13 +6,14 @@
 
 #if defined(STM32L1) && defined(OPENCM3)
 #  include <stm32l1_opencm3_pins.h>
-#elif defined(STM32L1) &&  defined(STM32_STDPERIPH_LIB)
+#elif defined(STM32L1) && defined(STM32_STDPERIPH_LIB)
 #  include <stm32l1_stdperiphlib_pins.h>
-#elif defined(TESTING)
+#elif TESTING
 #  include <empty_pins.h>
 #else
 #  error "Unsupprted architecture"
 #endif
+
 #define PIEZO_OUT_TIMER                 TIM4
 #define PIEZO_OUT_CHANNEL               TIM_OC(4)
 #define PIEZO_OUT_AF                    GPIO_AF2

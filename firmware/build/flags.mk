@@ -4,13 +4,14 @@
 # Project-specific paths
 OBJ_DIR		?= build/obj
 LIB_DIR		?= build/lib
-SUPPORT_DIR     ?= support/
-OUTPUT_DIRS     ?= $(OBJ_DIR) $(LIB_DIR)
-TO_CLEAN        = $(OBJ_DIR)/*
-LDSCRIPT	= $(SUPPORT_DIR)/stm32l15xxb.ld
-DONT_ARCHIVE    ?= 
-ANALYZE	?= 0
-ENABLE_SEMIHOSTING ?= 0
+SUPPORT_DIR              ?= support/
+OUTPUT_DIRS              ?= $(OBJ_DIR) $(LIB_DIR)
+TO_CLEAN                  = $(OBJ_DIR)/*
+LDSCRIPT                  = $(SUPPORT_DIR)/stm32l15xxb.ld
+DONT_ARCHIVE             ?= 
+ANALYZE                   = 0
+ENABLE_SEMIHOSTING       ?= 0
+TESTING                  ?= 0
 
 ###############################################################################
 # Executables

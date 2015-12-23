@@ -69,7 +69,7 @@ typedef union {
 } event_payload_t;
 
 #if 0
-#ifdef TESTING
+#if TESTING
 // typedef uint32_t event_payload_t;
 typedef void *event_payload_t;
 #else
