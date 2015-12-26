@@ -46,35 +46,74 @@ const sentinel_t SENTINEL_VALUE = 0xAABBCCDD;
 enum { OP_READ, OP_WRITE };
 
 void flash_cache_flush(void);
-void flash_cached_read(uint8_t op, uint32_t addr, uint8_t *data, size_t len)
+size_t flash_cached_read(uint32_t addr, uint8_t *data, size_t len);
+size_t flash_cached_write(uint32_t addr, uint8_t *data, size_t len);
+size_t flash_cached_read(uint32_t addr, uint8_t *data, size_t len)
 {
-  void transferred = 0;
-  uint32_t page_addr = addr & STORAGE_PAGE_MASK;
-  uint32_t page_offset = addr - page_addr;
+  size_t transferred = 0;
+  uint32_t page_addr = addr & ~STORAGE_PAGE_MASK;
+  uint32_t page_offset = addr & STORAGE_PAGE_MASK;
 
   /* We're about to read but have a dirty buffer, flush it */
-  if (g.flash_buffer.dirty) {
-    flash_write(page_addr, g.flash_buffer.data, STORAGE_PAGE_SIZE);
-    g.flash_buffer.dirty = 0;
-  }
-
+  flash_cache_flush();
+  
   while (transferred < len) {
+
+    // Buffer isn't dirty, we can overwrite it
+    if (g.flash_buffer.address != page_addr) {
+      flash_read(page_addr, g.flash_buffer.data, STORAGE_PAGE_SIZE);
+      g.flash_buffer.address = page_addr;
+    }
+
     size_t remaining = MIN(STORAGE_PAGE_SIZE - page_offset, len);
 
-    if (g.flash_buffer.address                     <= addr &&
-        g.flash_buffer.address + STORAGE_PAGE_SIZE >  addr + len) {
+    memcpy(data, &g.flash_buffer.data[page_offset], remaining);
 
-      memcpy(data, 
+    transferred += remaining;
 
+  }
 
-
+  return transferred;
 }
-void flash_cached_write(uint8_t op, uint32_t addr, uint8_t *data, size_t len)
+
+size_t flash_cached_write(uint32_t addr, uint8_t *data, size_t len)
 {
-  void transferred = 0;
-  uint32_t page_addr = addr & STORAGE_PAGE_MASK;
+  ssize_t remaining = len;
+  
+  while (remaining > 0) {
+    uint32_t page_addr = addr & ~STORAGE_PAGE_MASK;
+    uint32_t page_offset = addr & STORAGE_PAGE_MASK;
+    uint32_t page_available = STORAGE_PAGE_SIZE - page_offset;
+
+    size_t n = MIN(page_available, remaining);
+    dbg_print("n = %zu, remaining = %zu, page_addr = %x, page_available = %x,"
+                  " len = %zu, addr = %x\n", n, remaining, page_addr,
+                  page_available, len, addr);
+
+    /* We don't have the data in cache, bring it in */
+    if (g.flash_buffer.address != page_addr) {
+      flash_cache_flush();
+
+      // XXX: Should only memset if we are debugging
+      memset(g.flash_buffer.data, '\0', STORAGE_PAGE_SIZE);
+      // flash_read(page_addr, g.flash_buffer.data, STORAGE_PAGE_SIZE);
+      g.flash_buffer.address = page_addr;
+    }
+    
+    /* Data's in cache and we can write what we have available */
+    memcpy(&g.flash_buffer.data[page_offset], data, n);
+    g.flash_buffer.dirty = 1;
+
+    addr += n;
+    remaining -= n;
+  }
+
+  assert(remaining >= 0);
+
+  return len;
 }
 
+#if 0
 void flash_cached_op(uint8_t op, uint32_t addr, uint8_t *data, size_t len)
 {
   size_t transferred = 0;
@@ -113,13 +152,20 @@ void flash_cached_op(uint8_t op, uint32_t addr, uint8_t *data, size_t len)
     } else {
     }
   }
+  }
 }
+}
+#endif
 
-#define flash_cached_write(addr, data, len) flash_cached_op(OP_WRITE, addr, data, len)
-#define flash_cached_read(addr, data, len) flash_cached_op(OP_READ, addr, data, len)
+// #define flash_cached_write(addr, data, len) flash_cached_op(OP_WRITE, addr, data, len)
+// #define flash_cached_read(addr, data, len) flash_cached_op(OP_READ, addr, data, len)
 
 void flash_cache_flush(void)
 {
+  if (g.flash_buffer.dirty) {
+    flash_write(g.flash_buffer.address, g.flash_buffer.data, STORAGE_PAGE_SIZE);
+    g.flash_buffer.dirty = 0;
+  }
 }
 /** ========================================================================= */
 
@@ -179,7 +225,6 @@ static uint32_t logger_get_last_event(void)
 
   return first_page->last_event;
 }
-#endif
 
 /**
  * @brief Read some data from storage, crossing page boundaries if necessary. 
@@ -227,6 +272,7 @@ static size_t logger_read(uint32_t addr, uint8_t *dst, size_t len)
 
 }
 
+#endif
 /**
  * @brief ...
  *
@@ -285,8 +331,11 @@ void logger_start_event(struct event_header_s *event)
   {
     struct storage_header_s *first_page = (void *) g.flash_buffer.data;
 
+    flash_cache_flush();
+
     /* Read the header to see where we need to write to */
     flash_read(HEADER_ADDR, g.flash_buffer.data, STORAGE_PAGE_SIZE);
+    g.flash_buffer.address = HEADER_ADDR;
 
     /* Load the page containing free address into buffer */
     addr = first_page->free_offset;
@@ -294,14 +343,13 @@ void logger_start_event(struct event_header_s *event)
     /* XXX: Handle read errors better */
     assert(addr < STORAGE_SIZE);
 
-    flash_read(addr & STORAGE_PAGE_MASK, g.flash_buffer.data, STORAGE_PAGE_SIZE);
-
-
+    // g.flash_buffer.address = addr & STORAGE_PAGE_MASK;
+    // flash_read(g.flash_buffer.address, g.flash_buffer.data, STORAGE_PAGE_SIZE);
   }
   GIVE_SEMPHR;
 
-  event->__start_address = addr;
-  event->__current_address = 0;
+  event->__start_address = addr + EVENT_HEADER_SIZE;
+  event->__current_address = event->__start_address;
 
   event->__started = 1;
 }
@@ -320,9 +368,11 @@ void logger_end_event(struct event_header_s *event)
     return;
   }
 
-  (void) event;
+  flash_cached_write(event->__start_address - EVENT_HEADER_SIZE, (uint8_t*)event, EVENT_HEADER_SIZE);
+  flash_cache_flush();
 }
 
+#if 0
 static void logger_write(uint32_t address, uint8_t *data, size_t len)
 {
   size_t remaining;
@@ -374,6 +424,7 @@ static void logger_write(uint32_t address, uint8_t *data, size_t len)
 
   g.flash_buffer.write_offset += len;
 }
+#endif
 
 /**
  *
@@ -387,7 +438,8 @@ void logger_write_sample(struct event_header_s *event, struct sensor_packet_s *p
   /* TODO: Revisit adding a real timeout here */
   TAKE_SEMPHR;
 
-  logger_write(event->__current_address, (uint8_t*) packet, sizeof(*packet));
+  // logger_write(event->__current_address, (uint8_t*) packet, sizeof(*packet));
+  flash_cached_write(event->__current_address, (uint8_t*) packet, sizeof(*packet));
 
   event->__current_address += sizeof(*packet);
 
@@ -411,7 +463,7 @@ void logger_read_sample(struct event_header_s *event, uint32_t n, struct sensor_
 
   TAKE_SEMPHR;
 
-  logger_read(source, (uint8_t*)dest, sizeof(*dest));
+  flash_cached_read(source, (uint8_t*)dest, sizeof(*dest));
 
   GIVE_SEMPHR;
 }
