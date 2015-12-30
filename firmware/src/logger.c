@@ -11,6 +11,7 @@
 #include <semphr.h>
 
 #include <string.h>
+#include <unistd.h>
 
 #include <util.h>
 #include <config.h>
@@ -85,9 +86,11 @@ size_t flash_cached_write(uint32_t addr, uint8_t *data, size_t len)
     uint32_t page_offset = addr & STORAGE_PAGE_MASK;
     uint32_t page_available = STORAGE_PAGE_SIZE - page_offset;
 
-    size_t n = MIN(page_available, remaining);
-    dbg_print("n = %zu, remaining = %zu, page_addr = %x, page_available = %x,"
-                  " len = %zu, addr = %x\n", n, remaining, page_addr,
+    assert(STORAGE_PAGE_SIZE >= page_offset);
+
+    size_t n = MIN(page_available, (uint32_t) remaining);
+    dbg_print("n = %zu, remaining = %zu, page_addr = %lx, page_available = %lx,"
+                  " len = %zu, addr = %lx\n", n, remaining, page_addr,
                   page_available, len, addr);
 
     /* We don't have the data in cache, bring it in */

@@ -10,8 +10,8 @@
  * run out of heap space.
  */
 
-void vApplicationStackOverflowHook(TaskHandle_t *pxTask, signed char *pcTaskName);
-void vApplicationMallocFailedHook(void);
+extern void vApplicationStackOverflowHook(TaskHandle_t *pxTask, signed char *pcTaskName);
+extern void vApplicationMallocFailedHook(void);
 
 
 /**

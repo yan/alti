@@ -9,6 +9,8 @@
 
 #if defined(STM32_STDPERIPH_LIB)
 
+#if 0
+
 
 /** @defgroup CM3_nvic_isrpragmas_STM32L1 User interrupt service routines (ISR) defaults for STM32 L1 series
     @ingroup CM3_nvic_isrpragmas
@@ -76,6 +78,8 @@
 #define STIR_BASE                       (SCS_BASE + 0x0F00)
 /* ID: ID space */
 #define ID_BASE                         (SCS_BASE + 0x0FD0)
+#endif
+
 #endif
 
 #include <stdint.h>
