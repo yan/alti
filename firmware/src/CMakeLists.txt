@@ -26,14 +26,27 @@ set (AERO_SRC
 set (AERO_SRC
   ${AERO_SRC}
   aero.c
-  aero_test.c
-  fault_handlers.c
+  # aero_test.c
   globals.c
   hal_stm32_libopencm3.c
   hal_stm32_stdperiphlib.c
-  hal_stm32_test.c
-  hooks.c
+  # hal_stm32_test.c
   main.c
   periph.c
   spi.c
   startup_stm32l1xx_hd.s)
+
+set (AERO_SRC
+  ${AERO_SRC}
+  fault_handlers.c
+  hooks.c)
+
+set (CFLAGS "-DSTM32L1 -DSTM32_STDPERIPH_LIB")
+
+set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${CFLAGS}")
+
+include_directories(../include) # ${FREERTOS_HOME}/include ${FREERTOS_HOME}/portable/GCC/ARM_CM3)
+
+add_library (aero ${AERO_SRC})
+
+target_link_libraries (aero freertos)
