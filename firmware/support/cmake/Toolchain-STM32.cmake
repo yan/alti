@@ -14,32 +14,13 @@ set(CMAKE_OBJCOPY          arm-none-eabi-objcopy)
 set(CMAKE_OBJDUMP          arm-none-eabi-objdump)
 
 set(TOOCHAIN_LIB_DIR "/Users/user/tools/gcc-arm-none-eabi-4_9-2015q3/lib")
-## CFLAGS          += $(OPT_FLAGS) -std=c11
-## CFLAGS          += -Wextra -Wshadow -Wimplicit-function-declaration
-## CFLAGS          += -Wredundant-decls -Wmissing-prototypes -Wstrict-prototypes
-## CFLAGS          += -Wno-unused-function
-## CFLAGS          += -fno-common -ffunction-sections -fdata-sections
-## 
-## ###############################################################################
-## # C++ flags
-## 
-## CXXFLAGS        += $(OPT_FLAGS)
-## CXXFLAGS        += -Wextra -Wshadow -Wredundant-decls  -Weffc++
-## CXXFLAGS        += -fno-common -ffunction-sections -fdata-sections
-## 
-## ###############################################################################
-## # C & C++ preprocessor common flags
-##       
-## CPPFLAGS        += -MD 
-## CPPFLAGS        += -Wall -Wundef -Werror
-## CPPFLAGS        += $(USER_CPPFLAGS)
-## CPPFLAGS        += -Iinclude
-## CPPFLAGS  += -DENABLE_SEMIHOSTING=$(ENABLE_SEMIHOSTING)
-## CPPFLAGS        += $(DEFS)
 
-set (CPPFLAGS "-MD -Wall -Wundef -Werror -fno-builtin -Wextra -Wshadow -Wno-unused-function -DTESTING=0 -DENABLE_SEMIHOSTING=0")
+set (CPPFLAGS "-MD")
+set (CPPFLAGS "${CPPFLAGS} -Wall -Wundef -Werror -Wshadow -Wno-unused-function")
+set (CPPFLAGS "${CPPFLAGS} -ffunction-sections -fdata-sections -fno-common")
+
 set (ARCHFLAGS "-mthumb -mcpu=cortex-m3")
-set (CMAKE_C_FLAGS "${ARCHFLAGS} ${CPPFLAGS} -std=c11 -Wimplicit-function-declaration" CACHE INTERNAL "c compiler flags")
+set (CMAKE_C_FLAGS "${ARCHFLAGS} ${CPPFLAGS} -std=c11 -Wstrict-prototypes" CACHE INTERNAL "c compiler flags")
 set (CMAKE_CXX_FLAGS "${ARCHFLAGS} ${CPPFLAGS} -std=c++11" CACHE INTERNAL "cxx compiler flags")
 
 set (CMAKE_EXE_LINKER_FLAGS "--static -nostartfiles -Wl,--start-group -lm -lgcc -lnosys -Wl,--end-group -Wl,--gc-sections" CACHE INTERNAL "executable linker flags")
