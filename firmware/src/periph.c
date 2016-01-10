@@ -10,7 +10,6 @@
 
 void arch_config_io(void)
 {
-  unsigned i;
   /* Configure SPI for nrf8001 and flash */
   pin_config(BT_STORE_GPIO, BT_STORE_PINS, PINMODE_AF_5);
   arch_spi_config(BT_STORE);
@@ -42,7 +41,7 @@ void arch_config_io(void)
   };
 #undef __PIN
 
-  for (i = 0; i < sizeof(init_pins)/sizeof(init_pins[0]); i++) {
+  for (uint16_t i = 0; i < sizeof(init_pins)/sizeof(init_pins[0]); i++) {
     pin_config(init_pins[i].port, init_pins[i].pin, PINMODE_OUTPUT);
     pin_set(init_pins[i].port, init_pins[i].pin);
   }

@@ -10,7 +10,8 @@
 #include <stdint.h>
 
 enum pinmode_e {
-  PINMODE_AF_1 = 1,
+  PINMODE_AF_0 = 0,
+  PINMODE_AF_1,
   PINMODE_AF_2,
   PINMODE_AF_3,
   PINMODE_AF_4,
@@ -21,6 +22,7 @@ enum pinmode_e {
   PINMODE_OUTPUT,
   PINMODE_INPUT
 };
+#define IS_VALID_AF_PINMODE(x) (x >= PINMODE_AF_0 && x < PINMODE_AF_8)
 
 #define BYTEORDER_LSB   0
 #define BYTEORDER_MSB   1

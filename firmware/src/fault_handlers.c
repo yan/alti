@@ -4,7 +4,7 @@
 
 #include "hal.h"
 
-#ifndef TESTING
+#if !TESTING
 
 
 void mem_manage_handler(void) __attribute__ (( naked ));

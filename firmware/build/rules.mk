@@ -168,7 +168,7 @@ run: elf
 	$(Q)mkdir -p $(PID_DIR)
 	#$(Q)killall openocd || true
 	#$(Q)openocd -f interface/$(OOCD_INTERFACE).cfg -f target/$(OOCD_TARGET).cfg -c 'mon reset init' -l "${PID_DIR}/openocd.log" & echo "$$!" > "${PID_DIR}/openocd.pid"
-	$(Q)$(GDB) --command=$(GDB_CMDS) $(OBJ_DIR)/$(BINARY).elf
+	$(Q)PYTHONPATH=~/src/FreeRTOS-GDB/src/ $(GDB) --command=$(GDB_CMDS) $(OBJ_DIR)/$(BINARY).elf
 	#$(Q)kill `cat $(PID_DIR)/openocd.pid`
 
 

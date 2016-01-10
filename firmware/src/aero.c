@@ -44,7 +44,7 @@ static void config_tasks(void)
   config_main_task();
   config_alert_task();
   config_ble_task();
-  config_sensor_task();
+  // config_sensor_task();
 #if CONFIG_USE_GPS
   config_gps_task();
 #endif
@@ -163,14 +163,14 @@ aero_main(int argc, char *argv[])
   initialise_monitor_handles();
 #endif
 
-  arch_config_nvic();
   arch_config_clocks();
+  arch_config_nvic();
   arch_config_io();
 
   config_globals();
   config_tasks();
-  config_flash();
-  config_load_persistent();
+  // config_flash();
+  // config_load_persistent();
 
   vTaskStartScheduler();
 

@@ -34,16 +34,15 @@ set (AERO_SRC
   main.c
   periph.c
   spi.c
-  startup_stm32l1xx_hd.s)
+  #startup_stm32l1xx_hd.s
+  )
 
 set (AERO_SRC
   ${AERO_SRC}
   fault_handlers.c
   hooks.c)
 
-set (CFLAGS "-DSTM32L1 -DSTM32_STDPERIPH_LIB")
-
-set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${CFLAGS}")
+set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DSTM32L1")
 
 include_directories(../include) # ${FREERTOS_HOME}/include ${FREERTOS_HOME}/portable/GCC/ARM_CM3)
 

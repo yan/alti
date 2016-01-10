@@ -7,7 +7,6 @@
 
 #include "stm32l1xx.h"
 
-
 #define PIN(x)              GPIO_Pin_ ## x
 #define PIN_SRC(x)          GPIO_PinSource ## x
 #define GPIO(x)             GPIO ## x

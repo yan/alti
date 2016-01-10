@@ -123,7 +123,7 @@ your application. */
 #define CONFIG_TASK_GPS_PRIORITY                ( DEFAULT_TASK_PRIORITY - 1)
 
 
-#if defined(ENABLE_SEMIHOSTING)
+#if (ENABLE_SEMIHOSTING == 1)
 #  undef configTOTAL_HEAP_SIZE
 #  define configTOTAL_HEAP_SIZE                  (49152 - 37000)//36444)
 

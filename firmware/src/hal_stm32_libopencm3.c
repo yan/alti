@@ -62,7 +62,7 @@ void pin_config(gpio_t port, pin_t pin, int options)
     mode = GPIO_MODE_INPUT;
   } else if (options == PINMODE_OUTPUT) {
     mode = GPIO_MODE_OUTPUT;
-  } else if (options >= PINMODE_AF_1 && options <= PINMODE_AF_8) {
+  } else if (IS_VALID_AF_PINMODE(options)) {
     mode = GPIO_MODE_AF;
     af = options;
     should_set = 1;
@@ -185,7 +185,6 @@ void arch_usart_send(usart_t port, uint8_t data)
 uint16_t arch_usart_recv(usart_t port)
 {
   return usart_recv(port);
-
 }
 
 void arch_enable_usart_interrupt(usart_t port)
@@ -194,11 +193,8 @@ void arch_enable_usart_interrupt(usart_t port)
   nvic_enable_irq(NVIC_USART1_IRQ);
   nvic_set_priority(NVIC_USART1_IRQ, USART_ISR_PRIORITY);
 
-#if CONFIG_USE_USART_ISR
   // TODO: move this to a utility function
   memset(&g.usart_isr_state, '\0', sizeof(g.usart_isr_state));
-#endif // CONFIG_USE_USART_ISR
-
 
   usart_disable_rx_interrupt(port);
   usart_enable_rx_interrupt(port);
@@ -228,12 +224,12 @@ void exti3_isr(void)
 
 void arch_init_timer(pwm_timer_t timer, uint32_t channel, uint32_t prescaler, uint32_t period)
 {
-  switch (timer) {
-    case TIM2:
+  if (timer == TIM2) {
       rcc_peripheral_enable_clock(&RCC_APB1ENR, RCC_APB1ENR_TIM2EN);
-      break;
-    case TIM4:
+  } else if (timer == TIM4) {
       rcc_peripheral_enable_clock(&RCC_APB1ENR, RCC_APB1ENR_TIM4EN);
+  } else {
+    assert (0);
   }
 
   timer_reset(timer);
@@ -333,20 +329,21 @@ void timer_disable(pwm_timer_t timer)
       break;
     case TIM4:
       rcc_peripheral_disable_clock(&RCC_APB1ENR, RCC_APB1ENR_TIM4EN);
+      break;
   }
-  timer_disable_counter(PIEZO_OUT_TIMER);
+  timer_disable_counter(timer);
 }
 
 void timer_enable(pwm_timer_t timer)
 {
-  switch (timer) {
-    case TIM2:
+  if (timer == TIM2) {
       rcc_peripheral_enable_clock(&RCC_APB1ENR, RCC_APB1ENR_TIM2EN);
-      break;
-    case TIM4:
+  } else if (timer == TIM4) {
       rcc_peripheral_enable_clock(&RCC_APB1ENR, RCC_APB1ENR_TIM4EN);
+  } else {
+    assert (0);
   }
-  timer_enable_counter(PIEZO_OUT_TIMER);
+  timer_enable_counter(timer);
 }
 
 

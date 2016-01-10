@@ -17,8 +17,9 @@ SRC   += ms5611.c			nrf8001.c			spi.c
 SRC   += task_alert.c			task_ble.c			task_main.c
 SRC   += task_sensor.c			ublox.c				util.c
 SRC   += logger.c			task_gps.c			ublox_isr.c
-SRC   += periph.c	logger.c
-SRC   += init.c
+SRC   += periph.c			logger.c
+SRC   += fault_handlers.c
+#SRC   += init.c
 
 # SRC   += startup_stm32l1xx_hd.s
 

@@ -18,7 +18,7 @@
 
 #include <stm32l1xx_conf.h>
 
-void __attribute__((weak)) exti3_isr(void);
+void exti3_isr(void);
 
 void pin_set(gpio_t port, pin_t pin)
 {
@@ -37,17 +37,57 @@ void pin_toggle(gpio_t port, pin_t pin)
 
 void pin_config(gpio_t port, pin_t pin, int options)
 {
+  // int should_set = 0;
+
   GPIO_InitTypeDef init = {
     .GPIO_OType = GPIO_OType_PP,
     .GPIO_Pin = pin,
-    .GPIO_Mode = options == PINMODE_INPUT ? GPIO_Mode_IN : GPIO_Mode_OUT,
-    .GPIO_PuPd = GPIO_PuPd_NOPULL,
+    // .GPIO_Mode = options == PINMODE_INPUT ? GPIO_Mode_IN : GPIO_Mode_OUT,
+    .GPIO_PuPd = GPIO_PuPd_DOWN,
+    // .GPIO_PuPd = GPIO_PuPd_UP,
     .GPIO_Speed = GPIO_Speed_10MHz
   };
 
-  assert(options == PINMODE_INPUT || options == PINMODE_OUTPUT);
+  if (options == PINMODE_INPUT) {
+    init.GPIO_Mode = GPIO_Mode_IN;
+  } else if (options == PINMODE_OUTPUT) {
+    init.GPIO_Mode = GPIO_Mode_OUT;
+  } else if (IS_VALID_AF_PINMODE(options)) {
+    init.GPIO_Mode = GPIO_Mode_AF;
+    // should_set = 1;
+    uint8_t pin_source;
 
+    for (pin_source = 0; pin != 0; pin >>= 1, pin_source++) {
+      if (pin & 1) {
+        GPIO_PinAFConfig( port, pin_source, (uint8_t) options );
+      }
+    }
+  } else {
+    assert(0);
+  }
+  
   GPIO_Init(port, &init);
+
+  /**
+   * XXX: This is a very super hacky way to derive the pin source from the pin.
+   * PinSource is essentially the index of the bit set in the pin. i.e.:
+   * 0x00 -> 1
+   * 0x01 -> 2
+   * 0x02 -> 3
+   * 0x04 -> 4
+   * 0x08 -> 5, etc
+   *
+   * Ditto for 'options'
+   */
+  // if (should_set) {
+  //   uint8_t pin_source;
+
+  //   for (pin_source = 0; pin != 0; pin >>= 1, pin_source++) {
+  //     if (pin & 1) {
+  //       GPIO_PinAFConfig( port, pin_source, (uint8_t) options );
+  //     }
+  //   }
+  // }
 }
 
 void arch_usart_send(usart_t port, uint8_t data)
@@ -80,7 +120,7 @@ void arch_config_ble(void)
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_SYSCFG, ENABLE);
 
   NVIC_EnableIRQ(EXTI3_IRQn);
-  NVIC_SetPriority(EXTI3_IRQn, BLE_EXTI_ISR_PRIORITY);
+  NVIC_SetPriority(EXTI3_IRQn, 10);//BLE_EXTI_ISR_PRIORITY);
 
   EXTI_InitTypeDef ble_isr_init = {
     .EXTI_Line = EXTI_Line3,
@@ -92,12 +132,148 @@ void arch_config_ble(void)
   EXTI_Init(&ble_isr_init);
 }
 
+/******/
+
+/**
+  * @brief  Setup the microcontroller system.
+  *         Initialize the Embedded Flash Interface, the PLL and update the 
+  *         SystemCoreClock variable.
+  * @param  None
+  * @retval None
+  */
+static void SystemInitAero (void)
+{
+  /*!< Set MSION bit */
+  RCC->CR |= (uint32_t)0x00000100;
+
+  /*!< Reset SW[1:0], HPRE[3:0], PPRE1[2:0], PPRE2[2:0], MCOSEL[2:0] and MCOPRE[2:0] bits */
+  RCC->CFGR &= (uint32_t)0x88FFC00C;
+  
+  /*!< Reset HSION, HSEON, CSSON and PLLON bits */
+  RCC->CR &= (uint32_t)0xEEFEFFFE;
+
+  /*!< Reset HSEBYP bit */
+  RCC->CR &= (uint32_t)0xFFFBFFFF;
+
+  /*!< Reset PLLSRC, PLLMUL[3:0] and PLLDIV[1:0] bits */
+  RCC->CFGR &= (uint32_t)0xFF02FFFF;
+
+  /*!< Disable all interrupts */
+  RCC->CIR = 0x00000000;
+
+#ifdef DATA_IN_ExtSRAM
+  // SystemInit_ExtMemCtl(); 
+#endif /* DATA_IN_ExtSRAM */
+    
+#ifdef VECT_TAB_SRAM
+  SCB->VTOR = SRAM_BASE ;// | VECT_TAB_OFFSET; /* Vector Table Relocation in Internal SRAM. */
+#else
+  SCB->VTOR = FLASH_BASE ;//| VECT_TAB_OFFSET; /* Vector Table Relocation in Internal FLASH. */
+#endif
+}
+
+/**
+  * @brief  Update SystemCoreClock according to Clock Register Values
+  *         The SystemCoreClock variable contains the core clock (HCLK), it can
+  *         be used by the user application to setup the SysTick timer or configure
+  *         other parameters.
+  *           
+  * @note   Each time the core clock (HCLK) changes, this function must be called
+  *         to update SystemCoreClock variable value. Otherwise, any configuration
+  *         based on this variable will be incorrect.         
+  *     
+  * @note   - The system frequency computed by this function is not the real 
+  *           frequency in the chip. It is calculated based on the predefined 
+  *           constant and the selected clock source:
+  *             
+  *           - If SYSCLK source is MSI, SystemCoreClock will contain the MSI 
+  *             value as defined by the MSI range.
+  *                                   
+  *           - If SYSCLK source is HSI, SystemCoreClock will contain the HSI_VALUE(*)
+  *                                              
+  *           - If SYSCLK source is HSE, SystemCoreClock will contain the HSE_VALUE(**)
+  *                          
+  *           - If SYSCLK source is PLL, SystemCoreClock will contain the HSE_VALUE(**)
+  *             or HSI_VALUE(*) multiplied/divided by the PLL factors.
+  *         
+  *         (*) HSI_VALUE is a constant defined in stm32l1xx.h file (default value
+  *             16 MHz) but the real value may vary depending on the variations
+  *             in voltage and temperature.   
+  *    
+  *         (**) HSE_VALUE is a constant defined in stm32l1xx.h file (default value
+  *              8 MHz), user has to ensure that HSE_VALUE is same as the real
+  *              frequency of the crystal used. Otherwise, this function may
+  *              have wrong result.
+  *                
+  *         - The result of this function could be not correct when using fractional
+  *           value for HSE crystal.
+  * @param  None
+  * @retval None
+  */
+void SystemCoreClockUpdate (void)
+{
+#define SystemCoreClock g.rcc_clock_freq
+  const uint8_t PLLMulTable[9] = {3, 4, 6, 8, 12, 16, 24, 32, 48};
+  const uint8_t AHBPrescTable[16] = {0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 6, 7, 8, 9};
+  uint32_t tmp = 0, pllmul = 0, plldiv = 0, pllsource = 0, msirange = 0;
+
+  /* Get SYSCLK source -------------------------------------------------------*/
+  tmp = RCC->CFGR & RCC_CFGR_SWS;
+  
+  switch (tmp)
+  {
+    case 0x00:  /* MSI used as system clock */
+      msirange = (RCC->ICSCR & RCC_ICSCR_MSIRANGE) >> 13;
+      SystemCoreClock = (32768 * (1 << (msirange + 1)));
+      break;
+    case 0x04:  /* HSI used as system clock */
+      SystemCoreClock = HSI_VALUE;
+      break;
+    case 0x08:  /* HSE used as system clock */
+      SystemCoreClock = HSE_VALUE;
+      break;
+    case 0x0C:  /* PLL used as system clock */
+      /* Get PLL clock source and multiplication factor ----------------------*/
+      pllmul = RCC->CFGR & RCC_CFGR_PLLMUL;
+      plldiv = RCC->CFGR & RCC_CFGR_PLLDIV;
+      pllmul = PLLMulTable[(pllmul >> 18)];
+      plldiv = (plldiv >> 22) + 1;
+      
+      pllsource = RCC->CFGR & RCC_CFGR_PLLSRC;
+
+      if (pllsource == 0x00)
+      {
+        /* HSI oscillator clock selected as PLL clock entry */
+        SystemCoreClock = (((HSI_VALUE) * pllmul) / plldiv);
+      }
+      else
+      {
+        /* HSE selected as PLL clock entry */
+        SystemCoreClock = (((HSE_VALUE) * pllmul) / plldiv);
+      }
+      break;
+    default: /* MSI used as system clock */
+      msirange = (RCC->ICSCR & RCC_ICSCR_MSIRANGE) >> 13;
+      SystemCoreClock = (32768 * (1 << (msirange + 1)));
+      break;
+  }
+  /* Compute HCLK clock frequency --------------------------------------------*/
+  /* Get HCLK prescaler */
+  tmp = AHBPrescTable[((RCC->CFGR & RCC_CFGR_HPRE) >> 4)];
+  /* HCLK clock frequency */
+  SystemCoreClock >>= tmp;
+#undef SystemCoreClock
+}
+
 void arch_config_clocks(void)
 {
   RCC_ClocksTypeDef RCC_Clocks;
 
+  SystemInitAero();
+  SystemCoreClockUpdate();
+
   /* Configure main system clock */
-  RCC_PLLConfig(RCC_PLLSource_HSI, RCC_PLLMul_3, RCC_PLLDiv_2);
+  // RCC_PLLConfig(RCC_PLLSource_HSI, RCC_PLLMul_3, RCC_PLLDiv_2);
 
   /* Enable peripheral clocks */
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR, ENABLE);
@@ -278,15 +454,15 @@ void arch_spi_config(spi_t port)
 {
   SPI_InitTypeDef SPI_InitStruct;
 
-  SPI_InitStruct.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_4;
-  SPI_InitStruct.SPI_CPHA = SPI_CPHA_1Edge;
-  SPI_InitStruct.SPI_CPOL = SPI_CPOL_Low;
-  SPI_InitStruct.SPI_CRCPolynomial = 0; // TODO: What is this??
-  SPI_InitStruct.SPI_DataSize = SPI_DataSize_8b;
   SPI_InitStruct.SPI_Direction = SPI_Direction_2Lines_FullDuplex;
-  SPI_InitStruct.SPI_FirstBit = SPI_FirstBit_MSB;
   SPI_InitStruct.SPI_Mode = SPI_Mode_Master;
+  SPI_InitStruct.SPI_DataSize = SPI_DataSize_8b;
+  SPI_InitStruct.SPI_CPOL = SPI_CPOL_High;
+  SPI_InitStruct.SPI_CPHA = SPI_CPHA_2Edge;
   SPI_InitStruct.SPI_NSS = SPI_NSS_Soft;
+  SPI_InitStruct.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_2;
+  SPI_InitStruct.SPI_FirstBit = SPI_FirstBit_MSB;
+  SPI_InitStruct.SPI_CRCPolynomial = 0; // TODO: What is this??
 
   SPI_Init(port, &SPI_InitStruct);
   
@@ -311,8 +487,10 @@ uint8_t arch_spi_xfer(spi_t port, uint8_t cmd)
 {
   SPI_I2S_SendData(port, cmd);
 
-  while (!(port->SR & SPI_I2S_FLAG_RXNE))
+  while (!SPI_I2S_GetFlagStatus(port, SPI_I2S_FLAG_RXNE))
     ;
+  // while (!(port->SR & SPI_I2S_FLAG_RXNE))
+    // ;
 
   return SPI_I2S_ReceiveData(port);
 

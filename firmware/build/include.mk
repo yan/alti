@@ -19,7 +19,7 @@
 ##
 
 ifneq ($(TESTING),1)
-DEFS		+= -DSTM32L1 -DTESTING=0
+DEFS		+= -DSTM32L1  -DTESTING=0
 
 #FP_FLAGS	?= -msoft-float
 FP_FLAGS	?= -mfloat-abi=soft

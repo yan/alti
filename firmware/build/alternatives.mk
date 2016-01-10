@@ -1,5 +1,5 @@
 
-USE_ST_LIB ?= 1
+USE_ST_LIB ?= 0
 
 ifneq ($(TESTING),1)
   ifeq ($(USE_ST_LIB),1)

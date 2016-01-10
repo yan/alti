@@ -32,7 +32,7 @@ static void task_alert_config(void)
     enable_piezo();
     arch_timer_set(PIEZO_OUT_TIMER, PIEZO_OUT_CHANNEL, 500);
   } else {
-    disable_piezo();
+    // disable_piezo();
   }
 
 }
@@ -113,6 +113,7 @@ void task_alert_led(void *p)
       continue;
     }
 
+    // continue;
 
     received_event = (received >> 16) & 0xFFFF;
     argument = received & 0xFFFF;

@@ -5,6 +5,7 @@
 
 #include <FreeRTOS.h>
 #include <semphr.h>
+#include <task.h>
 
 #include <ublox_isr.h>
 #include <task_gps.h>
@@ -30,7 +31,7 @@ void usart_isr(void)
   uint8_t value;
 
   /* Do nothing if there's an error condition */
-  if (usart_can_recv(UBLOX_UART)) {
+  if (!usart_can_recv(UBLOX_UART)) {
     return;
   }
 
@@ -151,33 +152,25 @@ struct ubx_header_s *ublox_wait_for_message(void)
    * for the next message to arrive.
    * */
 
-#define EXIT_CRIT_AND_CONTINUE                 \
-    do {                                       \
-      delay_ms(1);                             \
-      portEXIT_CRITICAL();                     \
-      continue;                                \
-    } while(0)
-
   for (;;)
   {
-    portENTER_CRITICAL();
+    taskDISABLE_INTERRUPTS();
 
     status = xQueuePeek(g.gps_queue_g, &event, portMAX_DELAY);
 
-    if (status != pdPASS)
-      EXIT_CRIT_AND_CONTINUE;
+    if (status == pdPASS && event == EVT_GPS_UBX_WAITING) {
+      break;
+    }
 
-    if (event != EVT_GPS_UBX_WAITING)
-      EXIT_CRIT_AND_CONTINUE;
-
-    break;
+    taskENABLE_INTERRUPTS();
+    delay_ms(1);
   }
 
   status = xQueueReceive(g.gps_queue_g, &event, portMAX_DELAY);
 
   assert(status == pdPASS);
 
-  portEXIT_CRITICAL();
+  taskENABLE_INTERRUPTS();
 
   return ublox_get_incoming_message();
 }
