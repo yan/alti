@@ -12,7 +12,7 @@
 
 #if CONFIG_USE_USART_ISR
 
-extern void usart_isr(void);
+extern void usart1_isr(void);
 
 /**
  * @brief ISR that's hit when there's new USART data waiting to be read. Reads 
@@ -25,7 +25,7 @@ extern void usart_isr(void);
  *
  * XXX: Make sure the recv port is correct
  */
-void usart_isr(void)
+void usart1_isr(void)
 {
   struct usart_isr_state_s *s = &g.usart_isr_state;
   uint8_t value;

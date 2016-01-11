@@ -34,6 +34,10 @@
 #include <ublox.h>
 #endif
 
+#ifndef __NVIC_PRIO_BITS
+#  error "__NVIC_PRIO_BITS must be set"
+#endif
+
 
 // void exti3_isr(void);
 
@@ -97,7 +101,7 @@ void arch_config_ble(void)
   rcc_peripheral_enable_clock(&RCC_APB2ENR, RCC_APB2ENR_SYSCFGEN);
 
   nvic_enable_irq(NVIC_EXTI3_IRQ);
-  nvic_set_priority(NVIC_EXTI3_IRQ, BLE_EXTI_ISR_PRIORITY);
+  nvic_set_priority(NVIC_EXTI3_IRQ, BLE_EXTI_ISR_PRIORITY << (8 - __NVIC_PRIO_BITS));
 
   exti_select_source(EXTI3, NRF8001_RDYN_GPIO);
   exti_set_trigger(EXTI3, EXTI_TRIGGER_FALLING);
@@ -177,7 +181,7 @@ void arch_usart_set_baud(usart_t port, int baud)
   usart_set_baudrate(port, baud);
 }
 
-void arch_usart_send(usart_t port, uint8_t data)
+void arch_usart_send(usart_t port, uint16_t data)
 {
   usart_send_blocking(port, data);
 }
@@ -191,7 +195,7 @@ void arch_enable_usart_interrupt(usart_t port)
 {
   // make this configurable
   nvic_enable_irq(NVIC_USART1_IRQ);
-  nvic_set_priority(NVIC_USART1_IRQ, USART_ISR_PRIORITY);
+  nvic_set_priority(NVIC_USART1_IRQ, USART_ISR_PRIORITY << (8 - __NVIC_PRIO_BITS));
 
   // TODO: move this to a utility function
   memset(&g.usart_isr_state, '\0', sizeof(g.usart_isr_state));
@@ -270,6 +274,8 @@ void arch_spi_config(spi_t port)
   } else {
     assert(0);
   }
+
+  arch_spi_enable(port);
 
   spi_reset(port);
   spi_init_master(port,

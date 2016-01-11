@@ -12,6 +12,8 @@
 #include <pins.h>
 #include <spi.h>
 
+#include <string.h>
+
 #include <FreeRTOS.h>
 #include <queue.h>
 #include <task.h>
@@ -44,7 +46,7 @@ void pin_config(gpio_t port, pin_t pin, int options)
     .GPIO_Pin = pin,
     // .GPIO_Mode = options == PINMODE_INPUT ? GPIO_Mode_IN : GPIO_Mode_OUT,
     .GPIO_PuPd = GPIO_PuPd_DOWN,
-    // .GPIO_PuPd = GPIO_PuPd_UP,
+    //.GPIO_PuPd = GPIO_PuPd_NOPULL,
     .GPIO_Speed = GPIO_Speed_10MHz
   };
 
@@ -68,38 +70,19 @@ void pin_config(gpio_t port, pin_t pin, int options)
   
   GPIO_Init(port, &init);
 
-  /**
-   * XXX: This is a very super hacky way to derive the pin source from the pin.
-   * PinSource is essentially the index of the bit set in the pin. i.e.:
-   * 0x00 -> 1
-   * 0x01 -> 2
-   * 0x02 -> 3
-   * 0x04 -> 4
-   * 0x08 -> 5, etc
-   *
-   * Ditto for 'options'
-   */
-  // if (should_set) {
-  //   uint8_t pin_source;
-
-  //   for (pin_source = 0; pin != 0; pin >>= 1, pin_source++) {
-  //     if (pin & 1) {
-  //       GPIO_PinAFConfig( port, pin_source, (uint8_t) options );
-  //     }
-  //   }
-  // }
 }
 
-void arch_usart_send(usart_t port, uint8_t data)
+void arch_usart_send(usart_t port, uint16_t data)
 {
-  (void) port;
-  (void) data;
+  while (USART_GetFlagStatus(port, USART_FLAG_TXE) == RESET)
+    ;
+
+  USART_SendData(port, data);
 }
 
 uint16_t arch_usart_recv(usart_t port)
 {
-  (void) port;
-  return 0;
+  return USART_ReceiveData(port);
 }
 void spi_config(spi_t port, int options)
 {
@@ -119,8 +102,8 @@ void arch_config_ble(void)
   // rcc_peripheral_enable_clock(&RCC_APB2ENR, RCC_APB2ENR_SYSCFGEN);
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_SYSCFG, ENABLE);
 
+  NVIC_SetPriority(EXTI3_IRQn, BLE_EXTI_ISR_PRIORITY);
   NVIC_EnableIRQ(EXTI3_IRQn);
-  NVIC_SetPriority(EXTI3_IRQn, 10);//BLE_EXTI_ISR_PRIORITY);
 
   EXTI_InitTypeDef ble_isr_init = {
     .EXTI_Line = EXTI_Line3,
@@ -265,12 +248,46 @@ void SystemCoreClockUpdate (void)
 #undef SystemCoreClock
 }
 
+static void config_pll(void)
+{
+  	RCC_DeInit();
+	RCC_HSICmd(ENABLE);
+	
+	while(RCC_GetFlagStatus(RCC_FLAG_HSIRDY) != SET)	// Wait until HSI is ready
+	{
+  }
+	 
+	FLASH->ACR |= FLASH_ACR_ACC64;		// Enable 64-bit access 
+    FLASH->ACR |= FLASH_ACR_PRFTEN;		// Enable Prefetch Buffer 
+	FLASH->ACR |= FLASH_ACR_LATENCY;	// Flash 1 wait state 
+    
+	RCC->APB1ENR |= RCC_APB1ENR_PWREN;	// Power enable
+  PWR->CR = PWR_CR_VOS_0;				// Select the Voltage Range 1 (1.8 V) 
+  while((PWR->CSR & PWR_CSR_VOSF) != RESET) // Wait until the Voltage Regulator is ready 
+  {
+  }
+	  
+	RCC_PLLConfig(RCC_PLLSource_HSI, RCC_PLLMul_3, RCC_PLLDiv_2);	// HSI = 16MHz; 16MHz * 4 / 2 = 32MHz
+	RCC_PLLCmd(ENABLE);
+	while(RCC_GetFlagStatus(RCC_FLAG_PLLRDY) != SET)	// Wait untill PLL is ready
+	{
+  }
+	RCC_PCLK1Config(RCC_HCLK_Div1);			// Configures the Low Speed APB(APB1) clock (PCLK1).
+	RCC_PCLK2Config(RCC_HCLK_Div1);			// Configures the High Speed APB(APB2) clock (PCLK2).
+
+	RCC_SYSCLKConfig(RCC_SYSCLKSource_PLLCLK);	// Configures the System Clock source to PLL
+	while ((RCC->CFGR & (uint32_t)RCC_CFGR_SWS) != (uint32_t)RCC_CFGR_SWS_PLL)	// Wait till PLL is used as system clock source 
+  {
+  }
+}
+
 void arch_config_clocks(void)
 {
   RCC_ClocksTypeDef RCC_Clocks;
 
   SystemInitAero();
-  SystemCoreClockUpdate();
+  config_pll();
+  // SystemCoreClockUpdate();
 
   /* Configure main system clock */
   // RCC_PLLConfig(RCC_PLLSource_HSI, RCC_PLLMul_3, RCC_PLLDiv_2);
@@ -296,6 +313,7 @@ void arch_config_clocks(void)
 
   RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOA, ENABLE);
   RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOB, ENABLE);
+  RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOC, ENABLE);
 
   RCC_GetClocksFreq(&RCC_Clocks);
   g.rcc_clock_freq = RCC_Clocks.SYSCLK_Frequency;
@@ -304,7 +322,6 @@ void arch_config_clocks(void)
 
 void arch_config_uart(usart_t port, int baud)
 {
-  USART_InitTypeDef USART_InitStruct;
   /* Enable clocks for USART1. */
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1, ENABLE);
   
@@ -312,6 +329,8 @@ void arch_config_uart(usart_t port, int baud)
   pin_config(UBLOX_UART_GPIO, UBLOX_UART_PINS, PINMODE_AF_7);
 
   /* Configure UART for ublox max 7 */
+
+  USART_InitTypeDef USART_InitStruct = {0};
   USART_InitStruct.USART_BaudRate = baud;
   USART_InitStruct.USART_WordLength = USART_WordLength_8b;
   USART_InitStruct.USART_StopBits = USART_StopBits_1;
@@ -320,12 +339,50 @@ void arch_config_uart(usart_t port, int baud)
   USART_InitStruct.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
   USART_Init(port, &USART_InitStruct);
 
+  /* Clear all flags */
+  // USART_ClearFlag(port, ~0); 
+  //
   /* Finally enable the USART. */
   USART_Cmd(port, ENABLE);
+
+#if CONFIG_USE_USART_ISR
+  arch_enable_usart_interrupt(port);
+#endif
+
 }
+
+void arch_disable_usart_interrupt(usart_t port)
+{
+  USART_ITConfig(port, USART_IT_RXNE, DISABLE);
+}
+
+void arch_enable_usart_interrupt(usart_t port)
+{
+  // make this configurable
+  // NVIC_SetPriority(USART1_IRQn, USART_ISR_PRIORITY);
+  // NVIC_EnableIRQ(USART1_IRQn);
+
+
+  NVIC_InitTypeDef NVIC_InitStruct;
+
+  NVIC_InitStruct.NVIC_IRQChannel = USART1_IRQn;
+  NVIC_InitStruct.NVIC_IRQChannelPreemptionPriority = USART_ISR_PRIORITY;
+  NVIC_InitStruct.NVIC_IRQChannelSubPriority = 0;
+  NVIC_InitStruct.NVIC_IRQChannelCmd = ENABLE;
+  NVIC_Init(&NVIC_InitStruct);
+
+  // TODO: move this to a utility function
+  memset(&g.usart_isr_state, '\0', sizeof(g.usart_isr_state));
+
+  USART_ITConfig(port, USART_IT_RXNE, ENABLE);
+}
+
 
 void arch_usart_set_baud(usart_t port, int baud)
 {
+  arch_config_uart(port, baud);
+  return;
+#if 0
   /* Straight from stm32l1xx_usart.c. This code is not reachable without having
    * to re-initialize the UART device
    */
@@ -374,6 +431,7 @@ void arch_usart_set_baud(usart_t port, int baud)
  
   /* Write to USART BRR */
   port->BRR = (uint16_t)tmpreg;
+#endif
 }
 
 void arch_config_nvic(void)
@@ -395,7 +453,14 @@ void arch_init_timer(pwm_timer_t timer, uint32_t channel, uint32_t prescaler, ui
   TIM_TimeBaseInitTypeDef TIM_Struct;
   TIM_OCInitTypeDef TIM_OCStruct;
 
-  RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
+  if (timer == TIM2) {
+    RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
+  } else if (timer == TIM4) {
+    RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4, ENABLE);
+  } else {
+    assert(0);
+  }
+
 
   TIM_Struct.TIM_Prescaler = prescaler;
   TIM_Struct.TIM_CounterMode = TIM_CounterMode_Up;
@@ -452,21 +517,29 @@ void arch_timer_set(pwm_timer_t timer, uint32_t channel, uint32_t value)
  */
 void arch_spi_config(spi_t port)
 {
-  SPI_InitTypeDef SPI_InitStruct;
+  SPI_InitTypeDef SPI_InitStruct = {0};
+
+  if (port == SPI1) {
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_SPI1, ENABLE);
+  } else if (port == SPI2) {
+    RCC_APB1PeriphClockCmd(RCC_APB1Periph_SPI2, ENABLE);
+  } else {
+    assert (0);
+  }
 
   SPI_InitStruct.SPI_Direction = SPI_Direction_2Lines_FullDuplex;
   SPI_InitStruct.SPI_Mode = SPI_Mode_Master;
   SPI_InitStruct.SPI_DataSize = SPI_DataSize_8b;
-  SPI_InitStruct.SPI_CPOL = SPI_CPOL_High;
-  SPI_InitStruct.SPI_CPHA = SPI_CPHA_2Edge;
+  SPI_InitStruct.SPI_CPOL = SPI_CPOL_Low;
+  SPI_InitStruct.SPI_CPHA = SPI_CPHA_1Edge;
   SPI_InitStruct.SPI_NSS = SPI_NSS_Soft;
-  SPI_InitStruct.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_2;
+  SPI_InitStruct.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_8;
   SPI_InitStruct.SPI_FirstBit = SPI_FirstBit_MSB;
   SPI_InitStruct.SPI_CRCPolynomial = 0; // TODO: What is this??
 
   SPI_Init(port, &SPI_InitStruct);
+  SPI_Cmd(port, ENABLE);
   
-  arch_spi_enable(port);
 }
 
 
@@ -487,10 +560,10 @@ uint8_t arch_spi_xfer(spi_t port, uint8_t cmd)
 {
   SPI_I2S_SendData(port, cmd);
 
-  while (!SPI_I2S_GetFlagStatus(port, SPI_I2S_FLAG_RXNE))
-    ;
-  // while (!(port->SR & SPI_I2S_FLAG_RXNE))
+  // while (!SPI_I2S_GetFlagStatus(port, SPI_I2S_FLAG_RXNE))
     // ;
+  while (!(port->SR & SPI_I2S_FLAG_RXNE))
+    ;
 
   return SPI_I2S_ReceiveData(port);
 
@@ -505,8 +578,10 @@ void arch_spi_enable(spi_t port)
 {
   if (port == SPI1) {
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_SPI1, ENABLE);
-  } else {
+  } else if (port == SPI2) {
     RCC_APB1PeriphClockCmd(RCC_APB1Periph_SPI2, ENABLE);
+  } else {
+    assert (0);
   }
 
   SPI_Cmd(port, ENABLE);

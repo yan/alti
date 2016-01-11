@@ -18,12 +18,17 @@ set(TOOCHAIN_LIB_DIR "/Users/user/tools/gcc-arm-none-eabi-4_9-2015q3/lib")
 set (CPPFLAGS "-MD")
 set (CPPFLAGS "${CPPFLAGS} -Wall -Wundef -Werror -Wshadow -Wno-unused-function")
 set (CPPFLAGS "${CPPFLAGS} -ffunction-sections -fdata-sections -fno-common")
+set (CPPFLAGS "${CPPFLAGS} -DSTM32L1")
+set (CPPFLAGS "${CPPFLAGS} -D__NVIC_PRIO_BITS=4")
 
 set (ARCHFLAGS "-mthumb -mcpu=cortex-m3")
-set (CMAKE_C_FLAGS "${ARCHFLAGS} ${CPPFLAGS} -std=c11 -Wstrict-prototypes" CACHE INTERNAL "c compiler flags")
-set (CMAKE_CXX_FLAGS "${ARCHFLAGS} ${CPPFLAGS} -std=c++11" CACHE INTERNAL "cxx compiler flags")
+set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${ARCHFLAGS} ${CPPFLAGS} -std=c11 -Wstrict-prototypes" CACHE INTERNAL "c compiler flags")
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${ARCHFLAGS} ${CPPFLAGS} -std=c++11" CACHE INTERNAL "cxx compiler flags")
 
-set (CMAKE_EXE_LINKER_FLAGS "--static -nostartfiles -Wl,--start-group -lm -lgcc -lnosys -Wl,--end-group -Wl,--gc-sections" CACHE INTERNAL "executable linker flags")
+
+
+set (CMAKE_EXE_LINKER_FLAGS "--static -nostartfiles -Wl,--start-group -lm -lgcc -lnosys -Wl,--end-group -Wl,--gc-sections"
+     CACHE INTERNAL "executable linker flags")
 set (CMAKE_MODULE_LINKER_FLAGS "-mthumb -mcpu=cortex-m3" CACHE INTERNAL "module linker flags")
 set (CMAKE_SHARED_LINKER_FLAGS "-mthumb -mcpu=cortex-m3" CACHE INTERNAL "shared linker flags")
 

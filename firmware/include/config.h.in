@@ -12,12 +12,12 @@
 #define Alti_VERSION_MAJOR @Alti_VERSION_MAJOR@
 #define Alti_VERSION_MINOR @Alti_VERSION_MINOR@
 
-#define BLE_EXTI_ISR_PRIORITY     (10 << 4)
+#define BLE_EXTI_ISR_PRIORITY     (10)
 
 /* TODO: IS this correct? this needs to take precedence over the scheduler so
  * so that buffer management can not get preempted
  */
-#define USART_ISR_PRIORITY        (11 << 3)
+#define USART_ISR_PRIORITY        (11)
 
 #define MAIN_EVENT_LOOP_TIMEOUT   (1000 / portTICK_PERIOD_MS)
 

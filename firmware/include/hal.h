@@ -47,7 +47,7 @@ void pin_toggle(gpio_t port, pin_t pin);
 void pin_config(gpio_t port, pin_t pin, int options);
 
 /** USART functions */
-void arch_usart_send(usart_t port, uint8_t data);
+void arch_usart_send(usart_t port, uint16_t data);
 
 void arch_config_uart(usart_t port, int baud);
 

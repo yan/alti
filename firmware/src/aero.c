@@ -44,7 +44,7 @@ static void config_tasks(void)
   config_main_task();
   config_alert_task();
   config_ble_task();
-  // config_sensor_task();
+  config_sensor_task();
 #if CONFIG_USE_GPS
   config_gps_task();
 #endif

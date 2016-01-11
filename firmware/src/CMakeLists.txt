@@ -43,6 +43,7 @@ set (AERO_SRC
   hooks.c)
 
 set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DSTM32L1")
+set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -D__NVIC_PRIO_BITS=4")
 
 include_directories(../include) # ${FREERTOS_HOME}/include ${FREERTOS_HOME}/portable/GCC/ARM_CM3)
 
