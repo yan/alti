@@ -3,9 +3,7 @@
  */
 
 
-#include <FreeRTOS.h>
-#include <task.h>
-
+#include <rtos.h>
 #include <util.h>
 
 

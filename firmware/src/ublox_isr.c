@@ -3,10 +3,7 @@
 #include <config.h>
 #include <ublox.h>
 
-#include <FreeRTOS.h>
-#include <semphr.h>
-#include <task.h>
-
+#include <rtos.h>
 #include <ublox_isr.h>
 #include <task_gps.h>
 

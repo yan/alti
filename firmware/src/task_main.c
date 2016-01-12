@@ -5,11 +5,7 @@
 
 #include <stdio.h>
 
-#include <FreeRTOS.h>
-#include <task.h>
-#include <queue.h>
-#include <semphr.h>
-
+#include <rtos.h>
 #include <config.h>
 #include <globals.h>
 #include <nrf8001.h>

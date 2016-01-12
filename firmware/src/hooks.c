@@ -2,8 +2,7 @@
  * Copyright 2015 Yan Ivnitskiy
  */
 
-#include <FreeRTOS.h>
-#include <task.h>
+#include <rtos.h>
 
 /**
  * These hooks get called by FreeRTOS if it detects a stack overflow or if we

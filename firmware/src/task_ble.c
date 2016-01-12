@@ -5,10 +5,7 @@
 
 #include <stdio.h>
 
-#include <FreeRTOS.h>
-#include <queue.h>
-#include <semphr.h>
-
+#include <rtos.h>
 #include <hal.h>
 #include <util.h>
 #include <events.h>

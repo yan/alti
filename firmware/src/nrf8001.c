@@ -7,10 +7,7 @@
 #include <string.h>
 #include <stdio.h>
 
-#include <FreeRTOS.h>
-#include <queue.h>
-
-
+#include <rtos.h>
 #include <util.h>
 #include <hal.h>
 #include <nrf8001.h>

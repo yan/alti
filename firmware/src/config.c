@@ -7,9 +7,7 @@
 #include <config.h>
 #include <globals.h>
 
-#include <FreeRTOS.h>
-#include <semphr.h>
-
+#include <rtos.h>
 #include <pins.h>
 #include <spi.h>
 #include <state.h>

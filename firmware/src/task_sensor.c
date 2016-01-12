@@ -3,9 +3,7 @@
  */
 
 
-#include <FreeRTOS.h>
-#include <queue.h>
-
+#include <rtos.h>
 #include <events.h>
 #include <globals.h>
 #include <task_sensor.h>

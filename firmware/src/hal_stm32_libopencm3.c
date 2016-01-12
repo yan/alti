@@ -22,11 +22,7 @@
 #include <globals.h>
 #include <pins.h>
 #include <spi.h>
-
-#include <FreeRTOS.h>
-#include <queue.h>
-#include <task.h>
-#include <semphr.h>
+#include <rtos.h>
 
 #include <string.h>
 

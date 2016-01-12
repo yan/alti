@@ -2,10 +2,7 @@
  * Copyright 2015 Yan Ivnitskiy
  */
 
-#include <FreeRTOS.h>
-#include <task.h>
-#include <queue.h>
-
+#include <rtos.h>
 #include <hal.h>
 #include <periph.h>
 #include <globals.h>

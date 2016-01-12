@@ -6,11 +6,7 @@
 
 #include <string.h>
 
-#include <FreeRTOS.h>
-#include <task.h>
-#include <queue.h>
-#include <semphr.h>
-
+#include <rtos.h>
 #include <hal.h>
 #include <events.h>
 #include <util.h>

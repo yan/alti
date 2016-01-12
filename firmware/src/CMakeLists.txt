@@ -57,7 +57,3 @@ else ()
 endif ()
 
 add_library (aero ${AERO_SRC})
-
-if (NOT test)
-  target_link_libraries (aero freertos)
-endif ()

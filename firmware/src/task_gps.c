@@ -1,8 +1,6 @@
 
 
-#include <FreeRTOS.h>
-#include <queue.h>
-
+#include <rtos.h>
 #include <config.h>
 
 #if CONFIG_USE_GPS

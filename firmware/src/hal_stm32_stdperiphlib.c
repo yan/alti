@@ -11,12 +11,9 @@
 #include <globals.h>
 #include <pins.h>
 #include <spi.h>
+#include <rtos.h>
 
 #include <string.h>
-
-#include <FreeRTOS.h>
-#include <queue.h>
-#include <task.h>
 
 #include <stm32l1xx_conf.h>
 
