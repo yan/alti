@@ -250,35 +250,46 @@ void SystemCoreClockUpdate (void)
 
 static void config_pll(void)
 {
-  	RCC_DeInit();
-	RCC_HSICmd(ENABLE);
-	
-	while(RCC_GetFlagStatus(RCC_FLAG_HSIRDY) != SET)	// Wait until HSI is ready
-	{
-  }
-	 
-	FLASH->ACR |= FLASH_ACR_ACC64;		// Enable 64-bit access 
-    FLASH->ACR |= FLASH_ACR_PRFTEN;		// Enable Prefetch Buffer 
-	FLASH->ACR |= FLASH_ACR_LATENCY;	// Flash 1 wait state 
-    
-	RCC->APB1ENR |= RCC_APB1ENR_PWREN;	// Power enable
-  PWR->CR = PWR_CR_VOS_0;				// Select the Voltage Range 1 (1.8 V) 
-  while((PWR->CSR & PWR_CSR_VOSF) != RESET) // Wait until the Voltage Regulator is ready 
-  {
-  }
-	  
-	RCC_PLLConfig(RCC_PLLSource_HSI, RCC_PLLMul_3, RCC_PLLDiv_2);	// HSI = 16MHz; 16MHz * 4 / 2 = 32MHz
-	RCC_PLLCmd(ENABLE);
-	while(RCC_GetFlagStatus(RCC_FLAG_PLLRDY) != SET)	// Wait untill PLL is ready
-	{
-  }
-	RCC_PCLK1Config(RCC_HCLK_Div1);			// Configures the Low Speed APB(APB1) clock (PCLK1).
-	RCC_PCLK2Config(RCC_HCLK_Div1);			// Configures the High Speed APB(APB2) clock (PCLK2).
 
-	RCC_SYSCLKConfig(RCC_SYSCLKSource_PLLCLK);	// Configures the System Clock source to PLL
-	while ((RCC->CFGR & (uint32_t)RCC_CFGR_SWS) != (uint32_t)RCC_CFGR_SWS_PLL)	// Wait till PLL is used as system clock source 
-  {
-  }
+  RCC_DeInit();
+
+  /*
+   * Enable HSI and wait until ready
+   */
+  RCC_HSICmd(ENABLE);
+  while(RCC_GetFlagStatus(RCC_FLAG_HSIRDY) != SET)
+    ;
+
+  FLASH->ACR |= FLASH_ACR_ACC64;        // Enable 64-bit access 
+  FLASH->ACR |= FLASH_ACR_PRFTEN;       // Enable Prefetch Buffer 
+  FLASH->ACR |= FLASH_ACR_LATENCY;      // Flash 1 wait state 
+
+  /*
+   * Enable power and select voltage range 1 (1.8v), then wait until ready
+   */
+  RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR, ENABLE); // Enable peripheral clocks
+  PWR->CR = PWR_CR_VOS_0;               // Select the Voltage Range 1 (1.8 V) 
+  while((PWR->CSR & PWR_CSR_VOSF) != RESET)
+    ;
+
+  /*
+   * Enable PLL and wait until ready.
+   * (HSI = 16MHz; 16MHz * 4 / 2 = 32MHz)
+   */
+  RCC_PLLConfig(RCC_PLLSource_HSI, RCC_PLLMul_3, RCC_PLLDiv_2);
+  RCC_PLLCmd(ENABLE);
+  while(RCC_GetFlagStatus(RCC_FLAG_PLLRDY) != SET)	// Wait untill PLL is ready
+    ;
+
+  RCC_PCLK1Config(RCC_HCLK_Div1);  // Configure the Low Speed APB(APB1) clock (PCLK1).
+  RCC_PCLK2Config(RCC_HCLK_Div1);  // Configure the High Speed APB(APB2) clock (PCLK2).
+  
+  /*
+   * Configures the System Clock source to PLL and wait until ready
+   */
+  RCC_SYSCLKConfig(RCC_SYSCLKSource_PLLCLK);
+  while ((RCC->CFGR & (uint32_t)RCC_CFGR_SWS) != (uint32_t)RCC_CFGR_SWS_PLL)
+    ;
 }
 
 void arch_config_clocks(void)
@@ -286,14 +297,12 @@ void arch_config_clocks(void)
   RCC_ClocksTypeDef RCC_Clocks;
 
   SystemInitAero();
-  config_pll();
   // SystemCoreClockUpdate();
+  config_pll();
 
   /* Configure main system clock */
   // RCC_PLLConfig(RCC_PLLSource_HSI, RCC_PLLMul_3, RCC_PLLDiv_2);
 
-  /* Enable peripheral clocks */
-  RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR, ENABLE);
 
   /* Enable LSE */
   /* Enable access to the RTC XXX: Do we need to disable it? */
@@ -382,56 +391,6 @@ void arch_usart_set_baud(usart_t port, int baud)
 {
   arch_config_uart(port, baud);
   return;
-#if 0
-  /* Straight from stm32l1xx_usart.c. This code is not reachable without having
-   * to re-initialize the UART device
-   */
-  RCC_ClocksTypeDef RCC_Clocks;
-
-  uint16_t tmpreg = port->BRR;
-  uint32_t apbclock = 0x00;
-  uint32_t integerdivider = 0x00;
-  uint32_t fractionaldivider = 0x00;
-
-  RCC_GetClocksFreq(&RCC_Clocks);
-  if (port == USART1) 
-  {
-    apbclock = RCC_Clocks.PCLK2_Frequency;
-  }
-  else
-  {
-    apbclock = RCC_Clocks.PCLK1_Frequency;
-  }
-  
-  /* Determine the integer part */
-  if ((port->CR1 & USART_CR1_OVER8) != 0)
-  {
-    /* Integer part computing in case Oversampling mode is 8 Samples */
-    integerdivider = ((25 * apbclock) / (2 * (baud)));    
-  }
-  else /* if ((port->CR1 & CR1_OVER8_Set) == 0) */
-  {
-    /* Integer part computing in case Oversampling mode is 16 Samples */
-    integerdivider = ((25 * apbclock) / (4 * (baud)));    
-  }
-  tmpreg = (integerdivider / 100) << 4;
-  
-  /* Determine the fractional part */
-  fractionaldivider = integerdivider - (100 * (tmpreg >> 4));
-  
-  /* Implement the fractional part in the register */
-  if ((port->CR1 & USART_CR1_OVER8) != 0)
-  {
-    tmpreg |= ((((fractionaldivider * 8) + 50) / 100)) & ((uint8_t)0x07);
-  }
-  else /* if ((port->CR1 & CR1_OVER8_Set) == 0) */
-  {
-    tmpreg |= ((((fractionaldivider * 16) + 50) / 100)) & ((uint8_t)0x0F);
-  }
- 
-  /* Write to USART BRR */
-  port->BRR = (uint16_t)tmpreg;
-#endif
 }
 
 void arch_config_nvic(void)

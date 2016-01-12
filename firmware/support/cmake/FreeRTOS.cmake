@@ -2,7 +2,8 @@
 
 set (FREERTOS_HOME freertos/FreeRTOS/Source)
 
-include_directories(${FREERTOS_HOME}/include ${FREERTOS_HOME}/portable/GCC/ARM_CM3)
+include_directories(${FREERTOS_HOME}/include)
+include_directories(${FREERTOS_HOME}/portable/GCC/ARM_CM3)
 
 set (FREERTOS_SRC
   "${FREERTOS_HOME}/croutine.c"

@@ -14,6 +14,7 @@
 #if 0
 #define assert(x) {if ((x) == 0) __asm("BKPT 0");}
 #else
+#undef assert
 #define assert(x) {if ((x) == 0) for(;;);}
 #endif
 

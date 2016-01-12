@@ -8,7 +8,7 @@
 #  include <stm32l1_opencm3_pins.h>
 #elif defined(STM32L1) && defined(STM32_STDPERIPH_LIB)
 #  include <stm32l1_stdperiphlib_pins.h>
-#elif TESTING
+#elif TESTING == 1
 #  include <empty_pins.h>
 #else
 #  error "Unsupprted architecture"

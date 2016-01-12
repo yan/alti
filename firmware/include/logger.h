@@ -8,6 +8,9 @@
 #include <flash.h>
 // #include <logger.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * @brief The header for an 'event'. Likely a jump.
@@ -57,6 +60,9 @@ void logger_read_sample(struct event_header_s *event, uint32_t n, struct sensor_
 
 void logger_write_sample(struct event_header_s *event, struct sensor_packet_s *packet);
 
+#ifdef __cplusplus
+}
+#endif
 
 
 #endif // __LOGGER_H

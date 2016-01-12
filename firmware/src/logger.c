@@ -7,8 +7,6 @@
  *  4) This is in serious need of unit tests
  *
  */
-#include <FreeRTOS.h>
-#include <semphr.h>
 
 #include <string.h>
 #include <unistd.h>
@@ -20,6 +18,10 @@
 #include <flash.h>
 #include <globals.h>
 #include <sample.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /** @brief The address of the storage header */
 const uint32_t HEADER_ADDR = 0x00;
@@ -37,6 +39,9 @@ const sentinel_t SENTINEL_VALUE = 0xAABBCCDD;
 #  define TAKE_SEMPHR
 #  define GIVE_SEMPHR
 #else
+#  include <FreeRTOS.h>
+#  include <semphr.h>
+
 #  define TAKE_SEMPHR         xSemaphoreTake(g.flash_buffer.lock, portMAX_DELAY)
 #  define GIVE_SEMPHR       xSemaphoreGive(g.flash_buffer.lock)
 #endif // TESTING
@@ -89,8 +94,8 @@ size_t flash_cached_write(uint32_t addr, uint8_t *data, size_t len)
     assert(STORAGE_PAGE_SIZE >= page_offset);
 
     size_t n = MIN(page_available, (uint32_t) remaining);
-    dbg_print("n = %zu, remaining = %zu, page_addr = %lx, page_available = %lx,"
-                  " len = %zu, addr = %lx\n", n, remaining, page_addr,
+    dbg_print("n = %zu, remaining = %zu, page_addr = %x, page_available = %x,"
+                  " len = %zu, addr = %x\n", n, remaining, page_addr,
                   page_available, len, addr);
 
     /* We don't have the data in cache, bring it in */
@@ -283,11 +288,13 @@ static size_t logger_read(uint32_t addr, uint8_t *dst, size_t len)
  */
 void logger_format_storage(void)
 {
-  struct {
+  struct _first_page_s {
     struct storage_header_s header;
     sentinel_t sentinel;
     struct event_header_s first_event;
-  } __attribute__((packed)) *first_page = (void*) g.flash_buffer.data;
+  } __attribute__((packed));
+
+  struct _first_page_s *first_page = (struct _first_page_s *) g.flash_buffer.data;
 
   TAKE_SEMPHR;
   {
@@ -332,7 +339,7 @@ void logger_start_event(struct event_header_s *event)
 
   TAKE_SEMPHR;
   {
-    struct storage_header_s *first_page = (void *) g.flash_buffer.data;
+    struct storage_header_s *first_page = (struct storage_header_s *) g.flash_buffer.data;
 
     flash_cache_flush();
 
@@ -470,3 +477,7 @@ void logger_read_sample(struct event_header_s *event, uint32_t n, struct sensor_
 
   GIVE_SEMPHR;
 }
+
+#ifdef __cplusplus
+}
+#endif
