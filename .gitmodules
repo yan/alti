@@ -1,15 +1,20 @@
 [submodule "libopencm3"]
 	path = firmware/libopencm3
 	url = https://github.com/libopencm3/libopencm3.git
+	ignore = dirty
 [submodule "freertos"]
 	path = firmware/freertos
 	url = https://github.com/cjlano/freertos.git
+	ignore = dirty
 [submodule "client/ios/Alti/BlueCap"]
 	path = client/ios/Alti/BlueCap
 	url = https://github.com/troystribling/BlueCap.git
+	ignore = dirty
 [submodule "client/ios/Alti/Charts"]
 	path = client/ios/Alti/Charts
 	url = https://github.com/danielgindi/ios-charts.git
+	ignore = dirty
 [submodule "firmware/stm32l1_stdperiphlib"]
 	path = firmware/stm32l1_stdperiphlib
 	url = git@bitbucket.org:yan_i/stm32l1_stdperiphlib.git
+	ignore = dirty
