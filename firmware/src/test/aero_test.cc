@@ -1,18 +1,14 @@
-#if !TESTING
-#  error "This file should only be built in test mode"
-#endif
-
 #include <string.h>
 #include <aero.h>
 #include <logger.h>
 #include <flash.h>
 
+#include <gtest/gtest.h>
+
 int
 aero_main(int argc, char *argv[])
 {
-
-  (void) argc;
-  (void) argv;
+  ::testing::InitGoogleTest(&argc, argv);
 
   struct event_header_s event;
   struct sensor_packet_s packet;
@@ -36,5 +32,5 @@ aero_main(int argc, char *argv[])
   printf("ending event\n");
   logger_end_event(&event);
 
-  return 0;
+  return RUN_ALL_TESTS();
 }

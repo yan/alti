@@ -21,6 +21,9 @@
 // #define WRITE_BUFFER_LEN        512
 #define WRITE_BUFFER_LEN         STORAGE_PAGE_SIZE
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * @brief A simple block-length buffer protected by a lock. Also includes a 
@@ -97,5 +100,9 @@ struct globals {
 };
 
 extern struct globals g;
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

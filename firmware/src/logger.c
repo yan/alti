@@ -18,6 +18,7 @@
 #include <flash.h>
 #include <globals.h>
 #include <sample.h>
+#include <rtos.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -39,11 +40,8 @@ const sentinel_t SENTINEL_VALUE = 0xAABBCCDD;
 #  define TAKE_SEMPHR
 #  define GIVE_SEMPHR
 #else
-#  include <FreeRTOS.h>
-#  include <semphr.h>
-
-#  define TAKE_SEMPHR         xSemaphoreTake(g.flash_buffer.lock, portMAX_DELAY)
-#  define GIVE_SEMPHR       xSemaphoreGive(g.flash_buffer.lock)
+#  define TAKE_SEMPHR    xSemaphoreTake(g.flash_buffer.lock, portMAX_DELAY)
+#  define GIVE_SEMPHR    xSemaphoreGive(g.flash_buffer.lock)
 #endif // TESTING
 
 /** ========================================================================= */
@@ -54,6 +52,7 @@ enum { OP_READ, OP_WRITE };
 void flash_cache_flush(void);
 size_t flash_cached_read(uint32_t addr, uint8_t *data, size_t len);
 size_t flash_cached_write(uint32_t addr, uint8_t *data, size_t len);
+
 size_t flash_cached_read(uint32_t addr, uint8_t *data, size_t len)
 {
   size_t transferred = 0;
@@ -477,6 +476,7 @@ void logger_read_sample(struct event_header_s *event, uint32_t n, struct sensor_
 
   GIVE_SEMPHR;
 }
+
 
 #ifdef __cplusplus
 }

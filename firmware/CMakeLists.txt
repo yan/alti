@@ -6,9 +6,10 @@ configure_file (
   "${PROJECT_SOURCE_DIR}/include/config.h.in" "${PROJECT_BINARY_DIR}/include/config.h"
 )
 
-option (test "Build a testing image" OFF)
+option (test "Build a testing image" ON)
 option (stlib "Use the ST stm32 peripheral library" ON)
 
+set (BINARY_NAME ${PROJECT_NAME})
 
 if (NOT test)
   set (STM32_DEV_TYPE STM32L1XX_HD)
@@ -19,9 +20,10 @@ if (NOT test)
   set (CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/support/cmake")
   set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -L${PROJECT_SOURCE_DIR}/support")
   set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -T${PROJECT_SOURCE_DIR}/support/stm32l15xxb.ld")
+  set (BINARY_NAME "${BINARY_NAME}.elf")
 endif()
 
-add_executable (${PROJECT_NAME}.elf ${AERO_SRC} src/main.c)
+add_executable (${BINARY_NAME} ${AERO_SRC} src/main.c)
 
 include_directories("${PROJECT_BINARY_DIR}/include")
 include_directories("${PROJECT_SOURCE_DIR}/include")
@@ -35,6 +37,7 @@ if (test)
   add_definitions("-DTESTING=1")
 
   enable_testing()
+  add_test(NAME alti COMMAND ${BINARY_NAME})
 
   include_directories(${GTEST_INCLUDE_DIR})
   set (LIBRARIES ${LIBRARIES} ${GTEST_LIBRARY})
@@ -61,8 +64,8 @@ else()
 
   add_custom_command(
     OUTPUT size.out
-    COMMAND arm-none-eabi-size ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.elf
-    DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.elf
+    COMMAND arm-none-eabi-size ${CMAKE_CURRENT_BINARY_DIR}/${BINARY_NAME}
+    DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/${BINARY_NAME}
     COMMENT "Produced binary size"
     VERBATIM
   )
@@ -75,5 +78,9 @@ endif ()
 
 add_subdirectory("${PROJECT_SOURCE_DIR}/src")
 
-target_link_libraries (${PROJECT_NAME}.elf -Wl,--start-group ${LIBRARIES} -Wl,--end-group)
+if (test)
+  target_link_libraries (${BINARY_NAME}  ${LIBRARIES} )
+else ()
+  target_link_libraries (${BINARY_NAME} -Wl,--start-group ${LIBRARIES} -Wl,--end-group)
+endif ()
 

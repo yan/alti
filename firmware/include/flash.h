@@ -65,6 +65,10 @@
 #define ADESTO_AUX_STATUS_REGISTER_READ             0xD7
 #define ADESTO_AUX_MFGR_DEVICE_READ                 0x9F
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 
 #if !TESTING
 void config_flash(void);
@@ -73,5 +77,9 @@ int test_flash(void);
 void flash_read(uint32_t addr, uint8_t *data, size_t size);
 void flash_write(uint32_t addr, uint8_t *data, size_t size);
 
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* __ADESTO_FLASH_H */

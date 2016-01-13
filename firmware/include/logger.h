@@ -6,7 +6,6 @@
 
 #include <sample.h>
 #include <flash.h>
-// #include <logger.h>
 
 #ifdef __cplusplus
 extern "C" {

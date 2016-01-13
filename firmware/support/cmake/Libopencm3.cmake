@@ -10,7 +10,7 @@ ExternalProject_Add(libopencm3
   BUILD_IN_SOURCE 1
 )
 
-add_dependencies(alti.elf libopencm3)
+add_dependencies(${BINARY_NAME} libopencm3)
 
 include_directories(${CMAKE_SOURCE_DIR}/libopencm3/include)
 

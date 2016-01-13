@@ -1,6 +1,5 @@
 include_directories(../include)
 
-
 if (NOT test)
   set (AERO_SRC
     util.c
@@ -30,11 +29,9 @@ if (NOT test)
   set (AERO_SRC
     ${AERO_SRC}
     aero.c
-    # aero_test.c
     globals.c
     hal_stm32_libopencm3.c
     hal_stm32_stdperiphlib.c
-    # hal_stm32_test.c
     main.c
     periph.c
     spi.c
@@ -50,10 +47,17 @@ if (NOT test)
 else ()
   file (GLOB TEST_SRC test/*)
   set (AERO_SRC
-    aero_test.c
     ${TEST_SRC}
+    globals.c
+    main.c
+    logger.c
     )
   set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DTESTING=1")
+
 endif ()
 
 add_library (aero ${AERO_SRC})
+
+if (test)
+  add_dependencies(aero gtest)
+endif ()
