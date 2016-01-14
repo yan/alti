@@ -11,14 +11,14 @@
 #include <string.h>
 #include <unistd.h>
 
-#include <util.h>
-#include <config.h>
-#include <logger.h>
-#include <sample.h>
-#include <flash.h>
-#include <globals.h>
-#include <sample.h>
 #include <rtos.h>
+#include <logger.h>
+// #include <util.h>
+// #include <config.h>
+// #include <sample.h>
+#include <flash.h>
+// #include <globals.h>
+// #include <sample.h>
 
 #ifdef __cplusplus
 extern "C" {

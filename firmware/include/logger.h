@@ -1,11 +1,11 @@
 /**
  * Copyright 2015 Yan Ivnitskiy
  */
-#ifndef __LOGGER_H
-#define __LOGGER_H
+
+#pragma once
 
 #include <sample.h>
-#include <flash.h>
+// #include <flash.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -63,5 +63,3 @@ void logger_write_sample(struct event_header_s *event, struct sensor_packet_s *p
 }
 #endif
 
-
-#endif // __LOGGER_H

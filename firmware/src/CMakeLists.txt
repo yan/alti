@@ -1,13 +1,19 @@
 include_directories(../include)
 
+set (AERO_SRC
+    globals.c
+    logger.c
+)
+
 if (NOT test)
   set (AERO_SRC
+    ${AERO_SRC}
     util.c
     config.c
     filter.c
     hal.c
     init.c
-    logger.c)
+  )
   
   set (AERO_SRC
     ${AERO_SRC}
@@ -29,10 +35,8 @@ if (NOT test)
   set (AERO_SRC
     ${AERO_SRC}
     aero.c
-    globals.c
     hal_stm32_libopencm3.c
     hal_stm32_stdperiphlib.c
-    main.c
     periph.c
     spi.c
     #startup_stm32l1xx_hd.s
@@ -47,11 +51,9 @@ if (NOT test)
 else ()
   file (GLOB TEST_SRC test/*)
   set (AERO_SRC
+    ${AERO_SRC}
     ${TEST_SRC}
-    globals.c
-    main.c
-    logger.c
-    )
+  )
   set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DTESTING=1")
 
 endif ()

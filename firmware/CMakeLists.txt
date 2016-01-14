@@ -6,7 +6,7 @@ configure_file (
   "${PROJECT_SOURCE_DIR}/include/config.h.in" "${PROJECT_BINARY_DIR}/include/config.h"
 )
 
-option (test "Build a testing image" ON)
+option (test "Build a testing image" OFF)
 option (stlib "Use the ST stm32 peripheral library" ON)
 
 set (BINARY_NAME ${PROJECT_NAME})
@@ -41,6 +41,10 @@ if (test)
 
   include_directories(${GTEST_INCLUDE_DIR})
   set (LIBRARIES ${LIBRARIES} ${GTEST_LIBRARY})
+
+  if (CMAKE_CROSSCOMPILING)
+    message (SEND_ERROR "You are cross compiling in test mode; did you forget a toolchain file?")
+  endif ()
 else()
   #set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DTESTING=0")
   add_definitions("-DTESTING=0")
@@ -79,8 +83,8 @@ endif ()
 add_subdirectory("${PROJECT_SOURCE_DIR}/src")
 
 if (test)
-  target_link_libraries (${BINARY_NAME}  ${LIBRARIES} )
+  target_link_libraries (${BINARY_NAME} -Wl,-all_load ${LIBRARIES} )
 else ()
-  target_link_libraries (${BINARY_NAME} -Wl,--start-group ${LIBRARIES} -Wl,--end-group)
+  target_link_libraries (${BINARY_NAME} -Wl,-\( ${LIBRARIES} -Wl,-\))
 endif ()
 

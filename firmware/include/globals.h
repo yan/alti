@@ -99,6 +99,7 @@ struct globals {
   uint8_t pipes_open[8], pipes_closed[8];
 };
 
+
 extern struct globals g;
 
 #ifdef __cplusplus
