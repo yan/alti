@@ -27,13 +27,15 @@ add_executable (${BINARY_NAME} ${AERO_SRC} src/main.c)
 
 include_directories("${PROJECT_BINARY_DIR}/include")
 include_directories("${PROJECT_SOURCE_DIR}/include")
+set_property(TARGET ${BINARY_NAME} PROPERTY CXX_STANDARD 11)
 
 set (LIBRARIES aero)
 
 if (test)
+  set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-c++11-extensions")
+
   include (support/cmake/gtest.cmake)
 
-  #set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DTESTING=1")
   add_definitions("-DTESTING=1")
 
   enable_testing()

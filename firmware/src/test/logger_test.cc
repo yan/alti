@@ -62,12 +62,20 @@ class LoggerTest : public ::testing::Test {
     }
     virtual void TearDown() {
     }
+    storage_header_s *getHeader() const {
+      return (storage_header_s *) __testing_storage;
+    }
+    template <typename T>
+    T* getAt(uint32_t addr) const {
+      return reinterpret_cast<T*>(&__testing_storage[addr]);
+    }
+
 
 };
 
 TEST_F(LoggerTest, FormatsHeader) {
 
-  struct storage_header_s *header = (struct storage_header_s *) __testing_storage;
+  auto header = getHeader();
 
   bool valid = 
     header->events == 0 &&
@@ -78,14 +86,16 @@ TEST_F(LoggerTest, FormatsHeader) {
 }
 
 TEST_F(LoggerTest, CreatesFirstSentinel) {
-  struct storage_header_s *header = (struct storage_header_s *) __testing_storage;
+  auto header = getHeader();
+
   sentinel_t sentinel = *(sentinel_t*)(header + 1);
+
   ASSERT_EQ(sentinel, SENTINEL_VALUE);
 }
 
 TEST_F(LoggerTest, CreatesEmptyEvent) {
-  struct storage_header_s *header = (struct storage_header_s *) __testing_storage;
-  struct event_header_s *first_event = (struct event_header_s *) &__testing_storage[header->last_event];
+  auto header = getHeader();
+  auto first_event = getAt<event_header_s>(header->last_event);
 
   bool firstEventIsNull = 
     first_event->event_id == 0 &&
