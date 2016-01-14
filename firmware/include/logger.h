@@ -48,7 +48,6 @@ struct event_header_s {
 #define TOTAL_EVENT_SIZE(ev)  \
   (((ev).samples * (ev).sample_size) + EVENT_HEADER_SIZE)
 
-
 void logger_format_storage(void);
 
 void logger_start_event(struct event_header_s *event);
@@ -59,6 +58,30 @@ void logger_read_sample(struct event_header_s *event, uint32_t n, struct sensor_
 
 void logger_write_sample(struct event_header_s *event, struct sensor_packet_s *packet);
 
+
+
+/* private declarations below this line ======== */
+
+/** @brief Type of the sentinel value. (only here for use in testing) */
+typedef uint32_t sentinel_t;
+
+/** @brief Value to prepend events with to detect wrap-around */
+const sentinel_t SENTINEL_VALUE = 0xAABBCCDD;
+
+/**
+ * @brief The first page of storage has some basic info.
+ *
+ */
+struct storage_header_s {
+  /** @brief Number of events stored in storage */
+  uint32_t events;
+
+  /** @brief The offset of the first free byte */
+  uint32_t free_offset;
+
+  /** @brief */
+  uint32_t last_event;
+};
 #ifdef __cplusplus
 }
 #endif

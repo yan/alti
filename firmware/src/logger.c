@@ -27,14 +27,8 @@ extern "C" {
 /** @brief The address of the storage header */
 const uint32_t HEADER_ADDR = 0x00;
 
-/** @brief Type of the sentinel value. */
-typedef uint32_t sentinel_t;
-
 /** @brief The address of the first data page (skip the first two pages) */
 const uint32_t DATA_START_ADDR = 2 * STORAGE_PAGE_SIZE;
-
-/** @brief Value to prepend events with to detect wrap-around */
-const sentinel_t SENTINEL_VALUE = 0xAABBCCDD;
 
 #if TESTING
 #  define TAKE_SEMPHR
@@ -177,28 +171,12 @@ void flash_cache_flush(void)
 /** ========================================================================= */
 
 
-/**
- * @brief The first page of storage has some basic info.
- *
- */
-struct storage_header_s {
-  /** @brief Number of events stored in storage */
-  uint32_t events;
-
-  /** @brief The offset of the first free byte */
-  uint32_t free_offset;
-
-  /** @brief */
-  uint32_t last_event;
-};
 
 /**
  * @brief Flush the current flash buffer to |*addr| in flash.
  */
 static void logger_flush_buffer(uint32_t addr)
 {
-  dbg_print("Writing to flash\n");
-
 #if ENABLE_FLASH_DEBUG
   assert(addr >= g.flash_buffer.address);
   assert(addr <  g.flash_buffer.address + STORAGE_PAGE_SIZE);
@@ -302,7 +280,7 @@ void logger_format_storage(void)
 
     /* Set all header vals here */
     first_page->header.free_offset = STORAGE_PAGE_SIZE;
-    first_page->header.last_event = sizeof(struct storage_header_s);
+    first_page->header.last_event = offsetof(struct _first_page_s, first_event);
 
     first_page->sentinel = SENTINEL_VALUE;
 

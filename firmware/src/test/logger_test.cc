@@ -33,13 +33,13 @@ void flash_read(uint32_t addr, uint8_t *data, size_t size)
 {
   assert(addr + size < STORAGE_SIZE);
   memcpy(data, &__testing_storage[addr], size);
-  hexDump(NULL, data, size);
+  // hexDump(NULL, data, size);
 }
 
 void flash_write(uint32_t addr, uint8_t *data, size_t size)
 {
   assert(addr + size < STORAGE_SIZE);
-  hexDump(NULL, data, size);
+  // hexDump(NULL, data, size);
   memcpy(&__testing_storage[addr], data, size);
 }
 
@@ -58,16 +58,44 @@ class LoggerTest : public ::testing::Test {
     virtual ~LoggerTest() {
     }
     virtual void SetUp() {
+      logger_format_storage();
     }
     virtual void TearDown() {
     }
+
 };
 
-TEST_F(LoggerTest, TestingWhat) {
-  EXPECT_EQ(0, 0);
+TEST_F(LoggerTest, FormatsHeader) {
+
+  struct storage_header_s *header = (struct storage_header_s *) __testing_storage;
+
+  bool valid = 
+    header->events == 0 &&
+    header->free_offset == STORAGE_PAGE_SIZE &&
+    header->last_event == sizeof(struct storage_header_s) + sizeof(sentinel_t);
+
+  ASSERT_EQ(valid,true);
 }
 
+TEST_F(LoggerTest, CreatesFirstSentinel) {
+  struct storage_header_s *header = (struct storage_header_s *) __testing_storage;
+  sentinel_t sentinel = *(sentinel_t*)(header + 1);
+  ASSERT_EQ(sentinel, SENTINEL_VALUE);
+}
 
+TEST_F(LoggerTest, CreatesEmptyEvent) {
+  struct storage_header_s *header = (struct storage_header_s *) __testing_storage;
+  struct event_header_s *first_event = (struct event_header_s *) &__testing_storage[header->last_event];
+
+  bool firstEventIsNull = 
+    first_event->event_id == 0 &&
+    first_event->samples == 0 &&
+    first_event->sample_size == 0 &&
+    first_event->features == 0 &&
+    first_event->rtc_start == 0;
+
+  ASSERT_EQ(firstEventIsNull, true);
+}
 
 }
 

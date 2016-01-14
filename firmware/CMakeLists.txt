@@ -6,7 +6,7 @@ configure_file (
   "${PROJECT_SOURCE_DIR}/include/config.h.in" "${PROJECT_BINARY_DIR}/include/config.h"
 )
 
-option (test "Build a testing image" OFF)
+option (test "Build a testing image" ON)
 option (stlib "Use the ST stm32 peripheral library" ON)
 
 set (BINARY_NAME ${PROJECT_NAME})

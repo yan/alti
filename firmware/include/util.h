@@ -12,10 +12,14 @@
 #endif
 
 #if 0
-#define assert(x) {if ((x) == 0) __asm("BKPT 0");}
+// #define assert(x) {if ((x) == 0) __asm("BKPT 0");}
 #else
 #undef assert
-#define assert(x) {if ((x) == 0) for(;;);}
+#define assert(x) do{ \
+  if ((x) == 0) { \
+    for(;;);   \
+  } \
+  }while (0)
 #endif
 
 void delay_ms(uint32_t ms);

@@ -10,6 +10,7 @@ aero_main(int argc, char *argv[])
 {
   ::testing::InitGoogleTest(&argc, argv);
 
+#if 0
   struct event_header_s event;
   struct sensor_packet_s packet;
   int i = 0;
@@ -32,5 +33,6 @@ aero_main(int argc, char *argv[])
   printf("ending event\n");
   logger_end_event(&event);
 
+#endif
   return RUN_ALL_TESTS();
 }

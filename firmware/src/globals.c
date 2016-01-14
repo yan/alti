@@ -7,7 +7,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-struct globals g;
+struct globals g = {0};
 
 #ifdef __cplusplus
 }
