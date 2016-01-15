@@ -50,14 +50,32 @@ struct event_header_s {
 #define TOTAL_EVENT_SIZE(ev)  \
   (((ev).samples * (ev).sample_size) + EVENT_HEADER_SIZE)
 
+/**
+ * @brief Lazily reformat storage; overwrites header.
+ */
 void logger_format_storage(void);
 
+/**
+ * @brief Start a new event, initializing |event| in the process.
+ * 
+ * @param event An allocated event instance.
+ */
 void logger_start_event(struct event_header_s *event);
 
+/**
+ * @brief Commit |event| to storage.
+ */
 void logger_end_event(struct event_header_s *event);
 
+/**
+ * @brief Read the |n|th (0-indexed) sample fro |event| into the packet pointed
+ * to by |dest|
+ */
 int  logger_read_sample(struct event_header_s *event, uint32_t n, struct sensor_packet_s *dest);
 
+/**
+ * @brief Add a sample to an in-progress event.
+ */
 void logger_write_sample(struct event_header_s *event, struct sensor_packet_s *packet);
 
 
@@ -68,7 +86,7 @@ void logger_write_sample(struct event_header_s *event, struct sensor_packet_s *p
 typedef uint32_t sentinel_t;
 
 /** @brief Value to prepend events with to detect wrap-around */
-const sentinel_t SENTINEL_VALUE = 0xAABBCCDD;
+#define SENTINEL_VALUE       ((sentinel_t) 0xAABBCCDD)
 
 /**
  * @brief The first page of storage has some basic info.
