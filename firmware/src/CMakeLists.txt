@@ -3,6 +3,7 @@ include_directories(../include)
 set (AERO_SRC
     globals.c
     logger.c
+    buffered_io.c
 )
 
 if (NOT test)

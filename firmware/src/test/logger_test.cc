@@ -107,5 +107,23 @@ TEST_F(LoggerTest, CreatesEmptyEvent) {
   ASSERT_EQ(firstEventIsNull, true);
 }
 
+// Make sure that the first event starts at the correct address
+TEST_F(LoggerTest, StartsAtRightAddress) {
+  struct storage_header_s *header = getHeader();
+  struct event_header_s event;
+
+  logger_start_event(&event);
+
+  ASSERT_EQ(event.__start_address, header->free_offset + EVENT_HEADER_SIZE);
+}
+
+TEST_F(LoggerTest, MarksANewEventStarted) {
+  struct storage_header_s *header = getHeader();
+  struct event_header_s event;
+
+  logger_start_event(&event);
+
+  ASSERT_EQ(event.__started, 1);
+}
 }
 
