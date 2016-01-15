@@ -1,6 +1,7 @@
 
 #include <gtest/gtest.h>
-#include <flash.h>
+#include <logger.h>
+#include "flash_mock.h"
 
 void hexDump(char *desc, void *addr, int len);
 void hexDump(char *desc, void *addr, int len) {
@@ -26,28 +27,7 @@ void hexDump(char *desc, void *addr, int len) {
     printf ("  %s\n", buff);
 }
 
-uint8_t __testing_storage[STORAGE_SIZE] = {0};
-
-extern "C" {
-void flash_read(uint32_t addr, uint8_t *data, size_t size)
-{
-  assert(addr + size < STORAGE_SIZE);
-  memcpy(data, &__testing_storage[addr], size);
-  // hexDump(NULL, data, size);
-}
-
-void flash_write(uint32_t addr, uint8_t *data, size_t size)
-{
-  assert(addr + size < STORAGE_SIZE);
-  // hexDump(NULL, data, size);
-  memcpy(&__testing_storage[addr], data, size);
-}
-
-}
-
-
 //#include "../logger.c"
-#include <logger.h>
 
 namespace {
 
@@ -125,5 +105,88 @@ TEST_F(LoggerTest, MarksANewEventStarted) {
 
   ASSERT_EQ(event.__started, 1);
 }
+
+TEST_F(LoggerTest, UpdatesSampleCount) {
+  struct event_header_s event;
+  struct sensor_packet_s packet;
+
+  const uint32_t kNumberWrites = 3;
+
+  logger_start_event(&event);
+
+  uint32_t old_sample_size = event.samples;
+  for (uint32_t i = 0; i < kNumberWrites; i++) {
+    logger_write_sample(&event, &packet);
+  }
+
+  ASSERT_EQ(event.samples, old_sample_size + kNumberWrites);
+}
+
+TEST_F(LoggerTest, MaintainsEventCount) {
+  struct event_header_s event;
+  struct sensor_packet_s packet;
+  struct storage_header_s *header = getHeader();
+
+  logger_start_event(&event);
+  logger_write_sample(&event, &packet);
+  logger_end_event(&event);
+  
+  ASSERT_EQ(header->events, 1);
+}
+
+TEST_F(LoggerTest, UpdatesFreeOffset) {
+  struct event_header_s event;
+  struct sensor_packet_s packet;
+  struct storage_header_s *header = getHeader();
+
+  const auto kSamplesToWrite = 400;
+
+  uint32_t free_offset_pre = header->free_offset;
+
+  logger_start_event(&event);
+  for (int i = 0; i < kSamplesToWrite; i++) {
+    logger_write_sample(&event, &packet);
+  }
+  logger_end_event(&event);
+  
+  uint32_t free_offset_post = header->free_offset;
+  
+  ASSERT_EQ(free_offset_post - free_offset_pre,
+      EVENT_HEADER_SIZE + sizeof(struct sensor_packet_s) * kSamplesToWrite);
+}
+
+TEST_F(LoggerTest, FailsToReadNonexistentSample) {
+  struct event_header_s event;
+  struct sensor_packet_s packet;
+  int returned;
+
+  logger_start_event(&event);
+  logger_write_sample(&event, &packet);
+  logger_end_event(&event);
+
+  returned = logger_read_sample(&event, 123, &packet);
+
+  ASSERT_EQ(returned, 0);
+}
+
+TEST_F(LoggerTest, WriteSampleReadSample) {
+  struct event_header_s event;
+  struct sensor_packet_s packet;
+  const auto kTickVal = 0x1234;
+
+  packet.ticks = kTickVal;
+
+  logger_start_event(&event);
+  logger_write_sample(&event, &packet);
+  logger_end_event(&event);
+
+  packet.ticks = 0;
+
+  logger_read_sample(&event, 0, &packet);
+
+  ASSERT_EQ(packet.ticks, kTickVal);
+}
+
+
 }
 

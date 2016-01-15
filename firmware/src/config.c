@@ -20,6 +20,9 @@ void config_globals(void)
   g.flash_buffer.lock = (SemaphoreHandle_t) xSemaphoreCreateMutex();
   g.flash_buffer.write_offset = 0;
 
+  /* Initialize the address to all 1's to ensure it's an invalid address */
+  g.flash_buffer.address = ~0;
+
 #if CONFIG_USE_USART_ISR
   g.usart_mutex_g = xSemaphoreCreateBinary();
   assert(g.usart_mutex_g != NULL);

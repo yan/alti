@@ -16,7 +16,7 @@ extern "C" {
  */
 struct event_header_s {
   /** @brief The unique id of this event */
-  uint32_t event_id;
+  uint32_t event_id : sizeof(uint32_t) * 8 - 1;
   /** @brief Number of samples associated with this event */
   uint32_t samples;
   /** @brief Size of each sample */
@@ -24,6 +24,8 @@ struct event_header_s {
   /** @brief Bitmask representing what features were enabled during logging.
    * Set to CONFIG_FEATURES */
   uint16_t features;
+  /** @brief Whether the event is in progress */
+  uint8_t in_progress;
   /** @brief Milliseconds since Jan 1, 1970 to the start of this event */
   uint64_t rtc_start;
 
@@ -54,7 +56,7 @@ void logger_start_event(struct event_header_s *event);
 
 void logger_end_event(struct event_header_s *event);
 
-void logger_read_sample(struct event_header_s *event, uint32_t n, struct sensor_packet_s *dest);
+int  logger_read_sample(struct event_header_s *event, uint32_t n, struct sensor_packet_s *dest);
 
 void logger_write_sample(struct event_header_s *event, struct sensor_packet_s *packet);
 
