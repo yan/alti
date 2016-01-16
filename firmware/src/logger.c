@@ -38,13 +38,9 @@ const uint32_t DATA_START_ADDR = 2 * STORAGE_PAGE_SIZE;
 #  define GIVE_SEMPHR    xSemaphoreGive(g.flash_buffer.lock)
 #endif // TESTING
 
-/** ========================================================================= */
-/* These functions should be moved elsewhere once working */
 
 /**
- * @brief ...
- *
- *
+ * @brief Lazily reformat storage; overwrites header.
  */
 void logger_format_storage(void)
 {
@@ -143,9 +139,7 @@ void logger_start_event(struct event_header_s *event)
 }
 
 /**
- *
- *
- *
+ * @brief Commit |event| to storage.
  */
 void logger_end_event(struct event_header_s *event)
 {
@@ -187,13 +181,13 @@ void logger_end_event(struct event_header_s *event)
 
 
 /**
- *
+ * @brief Add a sample to an in-progress event.
  */
 void logger_write_sample(struct event_header_s *event, struct sensor_packet_s *packet)
 {
-
-  assert(event != NULL);
   assert(packet != NULL);
+  assert(event != NULL);
+  assert(event->in_progress != 0);
 
   /* TODO: Revisit adding a real timeout here */
   TAKE_SEMPHR;
@@ -213,6 +207,10 @@ void logger_write_sample(struct event_header_s *event, struct sensor_packet_s *p
   GIVE_SEMPHR;
 }
 
+/**
+ * @brief Read the |n|th (0-indexed) sample fro |event| into the packet pointed
+ * to by |dest|
+ */
 int logger_read_sample(struct event_header_s *event, uint32_t n, struct sensor_packet_s *dest)
 {
   assert(event != NULL);
