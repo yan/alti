@@ -4,70 +4,82 @@
 #include <buffered_io.h>
 #include <util.h>
 #include <globals.h>
+#include <logger.h>
 
-#ifndef WRITE_OP
-#  define WRITE_OP flash_write
-#endif
 
-#ifndef READ_OP
-#  define READ_OP flash_read
-#endif
-
+uint32_t buffered_wrap_addr(uint32_t x, uint32_t margin) {
+  if (x > STORAGE_SIZE) {
+    return x % STORAGE_SIZE + margin;
+  } else {
+    return x;
+  }
+}
 size_t buffered_read(uint32_t addr, uint8_t *data, size_t len)
 {
-  return buffered_read_wrapped(addr, data, len, STORAGE_PAGE_SIZE, 1);
+  return buffered_read_wrapped(addr, data, len, 0);
 }
 
 size_t buffered_read_wrapped(uint32_t addr, uint8_t *data, size_t len, 
-    uint32_t start_margin, int should_wrap)
+    uint32_t start_margin)
 {
-  size_t transferred = 0;
-  uint32_t page_addr = addr & ~STORAGE_PAGE_MASK;
-  uint32_t page_offset = addr & STORAGE_PAGE_MASK;
+  size_t remaining = len;
 
   /* Make sure our buffer isn't dirty */
   buffered_flush();
   
-  while (transferred < len) {
-
-    buffered_get_page(page_addr);
-
-    size_t remaining = MIN(STORAGE_PAGE_SIZE - page_offset, len);
-
-    memcpy(data, &g.flash_buffer.data[page_offset], remaining);
-
-    transferred += remaining;
-  }
-
-  return transferred;
-}
-
-size_t buffered_write(uint32_t addr, const uint8_t *data, size_t len)
-{
-  return buffered_write_wrapped(addr, data, len, STORAGE_PAGE_SIZE, 1);
-}
-
-size_t buffered_write_wrapped(uint32_t addr, const uint8_t *data, size_t len,
-    uint32_t start_margin, int should_wrap)
-{
-  uint32_t remaining = len;
-
   while (remaining > 0) {
+    if (addr >= STORAGE_SIZE) {
+      if (start_margin) {
+        addr = addr % STORAGE_SIZE + start_margin;
+      } else {
+        break;
+      }
+    }
+
     uint32_t page_addr = addr & ~STORAGE_PAGE_MASK;
     uint32_t page_offset = addr & STORAGE_PAGE_MASK;
     uint32_t page_available = STORAGE_PAGE_SIZE - page_offset;
     uint32_t n = MIN(page_available, remaining);
 
-    /* If we overflow, check if we |should_wrap|. If we don't, just bail now
+    buffered_get_page(page_addr);
+
+    memcpy(data, &g.flash_buffer.data[page_offset], n);
+
+    // transferred += n;
+    addr += n;
+    data += n;
+    remaining -= n;
+  }
+
+  return len;
+}
+
+size_t buffered_write(uint32_t addr, const uint8_t *data, size_t len)
+{
+  return buffered_write_wrapped(addr, data, len, 0);
+}
+
+size_t buffered_write_wrapped(uint32_t addr, const uint8_t *data, size_t len,
+    uint32_t start_margin)
+{
+  uint32_t remaining = len;
+
+  while (remaining > 0) {
+    /* If we overflow, check if we need to wrap. If we don't, just bail now
      * and return how may bytes we wrote
      */
-    if (page_addr >= STORAGE_SIZE) {
-      if (should_wrap) {
-        page_addr = start_margin;
+    if (addr >= STORAGE_SIZE) {
+      if (start_margin) {
+        addr = start_margin;
       } else {
         break;
       }
     }
+
+    uint32_t page_addr = addr & ~STORAGE_PAGE_MASK;
+    uint32_t page_offset = addr & STORAGE_PAGE_MASK;
+    uint32_t page_available = STORAGE_PAGE_SIZE - page_offset;
+    uint32_t n = MIN(page_available, remaining);
 
     assert(STORAGE_PAGE_SIZE >= page_offset);
 
@@ -91,7 +103,7 @@ uint8_t *buffered_get_page(uint32_t addr)
 
   if (addr != g.flash_buffer.address) {
     buffered_flush();
-    READ_OP(addr, g.flash_buffer.data, STORAGE_PAGE_SIZE);
+    flash_read(addr, g.flash_buffer.data, STORAGE_PAGE_SIZE);
     g.flash_buffer.address = addr;
   }
 
@@ -103,6 +115,17 @@ void buffered_flush(void)
   if (!g.flash_buffer.dirty)
     return;
 
-  WRITE_OP(g.flash_buffer.address, g.flash_buffer.data, STORAGE_PAGE_SIZE);
+  flash_write(g.flash_buffer.address, g.flash_buffer.data, STORAGE_PAGE_SIZE);
   g.flash_buffer.dirty = 0;
+}
+
+// |--|=====================|--|
+int buffered_ranges_overlap(uint32_t lhs_start, uint32_t lhs_size, uint32_t rhs_start,
+    uint32_t rhs_size)
+{
+  if (lhs_start < rhs_start) {
+    return lhs_start + lhs_size > rhs_start;
+  } else {
+    return rhs_start + rhs_size > lhs_start;
+  }
 }

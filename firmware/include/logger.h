@@ -28,14 +28,16 @@ struct event_header_s {
   uint8_t in_progress;
   /** @brief Milliseconds since Jan 1, 1970 to the start of this event */
   uint64_t rtc_start;
+  /** @brief The address of the previously recorded field */
+  uint32_t last_event;
 
-  /** @brief Private field that will be set to the start offset of this event
-   * in storage
-   */
+  /** Private fields that will be set to the start offset of this event in 
+   * storage */
+
+  /** @brief The start address of the samples. */
   uint32_t __start_address;
   uint32_t __current_address;
   struct {
-    uint16_t __started : 1;
     uint16_t __finished_logging : 1;
     uint16_t __written : 1;
   };
@@ -82,26 +84,6 @@ void logger_write_sample(struct event_header_s *event, struct sensor_packet_s *p
 
 /* private declarations below this line ======== */
 
-/** @brief Type of the sentinel value. (only here for use in testing) */
-typedef uint32_t sentinel_t;
-
-/** @brief Value to prepend events with to detect wrap-around */
-#define SENTINEL_VALUE       ((sentinel_t) 0xAABBCCDD)
-
-/**
- * @brief The first page of storage has some basic info.
- *
- */
-struct storage_header_s {
-  /** @brief Number of events stored in storage */
-  uint32_t events;
-
-  /** @brief The offset of the first free byte */
-  uint32_t free_offset;
-
-  /** @brief */
-  uint32_t last_event;
-};
 #ifdef __cplusplus
 }
 #endif

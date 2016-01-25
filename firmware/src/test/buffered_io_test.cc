@@ -88,7 +88,7 @@ TEST_F(BufferedIoTest, WrapsWithMargin) {
   const uint32_t kAddress = STORAGE_SIZE - sizeof(kValue) / 2;
   bool valid;
 
-  buffered_write_wrapped(kAddress, kValue, sizeof(kValue), STORAGE_PAGE_SIZE, true);
+  buffered_write_wrapped(kAddress, kValue, sizeof(kValue), STORAGE_PAGE_SIZE);
   buffered_flush();
 
   valid = (
