@@ -28,13 +28,19 @@ static inline uint32_t logger_get_last_event(void)
   return storage_header->last_event;
 }
 
-static inline void logger_init_event(struct event_header_s *event)
+static inline void logger_init_event(struct event_header_s *event, uint32_t event_address)
 {
   event->samples = 0;
   event->sample_size = sizeof(struct sensor_packet_s);
   event->features = CONFIG_FEATURES;
   event->in_progress = 1;
   event->rtc_start = 0; // TODO: Get the actual time stamp
+
+  /* Set the private fields */
+  event->_prv.start_address = event_address;
+  event->_prv.current_address = event_address + STORED_EVENT_HEADER_SIZE;
+  event->_prv.finished_logging = 0;
+  event->_prv.written = 0;
 }
 
 static inline void logger_write_event(struct event_header_s *event, uint32_t address) {
@@ -71,7 +77,7 @@ static inline int logger_read_event(uint32_t address, struct event_header_s *eve
  */
 void logger_format_storage(void)
 {
-  struct event_header_s first_event = {0};
+  // struct event_header_s first_event = {0};
 
   struct storage_header_s *header =
     (struct storage_header_s *) buffered_get_page(HEADER_ADDR);
@@ -82,13 +88,12 @@ void logger_format_storage(void)
     memset(g.flash_buffer.data, '\0', STORAGE_PAGE_SIZE);
 
     /* Set all header vals here */
-    header->last_event = DATA_START_ADDR;
-    logger_write_event(&first_event, DATA_START_ADDR);
+    header->last_event = 0;
 
     /* Set the dirty flag manually since we weren't using read/write funcs */
-    // g.flash_buffer.dirty = 1;
+    g.flash_buffer.dirty = 1;
 
-    /* Write to the beginning of storage */
+    /* Make sure we write to the beginning of storage */
     buffered_flush();
   }
   GIVE_SEMPHR;
@@ -114,36 +119,38 @@ void logger_start_event(struct event_header_s *event)
 
   TAKE_SEMPHR;
   {
-    struct event_header_s last_event;
-    // struct stored_event_header_s last_event;
-    uint32_t event_address;
+    uint32_t event_address, event_id;
 
     /* 1. Read the header to get the last event recorded.  */
     uint32_t last_event_address = logger_get_last_event();
 
-    logger_read_event(last_event_address, &last_event);
+    if (last_event_address != 0) {
+      struct event_header_s last_event;
 
-    /* 2. Get the address of the new event by the total size of the previous
-     * event. Leave room for sentinel value
-     */
-    event_address = buffered_wrap_addr(last_event_address +
-        TOTAL_STORED_EVENT_SIZE(last_event), DATA_START_ADDR);
+      logger_read_event(last_event_address, &last_event);
+
+      /* 2. Get the address of the new event by the total size of the previous
+       * event. Leave room for sentinel value
+       */
+      event_address = buffered_wrap_addr(last_event_address +
+          TOTAL_STORED_EVENT_SIZE(last_event), DATA_START_ADDR);
+      event_id = last_event.event_id + 1;
+    } else {
+      event_address = DATA_START_ADDR;
+      event_id = 0;
+    }
 
     /* 2.5. Initialize the new event from the last event's size */
-    logger_init_event(event);
+    logger_init_event(event, event_address);
 
-    event->event_id = last_event.event_id + 1;
+    event->event_id = event_id;
     event->last_event = last_event_address;
-    /* Set the private fields */
-    event->_prv.start_address = event_address;
-    event->_prv.current_address = event_address + STORED_EVENT_HEADER_SIZE;
-    event->_prv.finished_logging = 0;
-    event->_prv.written = 0;
 
     logger_write_event(event, event_address);
 
     /* Update the main header to point to the new event */
     struct storage_header_s storage_header;
+    // printf("last even taddress: %u\n", event_address);
     storage_header.last_event = event_address;
     buffered_write_wrapped(HEADER_ADDR, (const uint8_t*)&storage_header,
         sizeof(storage_header), 0);
@@ -230,9 +237,6 @@ int logger_write_sample(struct event_header_s *event, struct sensor_packet_s *pa
       sizeof(*packet), DATA_START_ADDR);
 
   uint32_t next_sample =  buffered_wrap_addr(event->_prv.current_address + sizeof(*packet),
-      DATA_START_ADDR);
-
-  uint32_t next_sample_end = buffered_wrap_addr(next_sample + sizeof(*packet),
       DATA_START_ADDR);
 
   event->_prv.current_address = next_sample;

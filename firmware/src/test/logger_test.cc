@@ -55,33 +55,11 @@ class LoggerTest : public ::testing::Test {
 };
 
 TEST_F(LoggerTest, FormatsHeader) {
-
   auto header = getHeader();
 
-  ASSERT_EQ(header->last_event, DATA_START_ADDR);
+  ASSERT_EQ(header->last_event, 0);
 }
 
-TEST_F(LoggerTest, CreatesFirstSentinel) {
-  auto header = getHeader();
-
-  sentinel_t sentinel = *(sentinel_t*)(header + 1);
-
-  ASSERT_EQ(sentinel, SENTINEL_VALUE);
-}
-
-TEST_F(LoggerTest, CreatesEmptyEvent) {
-  auto header = getHeader();
-  auto first_event = getAt<stored_event_header_s>(header->last_event);
-
-  bool firstEventIsNull = 
-    first_event->header.event_id == 0 &&
-    first_event->header.samples == 0 &&
-    first_event->header.sample_size == 0 &&
-    first_event->header.features == 0 &&
-    first_event->header.rtc_start == 0;
-
-  ASSERT_EQ(firstEventIsNull, true);
-}
 
 // Make sure that the first event starts at the correct address
 TEST_F(LoggerTest, StartsAtRightAddress) {
@@ -91,8 +69,16 @@ TEST_F(LoggerTest, StartsAtRightAddress) {
   logger_start_event(&event);
 
   ASSERT_EQ(event._prv.start_address,
-      sizeof(struct storage_header_s) + // Past the storage header
-      STORED_EVENT_HEADER_SIZE); // and past the first event header 
+      DATA_START_ADDR); // and past the first event header 
+}
+
+TEST_F(LoggerTest, InitializesWithNoEvents) {
+  struct event_header_s event;
+  int status;
+
+  status = logger_get_event(NULL, &event);
+
+  ASSERT_EQ(status, 0);
 }
 
 TEST_F(LoggerTest, MarksANewEventStarted) {
@@ -120,41 +106,6 @@ TEST_F(LoggerTest, UpdatesSampleCount) {
   ASSERT_EQ(event.samples, old_sample_size + kNumberWrites);
 }
 
-#if 0
-TEST_F(LoggerTest, MaintainsEventCount) {
-  struct event_header_s event;
-  struct sensor_packet_s packet;
-  struct storage_header_s *header = getHeader();
-
-  logger_start_event(&event);
-  logger_write_sample(&event, &packet);
-  logger_end_event(&event);
-  
-  ASSERT_EQ(header->events, 1);
-}
-
-TEST_F(LoggerTest, UpdatesFreeOffset) {
-  struct event_header_s event;
-  struct sensor_packet_s packet;
-  struct storage_header_s *header = getHeader();
-
-  const auto kSamplesToWrite = 400;
-
-  uint32_t free_offset_pre = header->free_offset;
-
-  logger_start_event(&event);
-  for (int i = 0; i < kSamplesToWrite; i++) {
-    logger_write_sample(&event, &packet);
-  }
-  logger_end_event(&event);
-  
-  uint32_t free_offset_post = header->free_offset;
-  
-  ASSERT_EQ(free_offset_post - free_offset_pre,
-      EVENT_HEADER_SIZE + sizeof(struct sensor_packet_s) * kSamplesToWrite);
-}
-
-#endif
 TEST_F(LoggerTest, FailsToReadNonexistentSample) {
   struct event_header_s event;
   struct sensor_packet_s packet;
@@ -264,7 +215,7 @@ TEST_F(LoggerTest, CanRetrieveNextEvent) {
 TEST_F(LoggerTest, ReturnZeroWhenRunningOutOfEvents) {
   struct event_header_s event, dst_event = {0}, *pevent;
   struct sensor_packet_s packet;
-  int status;
+  int status = 0;
   bool valid = true;
 
   const uint32_t kHighestId = 5;
@@ -276,10 +227,17 @@ TEST_F(LoggerTest, ReturnZeroWhenRunningOutOfEvents) {
   }
 
   pevent = NULL;
-  for (int i = 0; i < kHighestId + 1; i++) {
-    if (!logger_get_event(pevent, &event)) {
+  for (int i = kHighestId; i > 0; i--) {
+    status = logger_get_event(pevent, &event);
+
+    if (!status) {
       valid = false;
     } 
+
+    if (event.event_id != (i - 1)) {
+      valid = false;
+    }
+
     pevent = &event;
   }
 
@@ -290,5 +248,36 @@ TEST_F(LoggerTest, ReturnZeroWhenRunningOutOfEvents) {
   ASSERT_EQ(valid, true);
 }
 
+TEST_F(LoggerTest, DontReturnOverwrittenEvents) {
+  const uint32_t kNumEvents = 4;
+  const uint32_t kNumSamples = STORAGE_SIZE / sizeof(sensor_packet_s) / kNumEvents;
+  const uint32_t kLargeEventSize = sizeof(event_header_s) +
+    sizeof(sensor_packet_s) * kNumEvents;
+
+  struct event_header_s event, *pevent;
+  struct sensor_packet_s packet;
+  int status = 0;
+
+  // First, record one more than how many events we can keep in storage
+  for (int i = 0; i < kNumEvents; i++) {
+    logger_start_event(&event);
+    for (int j = 0; j < kNumSamples; j++) {
+      logger_write_sample(&event, &packet);
+    }
+    logger_end_event(&event);
+  }
+
+  // Then, get all but one of them
+  pevent = NULL;
+  for (int i = kNumEvents - 1; i > 0; i--) {
+    status = logger_get_event(pevent, &event);
+    pevent = &event;
+  }
+
+  // Then make sure we can't get the last one since it's been overwritten
+  status = logger_get_event(pevent, &event);
+
+  ASSERT_EQ(status, 0);
 }
 
+}
