@@ -5,18 +5,27 @@
 #pragma once
 
 #include <sample.h>
-// #include <flash.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+struct __event_private_s {
+  /** @brief The start address of the samples. */
+  uint32_t start_address;
+  uint32_t current_address;
+  struct {
+    uint16_t finished_logging : 1;
+    uint16_t written : 1;
+  };
+};
 /**
  * @brief The header for an 'event'. Likely a jump.
  */
 struct event_header_s {
+  //uint32_t flag : 1;
   /** @brief The unique id of this event */
-  uint32_t event_id : sizeof(uint32_t) * 8 - 1;
+  uint32_t event_id;// : sizeof(uint32_t) * 8 - 1;
   /** @brief Number of samples associated with this event */
   uint32_t samples;
   /** @brief Size of each sample */
@@ -31,23 +40,15 @@ struct event_header_s {
   /** @brief The address of the previously recorded field */
   uint32_t last_event;
 
-  /** Private fields that will be set to the start offset of this event in 
-   * storage */
-
-  /** @brief The start address of the samples. */
-  uint32_t __start_address;
-  uint32_t __current_address;
-  struct {
-    uint16_t __finished_logging : 1;
-    uint16_t __written : 1;
-  };
-};
+  /** @brief Private fields  */
+  struct __event_private_s _prv;
+} __attribute__((packed));
 
 #ifndef offsetof
 #define offsetof(type, member) ( (size_t) & ((type*)0) -> member )
 #endif
 
-#define EVENT_HEADER_SIZE offsetof(struct event_header_s, __start_address)
+#define EVENT_HEADER_SIZE offsetof(struct event_header_s, _prv)
   
 #define TOTAL_EVENT_SIZE(ev)  \
   (((ev).samples * (ev).sample_size) + EVENT_HEADER_SIZE)
@@ -77,9 +78,15 @@ int  logger_read_sample(struct event_header_s *event, uint32_t n, struct sensor_
 
 /**
  * @brief Add a sample to an in-progress event.
+ *
+ * @return 1 on success, 0 on failure.
  */
-void logger_write_sample(struct event_header_s *event, struct sensor_packet_s *packet);
+int logger_write_sample(struct event_header_s *event, struct sensor_packet_s *packet);
 
+/**
+ * @brief Get a stored event.
+ */
+int logger_get_event(struct event_header_s *prev, struct event_header_s *dst);
 
 
 /* private declarations below this line ======== */

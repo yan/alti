@@ -90,7 +90,7 @@ TEST_F(LoggerTest, StartsAtRightAddress) {
 
   logger_start_event(&event);
 
-  ASSERT_EQ(event.__start_address,
+  ASSERT_EQ(event._prv.start_address,
       sizeof(struct storage_header_s) + // Past the storage header
       STORED_EVENT_HEADER_SIZE); // and past the first event header 
 }
@@ -195,7 +195,7 @@ TEST_F(LoggerTest, LoggingWrapsCorrectly) {
 
   // Fill up storage with enough values to get close to the end
   logger_start_event(&event);
-  while (event.__current_address < (STORAGE_SIZE - kEndMargin * event.sample_size)) {
+  while (event._prv.current_address < (STORAGE_SIZE - kEndMargin * event.sample_size)) {
     logger_write_sample(&event, &packet);
   }
   logger_end_event(&event);
@@ -208,7 +208,86 @@ TEST_F(LoggerTest, LoggingWrapsCorrectly) {
   }
   logger_end_event(&event);
 
-  ASSERT_GT(event.__start_address, event.__current_address);
+  ASSERT_GT(event._prv.start_address, event._prv.current_address);
+}
+
+TEST_F(LoggerTest, SampleDoesntOverwriteItsOwnHeader) {
+  struct event_header_s event;
+  struct sensor_packet_s packet;
+  uint32_t writes = STORAGE_SIZE / sizeof(packet) + 30;
+  int status = 1;
+
+  logger_start_event(&event);
+  for (; status || writes > 0; writes--) {
+    status = logger_write_sample(&event, &packet);
+  }
+
+  ASSERT_EQ(status, 0);
+}
+
+TEST_F(LoggerTest, CanRetrieveFirstEvent) {
+  struct event_header_s event, dst_event;
+  struct sensor_packet_s packet;
+
+  logger_start_event(&event);
+  logger_write_sample(&event, &packet);
+  logger_end_event(&event);
+
+  logger_get_event(0, &dst_event);
+
+  ASSERT_EQ(event.event_id, dst_event.event_id);
+}
+
+TEST_F(LoggerTest, CanRetrieveNextEvent) {
+  struct event_header_s event, dst_event = {0};
+  struct sensor_packet_s packet;
+  int status;
+  const uint32_t kHighestId = 5;
+
+  for (int i = 0; i < kHighestId; i++) {
+    logger_start_event(&event);
+    logger_write_sample(&event, &packet);
+    logger_end_event(&event);
+  }
+
+  // Get the first event
+  logger_get_event(NULL,                &event);
+  // event id is now kHighestId
+  logger_get_event(&event, &event);
+  // event id  is now kHighestId - 1
+  logger_get_event(&event, &dst_event);
+  // now dst_event is of id kHighestId - 2
+
+  ASSERT_EQ(event.event_id, dst_event.event_id + 1);
+}
+
+TEST_F(LoggerTest, ReturnZeroWhenRunningOutOfEvents) {
+  struct event_header_s event, dst_event = {0}, *pevent;
+  struct sensor_packet_s packet;
+  int status;
+  bool valid = true;
+
+  const uint32_t kHighestId = 5;
+
+  for (int i = 0; i < kHighestId; i++) {
+    logger_start_event(&event);
+    logger_write_sample(&event, &packet);
+    logger_end_event(&event);
+  }
+
+  pevent = NULL;
+  for (int i = 0; i < kHighestId + 1; i++) {
+    if (!logger_get_event(pevent, &event)) {
+      valid = false;
+    } 
+    pevent = &event;
+  }
+
+  if (logger_get_event(&event, &event)) {
+    valid = false;
+  }
+
+  ASSERT_EQ(valid, true);
 }
 
 }

@@ -32,7 +32,7 @@ struct stored_event_header_s {
   struct event_header_s header;
 };
 
-#define EVENT_HEADER_SIZE offsetof(struct event_header_s, __start_address)
+#define EVENT_HEADER_SIZE offsetof(struct event_header_s, _prv)
 
 #define STORED_EVENT_HEADER_SIZE (EVENT_HEADER_SIZE + sizeof(sentinel_t))
   

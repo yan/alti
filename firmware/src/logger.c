@@ -47,15 +47,23 @@ static inline void logger_write_event(struct event_header_s *event, uint32_t add
       STORED_EVENT_HEADER_SIZE, DATA_START_ADDR);
 }
 
-static inline void logger_read_event(struct event_header_s *event, uint32_t address) {
+static inline int logger_read_event(uint32_t address, struct event_header_s *event) {
   struct stored_event_header_s stored_event;
+
+  if (address < DATA_START_ADDR) {
+    return 0;
+  }
 
   buffered_read_wrapped(address, (uint8_t*) &stored_event, STORED_EVENT_HEADER_SIZE,
       DATA_START_ADDR);
 
-  assert(stored_event.sentinel == SENTINEL_VALUE);
+  if (stored_event.sentinel != SENTINEL_VALUE) {
+    return 0;
+  }
 
   *event = stored_event.header;
+
+  return 1;
 }
 
 /**
@@ -113,7 +121,7 @@ void logger_start_event(struct event_header_s *event)
     /* 1. Read the header to get the last event recorded.  */
     uint32_t last_event_address = logger_get_last_event();
 
-    logger_read_event(&last_event, last_event_address);
+    logger_read_event(last_event_address, &last_event);
 
     /* 2. Get the address of the new event by the total size of the previous
      * event. Leave room for sentinel value
@@ -127,10 +135,10 @@ void logger_start_event(struct event_header_s *event)
     event->event_id = last_event.event_id + 1;
     event->last_event = last_event_address;
     /* Set the private fields */
-    event->__start_address = event_address;
-    event->__current_address = event_address + STORED_EVENT_HEADER_SIZE;
-    event->__finished_logging = 0;
-    event->__written = 0;
+    event->_prv.start_address = event_address;
+    event->_prv.current_address = event_address + STORED_EVENT_HEADER_SIZE;
+    event->_prv.finished_logging = 0;
+    event->_prv.written = 0;
 
     logger_write_event(event, event_address);
 
@@ -161,11 +169,11 @@ void logger_end_event(struct event_header_s *event)
 
   TAKE_SEMPHR;
   {
-    uint32_t event_addr = event->__start_address;
+    uint32_t event_addr = event->_prv.start_address;
 
     assert(event_addr < STORAGE_SIZE);
 
-    event->__finished_logging = 1;
+    event->_prv.finished_logging = 1;
     event->in_progress = 0;
 
     logger_write_event(event, event_addr);
@@ -175,7 +183,7 @@ void logger_end_event(struct event_header_s *event)
       (struct storage_header_s *) buffered_get_page(HEADER_ADDR);
 
     storage_header->last_event = event_addr;
-    // storage_header->free_offset = event->__current_address;
+    // storage_header->free_offset = event->_prv.current_address;
 
     buffered_write_wrapped(HEADER_ADDR, (uint8_t*)storage_header,
         sizeof(*storage_header), 0);
@@ -183,7 +191,7 @@ void logger_end_event(struct event_header_s *event)
     /* Make sure we flush once we complete an event */
     buffered_flush();
 
-    event->__written = 1;
+    event->_prv.written = 1;
 
   }
   GIVE_SEMPHR;
@@ -193,8 +201,10 @@ void logger_end_event(struct event_header_s *event)
 
 /**
  * @brief Add a sample to an in-progress event.
+ *
+ * @return 1 on success, 0 on failure.
  */
-void logger_write_sample(struct event_header_s *event, struct sensor_packet_s *packet)
+int logger_write_sample(struct event_header_s *event, struct sensor_packet_s *packet)
 {
   assert(packet != NULL);
   assert(event != NULL);
@@ -207,25 +217,30 @@ void logger_write_sample(struct event_header_s *event, struct sensor_packet_s *p
    *   - Finish the current event
    *   - fail an assert? (that'd be a whole-storage event)
    */
-  assert(!buffered_ranges_overlap(event->__start_address, STORED_EVENT_HEADER_SIZE,
-                                  event->__current_address, event->sample_size));
+  if (buffered_ranges_overlap(event->_prv.start_address, STORED_EVENT_HEADER_SIZE,
+                                  event->_prv.current_address, event->sample_size))
+  {
+    return 0;
+  }
 
   /* TODO: Revisit adding a real timeout here */
   TAKE_SEMPHR;
 
-  buffered_write_wrapped(event->__current_address, (uint8_t*) packet,
+  buffered_write_wrapped(event->_prv.current_address, (uint8_t*) packet,
       sizeof(*packet), DATA_START_ADDR);
 
-  uint32_t next_sample =  buffered_wrap_addr(event->__current_address + sizeof(*packet),
+  uint32_t next_sample =  buffered_wrap_addr(event->_prv.current_address + sizeof(*packet),
       DATA_START_ADDR);
 
   uint32_t next_sample_end = buffered_wrap_addr(next_sample + sizeof(*packet),
       DATA_START_ADDR);
 
-  event->__current_address = next_sample;
+  event->_prv.current_address = next_sample;
   event->samples += 1;
   
   GIVE_SEMPHR;
+
+  return 1;
 }
 
 /**
@@ -243,7 +258,7 @@ int logger_read_sample(struct event_header_s *event, uint32_t n, struct sensor_p
     return 0;
   }
   
-  source = buffered_wrap_addr(event->__start_address + STORED_EVENT_HEADER_SIZE
+  source = buffered_wrap_addr(event->_prv.start_address + STORED_EVENT_HEADER_SIZE
       + event->sample_size * n, DATA_START_ADDR);
 
   assert(source < STORAGE_SIZE);
@@ -257,6 +272,39 @@ int logger_read_sample(struct event_header_s *event, uint32_t n, struct sensor_p
   return 1;
 }
 
+/**
+ * @brief If |prev| is not null, write the event prior to |prev| into *|dst|. 
+ * Otherwise, write the most recent event into |dst|
+ *
+ * @return 1 on successful write to |dst|, 0 otherwise. (i.e. we reached the end
+ * of events)
+ */
+int logger_get_event(struct event_header_s *prev, struct event_header_s *dst)
+{
+  assert (dst != NULL);
+
+  uint32_t address;
+  int status = 0;
+
+  TAKE_SEMPHR;
+  {
+    /* Return the last event stored if we don't get a prev event */
+    if (prev == NULL) {
+      address = logger_get_last_event();
+    } else {
+      address = prev->last_event;
+    }
+
+    if (address == 0) {
+      status = 0;
+    } else {
+      status = logger_read_event(address, dst);
+    }
+  }
+  GIVE_SEMPHR;
+
+  return status;
+}
 
 #ifdef __cplusplus
 }

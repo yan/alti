@@ -6,6 +6,14 @@
 #include <globals.h>
 #include <logger.h>
 
+enum xfer_direction_e {
+  DIRECTION_READ,
+  DIRECTION_WRITE
+};
+
+
+static size_t buffered_xfer_wrapped(uint32_t addr, uint8_t *data, size_t len, 
+    uint32_t start_margin, enum xfer_direction_e direction);
 
 uint32_t buffered_wrap_addr(uint32_t x, uint32_t margin) {
   if (x > STORAGE_SIZE) {
@@ -19,8 +27,27 @@ size_t buffered_read(uint32_t addr, uint8_t *data, size_t len)
   return buffered_read_wrapped(addr, data, len, 0);
 }
 
+
+size_t buffered_write(uint32_t addr, const uint8_t *data, size_t len)
+{
+  return buffered_write_wrapped(addr, data, len, 0);
+}
+
 size_t buffered_read_wrapped(uint32_t addr, uint8_t *data, size_t len, 
     uint32_t start_margin)
+{
+  return buffered_xfer_wrapped(addr, data, len, start_margin, DIRECTION_READ);
+}
+
+size_t buffered_write_wrapped(uint32_t addr, const uint8_t *data, size_t len,
+    uint32_t start_margin)
+{
+  return buffered_xfer_wrapped(addr, (uint8_t*) data, len, start_margin,
+      DIRECTION_WRITE);
+}
+
+static size_t buffered_xfer_wrapped(uint32_t addr, uint8_t *data, size_t len, 
+    uint32_t start_margin, enum xfer_direction_e direction)
 {
   size_t remaining = len;
 
@@ -41,53 +68,18 @@ size_t buffered_read_wrapped(uint32_t addr, uint8_t *data, size_t len,
     uint32_t page_available = STORAGE_PAGE_SIZE - page_offset;
     uint32_t n = MIN(page_available, remaining);
 
-    buffered_get_page(page_addr);
-
-    memcpy(data, &g.flash_buffer.data[page_offset], n);
-
-    // transferred += n;
-    addr += n;
-    data += n;
-    remaining -= n;
-  }
-
-  return len;
-}
-
-size_t buffered_write(uint32_t addr, const uint8_t *data, size_t len)
-{
-  return buffered_write_wrapped(addr, data, len, 0);
-}
-
-size_t buffered_write_wrapped(uint32_t addr, const uint8_t *data, size_t len,
-    uint32_t start_margin)
-{
-  uint32_t remaining = len;
-
-  while (remaining > 0) {
-    /* If we overflow, check if we need to wrap. If we don't, just bail now
-     * and return how may bytes we wrote
-     */
-    if (addr >= STORAGE_SIZE) {
-      if (start_margin) {
-        addr = start_margin;
-      } else {
-        break;
-      }
-    }
-
-    uint32_t page_addr = addr & ~STORAGE_PAGE_MASK;
-    uint32_t page_offset = addr & STORAGE_PAGE_MASK;
-    uint32_t page_available = STORAGE_PAGE_SIZE - page_offset;
-    uint32_t n = MIN(page_available, remaining);
-
     assert(STORAGE_PAGE_SIZE >= page_offset);
+    assert(direction == DIRECTION_READ || direction == DIRECTION_WRITE);
 
     buffered_get_page(page_addr);
-    
-    /* Data's in cache and we can write what we have available */
-    memcpy(&g.flash_buffer.data[page_offset], data, n);
-    g.flash_buffer.dirty = 1;
+
+    if (direction == DIRECTION_READ) {
+      memcpy(data, &g.flash_buffer.data[page_offset], n);
+    } else if (direction == DIRECTION_WRITE) {
+      /* Data's in cache and we can write what we have available */
+      memcpy(&g.flash_buffer.data[page_offset], data, n);
+      g.flash_buffer.dirty = 1;
+    }
 
     addr += n;
     data += n;
