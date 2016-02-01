@@ -11,10 +11,11 @@ option (stlib "Use the ST stm32 peripheral library" ON)
 
 set (BINARY_NAME ${PROJECT_NAME})
 
+# set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g3") 
+set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Os -O2 -Wextra")
+
 if (NOT test)
   set (STM32_DEV_TYPE STM32L1XX_HD)
-  # set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g3") 
-  set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Os -O2")
   set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -D${STM32_DEV_TYPE}")
   set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DENABLE_SEMIHOSTING=0")
   set (CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/support/cmake")
@@ -33,7 +34,6 @@ set (LIBRARIES aero)
 
 if (test)
   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-c++11-extensions -g3")
-  set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g3")
 
   include (support/cmake/gtest.cmake)
 

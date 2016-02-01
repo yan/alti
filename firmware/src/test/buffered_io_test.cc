@@ -19,7 +19,6 @@ class BufferedIoTest : public ::testing::Test {
     virtual ~BufferedIoTest() {
     }
     virtual void SetUp() {
-
     }
     virtual void TearDown() {
     }
@@ -86,16 +85,17 @@ TEST_F(BufferedIoTest, WriteAcrossPages) {
 TEST_F(BufferedIoTest, WrapsWithMargin) {
   const uint8_t kValue[4] = {0x12, 0x34, 0x56, 0x78};
   const uint32_t kAddress = STORAGE_SIZE - sizeof(kValue) / 2;
+  const uint32_t kMargin = 8;
   bool valid;
 
-  buffered_write_wrapped(kAddress, kValue, sizeof(kValue), STORAGE_PAGE_SIZE);
+  buffered_write_wrapped(kAddress, kValue, sizeof(kValue), kMargin);
   buffered_flush();
 
   valid = (
       __testing_storage[STORAGE_SIZE-2] == kValue[0] &&
       __testing_storage[STORAGE_SIZE-1] == kValue[1] &&
-      __testing_storage[STORAGE_PAGE_SIZE] == kValue[2] &&
-      __testing_storage[STORAGE_PAGE_SIZE+1] == kValue[3]);
+      __testing_storage[kMargin]        == kValue[2] &&
+      __testing_storage[kMargin+1]      == kValue[3]);
 
   ASSERT_EQ(valid, true);
 }

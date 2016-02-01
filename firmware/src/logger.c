@@ -190,7 +190,6 @@ void logger_end_event(struct event_header_s *event)
       (struct storage_header_s *) buffered_get_page(HEADER_ADDR);
 
     storage_header->last_event = event_addr;
-    // storage_header->free_offset = event->_prv.current_address;
 
     buffered_write_wrapped(HEADER_ADDR, (uint8_t*)storage_header,
         sizeof(*storage_header), 0);
@@ -211,7 +210,8 @@ void logger_end_event(struct event_header_s *event)
  *
  * @return 1 on success, 0 on failure.
  */
-int logger_write_sample(struct event_header_s *event, struct sensor_packet_s *packet)
+int logger_write_sample(struct event_header_s *event,
+    struct sensor_packet_s *packet)
 {
   assert(packet != NULL);
   assert(event != NULL);
@@ -236,8 +236,8 @@ int logger_write_sample(struct event_header_s *event, struct sensor_packet_s *pa
   buffered_write_wrapped(event->_prv.current_address, (uint8_t*) packet,
       sizeof(*packet), DATA_START_ADDR);
 
-  uint32_t next_sample =  buffered_wrap_addr(event->_prv.current_address + sizeof(*packet),
-      DATA_START_ADDR);
+  uint32_t next_sample =  buffered_wrap_addr(event->_prv.current_address +
+      sizeof(*packet), DATA_START_ADDR);
 
   event->_prv.current_address = next_sample;
   event->samples += 1;
@@ -251,7 +251,8 @@ int logger_write_sample(struct event_header_s *event, struct sensor_packet_s *pa
  * @brief Read the |n|th (0-indexed) sample fro |event| into the packet pointed
  * to by |dest|
  */
-int logger_read_sample(struct event_header_s *event, uint32_t n, struct sensor_packet_s *dest)
+int logger_read_sample(struct event_header_s *event, uint32_t n,
+    struct sensor_packet_s *dest)
 {
   assert(event != NULL);
   assert(dest != NULL);
@@ -262,8 +263,8 @@ int logger_read_sample(struct event_header_s *event, uint32_t n, struct sensor_p
     return 0;
   }
   
-  source = buffered_wrap_addr(event->_prv.start_address + STORED_EVENT_HEADER_SIZE
-      + event->sample_size * n, DATA_START_ADDR);
+  source = buffered_wrap_addr(event->_prv.start_address +
+      STORED_EVENT_HEADER_SIZE + event->sample_size * n, DATA_START_ADDR);
 
   assert(source < STORAGE_SIZE);
 
