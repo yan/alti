@@ -1,18 +1,20 @@
 #include <QCoreApplication>
-#include <qbluetoothglobal.h>
-#include <qbluetoothlocaldevice.h>
+#include <QGuiApplication>
 #include <QObject>
-#include <QVariant>
-#include <QList>
-#include <QBluetoothServiceDiscoveryAgent>
-#include <QBluetoothDeviceDiscoveryAgent>
-#include <QLowEnergyController>
-#include <QBluetoothServiceInfo>
+#include <QLoggingCategory>
+#include <chrono>
+#include <thread>
+
+#include "devicemanager.h"
 
 int main(int argc, char *argv[])
 {
-    QCoreApplication a(argc, argv);
+    // QLoggingCategory::setFilterRules(QStringLiteral("qt.bluetooth* = true"));
+    QGuiApplication app(argc, argv);
 
-    return a.exec();
+    DeviceManager manager;
+    manager.start();
+
+    return app.exec();
 }
 
