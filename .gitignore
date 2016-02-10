@@ -1,9 +1,8 @@
-firmware/build/obj/**
-firmware/build/lib/**
-firmware/build/pid/**
+firmware/build/**
 firmware/pdf
 firmware/tags
 firmware/support/gtest
+client/build-*
 .DS_Store
 *bak
 **.pyc
