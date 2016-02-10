@@ -7,7 +7,7 @@
 #define CONFIG_USE_GPS            ( 1 )
 
 /* Enable accelerometer support */
-#define CONFIG_USE_ACCEL          ( 0 )
+#define CONFIG_USE_ACCEL          ( 1 )
 
 /* Enable gyroscope support */
 #define CONFIG_USE_GYRO           ( 0 )

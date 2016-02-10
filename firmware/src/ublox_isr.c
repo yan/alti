@@ -160,7 +160,8 @@ struct ubx_header_s *ublox_wait_for_message(void)
     }
 
     taskENABLE_INTERRUPTS();
-    delay_ms(1);
+
+    delay_ms(5);
   }
 
   status = xQueueReceive(g.gps_queue_g, &event, portMAX_DELAY);

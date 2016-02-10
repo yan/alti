@@ -8,10 +8,10 @@
 
 #if CONFIG_USE_GPS
 struct gps_sample_s {
+  int32_t accuracy;
   int32_t lat, lon;
   int32_t ground_speed;
   int32_t heading;
-  int32_t accuracy;
 } __attribute__((packed));
 #endif
 

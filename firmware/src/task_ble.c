@@ -20,6 +20,7 @@
 #include <flash.h>
 
 static void exchange_commands(struct nrf8001_cmd_s *outgoing, struct nrf8001_cmd_s *incoming);
+static void ble_tx_helper(uint8_t pipe, uint8_t *data, size_t length);
 
 const char s_null_cmd[sizeof(struct nrf8001_cmd_s)] = { 0 };
 
@@ -67,19 +68,16 @@ void ble_send_cmd(struct nrf8001_cmd_s *cmd)
   }
 }
 
-/**
- * @brief Transmit some data on an open pipe
- */
-void ble_tx(uint8_t pipe, uint8_t *data, size_t length)
+static void ble_tx_helper(uint8_t pipe, uint8_t *data, size_t length)
 {
   static struct nrf8001_cmd_s cmd;
   size_t i;
 
-  assert(length < (NRF8001_MAX_CMD_LENGTH - 1));
+  assert(length + 2 < NRF8001_MAX_CMD_LENGTH);
   assert(PIPE_OPEN(pipe));
 
   cmd.opcode = ACI_CMD_SEND_DATA;
-  cmd.length = 1 + length;
+  cmd.length = 2 + length;
 
   cmd.data[0] = pipe;
   for (i = 0; i < length; i++) {
@@ -92,6 +90,46 @@ void ble_tx(uint8_t pipe, uint8_t *data, size_t length)
   }
 
   ble_send_cmd(&cmd);
+}
+
+/**
+ * @brief Transmit some data on an open pipe
+ */
+void ble_tx(uint8_t pipe, uint8_t *data, size_t length)
+{
+  size_t to_send;// sent = 0;
+
+  while (length > 0) {
+    // TODO: Move this constant elsewhere
+    to_send = MIN(20, length);
+    ble_tx_helper(pipe, data, to_send);
+    // sent += to_send;
+    length -= to_send;
+    data += to_send;
+  }
+
+#if 0
+  static struct nrf8001_cmd_s cmd;
+  size_t i;
+
+  assert(length + 2 < NRF8001_MAX_CMD_LENGTH);
+  assert(PIPE_OPEN(pipe));
+
+  cmd.opcode = ACI_CMD_SEND_DATA;
+  cmd.length = 2 + length;
+
+  cmd.data[0] = pipe;
+  for (i = 0; i < length; i++) {
+    cmd.data[i+1] = data[i];
+  }
+
+  // Not necessary, but leaving it in.
+  for (i = i + 1; i < NRF8001_MAX_CMD_LENGTH; i++) {
+    cmd.data[i+1] = 0;
+  }
+
+  ble_send_cmd(&cmd);
+#endif
 }
 /**
  * @brief This task does nothing but send and receive messages between us and 

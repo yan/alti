@@ -110,17 +110,17 @@ void bus_fault_handler(void)
 
 void hard_fault_handler(void)
 {
-	__asm volatile
-	(
-		" tst lr, #4										\n"
-		" ite eq											\n"
-		" mrseq r0, msp										\n"
-		" mrsne r0, psp										\n"
-		" ldr r1, [r0, #24]									\n"
-		" ldr r2, handler8_address_const						\n"
-		" bx r2												\n"
-		" handler8_address_const: .word pop_registers_from_fault_stack	\n"
-	);
+  __asm volatile
+  (
+    " tst lr, #4							\n"
+    " ite eq								\n"
+    " mrseq r0, msp							\n"
+    " mrsne r0, psp							\n"
+    " ldr r1, [r0, #24]							\n"
+    " ldr r2, handler8_address_const					\n"
+    " bx r2								\n"
+    " handler8_address_const: .word pop_registers_from_fault_stack	\n"
+  );
 }
 
 

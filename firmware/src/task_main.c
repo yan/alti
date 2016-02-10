@@ -18,6 +18,7 @@
 #include <task_ble.h>
 #include <task_alert.h>
 #include <task_sensor.h>
+#include <task_gps.h>
 
 #include <services.h>
 
@@ -26,6 +27,7 @@ void task_main(void *p)
   (void) p;
   portBASE_TYPE status;
   enum global_state_e state = GLOBAL_STATE_RESET;
+  struct sensor_packet_s packet = {0};
   // struct event_header_s current_event;
 
   for (;;) {
@@ -51,55 +53,59 @@ void task_main(void *p)
 
 #if CONFIG_USE_GPS
       case GLOBAL_EVT_SENSOR_GPS: {
-        unsigned int accuracy = (unsigned int) evt.payload.gps_sample.accuracy;
+        /* Capture the gps sample, and get the other sensors */
+        packet.gps_sample = evt.payload.gps_sample;
 
-        const uint8_t tx_pipe = PIPE_AERO_PRESSURE_BAROMETRIC_PRESSURE_TX;
+        BaseType_t type = SENSOR_REQUEST_AIR_PRESSURE 
+                         | SENSOR_REQUEST_ACCEL;
+        xQueueSend(g.sensor_queue_g, &type, 0);
 
-        if (PIPE_OPEN(tx_pipe)) {
-          ble_tx(tx_pipe, (void*)&accuracy, sizeof(accuracy));
-        }
+
+        // const uint8_t tx_pipe = PIPE_DATA_UART_TX_TX;
+
+        // if (PIPE_OPEN(tx_pipe)) {
+          // ble_tx(tx_pipe, (void*)&accuracy, sizeof(accuracy));
+        // }
 
       }
       break;
 #endif // CONFIG_USE_GPS
-      case GLOBAL_EVT_SENSOR_BARO: {
-        unsigned int pressure = (unsigned int) evt.payload.baro_sample.mbarc;
-        const uint8_t tx_pipe = PIPE_AERO_PRESSURE_BAROMETRIC_PRESSURE_TX;
 
-        break;
+#if CONFIG_USE_ACCEL
+      case GLOBAL_EVT_SENSOR_ACCEL: {
+        packet.accel_sample = evt.payload.accel_sample;
+      }
+      break;
+#endif
+      case GLOBAL_EVT_SENSOR_COMPLETE: {
+        packet.ticks = xTaskGetTickCount();
 
-        // log the data
-        {
-          struct sensor_packet_s packet = {
-            .mbarc = (ms5611_mbarc_t) pressure,
-            .ticks = xTaskGetTickCount()
-          };
-          logger_write_sample(NULL, &packet);
-        }
-
-        // Send the data via ble
-        if (PIPE_OPEN(tx_pipe)) {
-          ble_tx(tx_pipe, (void*)&pressure, sizeof(pressure));
+        const uint8_t pipe = PIPE_DATA_UART_TX_TX;
+        if (PIPE_OPEN(pipe)) {
+          ble_tx(pipe, (void*)&packet, 20);
         }
       }
-        break;
+      break;
+
+      case GLOBAL_EVT_SENSOR_BARO: {
+        packet.mbarc =  evt.payload.baro_sample.mbarc;
+
+        // Send the data via ble
+        // if (PIPE_OPEN(tx_pipe)) {
+        //   ble_tx(tx_pipe, (void*)&pressure, sizeof(pressure));
+        // }
+      }
+      break;
 
       /* Bluetooth events */
       case GLOBAL_EVT_NRF8001_PIPES_CHANGED: {
-        // unsigned int new_rate;
-        BaseType_t type = 0;
-        if (PIPE_OPEN(PIPE_AERO_PRESSURE_BAROMETRIC_PRESSURE_TX)) {
-          //new_rate = 100 / portTICK_PERIOD_MS;
-          //type |= SENSOR_REQUEST_AIR_PRESSURE;
-          type |= SENSOR_REQUEST_ACCEL;
-          dbg_print("Starting to send pressure\n");
-        } else {
-          //new_rate = portMAX_DELAY;
-          type |= SENSOR_REQUEST_STOP;
-          dbg_print("Stopping to send pressure\n");
-        }
-          
-        xQueueSend(g.sensor_queue_g, &type, 0);
+
+        BaseType_t action = EVT_GPS_SLEEP;
+        if (PIPE_OPEN(PIPE_DATA_UART_TX_TX)) {
+          action = EVT_GPS_START;
+          xQueueSend(g.gps_queue_g, &action, portMAX_DELAY);
+        } 
+        // xQueueSend(g.gps_queue_g, &action, portMAX_DELAY);
       }
         break;
 

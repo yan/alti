@@ -29,9 +29,11 @@
 
 static void calculateCheckSum(uint8_t *in, size_t length, uint8_t* dest);
 static struct ubx_header_s *ublox_expect_response(uint8_t msg_class, uint8_t msg_id);
+static int    ublox_get_ack(void);
 static int    ublox_update_port_settings(usart_t port, uint32_t baud);
 static void   ublox_send(uint8_t class_id, uint8_t msg_id, uint8_t *buf, size_t length);
 static void   usart_send_buf(usart_t port, const uint8_t *buf, size_t length);
+static int    ublox_pm2(uint8_t mode);
 
 #define ublox_poll(class_id, msg_id) ublox_send(class_id, msg_id, NULL, 0)
 
@@ -101,6 +103,24 @@ static void ublox_send(uint8_t class_id, uint8_t msg_id, uint8_t *buf, size_t le
 }
 
 
+static int  ublox_get_ack(void)
+{
+  int attempts;
+  struct ubx_header_s *h = NULL;
+
+  for (attempts = MAX_RETRIES; attempts > 0; attempts--) {
+    h = ublox_wait_for_message();
+
+    // TODO: Fix this part later
+    if (h->msg_class != MSG_CLASS_ACK) {
+      continue;
+    }
+
+    break;
+  }
+
+  return h->msg_id == MSG_ID_ACK_ACK;
+}
 
 /**
  * @brief Keep receiving UBX messages until we get one with correct msg_class
@@ -113,6 +133,7 @@ static struct ubx_header_s *ublox_expect_response(uint8_t msg_class, uint8_t msg
 
   for (attempts = MAX_RETRIES; attempts > 0; attempts--) {
     h = ublox_wait_for_message();
+    // TODO: Fix this part later
 
     if (h->msg_class != msg_class || h->msg_id != msg_id) {
       continue;
@@ -215,7 +236,7 @@ int ublox_init(uint32_t baudRate)
  */
 int ublox_start_updates(int rate)
 {
-  uint8_t request[3] = {
+  uint8_t request[] = {
     MSG_CLASS_NAV,
     MSG_ID_NAV_PVT,
     rate
@@ -223,9 +244,7 @@ int ublox_start_updates(int rate)
 
   ublox_send(MSG_CLASS_CFG, MSG_ID_CFG_MSG, request, sizeof(request));
 
-  ublox_expect_response(MSG_CLASS_ACK, MSG_ID_ACK_ACK);
-
-  return 1;
+  return ublox_get_ack();
 }
 
 int ublox_get_rate(void)
@@ -333,7 +352,7 @@ int ublox_set_measuring_rate(uint16_t ms)
 
   ublox_send(MSG_CLASS_CFG, MSG_ID_CFG_RATE, (uint8_t*)request, sizeof(request));
 
-  ublox_expect_response(MSG_CLASS_ACK, MSG_ID_ACK_ACK);
+  ublox_get_ack();
 
   return 1;
 }
@@ -401,27 +420,38 @@ static int ublox_update_port_settings(usart_t port, uint32_t baud)
     arch_usart_set_baud(port, baud);
   }
 
-  ublox_expect_response(MSG_CLASS_ACK, MSG_ID_ACK_ACK);
-
-  return 1;
+  return ublox_get_ack();
 }
 
 /**
- * TODO: This also needs to use CFG-PM@ message.
+ * @brief PM2 configuration message.
+ *
+ *  mode 
+ *    0 = continuous
+ *    1 = power save
+ *    4 = continuous
  */
-int ublox_sleep(void)
+static int ublox_pm2(uint8_t mode)
 {
   uint8_t request[2] = {
     0,
-    4 /* power save mode */
+    mode /* power save mode */
   };
 
   ublox_send(MSG_CLASS_CFG, MSG_ID_CFG_RXM, (uint8_t*)request, sizeof(request));
 
   // XXX Do we get acks?
-  ublox_expect_response(MSG_CLASS_ACK, MSG_ID_ACK_ACK);
+  return ublox_get_ack();
+}
 
-  return 1;
+int ublox_sleep(void)
+{
+  return ublox_pm2(4);
+}
+
+int ublox_wake(void)
+{
+  return ublox_pm2(0);
 }
 
 #endif // CONFIG_USE_GPS

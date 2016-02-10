@@ -6,13 +6,13 @@ configure_file (
   "${PROJECT_SOURCE_DIR}/include/config.h.in" "${PROJECT_BINARY_DIR}/include/config.h"
 )
 
-option (test "Build a testing image" ON)
+option (test "Build a testing image" OFF)
 option (stlib "Use the ST stm32 peripheral library" ON)
 
 set (BINARY_NAME ${PROJECT_NAME})
 
-# set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g3") 
-set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Os -O2 -Wextra")
+set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g3") 
+# set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Os -O2 -Wextra")
 
 if (NOT test)
   set (STM32_DEV_TYPE STM32L1XX_HD)

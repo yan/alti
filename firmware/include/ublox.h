@@ -303,4 +303,6 @@ int ublox_reset(void);
 
 int ublox_sleep(void);
 
+int ublox_wake(void);
+
 #endif // __UBLOX_H

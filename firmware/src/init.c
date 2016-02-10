@@ -428,9 +428,9 @@ void WEAK debug_monitor_handler(void);
 #if 0
 void mem_manage_handler(void) __attribute__ (( naked ));
 void bus_fault_handler(void) __attribute__ (( naked ));
-void hard_fault_handler(void) __attribute__ (( naked ));
 void usage_fault_handler(void) __attribute__ (( naked ));
 #endif
+extern void hard_fault_handler(void) __attribute__ (( naked ));
 
 /** Type of an interrupt function. Only used to avoid hard-to-read function
  * pointers in the efm32_vector_table_t struct. */
@@ -523,9 +523,22 @@ void WEAK __attribute__ ((naked)) reset_handler(void)
 
 }
 
+extern void  __attribute__ ((noinline))
+  pop_registers_from_fault_stack(unsigned int * hardfault_args);
+
 void blocking_handler(void)
 {
-	while (1);
+      __asm volatile
+      (
+        " tst lr, #4							\n"
+        " ite eq							\n"
+        " mrseq r0, msp							\n"
+        " mrsne r0, psp							\n"
+        " ldr r1, [r0, #24]						\n"
+        " ldr r2, handler8_address_const				\n"
+        " bx r2								\n"
+        " handler8_address_const: .word pop_registers_from_fault_stack	\n"
+      );
 }
 
 void null_handler(void)
@@ -534,7 +547,7 @@ void null_handler(void)
 }
 
 #pragma weak nmi_handler = null_handler
-#pragma weak hard_fault_handler = blocking_handler
+// #pragma weak hard_fault_handler = blocking_handler
 #pragma weak sv_call_handler = null_handler
 #pragma weak pend_sv_handler = null_handler
 #pragma weak sys_tick_handler = null_handler

@@ -108,10 +108,10 @@ static void handle_ubx_message(struct ubx_state_s *state)
 void config_gps(void)
 {
   ublox_init(CONFIG_UBLOX_BAUD_RATE);
-  ublox_set_measuring_rate(200);
-  ublox_start_updates(1);
-  delay_ms(1000);
-  ublox_sleep();
+  // ublox_set_measuring_rate(200);
+  // ublox_start_updates(1);
+  // delay_ms(1000);
+  // ublox_sleep();
 }
 
 /**
@@ -121,52 +121,59 @@ void task_gps(void *p)
 {
   (void) p;
 
-  enum {
-    SLEEP,
-    RUN
-  } state = RUN;
+  enum { STARTING, SLEEP, RUN } state = STARTING;
 
-  BaseType_t received;
+  enum gps_event_t event;
   BaseType_t status;
   struct ubx_state_s ubx_state = {
     .port = UBLOX_UART
   };
-  // uint8_t waiting_ack[2] = {0};
-  // struct gps_sample_s sample;
 
   config_gps();
   // ublox_reset();
   // ublox_set_measuring_rate(200);
 
   for (;;) {
-    status = xQueueReceive(g.gps_queue_g, &received, portMAX_DELAY);
+    status = xQueueReceive(g.gps_queue_g, &event, portMAX_DELAY);
 
     if (status != pdPASS) {
-      // ????
-    }
+      continue;
+    } 
 
-    switch (received) {
+    switch (event) {
       case EVT_GPS_RESET:
         ublox_reset();
         break;
 
       case EVT_GPS_START:
-        ubx_state.flags.waiting_for_ack = !!ublox_set_measuring_rate(200);
-
-        status = xQueueReceive(g.gps_queue_g, &received, MS_TO_TICKS(1000));
+        // ubx_state.flags.waiting_for_ack = !!ublox_set_measuring_rate(200);
+#if 0
+        status = xQueueReceive(g.gps_queue_g, &event, MS_TO_TICKS(1000));
         /* XXX Send a 'failed to start message to main queue here? */
         if (status != pdPASS) {
-          received = EVT_GPS_RESET;
-          xQueueSend(g.gps_queue_g, &received, portMAX_DELAY);
+          event = EVT_GPS_RESET;
+          xQueueSend(g.gps_queue_g, &event, portMAX_DELAY);
           continue;
         } 
+#endif
+        if (state == RUN) {
+          break;
+        }
 
-
+        ublox_set_measuring_rate(200);
         ublox_start_updates(1);
+        delay_ms(1000);
+        // ublox_wake();
+
         state = RUN;
+
         break;
 
       case EVT_GPS_SLEEP:
+        if (state != RUN) {
+          break;
+        }
+
         ublox_sleep();
         state = SLEEP;
         break;

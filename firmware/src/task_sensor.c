@@ -43,10 +43,10 @@ void task_sensor(void *p)
     status = xQueueReceive(g.sensor_queue_g, &received_event, sleep_period);
 
     if (status != pdPASS) {
-      //
+      continue;
     } else {
       // Start spamming
-      sleep_period = MS_TO_TICKS(50);
+      // sleep_period = MS_TO_TICKS(200);
     }
 
     if (received_event & SENSOR_REQUEST_AIR_PRESSURE) {
@@ -93,6 +93,11 @@ void task_sensor(void *p)
       xQueueSend(g.main_queue_g, &evt, portMAX_DELAY);
     }
 #endif
+
+    /* TODO: Rework thisac */
+    evt.type = GLOBAL_EVT_SENSOR_COMPLETE;
+    xQueueSend(g.main_queue_g, &evt, portMAX_DELAY);
+
     // Go back to sleeping
     if (received_event & SENSOR_REQUEST_STOP) {
       sleep_period = portMAX_DELAY;
