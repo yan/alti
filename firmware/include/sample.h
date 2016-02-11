@@ -3,7 +3,7 @@
 #define __SAMPLE_H
 
 #include <ms5611.h>
-#include <config.h>
+//#include <config.h>
 #include <features.h>
 
 #if CONFIG_USE_GPS

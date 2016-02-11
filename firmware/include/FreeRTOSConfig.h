@@ -110,7 +110,8 @@ your application. */
 #define CONFIG_TASK_ALERT_STACK_DEPTH           configMINIMAL_STACK_SIZE
 #define CONFIG_TASK_ALERT_PRIORITY              ( DEFAULT_TASK_PRIORITY+1 )
 
-#define CONFIG_TASK_BLE_QUEUE_LEN               4
+// XXX: Reducing to 1 to attempt to fix multiple BLE transfers
+#define CONFIG_TASK_BLE_QUEUE_LEN               4 
 #define CONFIG_TASK_BLE_STACK_DEPTH             128
 #define CONFIG_TASK_BLE_PRIORITY                ( DEFAULT_TASK_PRIORITY + 3 )
 

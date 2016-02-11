@@ -55,7 +55,8 @@ static void config_ble_task(void)
 
   assert(g.ble_data_g != NULL);
 
-  g.ble_data_g->in  = xQueueCreate(CONFIG_TASK_BLE_QUEUE_LEN, sizeof(void*));
+  g.ble_data_g->in  = xQueueCreate(CONFIG_TASK_BLE_QUEUE_LEN,
+      sizeof(struct nrf8001_cmd_s));
   g.ble_data_g->semphr = xSemaphoreCreateBinary();
 
 #if ( configQUEUE_REGISTRY_SIZE > 0 )

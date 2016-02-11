@@ -82,7 +82,7 @@ void task_main(void *p)
 
         const uint8_t pipe = PIPE_DATA_UART_TX_TX;
         if (PIPE_OPEN(pipe)) {
-          ble_tx(pipe, (void*)&packet, 20);
+          ble_tx(pipe, (void*)&packet, sizeof(packet));
         }
       }
       break;
