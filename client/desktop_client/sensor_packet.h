@@ -9,6 +9,7 @@
 #include <QStringBuilder>
 #include <QString>
 
+
 struct sensor_packet_s {
     uint32_t ticks; // offset: 0
     uint32_t mbarc; // offset: 4
@@ -19,7 +20,7 @@ struct sensor_packet_s {
         int32_t heading;
         QString toString() const {
             return QString("{lat: %1, lon: %2, ground speed: %3, heading: %4, accuracy: %5 }")
-                        .arg(lat/1e7f).arg(lon/1e7f).arg(ground_speed).arg(heading).arg(accuracy / 100.0f);
+                        .arg(lat/1e7f).arg(lon/1e7f).arg(ground_speed/1e3f).arg(heading/1e5f).arg(accuracy / 100.0f);
         }
     } gps;
 
@@ -41,7 +42,7 @@ struct sensor_packet_s {
     }
 
     QString toString() const {
-        return QString("{\n  timestamp: %1\n  baro: %2\n  gps: %3\n  accel:  %4\n}").arg(ticks).arg(mbarc).arg(gps.toString()).arg(acc.toString());
+        return QString("{\n  timestamp: %1\n  baro: %2\n  gps: %3\n  accel:  %4\n}").arg(ticks).arg(mbarc/100.0).arg(gps.toString()).arg(acc.toString());
     }
 };
 

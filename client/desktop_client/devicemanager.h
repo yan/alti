@@ -9,6 +9,7 @@
 #include <QLowEnergyController>
 
 //#include "ble_device.h"
+//#include "blecharacteristicstream.h"
 
 class DeviceManager : public QObject
 {
@@ -16,6 +17,7 @@ class DeviceManager : public QObject
     QBluetoothDeviceDiscoveryAgent *discoveryAgent;
     QLowEnergyController *ble_controller;
     QList<QLowEnergyService*> m_services;
+    //BLECharacteristicStream m_stream;
     //QList<BleDevice*> devices;
 
 public:
@@ -28,7 +30,8 @@ public slots:
     void start();
     void stop() ;
 
-//signals:
+signals:
+    void bleDataReceived(const QByteArray &arr);
 
 private slots:
     void characteristicChanged(const QLowEnergyCharacteristic &ch, const QByteArray &arr);

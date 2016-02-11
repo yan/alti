@@ -5,7 +5,8 @@ CONFIG += c++11
 
 SOURCES += main.cpp \
     devicemanager.cpp \
-    alti.cc
+    alti.cc \
+    blecharacteristicstream.cpp
 
 RESOURCES += qml.qrc
 
@@ -14,9 +15,11 @@ QML_IMPORT_PATH =
 
 # Default rules for deployment.
 #include(deployment.pri)
+INCLUDEPATH += ../../firmware/include
 
 HEADERS += \
     devicemanager.h \
     alti.h \
-    sensor_packet.h
+    sensor_packet.h \
+    blecharacteristicstream.h
 

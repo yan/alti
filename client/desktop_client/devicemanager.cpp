@@ -17,8 +17,9 @@ const static QUuid kDataXferUartLtCharUuid   ("6e400005-b5a3-f393-e0a9-e50e24dcc
 static QTextStream qout(stdout);
 
 DeviceManager::DeviceManager(QObject *parent)
-    :QObject(parent)
-    ,ble_controller(nullptr)
+    : QObject(parent)
+    , ble_controller(nullptr)
+    //, m_stream(this)
 {
     discoveryAgent = new QBluetoothDeviceDiscoveryAgent();
     discoveryAgent->setInquiryType(QBluetoothDeviceDiscoveryAgent::LimitedInquiry);
@@ -119,8 +120,14 @@ DeviceManager::serviceStateChanged(QLowEnergyService::ServiceState newState)
                 return;
 
             qDebug() << "Subscribing to : " << ch.uuid();
-            connect(service, &QLowEnergyService::characteristicChanged,
-                    this,    &DeviceManager::characteristicChanged);
+            connect(service,   &QLowEnergyService::characteristicChanged,
+                    this,      &DeviceManager::characteristicChanged);
+
+            //connect(this,      &DeviceManager::bleDataReceived,
+            //        &m_stream, &BLECharacteristicStream::receivedBytes);
+            // connect(service,   &QLowEnergyService::characteristicChanged,
+            //        &m_stream, &BLECharacteristicStream::receivedBytes);
+
 
             service->writeDescriptor(notification, QByteArray::fromHex("ffff"));
             m_services.append(service);
@@ -134,16 +141,26 @@ DeviceManager::serviceStateChanged(QLowEnergyService::ServiceState newState)
 
 }
 
+static QByteArray gArr;
 
 void
 DeviceManager::characteristicChanged(const QLowEnergyCharacteristic &ch, const QByteArray &arr)
 {
     //qDebug() << "changed ..";
     if (ch.uuid() == kDataXferUartTxCharUuid) {
-        sensor_packet_s p(arr);
-        qout << p.toString() << endl;
+        emit bleDataReceived(arr);
+        if (arr.length() == 20) {
+            gArr = arr;
+        } else {
+            gArr.append(arr);
+            sensor_packet_s p(gArr);
+            qout << p.toString() << endl;
 
+        }
 #if 0
+        qDebug() << "Received " << arr.length() << " bytes";
+
+
 
         //qDebug() << "characteristic value: (" << arr.length() << ")" << arr.toHex().toStdString().c_str();
 
