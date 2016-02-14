@@ -28,6 +28,7 @@ void task_main(void *p)
   portBASE_TYPE status;
   enum global_state_e state = GLOBAL_STATE_RESET;
   struct sensor_packet_s packet = {0};
+  struct event_header_s event = { 0 };
   // struct event_header_s current_event;
 
   for (;;) {
@@ -82,6 +83,8 @@ void task_main(void *p)
 
         const uint8_t pipe = PIPE_DATA_UART_TX_TX;
         if (PIPE_OPEN(pipe)) {
+          logger_write_sample(&event, &packet);
+
           ble_tx(pipe, (void*)&packet, sizeof(packet));
         }
       }
@@ -89,11 +92,6 @@ void task_main(void *p)
 
       case GLOBAL_EVT_SENSOR_BARO: {
         packet.mbarc =  evt.payload.baro_sample.mbarc;
-
-        // Send the data via ble
-        // if (PIPE_OPEN(tx_pipe)) {
-        //   ble_tx(tx_pipe, (void*)&pressure, sizeof(pressure));
-        // }
       }
       break;
 
@@ -102,22 +100,29 @@ void task_main(void *p)
 
         BaseType_t action = EVT_GPS_SLEEP;
         if (PIPE_OPEN(PIPE_DATA_UART_TX_TX)) {
+          logger_start_event(&event);
+
           action = EVT_GPS_START;
           xQueueSend(g.gps_queue_g, &action, portMAX_DELAY);
         } 
         // xQueueSend(g.gps_queue_g, &action, portMAX_DELAY);
       }
-        break;
+      break;
 
-      case GLOBAL_EVT_NRF8001_RDY: {
-        xSemaphoreGive(g.ble_data_g->semphr);
-        counter_add_event(COUNTER_GIVEN);
+      // case GLOBAL_EVT_NRF8001_RDY: {
+      // }
+      // break;
+
+      case GLOBAL_EVT_NRF8001_DATA_RECEIVED: {
+        logger_end_event(&event);
+
       }
-        break;
 
-      case GLOBAL_EVT_NRF8001_EVENT: 
-        nrf8001_handle_event(&evt.payload.nrf8001_cmd);
-        break;
+      break;
+
+      // case GLOBAL_EVT_NRF8001_EVENT: 
+      //   nrf8001_handle_event(&evt.payload.nrf8001_cmd);
+      //   break;
 
       case GLOBAL_EVT_LAST:
         break;

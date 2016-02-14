@@ -32,6 +32,7 @@ static void nrf8001_connect(void);
 static void nrf8001_setup(void);
 static void handle_pipe_status(struct nrf8001_cmd_s *evt);
 static void handle_connected(struct nrf8001_cmd_s *evt);
+static void handle_data_received(struct nrf8001_cmd_s *evt);
 
 enum nrf8001_state_e {
   STATE_IDLE,
@@ -59,18 +60,11 @@ static void config_nrf8001_pins(void);
 static void config_nrf8001_isr(void);
 static void nrf8001_reset(void);
 
-int g_isr_hit = 0;
 
 void nrf8001_isr(void)
 {
   BaseType_t higher;
-
-  enum event_type_e evt = GLOBAL_EVT_NRF8001_RDY;
-
-  ++g_isr_hit;
-
-  xQueueSendToFrontFromISR(g.main_queue_g, &evt, &higher);
-
+  xSemaphoreGiveFromISR(g.ble_data_g->semphr, &higher);
   portYIELD_FROM_ISR(higher);
 }
 
@@ -144,6 +138,16 @@ static void nrf8001_setup(void)
   to_send = (struct nrf8001_cmd_s*) init_cmds[s_nrf8001_state.setup_msg_idx].cmd;
   ble_send_cmd(to_send);
   s_nrf8001_state.setup_msg_idx++;
+}
+
+static void handle_data_received(struct nrf8001_cmd_s *evt)
+{
+  struct global_event_s response_evt;
+
+  response_evt.type = GLOBAL_EVT_NRF8001_DATA_RECEIVED;
+  response_evt.payload.nrf8001_cmd = *evt;
+
+  xQueueSend(g.main_queue_g, &response_evt, 0);
 }
 
 /**
@@ -249,7 +253,14 @@ void nrf8001_handle_event(struct nrf8001_cmd_s *event)
       handle_pipe_status(event);
       break;
 
+    case ACI_EVT_DATA_RECEIVED:
+      handle_data_received(event);
+      break;
+
     default:
+      ;
+      ;
+      ;
       break;
   }
 }
@@ -273,7 +284,7 @@ void nrf8001_exchange_cmds(struct nrf8001_cmd_s *out, struct nrf8001_cmd_s *in)
    *
    * TODO: Make sure this function is covered by unit tests
    */
-  memset(out_ptr + out->length + 1, '\0', NRF8001_MAX_CMD_LENGTH-out->length);
+  memset(out_ptr + out->length + 1, '\0', NRF8001_MAX_CMD_LENGTH - out->length);
 
   spi_set_lsb(BT_STORE);
 
