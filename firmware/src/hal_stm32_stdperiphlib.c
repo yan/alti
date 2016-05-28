@@ -247,7 +247,6 @@ void SystemCoreClockUpdate (void)
 
 static void config_pll(void)
 {
-
   RCC_DeInit();
 
   /*
@@ -300,7 +299,6 @@ void arch_config_clocks(void)
   /* Configure main system clock */
   // RCC_PLLConfig(RCC_PLLSource_HSI, RCC_PLLMul_3, RCC_PLLDiv_2);
 
-
   /* Enable LSE */
   /* Enable access to the RTC XXX: Do we need to disable it? */
   PWR_RTCAccessCmd(ENABLE);
@@ -314,8 +312,28 @@ void arch_config_clocks(void)
   while (RCC_GetFlagStatus(RCC_FLAG_LSERDY) != SET)
     ;
 
+  //RTC_Config();
+
   /* Set the RTC to use the LSE */
   RCC_RTCCLKConfig(RCC_RTCCLKSource_LSE);
+  RCC_RTCCLKCmd(ENABLE);
+
+    RTC_InitTypeDef RTC_InitStructure = {0};
+    RTC_TimeTypeDef RTC_TimeStruct = {0};
+
+    /* Configure the RTC data register and RTC prescaler */
+    RTC_InitStructure.RTC_AsynchPrediv = 0x7F;
+    RTC_InitStructure.RTC_SynchPrediv  = 0xFF;
+    RTC_InitStructure.RTC_HourFormat   = RTC_HourFormat_24;
+    assert(RTC_Init(&RTC_InitStructure) == SUCCESS);
+
+    /* Set the time to 00h 00mn 00s AM */
+    RTC_TimeStruct.RTC_H12     = RTC_H12_AM;
+    RTC_TimeStruct.RTC_Hours   = 0x00;
+    RTC_TimeStruct.RTC_Minutes = 0x00;
+    RTC_TimeStruct.RTC_Seconds = 0x01;
+    assert(RTC_SetTime(RTC_Format_BCD,&RTC_TimeStruct) == SUCCESS);
+
 
   RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOA, ENABLE);
   RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOB, ENABLE);

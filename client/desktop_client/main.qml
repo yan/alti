@@ -7,14 +7,15 @@ Window {
 
     MainForm {
         anchors.fill: parent
-        buttonStop.onClicked: {
+        /*
+        tabView1.stream.buttonStop.onClicked: {
             console.log("manager is: ", deviceManager);
             deviceManager.stop();
         }
-        buttonStart.onClicked: {
+        tabView1.stream.buttonStart.onClicked: {
             console.log("device manager is: ", deviceManager)
             deviceManager.start()
-        }
+        }*/
 
 
     }

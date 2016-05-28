@@ -1,0 +1,37 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "2C0DD26E457C9466813EF975EF0E97FB7C0E9460",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "1B46E2EB4238C0978F01FFF9E8C1390836A3DFD9" : 0,
+    "9025163822AAEA7A2D8AC9210D0874A56F62B462" : 0,
+    "2C0DD26E457C9466813EF975EF0E97FB7C0E9460" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "BA5960D5-63B0-4802-998C-07DD099A6145",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "1B46E2EB4238C0978F01FFF9E8C1390836A3DFD9" : "alticlient\/ios\/Alti\/BlueCap",
+    "9025163822AAEA7A2D8AC9210D0874A56F62B462" : "alticlient\/ios\/Alti\/Charts",
+    "2C0DD26E457C9466813EF975EF0E97FB7C0E9460" : "alti"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "Alti",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "client\/ios\/Alti\/Alti.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/troystribling\/BlueCap.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "1B46E2EB4238C0978F01FFF9E8C1390836A3DFD9"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "bitbucket.org:yan_i\/alti.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "2C0DD26E457C9466813EF975EF0E97FB7C0E9460"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/danielgindi\/ios-charts.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "9025163822AAEA7A2D8AC9210D0874A56F62B462"
+    }
+  ]
+}

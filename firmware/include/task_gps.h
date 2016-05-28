@@ -22,6 +22,7 @@ void config_gps(void);
 
 void task_gps(void *p);
 
+extern uint32_t g_ticks;
 
 #endif // __TASK_GPS_H
 #endif // CONFIG_USE_GPS

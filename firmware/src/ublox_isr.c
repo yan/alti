@@ -113,6 +113,7 @@ void usart1_isr(void)
     case USART_ISR_STATE_CK2: {
         BaseType_t higher_awoken, event;
         if (s->running_checksum[1] == value) { 
+          g_ticks = xTaskGetTickCountFromISR();
           // we're done reading, reset state, counters, and give semaphore
           s->state = USART_ISR_STATE_WAITING;
           // xSemaphoreGiveFromISR(g.usart_mutex_g, &higher_awoken);

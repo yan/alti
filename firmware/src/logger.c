@@ -7,6 +7,7 @@
 
 #include <string.h>
 #include <unistd.h>
+#include <globals.h>
 
 #include <rtos.h>
 #include <logger.h>

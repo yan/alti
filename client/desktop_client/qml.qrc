@@ -2,6 +2,7 @@
     <qresource prefix="/">
         <file>main.qml</file>
         <file>MainForm.ui.qml</file>
+        <file>Stream.qml</file>
+        <file>Receive.qml</file>
     </qresource>
 </RCC>
-

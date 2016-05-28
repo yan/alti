@@ -17,7 +17,7 @@ extension UInt32 : Deserializable {
     }
     
     public init?(stringValue:String) {
-        if let value = stringValue.toInt() {
+        if let value = Int(stringValue) {
             self = UInt32(value)
         } else {
             return nil

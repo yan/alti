@@ -113,8 +113,8 @@ static void nrf8001_connect(void) {
   cmd_buf.opcode = ACI_CMD_CONNECT;
   cmd_buf.length = 5;
 
-  args[0] = 0;//60; // timeout, in seconds
-  args[1] = 0x100; // interval, 160ms (256 * 0.625ms)
+  args[0] = NRF8001_CONNECT_TIMEOUT;
+  args[1] = NRF8001_CONNECT_INTERVAL;
 
   ble_send_cmd(&cmd_buf);
 }
@@ -294,6 +294,7 @@ void nrf8001_exchange_cmds(struct nrf8001_cmd_s *out, struct nrf8001_cmd_s *in)
   in->length = arch_spi_xfer(BT_STORE, out->opcode);
   in->opcode = arch_spi_xfer(BT_STORE, out->data[0]);
 
+  /* '- 1' is the opcode byte that we already transferred */
   bytes_to_xfer = MAX(in->length, out->length - 1) - 1;
 
   for (i = 0; i < bytes_to_xfer; i++) {

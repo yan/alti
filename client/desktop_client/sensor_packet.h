@@ -3,6 +3,11 @@
 
 #include <stdint.h>
 
+//#include <sample.h>
+#include <QDataStream>
+
+#if 1
+
 #include <QByteArray>
 #include <QDataStream>
 #include <QDebug>
@@ -22,14 +27,14 @@ struct sensor_packet_s {
             return QString("{lat: %1, lon: %2, ground speed: %3, heading: %4, accuracy: %5 }")
                         .arg(lat/1e7f).arg(lon/1e7f).arg(ground_speed/1e3f).arg(heading/1e5f).arg(accuracy / 100.0f);
         }
-    } gps;
+    } gps_sample;
 
     struct accel_sample_s {
         int16_t x, y, z;
         QString toString() const {
             return QString("{x: %1, y %2, z: %3}").arg(x).arg(y).arg(z);
         }
-    } acc;
+    } accel_sample;
 
     sensor_packet_s(QByteArray arr) {
         QDataStream s {arr};
@@ -37,13 +42,15 @@ struct sensor_packet_s {
 
         s >> ticks;
         s >> mbarc;
-        s >> gps.accuracy >> gps.lat >> gps.lon >> gps.ground_speed >> gps.heading ;
-        s >> acc.x >> acc.y >> acc.z;
+        s >> gps_sample.accuracy >> gps_sample.lat >> gps_sample.lon >> gps_sample.ground_speed >> gps_sample.heading ;
+        s >> accel_sample.x >> accel_sample.y >> accel_sample.z;
     }
 
     QString toString() const {
-        return QString("{\n  timestamp: %1\n  baro: %2\n  gps: %3\n  accel:  %4\n}").arg(ticks).arg(mbarc/100.0).arg(gps.toString()).arg(acc.toString());
+        return QString("{\n  timestamp: %1\n  baro: %2\n  gps: %3\n  accel:  %4\n}").arg(ticks).arg(mbarc/100.0).arg(gps_sample.toString()).arg(accel_sample.toString());
     }
 };
+
+#endif
 
 #endif // SENSOR_PACKET_H

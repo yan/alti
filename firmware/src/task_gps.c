@@ -3,6 +3,8 @@
 #include <rtos.h>
 #include <config.h>
 
+#include <rtos.h>
+
 #if CONFIG_USE_GPS
 
 #include <semphr.h>
@@ -16,6 +18,8 @@
 #include <pins.h>
 
 #include <ublox.h>
+uint32_t g_ticks = 0;
+
 BaseType_t usart_given = 0;
 
 struct ubx_state_s {
@@ -87,6 +91,10 @@ static void handle_ubx_message(struct ubx_state_s *state)
   if (IS(MSG_CLASS_NAV, MSG_ID_NAV_PVT)) {
     struct ubx_nav_pvt_solution_s *body = (struct ubx_nav_pvt_solution_s*)content;;
     struct global_event_s evt;
+
+    RTC_TimeTypeDef time;
+    RTC_GetTime(RTC_Format_BIN, &time);
+
     // struct gps_sample_s *sample;
     
     assert(sizeof(*body) == head->length);

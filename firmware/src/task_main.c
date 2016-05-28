@@ -55,19 +55,13 @@ void task_main(void *p)
 #if CONFIG_USE_GPS
       case GLOBAL_EVT_SENSOR_GPS: {
         /* Capture the gps sample, and get the other sensors */
+
+        packet.ticks = evt.payload.gps_sample.heading;
         packet.gps_sample = evt.payload.gps_sample;
 
         BaseType_t type = SENSOR_REQUEST_AIR_PRESSURE 
                          | SENSOR_REQUEST_ACCEL;
         xQueueSend(g.sensor_queue_g, &type, 0);
-
-
-        // const uint8_t tx_pipe = PIPE_DATA_UART_TX_TX;
-
-        // if (PIPE_OPEN(tx_pipe)) {
-          // ble_tx(tx_pipe, (void*)&accuracy, sizeof(accuracy));
-        // }
-
       }
       break;
 #endif // CONFIG_USE_GPS
@@ -79,8 +73,6 @@ void task_main(void *p)
       break;
 #endif
       case GLOBAL_EVT_SENSOR_COMPLETE: {
-        packet.ticks = xTaskGetTickCount();
-
         const uint8_t pipe = PIPE_DATA_UART_TX_TX;
         if (PIPE_OPEN(pipe)) {
           logger_write_sample(&event, &packet);
@@ -114,7 +106,8 @@ void task_main(void *p)
       // break;
 
       case GLOBAL_EVT_NRF8001_DATA_RECEIVED: {
-        logger_end_event(&event);
+
+        // logger_end_event(&event);
 
       }
 

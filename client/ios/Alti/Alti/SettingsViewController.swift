@@ -49,7 +49,7 @@ class SettingsViewController: UITableViewController {
         formatter.numberStyle = NSNumberFormatterStyle.DecimalStyle
         
         func getAndSetAlarm(when: AlarmType, altitude: Int) -> UITableViewCell {
-            let tvc = tableView.dequeueReusableCellWithIdentifier("alarm") as! UITableViewCell
+            let tvc = tableView.dequeueReusableCellWithIdentifier("alarm") as UITableViewCell!
             (tvc.contentView.viewWithTag(1) as! UILabel).text = formatter.stringFromNumber(altitude)! + "\""
             (tvc.contentView.viewWithTag(1) as! UILabel).sizeToFit()
             (tvc.contentView.viewWithTag(2) as! UILabel).text = when.rawValue;
@@ -57,7 +57,7 @@ class SettingsViewController: UITableViewController {
 
         }
         func getAndSetCell(title: String) -> UITableViewCell {
-            let tvc = tableView.dequeueReusableCellWithIdentifier("feature") as! UITableViewCell
+            let tvc = tableView.dequeueReusableCellWithIdentifier("feature") as UITableViewCell!
             (tvc.contentView.viewWithTag(1) as! UILabel).text = title
             (tvc.contentView.viewWithTag(2) as! UISwitch).enabled = false;
             return tvc
@@ -72,11 +72,11 @@ class SettingsViewController: UITableViewController {
             }
         case 1:
             switch indexPath.item {
-            case 0: return getAndSetAlarm(AlarmType.Airplane, 1000)
-            case 1: return getAndSetAlarm(AlarmType.Airplane, 10000)
-            case 2: return getAndSetAlarm(AlarmType.Freefall, 5500)
-            case 3: return getAndSetAlarm(AlarmType.Freefall, 4500)
-            case 4: return getAndSetAlarm(AlarmType.Freefall, 4000)
+            case 0: return getAndSetAlarm(AlarmType.Airplane, altitude: 1000)
+            case 1: return getAndSetAlarm(AlarmType.Airplane, altitude: 10000)
+            case 2: return getAndSetAlarm(AlarmType.Freefall, altitude: 5500)
+            case 3: return getAndSetAlarm(AlarmType.Freefall, altitude: 4500)
+            case 4: return getAndSetAlarm(AlarmType.Freefall, altitude: 4000)
             default: assert(false, "")
             }
         default:
@@ -84,12 +84,12 @@ class SettingsViewController: UITableViewController {
         }
 
 
-        println("Getting row \(indexPath)")
+        print("Getting row \(indexPath)")
     }
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int
     {
-        println("Asked how many rows in section \(section)")
+        print("Asked how many rows in section \(section)")
         
         
         switch section {
@@ -127,7 +127,7 @@ class SettingsViewController: UITableViewController {
     */
     // MARK: Slider delegate
     @IBAction func toggleSwitch(sender: UISwitch) {
-        println("Changed");
+        print("Changed");
     }
     /*
     // Override to support conditional editing of the table view.

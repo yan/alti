@@ -36,7 +36,14 @@ void config_globals(void)
  */
 void config_load_persistent(void)
 {
-  flash_read(CONFIG_ADDR, (uint8_t*) &g.persisted_config, sizeof(g.persisted_config));
+  xSemaphoreTake(g.flash_buffer.lock, portMAX_DELAY);
+
+  // g.flash_buffer.address = CONFIG_ADDR;
+  // memcpy(g.flash_buffer.buffer, &g.persisted_config, sizeof(g.persisted_config));
+
+  flash_read(CONFIG_ADDR, (uint8_t*)&g.persisted_config, sizeof(g.persisted_config));
+
+  xSemaphoreGive(g.flash_buffer.lock);
 }
 
 /**

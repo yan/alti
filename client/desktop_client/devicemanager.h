@@ -3,10 +3,11 @@
 
 #include <QObject>
 #include <QList>
-
+#include <QPair>
 #include <QBluetoothDeviceDiscoveryAgent>
 #include <QBluetoothLocalDevice>
 #include <QLowEnergyController>
+#include <QTimer>
 
 //#include "ble_device.h"
 //#include "blecharacteristicstream.h"
@@ -17,6 +18,8 @@ class DeviceManager : public QObject
     QBluetoothDeviceDiscoveryAgent *discoveryAgent;
     QLowEnergyController *ble_controller;
     QList<QLowEnergyService*> m_services;
+    QPair<QLowEnergyService*, const QLowEnergyCharacteristic*> m_pair;
+    QTimer *m_timer;
     //BLECharacteristicStream m_stream;
     //QList<BleDevice*> devices;
 
@@ -40,6 +43,8 @@ private slots:
     void addDevice(const QBluetoothDeviceInfo &);
     void deviceScanFinished();
     void deviceScanError(QBluetoothDeviceDiscoveryAgent::Error);
+private:
+    void stopNotifications();
 };
 
 #endif // DEVICEMANAGER_H

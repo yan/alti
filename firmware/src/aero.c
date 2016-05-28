@@ -167,7 +167,7 @@ aero_main(int argc, char *argv[])
   config_globals();
   config_tasks();
   config_flash();
-  // config_load_persistent();
+  config_load_persistent();
 
   vTaskStartScheduler();
 

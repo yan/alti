@@ -102,25 +102,25 @@ your application. */
 #define xPortSysTickHandler                     sys_tick_handler
 
 
-#define CONFIG_TASK_MAIN_STACK_DEPTH            128 // 768 // 3k
+#define CONFIG_TASK_MAIN_STACK_DEPTH            256 // 768 // 3k
 #define CONFIG_TASK_MAIN_QUEUE_LEN              16
 #define CONFIG_TASK_MAIN_PRIORITY               ( DEFAULT_TASK_PRIORITY )
 
 #define CONFIG_TASK_ALERT_QUEUE_LEN             4
 #define CONFIG_TASK_ALERT_STACK_DEPTH           configMINIMAL_STACK_SIZE
-#define CONFIG_TASK_ALERT_PRIORITY              ( DEFAULT_TASK_PRIORITY+1 )
+#define CONFIG_TASK_ALERT_PRIORITY              ( DEFAULT_TASK_PRIORITY + 0 )
 
 // XXX: Reducing to 1 to attempt to fix multiple BLE transfers
 #define CONFIG_TASK_BLE_QUEUE_LEN               4 
-#define CONFIG_TASK_BLE_STACK_DEPTH             128
-#define CONFIG_TASK_BLE_PRIORITY                ( DEFAULT_TASK_PRIORITY + 3 )
+#define CONFIG_TASK_BLE_STACK_DEPTH             256
+#define CONFIG_TASK_BLE_PRIORITY                ( DEFAULT_TASK_PRIORITY + 2 )
 
 #define CONFIG_TASK_SENSOR_QUEUE_LEN            4
 #define CONFIG_TASK_SENSOR_STACK_DEPTH          128
-#define CONFIG_TASK_SENSOR_PRIORITY             ( DEFAULT_TASK_PRIORITY + 1 )
+#define CONFIG_TASK_SENSOR_PRIORITY             ( DEFAULT_TASK_PRIORITY + 0 )
 
 #define CONFIG_TASK_GPS_QUEUE_LEN               4
-#define CONFIG_TASK_GPS_STACK_DEPTH             128
+#define CONFIG_TASK_GPS_STACK_DEPTH             256
 #define CONFIG_TASK_GPS_PRIORITY                ( DEFAULT_TASK_PRIORITY )
 
 

@@ -60,6 +60,11 @@ static void flash_write_buffer(uint8_t *data, size_t size)
 
   /* Then, clock in the actual data */
   spi_send_buf(ADESTO_FLASH_BUS, data, size);
+  
+  /* If we tried to transmit less than a full buffer, fill with zeroes */
+  for (; size < STORAGE_PAGE_SIZE; size++) {
+    arch_spi_xfer(ADESTO_FLASH_BUS, 0);
+  }
 
   /* And we're done */
   pin_set(ADESTO_FLASH_CS_GPIO, ADESTO_FLASH_CS);
@@ -130,7 +135,7 @@ void flash_read(uint32_t addr, uint8_t *data, size_t size)
 void flash_write(uint32_t addr, uint8_t *data, size_t size)
 {
   // Make sure that the address is sector-aligned
-  assert((addr & 0x1FF) == 0);
+  assert((addr & STORAGE_PAGE_MASK) == 0);
 
   spi_set_msb(ADESTO_FLASH_BUS);
 

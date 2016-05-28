@@ -48,16 +48,16 @@ class SettingsController: UIViewController {
         let manager = CentralManager.sharedInstance
 
         let peripheralConnectFuture = manager.powerOn().flatmap {_ -> FutureStream<Peripheral> in
-            println("Started Scanning")
+            print("Started Scanning")
             return manager.startScanningForServiceUUIDs([serviceUUID], capacity:10)
         }.flatmap {peripheral -> FutureStream<(Peripheral, ConnectionEvent)> in
             self.peripheral = peripheral
 
             manager.stopScanning()
             
-            println("Got peripheral")
-            
-            return peripheral.connect(capacity:10, timeoutRetries:5, disconnectRetries:5)
+            print("Got peripheral")
+
+            return peripheral.connect(10, timeoutRetries:5, disconnectRetries:5)
         }
         
         
@@ -105,22 +105,23 @@ class SettingsController: UIViewController {
             }
         }
         
-        subscribedCharacteristicFuture.flatmap { characteristic -> FutureStream<Characteristic> in
-            return characteristic.recieveNotificationUpdates(capacity: 10)
-        }.onSuccess { c in
+        let future = subscribedCharacteristicFuture.flatmap { (characteristic) -> FutureStream<NSData?> in
+            return characteristic.recieveNotificationUpdates(10)
+         }
+        future.onSuccess { (c : NSData) in
             self.updateData(c)
         }
         
 
     }
 
-    func updateData(c : Characteristic) {
-        
+    func updateData(c : NSData) {
+        /*
         if let v : AltiHardware.StreamingPressureService.Baro = c.value() {
-            println(v)
+            print(v)
             self.labelPressure.text = "[\(v.rawValue)]"
             self.labelAltitude.text = NSString(format: "%.2f", v.toAltitude()) as String
-        }
+        }*/
     }
     
     func updateUI() -> Void {

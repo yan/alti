@@ -43,11 +43,11 @@ struct protected_buffer_s {
  * @brief Configuration of the altimeter that is persisted to non volatile
  * storage.
  */
-struct persisted_config_s {
+struct storage_header_s {
   char name[16];
   struct alarm_s alarms[ALARM_LEN];
   uint32_t logged_jumps;
-  uint32_t last_written_jump;
+  uint32_t last_event;
 } __attribute__((packed));
 
 
@@ -93,7 +93,7 @@ struct globals {
   struct protected_buffer_s flash_buffer;
 
   /** @brief Persisted config */
-  struct persisted_config_s persisted_config;
+  struct storage_header_s persisted_config;
 
   /** @brief Bitmasks of open and closed nRF8001 pipes */
   uint8_t pipes_open[8], pipes_closed[8];

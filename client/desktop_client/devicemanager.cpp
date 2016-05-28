@@ -4,6 +4,10 @@
 #include <QBluetoothUuid>
 #include <QDataStream>
 #include <QTextStream>
+#include <QTimer>
+#include <QThread>
+
+//#include "blecharacteristicstream.h"
 #include "sensor_packet.h"
 #include "alti.h"
 
@@ -16,11 +20,40 @@ const static QUuid kDataXferUartCPCharUuid   ("6e400004-b5a3-f393-e0a9-e50e24dcc
 const static QUuid kDataXferUartLtCharUuid   ("6e400005-b5a3-f393-e0a9-e50e24dcca9e");
 static QTextStream qout(stdout);
 
+
 DeviceManager::DeviceManager(QObject *parent)
     : QObject(parent)
     , ble_controller(nullptr)
     //, m_stream(this)
 {
+    m_timer = new QTimer(this);
+    m_timer->setInterval(10000);
+    m_timer->setSingleShot(true);
+//    connect(m_timer, &QTimer::timeout, [&]() {
+//        // QThread::msleep(1000);
+//        stopNotifications();
+//        qDebug() << "About to fire";
+
+//        foreach (QLowEnergyService *service, m_services) {
+//            const QList<QLowEnergyCharacteristic> chars = service->characteristics();
+//            foreach (const QLowEnergyCharacteristic &ch, chars) {
+//                if (ch.uuid() == kDataXferUartRxCharUuid) {
+//                    quint32 v = 1;
+//                    for (v = 0 ; v < 5; v ++ ) {
+//                        qDebug() << "Writing data";
+
+//                        service->writeCharacteristic(ch,
+//                                                     QByteArray::fromRawData((const char *)&v, sizeof(v)),
+//                                                     QLowEnergyService::WriteWithoutResponse);
+//                        QThread::msleep(1500);
+//                    }
+
+//                }
+//            }
+//        }
+//    });
+
+
     discoveryAgent = new QBluetoothDeviceDiscoveryAgent();
     discoveryAgent->setInquiryType(QBluetoothDeviceDiscoveryAgent::LimitedInquiry);
 
@@ -36,8 +69,20 @@ DeviceManager::DeviceManager(QObject *parent)
     connect(
        discoveryAgent, &QBluetoothDeviceDiscoveryAgent::finished,
        this,           &DeviceManager::deviceScanFinished);
-
+#if 0
     qDebug() << "connected";
+
+    BLECharacteristicStream dev {this};
+    QDataStream s(&dev);
+    dev.receivedBytes(QByteArray("abcdefghijklmnopqrstuvwxyz", 10));
+
+    sensor_packet_s packet;
+
+    s >> packet;
+
+    qDebug() << "read packet.";
+#endif
+
 }
 
 DeviceManager::~DeviceManager()
@@ -115,22 +160,22 @@ DeviceManager::serviceStateChanged(QLowEnergyService::ServiceState newState)
         if (ch.uuid() == kDataXferUartTxCharUuid) {
             QLowEnergyDescriptor notification =
                     ch.descriptor(QBluetoothUuid::ClientCharacteristicConfiguration);
+
             qDebug() << "Made a notification " << notification.name() << " (" << notification.isValid() << ")";
+
             if (!notification.isValid())
                 return;
 
             qDebug() << "Subscribing to : " << ch.uuid();
+
             connect(service,   &QLowEnergyService::characteristicChanged,
                     this,      &DeviceManager::characteristicChanged);
 
-            //connect(this,      &DeviceManager::bleDataReceived,
-            //        &m_stream, &BLECharacteristicStream::receivedBytes);
-            // connect(service,   &QLowEnergyService::characteristicChanged,
-            //        &m_stream, &BLECharacteristicStream::receivedBytes);
-
-
             service->writeDescriptor(notification, QByteArray::fromHex("ffff"));
+
             m_services.append(service);
+
+            m_timer->start();
             connect(this, &DeviceManager::destroyed, [&]() {
                qDebug() << "Unsub.";
             });
@@ -146,6 +191,8 @@ static QByteArray gArr;
 void
 DeviceManager::characteristicChanged(const QLowEnergyCharacteristic &ch, const QByteArray &arr)
 {
+    static uint32_t last_timestamp;
+
     //qDebug() << "changed ..";
     if (ch.uuid() == kDataXferUartTxCharUuid) {
         emit bleDataReceived(arr);
@@ -154,7 +201,9 @@ DeviceManager::characteristicChanged(const QLowEnergyCharacteristic &ch, const Q
         } else {
             gArr.append(arr);
             sensor_packet_s p(gArr);
+            qout << "Delta: " << p.ticks - last_timestamp << endl;
             qout << p.toString() << endl;
+            last_timestamp = p.ticks;
 
         }
 #if 0
@@ -195,8 +244,7 @@ DeviceManager::start()
     discoveryAgent->start();
 }
 
-void
-DeviceManager::stop()
+void DeviceManager::stopNotifications()
 {
     foreach (QLowEnergyService *service, m_services) {
         qDebug() << "Stopping " << service->serviceName();
@@ -204,7 +252,7 @@ DeviceManager::stop()
 
         foreach (const QLowEnergyCharacteristic &ch, chars) {
             qDebug() << "Characteristic: " << ch.name() << " " << ch.uuid();
-            if (ch.uuid() == kStreamCharacteristicUuid) {
+            if (ch.uuid() == kDataXferUartTxCharUuid) {
                 QLowEnergyDescriptor notification =
                         ch.descriptor(QBluetoothUuid::ClientCharacteristicConfiguration);
 
@@ -214,6 +262,15 @@ DeviceManager::stop()
             }
         }
     }
+}
+
+void
+DeviceManager::stop()
+{
+    stopNotifications();
 
     qDeleteAll(m_services);
+    m_services.clear();
+
+    discoveryAgent->stop();
 }

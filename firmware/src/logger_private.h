@@ -1,17 +1,10 @@
+#include <globals.h>
+
 /** @brief Type of the sentinel value. (only here for use in testing) */
 typedef uint32_t sentinel_t;
 
 /** @brief Value to prepend events with to detect wrap-around */
 #define SENTINEL_VALUE       ((sentinel_t) 0xAABBCCDD)
-
-/**
- * @brief The first page of storage has some basic info.
- *
- */
-struct storage_header_s {
-  /** @brief */
-  uint32_t last_event;
-} __attribute__((packed));
 
 /** @brief The address of the storage header */
 const uint32_t HEADER_ADDR = 0x00;

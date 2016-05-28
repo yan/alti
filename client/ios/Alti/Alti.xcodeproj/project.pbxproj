@@ -47,6 +47,20 @@
 			remoteGlobalIDString = 0551208119F5506000ED3B74;
 			remoteInfo = BlueCapKit;
 		};
+		CE89C1501C49CDF600AE67D8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CECC0DA61B3F8E94005029E7 /* Charts.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = A52C5C371BAC5CA400594CDD;
+			remoteInfo = "Charts-TV";
+		};
+		CE89C1521C49CDF600AE67D8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CECC0DA61B3F8E94005029E7 /* Charts.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 06AEE7A21BDC3F8B009875AE;
+			remoteInfo = ChartsTests;
+		};
 		CEBC61251B3CB00400DBF1C4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = CEBC61051B3CB00400DBF1C4 /* Project object */;
@@ -213,6 +227,8 @@
 			isa = PBXGroup;
 			children = (
 				CECC0DAC1B3F8E94005029E7 /* Charts.framework */,
+				CE89C1511C49CDF600AE67D8 /* Charts.framework */,
+				CE89C1531C49CDF600AE67D8 /* ChartsTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -264,6 +280,8 @@
 		CEBC61051B3CB00400DBF1C4 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftMigration = 0720;
+				LastSwiftUpdateCheck = 0720;
 				LastUpgradeCheck = 0630;
 				ORGANIZATIONNAME = user;
 				TargetAttributes = {
@@ -318,6 +336,20 @@
 			fileType = wrapper.cfbundle;
 			path = BlueCapKitTests.xctest;
 			remoteRef = CE41C01F1B3CB5AB0038BD8A /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		CE89C1511C49CDF600AE67D8 /* Charts.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = Charts.framework;
+			remoteRef = CE89C1501C49CDF600AE67D8 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		CE89C1531C49CDF600AE67D8 /* ChartsTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = ChartsTests.xctest;
+			remoteRef = CE89C1521C49CDF600AE67D8 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		CECC0DAC1B3F8E94005029E7 /* Charts.framework */ = {
