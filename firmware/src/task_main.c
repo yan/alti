@@ -26,10 +26,95 @@
 const uint8_t kSensorPipe = PIPE_SENSOR_STREAM_SENSOR_DATA_TX;
 const uint8_t kConfigPipe = PIPE_AERO_CONFIG_AERO_CONFIG_TX_1;
 
-static void handle_config(void);
+static void handle_config(struct setting_packet_s *setting_msg );
 
-static void handle_config(void)
+static void handle_config(struct setting_packet_s *setting_msg )
 {
+  struct event_s event;
+
+  switch (setting_msg->type) {
+    case CONFIG_SETTING:
+      // De-duplicate from the default case
+      settings_apply(setting_msg);
+      break;
+    case CONFIG_START_LOGGING:
+      filter_init_state(&g.filter_state);
+      logger_start_event(&event);
+      setting_msg->type = CONFIG_RESPONSE_OK;
+      break;
+
+    case CONFIG_STOP_LOGGING:
+      setting_msg->type = CONFIG_RESPONSE_OK;
+      logger_end_event(&event);
+      break;
+
+    case CONFIG_SET_EVENT:
+    {
+      struct event_s *p_event = NULL;
+      setting_msg->type = CONFIG_RESPONSE_FAIL;
+
+      while (logger_get_event(p_event, &event)) {
+        // If we're searching for an id and we find it, return it
+        if (event.header.event_id == setting_msg->event.event_id) {
+          setting_msg->type = CONFIG_RESPONSE_OK;
+          break;
+        }
+
+        // If we're looking for the most recent id, just return it
+        if (setting_msg->event.event_id == 0) {
+          setting_msg->event.event_id = event.header.event_id;
+          setting_msg->type = CONFIG_RESPONSE_OK;
+          break;
+        }
+
+        p_event = &event;
+
+      }
+    }
+    break;
+
+    case CONFIG_FORMAT_STORAGE: 
+      logger_format_storage();
+    
+    break;
+    case CONFIG_LIST_EVENTS:
+    {
+      struct event_s *p_event = NULL;
+      struct sensor_packet_s packet;
+
+      if (PIPE_OPEN(kConfigPipe)) {
+        // First, send the event header
+        ble_tx(kConfigPipe, (void*)&event, EVENT_HEADER_SIZE);
+
+        // Then, send the samples
+        while (logger_get_event(p_event, &event)) {
+          ble_tx(kConfigPipe, (void*)&packet, sizeof(packet));
+
+          p_event = &event;
+        }
+      }
+    }
+    break;
+
+    /**
+     * Send all the samples of the most recent event via the config chan
+     */
+    case CONFIG_GET_EVENTDATA:
+
+      if (PIPE_OPEN(kConfigPipe)) {
+        uint32_t i = 0;
+        struct sensor_packet_s packet;
+
+        setting_msg->event_data = event.header;
+        while (logger_read_sample(&event, i, &packet)) {
+          ble_tx(kConfigPipe, (void*)&packet, EVENT_HEADER_SIZE);
+        }
+      }
+    break;
+
+    default:
+      settings_apply(setting_msg);
+  }
 }
 
 void task_main(void *p)
@@ -122,100 +207,14 @@ void task_main(void *p)
       // break;
 
       case GLOBAL_EVT_NRF8001_DATA_RECEIVED: {
-        // XXX Clean up the casting
         struct setting_packet_s *setting_msg = (void*) &evt.payload.data;
 
-        switch (setting_msg->type) {
-          case CONFIG_SETTING:
-            break;
-          case CONFIG_START_LOGGING:
-            filter_init_state(&g.filter_state);
-            logger_start_event(&event);
-            setting_msg->event.status = 1;
-            if (PIPE_OPEN(kConfigPipe)) {
-              ble_tx(kConfigPipe, (void*)setting_msg, sizeof(*setting_msg));
-            }
-            break;
+        /** TODO: Clean up status returning */
+        handle_config(setting_msg);
 
-          case CONFIG_STOP_LOGGING:
-            setting_msg->event.status = 1;
-            if (PIPE_OPEN(kConfigPipe)) {
-              ble_tx(kConfigPipe, (void*)setting_msg, sizeof(*setting_msg));
-            }
-            logger_end_event(&event);
-            break;
-
-          case CONFIG_SET_EVENT:
-          {
-            struct event_s *p_event = NULL;
-            setting_msg->event.status = 0;
-
-            while (logger_get_event(p_event, &event)) {
-              // If we're searching for an id and we find it, return it
-              if (event.header.event_id == setting_msg->event.event_id) {
-                setting_msg->event.status = 1;
-                break;
-              }
-
-              // If we're looking for the most recent id, just return it
-              if (setting_msg->event.event_id == 0) {
-                setting_msg->event.event_id = event.header.event_id;
-                setting_msg->event.status = 1;
-                break;
-              }
-
-              p_event = &event;
-
-            }
-
-            /* Return a response if the client is waiting for one */
-            if (PIPE_OPEN(kConfigPipe)) {
-              ble_tx(kConfigPipe, (void*)setting_msg, sizeof(*setting_msg));
-            }
-
-          }
-          break;
-
-          case CONFIG_FORMAT_STORAGE: 
-            logger_format_storage();
-          
-          break;
-          case CONFIG_LIST_EVENTS:
-          {
-            struct event_s *p_event = NULL;
-
-            if (PIPE_OPEN(kConfigPipe)) {
-              // First, send the event header
-              ble_tx(kConfigPipe, (void*)&event, EVENT_HEADER_SIZE);
-
-              // Then, send the samples
-              while (logger_get_event(p_event, &event)) {
-                ble_tx(kConfigPipe, (void*)&packet, sizeof(packet));
-
-                p_event = &event;
-              }
-            }
-          }
-          break;
-
-          /**
-           * Send all the samples of the most recent event via the config chan
-           */
-          case CONFIG_GET_EVENTDATA:
-
-            if (PIPE_OPEN(kConfigPipe)) {
-              uint32_t i = 0;
-              setting_msg->event_data = event.header;
-              while (logger_read_sample(&event, i, &packet)) {
-                ble_tx(kConfigPipe, (void*)&packet, EVENT_HEADER_SIZE);
-              }
-            }
-          break;
-
-          default:
-            settings_apply(setting_msg);
+        if (PIPE_OPEN(kConfigPipe)) {
+          ble_tx(kConfigPipe, (void*)setting_msg, sizeof(*setting_msg));
         }
-
       }
       break;
 

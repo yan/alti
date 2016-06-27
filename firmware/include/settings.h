@@ -2,6 +2,7 @@
 #define __SETTINGS_H
 
 #include <stddef.h>
+#include <util.h>
 #include <logger.h>
 
 /**
@@ -30,6 +31,8 @@ enum config_msg_e {
   CONFIG_GET_EVENTDATA,
   CONFIG_LIST_EVENTS,
   CONFIG_FORMAT_STORAGE,
+  CONFIG_RESPONSE_OK,
+  CONFIG_RESPONSE_FAIL,
 
   SETTING_LAST
 };
@@ -73,6 +76,14 @@ struct setting_event_s {
 /**
  *
  */
+struct setting_response_s {
+  uint32_t status;
+} __attribute__((packed));
+
+/**
+ * TODO: Confirm that 20 bytes is what we have to work with for a response
+ *
+ */
 struct setting_packet_s {
   uint8_t type;
   uint8_t crc7; // Unused for now
@@ -81,12 +92,13 @@ struct setting_packet_s {
   union {
     struct setting_value_s setting;
     struct setting_event_s event;
+    struct setting_response_s response;
     struct event_header_s  event_data;
     uint8_t _settings_pad[18];
   };
 } __attribute__((packed));
 
-
+STRUCT_SIZE_ASSERT(struct setting_packet_s, 20);
 
 /**
  *

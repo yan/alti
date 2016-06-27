@@ -42,9 +42,12 @@ uint32_t cpu_cycle_count(void);
     
 
 #if ((defined(ENABLE_SEMIHOSTING) && ENABLE_SEMIHOSTING) || (TESTING))
-#  define dbg_print(args...) printf(args)
+#  define dbg_print printf
 #else
-#  define dbg_print(args...)
+#  define dbg_print(...)
 #endif
+
+#define STRUCT_SIZE_ASSERT(type, size) \
+  extern char __size_check[1 - 2*!(sizeof(type) == size)]
 
 #endif
