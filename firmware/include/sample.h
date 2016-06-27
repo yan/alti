@@ -16,7 +16,7 @@ struct gps_sample_s {
 #endif
 
 #if CONFIG_USE_ACCEL
-struct accel_sample_s {
+struct accel_sample_s { 
   int16_t accel[3];
 } __attribute__((packed));
 #endif
@@ -62,6 +62,6 @@ struct sensor_packet_s {
   struct mag_sample_s mag_sample;
 #endif
 
-};
+} __attribute__((packed));
 
 #endif // __SAMPLE_H

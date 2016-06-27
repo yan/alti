@@ -14,6 +14,7 @@ if (NOT test)
     filter.c
     hal.c
     init.c
+    settings.c
   )
   
   set (AERO_SRC

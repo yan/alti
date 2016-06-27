@@ -1,5 +1,5 @@
 /**
- * Copyright 2015 Yan Ivnitskiy
+ * Copyright 2016 Yan Ivnitskiy
  */
 
 #ifndef __FILTER_H
@@ -20,14 +20,15 @@ typedef uint32_t filter_value_t;
  * defined constant
  */
 typedef struct filter_state_s {
-  filter_value_t running_avg;
-  int n_values;
+  filter_value_t values[FILTER_LEN];
+  uint8_t index;
+  uint8_t length;
 } filter_state_t;
 
 void filter_init_state( filter_state_t *state );
 
 filter_value_t filter_add_value( filter_state_t *state, filter_value_t value);
 
-filter_value_t filter_get_value( filter_state_t *state );
+// filter_value_t filter_get_value( filter_state_t *state );
 
 #endif // __FILTER_H

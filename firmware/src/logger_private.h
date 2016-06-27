@@ -22,13 +22,15 @@ const uint32_t DATA_START_ADDR = sizeof(struct storage_header_s);
 
 struct stored_event_header_s {
   sentinel_t sentinel;
-  struct event_header_s header;
+  struct event_s header;
 };
 
-#define EVENT_HEADER_SIZE offsetof(struct event_header_s, _prv)
+#ifndef EVENT_HEADER_SIZE
+#  define EVENT_HEADER_SIZE sizeof(struct event_header_s) /*offsetof(struct event_header_s, _prv)*/
+#endif
 
 #define STORED_EVENT_HEADER_SIZE (EVENT_HEADER_SIZE + sizeof(sentinel_t))
   
 #define TOTAL_STORED_EVENT_SIZE(ev)  \
-  (((ev).samples * (ev).sample_size) + STORED_EVENT_HEADER_SIZE)
+  (((ev).header.samples * (ev).header.sample_size) + STORED_EVENT_HEADER_SIZE)
 

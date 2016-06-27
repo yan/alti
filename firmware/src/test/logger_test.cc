@@ -64,16 +64,16 @@ TEST_F(LoggerTest, FormatsHeader) {
 // Make sure that the first event starts at the correct address
 TEST_F(LoggerTest, StartsAtRightAddress) {
   struct storage_header_s *header = getHeader();
-  struct event_header_s event;
+  struct event_s event;
 
   logger_start_event(&event);
 
-  ASSERT_EQ(event._prv.start_address,
+  ASSERT_EQ(event._private.start_address,
       DATA_START_ADDR); // and past the first event header 
 }
 
 TEST_F(LoggerTest, InitializesWithNoEvents) {
-  struct event_header_s event;
+  struct event_s event;
   int status;
 
   status = logger_get_event(NULL, &event);
@@ -83,31 +83,31 @@ TEST_F(LoggerTest, InitializesWithNoEvents) {
 
 TEST_F(LoggerTest, MarksANewEventStarted) {
   struct storage_header_s *header = getHeader();
-  struct event_header_s event;
+  struct event_s event;
 
   logger_start_event(&event);
 
-  ASSERT_EQ(event.in_progress, 1);
+  ASSERT_EQ(event.header.in_progress, 1);
 }
 
 TEST_F(LoggerTest, UpdatesSampleCount) {
-  struct event_header_s event;
+  struct event_s event;
   struct sensor_packet_s packet;
 
   const uint32_t kNumberWrites = 3;
 
   logger_start_event(&event);
 
-  uint32_t old_sample_size = event.samples;
+  uint32_t old_sample_size = event.header.samples;
   for (uint32_t i = 0; i < kNumberWrites; i++) {
     logger_write_sample(&event, &packet);
   }
 
-  ASSERT_EQ(event.samples, old_sample_size + kNumberWrites);
+  ASSERT_EQ(event.header.samples, old_sample_size + kNumberWrites);
 }
 
 TEST_F(LoggerTest, FailsToReadNonexistentSample) {
-  struct event_header_s event;
+  struct event_s event;
   struct sensor_packet_s packet;
   int returned;
 
@@ -121,7 +121,7 @@ TEST_F(LoggerTest, FailsToReadNonexistentSample) {
 }
 
 TEST_F(LoggerTest, WriteSampleReadSample) {
-  struct event_header_s event;
+  struct event_s event;
   struct sensor_packet_s packet;
   const auto kTickVal = 0x1234;
 
@@ -139,14 +139,14 @@ TEST_F(LoggerTest, WriteSampleReadSample) {
 }
 
 TEST_F(LoggerTest, LoggingWrapsCorrectly) {
-  struct event_header_s event;
+  struct event_s event;
   struct sensor_packet_s packet;
 
   const int kEndMargin = 10;
 
   // Fill up storage with enough values to get close to the end
   logger_start_event(&event);
-  while (event._prv.current_address < (STORAGE_SIZE - kEndMargin * event.sample_size)) {
+  while (event._private.current_address < (STORAGE_SIZE - kEndMargin * event.header.sample_size)) {
     logger_write_sample(&event, &packet);
   }
   logger_end_event(&event);
@@ -159,11 +159,11 @@ TEST_F(LoggerTest, LoggingWrapsCorrectly) {
   }
   logger_end_event(&event);
 
-  ASSERT_GT(event._prv.start_address, event._prv.current_address);
+  ASSERT_GT(event._private.start_address, event._private.current_address);
 }
 
 TEST_F(LoggerTest, SampleDoesntOverwriteItsOwnHeader) {
-  struct event_header_s event;
+  struct event_s event;
   struct sensor_packet_s packet;
   uint32_t writes = STORAGE_SIZE / sizeof(packet) + 30;
   int status = 1;
@@ -177,7 +177,7 @@ TEST_F(LoggerTest, SampleDoesntOverwriteItsOwnHeader) {
 }
 
 TEST_F(LoggerTest, CanRetrieveFirstEvent) {
-  struct event_header_s event, dst_event;
+  struct event_s event, dst_event;
   struct sensor_packet_s packet;
 
   logger_start_event(&event);
@@ -186,11 +186,11 @@ TEST_F(LoggerTest, CanRetrieveFirstEvent) {
 
   logger_get_event(0, &dst_event);
 
-  ASSERT_EQ(event.event_id, dst_event.event_id);
+  ASSERT_EQ(event.header.event_id, dst_event.header.event_id);
 }
 
 TEST_F(LoggerTest, CanRetrieveNextEvent) {
-  struct event_header_s event, dst_event = {0};
+  struct event_s event, dst_event = {0};
   struct sensor_packet_s packet;
   int status;
   const uint32_t kHighestId = 5;
@@ -209,11 +209,11 @@ TEST_F(LoggerTest, CanRetrieveNextEvent) {
   logger_get_event(&event, &dst_event);
   // now dst_event is of id kHighestId - 2
 
-  ASSERT_EQ(event.event_id, dst_event.event_id + 1);
+  ASSERT_EQ(event.header.event_id, dst_event.header.event_id + 1);
 }
 
 TEST_F(LoggerTest, ReturnZeroWhenRunningOutOfEvents) {
-  struct event_header_s event, dst_event = {0}, *pevent;
+  struct event_s event, dst_event = {0}, *pevent;
   struct sensor_packet_s packet;
   int status = 0;
   bool valid = true;
@@ -234,7 +234,7 @@ TEST_F(LoggerTest, ReturnZeroWhenRunningOutOfEvents) {
       valid = false;
     } 
 
-    if (event.event_id != (i - 1)) {
+    if (event.header.event_id != (i - 1)) {
       valid = false;
     }
 
@@ -254,7 +254,7 @@ TEST_F(LoggerTest, DontReturnOverwrittenEvents) {
   const uint32_t kLargeEventSize = sizeof(event_header_s) +
     sizeof(sensor_packet_s) * kNumEvents;
 
-  struct event_header_s event, *pevent;
+  struct event_s event, *pevent;
   struct sensor_packet_s packet;
   int status = 0;
 

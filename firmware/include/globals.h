@@ -1,5 +1,5 @@
 /**
- * Copyright 2015 Yan Ivnitskiy
+ * Copyright 2016 Yan Ivnitskiy
  */
 
 
@@ -68,6 +68,9 @@ struct globals {
 
   /** @brief */
   void *sensor_queue_g;
+
+  /** @brief */
+  struct filter_state_s filter_state;
 
 #if CONFIG_USE_GPS
   /** @brief */

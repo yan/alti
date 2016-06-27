@@ -1,5 +1,5 @@
 /**
- * Copyright 2015 Yan Ivnitskiy
+ * Copyright 2016 Yan Ivnitskiy
  */
 
 
