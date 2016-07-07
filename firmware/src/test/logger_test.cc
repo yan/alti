@@ -141,13 +141,14 @@ TEST_F(LoggerTest, WriteSampleReadSample) {
 TEST_F(LoggerTest, LoggingWrapsCorrectly) {
   struct event_s event;
   struct sensor_packet_s packet;
+  int status = 0;
 
   const int kEndMargin = 10;
 
   // Fill up storage with enough values to get close to the end
   logger_start_event(&event);
   while (event._private.current_address < (STORAGE_SIZE - kEndMargin * event.header.sample_size)) {
-    logger_write_sample(&event, &packet);
+    status = logger_write_sample(&event, &packet);
   }
   logger_end_event(&event);
 
@@ -170,6 +171,7 @@ TEST_F(LoggerTest, SampleDoesntOverwriteItsOwnHeader) {
 
   logger_start_event(&event);
   for (; status || writes > 0; writes--) {
+
     status = logger_write_sample(&event, &packet);
   }
 

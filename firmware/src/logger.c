@@ -10,7 +10,13 @@
 #include <logger.h>
 #include <buffered_io.h>
 
+
 #ifdef __cplusplus
+
+#if TESTING
+#include <stdio.h>
+#endif
+
 extern "C" {
 #endif
 
@@ -124,7 +130,7 @@ void logger_start_event(struct event_s *event)
     uint32_t last_event_address = logger_get_last_event();
 
     if (last_event_address != 0) {
-      struct event_s last_event;
+      struct event_s last_event = {{0}, {0}};
 
       logger_read_event(last_event_address, &last_event);
 
@@ -224,7 +230,8 @@ int logger_write_sample(struct event_s *event,
    *   - fail an assert? (that'd be a whole-storage event)
    */
   if (buffered_ranges_overlap(event->_private.start_address, STORED_EVENT_HEADER_SIZE,
-                                  event->_private.current_address, event->header.sample_size))
+                              event->_private.current_address, event->header.sample_size,
+                              DATA_START_ADDR))
   {
     return 0;
   }

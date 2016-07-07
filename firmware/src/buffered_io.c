@@ -113,11 +113,27 @@ void buffered_flush(void)
 
 // |--|=====================|--|
 int buffered_ranges_overlap(uint32_t lhs_start, uint32_t lhs_size, uint32_t rhs_start,
-    uint32_t rhs_size)
+    uint32_t rhs_size, uint32_t margin)
 {
-  if (lhs_start < rhs_start) {
-    return lhs_start + lhs_size > rhs_start;
-  } else {
-    return rhs_start + rhs_size > lhs_start;
-  }
+  assert(lhs_start >= margin);
+  assert(rhs_start >= margin);
+
+  /* http://www.alecjacobson.com/weblog/?p=1140 */
+  const int32_t kAdjustedDeviceSize = STORAGE_SIZE - margin,
+                 a                   = lhs_start    - margin,
+                 c                   = rhs_start    - margin;
+
+#define m(x) ((x % kAdjustedDeviceSize) + kAdjustedDeviceSize) % kAdjustedDeviceSize
+
+  const int32_t b = m(a + lhs_size) ,
+                 d = m(c + rhs_size) ;
+
+  const int32_t w0 = m(b - a),
+                 w1 = m(d - c);
+
+  return
+      (w1 != 0 && m(c - a) < w0) ||
+      (w0 != 0 && m(a - c) < w1);
+
+#undef m
 }
