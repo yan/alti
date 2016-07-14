@@ -12,14 +12,6 @@ const uint32_t HEADER_ADDR = 0x00;
 /** @brief The address of the first non-header data */
 const uint32_t DATA_START_ADDR = sizeof(struct storage_header_s);
 
-#if TESTING
-#  define TAKE_SEMPHR
-#  define GIVE_SEMPHR
-#else
-#  define TAKE_SEMPHR    xSemaphoreTake(g.flash_buffer.lock, portMAX_DELAY)
-#  define GIVE_SEMPHR    xSemaphoreGive(g.flash_buffer.lock)
-#endif // TESTING
-
 struct stored_event_header_s {
   sentinel_t sentinel;
   struct event_s header;

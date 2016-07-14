@@ -26,49 +26,50 @@
 const uint8_t kSensorPipe = PIPE_SENSOR_STREAM_SENSOR_DATA_TX;
 const uint8_t kConfigPipe = PIPE_AERO_CONFIG_AERO_CONFIG_TX_1;
 
-static void handle_config(struct setting_packet_s *setting_msg );
+static void handle_config(struct config_packet_s *config_msg );
 
-static void handle_config(struct setting_packet_s *setting_msg )
+static void handle_config(struct config_packet_s *config_msg )
 {
   struct event_s event;
 
-  switch (setting_msg->type) {
+  switch (config_msg->type) {
     case CONFIG_SETTING:
       // De-duplicate from the default case
-      settings_apply(setting_msg);
+      settings_apply(&config_msg->setting);
       break;
+
     case CONFIG_START_LOGGING:
       filter_init_state(&g.filter_state);
       logger_start_event(&event);
-      setting_msg->type = CONFIG_RESPONSE_OK;
+      config_msg->type = CONFIG_RESPONSE_OK;
       break;
 
     case CONFIG_STOP_LOGGING:
-      setting_msg->type = CONFIG_RESPONSE_OK;
+      config_msg->type = CONFIG_RESPONSE_OK;
       logger_end_event(&event);
       break;
 
     case CONFIG_SET_EVENT:
     {
       struct event_s *p_event = NULL;
-      setting_msg->type = CONFIG_RESPONSE_FAIL;
+
+      config_msg->type = CONFIG_RESPONSE_FAIL;
 
       while (logger_get_event(p_event, &event)) {
-        // If we're searching for an id and we find it, return it
-        if (event.header.event_id == setting_msg->event.event_id) {
-          setting_msg->type = CONFIG_RESPONSE_OK;
+        // If we're looking for the most recent id, just return it
+        if (config_msg->event.event_id == 0) {
+          config_msg->event.event_id = event.header.event_id;
+          config_msg->type = CONFIG_RESPONSE_OK;
           break;
         }
 
-        // If we're looking for the most recent id, just return it
-        if (setting_msg->event.event_id == 0) {
-          setting_msg->event.event_id = event.header.event_id;
-          setting_msg->type = CONFIG_RESPONSE_OK;
+        // If we're searching for an id and we find it, return it
+        if (config_msg->event.event_id == event.header.event_id) {
+          config_msg->type = CONFIG_RESPONSE_OK;
           break;
         }
 
         p_event = &event;
-
       }
     }
     break;
@@ -105,17 +106,22 @@ static void handle_config(struct setting_packet_s *setting_msg )
         uint32_t i = 0;
         struct sensor_packet_s packet;
 
-        setting_msg->event_data = event.header;
+        config_msg->event_data = event.header;
         while (logger_read_sample(&event, i, &packet)) {
           ble_tx(kConfigPipe, (void*)&packet, EVENT_HEADER_SIZE);
         }
       }
     break;
 
-    default:
-      settings_apply(setting_msg);
+    /* default:
+       TODO: Unsupported message type, handle this better */
   }
 }
+
+struct tx_packet_s {
+    uint8_t header;
+    struct sensor_packet_s body;
+} __attribute__((packed));
 
 void task_main(void *p)
 {
@@ -123,9 +129,12 @@ void task_main(void *p)
 
   portBASE_TYPE status;
   enum global_state_e state = GLOBAL_STATE_RESET;
-  struct sensor_packet_s packet = {0};
+
+  struct tx_packet_s tx_packet ={ 0xff, {0}} ;
   struct event_s event;// = {0};
+
   memset(&event, '\0', sizeof(event));
+  // tx_packet.header = 0xff;
 
   // struct event_header_s current_event;
 
@@ -154,8 +163,8 @@ void task_main(void *p)
       case GLOBAL_EVT_SENSOR_GPS: {
         /* Capture the gps sample, and get the other sensors */
 
-        packet.ticks = xTaskGetTickCount();
-        packet.gps_sample = evt.payload.gps_sample;
+        tx_packet.body.ticks = xTaskGetTickCount();
+        tx_packet.body.gps_sample = evt.payload.gps_sample;
 
         BaseType_t type = SENSOR_REQUEST_AIR_PRESSURE 
                          | SENSOR_REQUEST_ACCEL;
@@ -166,25 +175,25 @@ void task_main(void *p)
 
 #if CONFIG_USE_ACCEL
       case GLOBAL_EVT_SENSOR_ACCEL: {
-        packet.accel_sample = evt.payload.accel_sample;
+        tx_packet.body.accel_sample = evt.payload.accel_sample;
       }
       break;
 #endif
       case GLOBAL_EVT_SENSOR_COMPLETE: {
         if (event.header.in_progress) {
-          logger_write_sample(&event, &packet);
+          logger_write_sample(&event, &tx_packet.body);
         }
 
-        filter_add_value(&g.filter_state, packet.mbarc);
+        filter_add_value(&g.filter_state, tx_packet.body.mbarc);
 
         if (PIPE_OPEN(kSensorPipe)) {
-          ble_tx(kSensorPipe, (void*)&packet, sizeof(packet));
+          ble_tx(kSensorPipe, (void*)&tx_packet, sizeof(tx_packet));
         }
       }
       break;
 
       case GLOBAL_EVT_SENSOR_BARO: {
-        packet.mbarc =  evt.payload.baro_sample.mbarc;
+        tx_packet.body.mbarc =  evt.payload.baro_sample.mbarc;
       }
       break;
 
@@ -193,12 +202,16 @@ void task_main(void *p)
         BaseType_t action = EVT_GPS_SLEEP;
 
         if (PIPE_OPEN(kSensorPipe)) {
+          state = GLOBAL_STATE_STREAMING;
+
           logger_start_event(&event);
 
           action = EVT_GPS_START;
           xQueueSend(g.gps_queue_g, &action, portMAX_DELAY);
-        } 
-        // xQueueSend(g.gps_queue_g, &action, portMAX_DELAY);
+        } else {
+          action = EVT_GPS_SLEEP;
+          xQueueSend(g.gps_queue_g, &action, portMAX_DELAY);
+        }
       }
       break;
 
@@ -207,13 +220,13 @@ void task_main(void *p)
       // break;
 
       case GLOBAL_EVT_NRF8001_DATA_RECEIVED: {
-        struct setting_packet_s *setting_msg = (void*) &evt.payload.data;
+        struct config_packet_s *config_msg = (void*) &evt.payload.data;
 
         /** TODO: Clean up status returning */
-        handle_config(setting_msg);
+        handle_config(config_msg);
 
         if (PIPE_OPEN(kConfigPipe)) {
-          ble_tx(kConfigPipe, (void*)setting_msg, sizeof(*setting_msg));
+          ble_tx(kConfigPipe, (void*)config_msg, sizeof(*config_msg));
         }
       }
       break;

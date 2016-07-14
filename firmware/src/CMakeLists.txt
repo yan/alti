@@ -4,6 +4,7 @@ set (AERO_SRC
     globals.c
     logger.c
     buffered_io.c
+    settings.c
 )
 
 if (NOT test)
@@ -14,7 +15,6 @@ if (NOT test)
     filter.c
     hal.c
     init.c
-    settings.c
   )
   
   set (AERO_SRC

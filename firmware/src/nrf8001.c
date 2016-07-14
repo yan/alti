@@ -259,8 +259,6 @@ void nrf8001_handle_event(struct nrf8001_cmd_s *event)
 
     default:
       ;
-      ;
-      ;
       break;
   }
 }

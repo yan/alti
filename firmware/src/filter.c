@@ -18,12 +18,11 @@ void filter_init_state( filter_state_t *state )
 
 filter_value_t filter_add_value( filter_state_t *state, filter_value_t value)
 {
-  filter_value_t acc;
+  filter_value_t acc = 0;
 
   if (state->length < FILTER_LEN) {
     state->length++;
   }
-
 
   state->values[state->index] = value;
   state->index = (state->index + 1) % FILTER_LEN;

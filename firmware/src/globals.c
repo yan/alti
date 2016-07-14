@@ -13,7 +13,7 @@ extern "C" {
 #  pragma clang diagnostic ignored "-Wmissing-field-initializers"
 #endif
   
-struct globals g = {0};
+struct globals_s g = {0};
 
 #ifdef __clang__
 #  pragma clang diagnostic pop

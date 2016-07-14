@@ -86,7 +86,7 @@ void logger_format_storage(void)
   struct storage_header_s *header =
     (struct storage_header_s *) buffered_get_page(HEADER_ADDR);
 
-  TAKE_SEMPHR;
+  xSemaphoreTake(g.flash_buffer.lock, portMAX_DELAY);
   {
 
     memset(g.flash_buffer.data, '\0', STORAGE_PAGE_SIZE);
@@ -100,7 +100,7 @@ void logger_format_storage(void)
     /* Make sure we write to the beginning of storage */
     buffered_flush();
   }
-  GIVE_SEMPHR;
+  xSemaphoreGive(g.flash_buffer.lock);
 }
 
 /**
@@ -121,7 +121,7 @@ void logger_start_event(struct event_s *event)
     return;
   }
 
-  TAKE_SEMPHR;
+  xSemaphoreTake(g.flash_buffer.lock, portMAX_DELAY);
   {
     uint32_t event_address;
     uint16_t event_id;
@@ -164,7 +164,7 @@ void logger_start_event(struct event_s *event)
     buffered_flush();
 
   }
-  GIVE_SEMPHR;
+  xSemaphoreGive(g.flash_buffer.lock);
 }
 
 /**
@@ -179,7 +179,7 @@ void logger_end_event(struct event_s *event)
     return;
   }
 
-  TAKE_SEMPHR;
+  xSemaphoreTake(g.flash_buffer.lock, portMAX_DELAY);
   {
     uint32_t event_addr = event->_private.start_address;
 
@@ -205,14 +205,21 @@ void logger_end_event(struct event_s *event)
     event->_private.written = 1;
 
   }
-  GIVE_SEMPHR;
+  xSemaphoreGive(g.flash_buffer.lock);
 
 }
 
 
 /**
- * @brief Add a sample to an in-progress event.
+ * @brief Add a sample to an in-progress event. Failure in this case corresponds
+ * to a freakishly-large event that overwrites its own header.
  *
+ * TODO: What's the right course of action? Either:
+ *   - Return failure 
+ *   - Finish the current event
+ *   - fail an assert? (that'd be a whole-storage event)
+ *
+ * 
  * @return 1 on success, 0 on failure.
  */
 int logger_write_sample(struct event_s *event,
@@ -223,11 +230,6 @@ int logger_write_sample(struct event_s *event,
   assert(event->header.in_progress != 0);
   /*
    * Make sure that the sample doesn't overwrite its own event's header
-   *
-   * TODO: What's the right course of action? Either:
-   *   - Return failure 
-   *   - Finish the current event
-   *   - fail an assert? (that'd be a whole-storage event)
    */
   if (buffered_ranges_overlap(event->_private.start_address, STORED_EVENT_HEADER_SIZE,
                               event->_private.current_address, event->header.sample_size,
@@ -237,7 +239,7 @@ int logger_write_sample(struct event_s *event,
   }
 
   /* TODO: Revisit adding a real timeout here */
-  TAKE_SEMPHR;
+  xSemaphoreTake(g.flash_buffer.lock, portMAX_DELAY);
 
   buffered_write_wrapped(event->_private.current_address, (uint8_t*) packet,
       sizeof(*packet), DATA_START_ADDR);
@@ -248,7 +250,7 @@ int logger_write_sample(struct event_s *event,
   event->_private.current_address = next_sample;
   event->header.samples += 1;
   
-  GIVE_SEMPHR;
+  xSemaphoreGive(g.flash_buffer.lock);
 
   return 1;
 }
@@ -274,11 +276,11 @@ int logger_read_sample(struct event_s *event, uint32_t n,
 
   assert(source < STORAGE_SIZE);
 
-  TAKE_SEMPHR;
+  xSemaphoreTake(g.flash_buffer.lock, portMAX_DELAY);
 
   buffered_read_wrapped(source, (uint8_t*)dest, sizeof(*dest), DATA_START_ADDR);
 
-  GIVE_SEMPHR;
+  xSemaphoreGive(g.flash_buffer.lock);
 
   return 1;
 }
@@ -297,7 +299,7 @@ int logger_get_event(struct event_s *prev, struct event_s *dst)
   uint32_t address;
   int status = 0;
 
-  TAKE_SEMPHR;
+  xSemaphoreTake(g.flash_buffer.lock, portMAX_DELAY);
   {
     /* Return the last event stored if we don't get a prev event */
     if (prev == NULL) {
@@ -312,7 +314,7 @@ int logger_get_event(struct event_s *prev, struct event_s *dst)
       status = logger_read_event(address, dst);
     }
   }
-  GIVE_SEMPHR;
+  xSemaphoreGive(g.flash_buffer.lock);
 
   return status;
 }

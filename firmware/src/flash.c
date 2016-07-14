@@ -96,20 +96,20 @@ static void flash_read_status(struct status_register_s *dest)
 
   returned = (returned & 0x00ff) << 8 | (returned & 0xff00) >> 8;
 
-  * (uint16_t*) dest = returned;
+  *dest = *(struct status_register_s*)&returned;
 
   pin_set(ADESTO_FLASH_CS_GPIO, ADESTO_FLASH_CS);
 
 }
 static void busy_wait_for_ready(void)
 {
-  struct status_register_s status_reg;
+  struct status_register_s status_reg = {0};
 
   status_reg.ready = 0;
 
-  while (!status_reg.ready) {
+  do {
     flash_read_status(&status_reg);
-  }
+  } while (status_reg.ready == 0);
 }
 
 void flash_read(uint32_t addr, uint8_t *data, size_t size)

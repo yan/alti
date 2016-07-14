@@ -10,7 +10,7 @@
 #define CONFIG_USE_ACCEL          ( 1 )
 
 /* Enable gyroscope support */
-#define CONFIG_USE_GYRO           ( 0 )
+#define CONFIG_USE_GYRO           ( 1 )
 
 /* Enable magnetometer support */
 #define CONFIG_USE_MAG            ( 0 )
@@ -29,10 +29,6 @@
 
 /* Add debugging checks for handling flash */
 #define ENABLE_FLASH_DEBUG        ( 1 )
-
-
-
-
 
 
 

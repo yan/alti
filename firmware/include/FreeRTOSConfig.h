@@ -116,7 +116,7 @@ your application. */
 #define CONFIG_TASK_BLE_PRIORITY                ( DEFAULT_TASK_PRIORITY + 1 )
 
 #define CONFIG_TASK_SENSOR_QUEUE_LEN            4
-#define CONFIG_TASK_SENSOR_STACK_DEPTH          128
+#define CONFIG_TASK_SENSOR_STACK_DEPTH          256
 #define CONFIG_TASK_SENSOR_PRIORITY             ( DEFAULT_TASK_PRIORITY )
 
 #define CONFIG_TASK_GPS_QUEUE_LEN               4

@@ -47,7 +47,9 @@ uint32_t cpu_cycle_count(void);
 #  define dbg_print(...)
 #endif
 
-#define STRUCT_SIZE_ASSERT(type, size) \
-  extern char __size_check[1 - 2*!(sizeof(type) == size)]
+#define STRUCT_SIZE_ASSERT(name, type, size) \
+  extern char __size_check ## name[1 - 2*!(sizeof(type) == size)]
 
+#define STRUCT_SIZE_LT(name, type, size) \
+  extern char __size_check ## name[1 - 2*!(sizeof(type) < size)]
 #endif

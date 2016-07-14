@@ -170,7 +170,7 @@ void task_gps(void *p)
 
         ublox_set_measuring_rate(200);
         ublox_start_updates(1);
-        delay_ms(1000);
+        // delay_ms(1000);
         // ublox_wake();
 
         state = RUN;

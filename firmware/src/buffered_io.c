@@ -111,29 +111,32 @@ void buffered_flush(void)
   g.flash_buffer.dirty = 0;
 }
 
-// |--|=====================|--|
-int buffered_ranges_overlap(uint32_t lhs_start, uint32_t lhs_size, uint32_t rhs_start,
-    uint32_t rhs_size, uint32_t margin)
+
+/**
+ * @brief Check if the two spans overlap, accounting for margin
+ *
+ * Algorithm from:
+ *    http://www.alecjacobson.com/weblog/?p=1140
+ */
+int buffered_ranges_overlap(uint32_t lhs_start, uint32_t lhs_size,
+    uint32_t rhs_start, uint32_t rhs_size, uint32_t margin)
 {
   assert(lhs_start >= margin);
   assert(rhs_start >= margin);
 
-  /* http://www.alecjacobson.com/weblog/?p=1140 */
   const int32_t kAdjustedDeviceSize = STORAGE_SIZE - margin,
-                 a                   = lhs_start    - margin,
-                 c                   = rhs_start    - margin;
+                 a = lhs_start - margin,
+                 c = rhs_start - margin;
 
 #define m(x) ((x % kAdjustedDeviceSize) + kAdjustedDeviceSize) % kAdjustedDeviceSize
 
-  const int32_t b = m(a + lhs_size) ,
-                 d = m(c + rhs_size) ;
-
+  const int32_t b = m(a + lhs_size),
+        d = m(c + rhs_size);
   const int32_t w0 = m(b - a),
-                 w1 = m(d - c);
+        w1 = m(d - c);
 
-  return
-      (w1 != 0 && m(c - a) < w0) ||
-      (w0 != 0 && m(a - c) < w1);
+  return (w1 != 0 && m(c - a) < w0) ||
+          (w0 != 0 && m(a - c) < w1);
 
 #undef m
 }

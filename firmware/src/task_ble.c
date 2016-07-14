@@ -20,8 +20,6 @@ static void ble_tx_helper(uint8_t pipe, uint8_t *data, size_t length);
 
 const char s_null_cmd[sizeof(struct nrf8001_cmd_s)] = { 0 };
 
-int g_received = 0, g_gotsemphrs = 0;
-
 
 /**
  * @brief Send a command to the nRF8001
@@ -91,14 +89,18 @@ void task_ble(void *p)
 
   for (;;) {
 
-    g_received++;
+#if CONFIG_USE_COUNTERS
+    g.counters.vals[COUNTER_BLE_RECEIVED]++;
+#endif
 
     status = xSemaphoreTake(g.ble_data_g->semphr, portMAX_DELAY);
     if (status != pdPASS) {
       return;
     }
 
-    g_gotsemphrs++;
+#if CONFIG_USE_COUNTERS
+    g.counters.vals[COUNTER_BLE_SEMAPHORES]++;
+#endif
 
     status = xQueueReceive(g.ble_data_g->in, &outgoing, 0);
     if (status == pdFAIL) {

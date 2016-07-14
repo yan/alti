@@ -57,6 +57,8 @@ class LoggerTest : public ::testing::Test {
 TEST_F(LoggerTest, FormatsHeader) {
   auto header = getHeader();
 
+  std::cout << "Header size: " << sizeof(*header) << "\n";
+
   ASSERT_EQ(header->last_event, 0);
 }
 

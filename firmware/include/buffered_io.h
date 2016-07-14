@@ -24,7 +24,7 @@ uint8_t *buffered_get_page(uint32_t addr);
 void buffered_flush(void);
 
 int buffered_ranges_overlap(uint32_t lhs_start, uint32_t lhs_size, uint32_t rhs_start,
-    uint32_t rhs_size);
+    uint32_t rhs_size, uint32_t margin);
 
 #ifdef __cplusplus
 }

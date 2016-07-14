@@ -8,12 +8,17 @@
 #  include <queue.h>
 #  include <semphr.h>
 #  include <queue.h>
+
 #else
 // ¯\_(ツ)_/¯ 
 #define pdTRUE   (1)
 #define pdFALSE  (0)
 #define pdPASS   (1)
 #define pdFAIL   (0)
+
+#define xSemaphoreTake(a...)
+#define xSemaphoreGive(a...)
+
 #endif
 
 #endif // __RTOS_H

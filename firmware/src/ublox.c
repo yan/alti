@@ -32,7 +32,7 @@ static struct ubx_header_s *ublox_expect_response(uint8_t msg_class, uint8_t msg
 static int    ublox_get_ack(void);
 static int    ublox_update_port_settings(usart_t port, uint32_t baud);
 static void   ublox_send(uint8_t class_id, uint8_t msg_id, uint8_t *buf, size_t length);
-static void   usart_send_buf(usart_t port, const uint8_t *buf, size_t length);
+static void   usart_send_buf(usart_t port, const uint8_t *buf, size_t len);
 static int    ublox_pm2(uint8_t mode);
 
 #define ublox_poll(class_id, msg_id) ublox_send(class_id, msg_id, NULL, 0)
@@ -62,10 +62,9 @@ static void calculateCheckSum(uint8_t *in, size_t length, uint8_t* dest) {
 }
 
 
-static void usart_send_buf(usart_t port, const uint8_t *buf, size_t length)
+static void usart_send_buf(usart_t port, const uint8_t *buf, size_t len)
 {
-  unsigned i = 0;
-  for (i = 0; i < length; i++ ) {
+  for (size_t i = 0; i < len; i++ ) {
     arch_usart_send(port, buf[i]);
   }
 }
@@ -81,19 +80,19 @@ static void usart_send_buf(usart_t port, const uint8_t *buf, size_t length)
 static void ublox_send(uint8_t class_id, uint8_t msg_id, uint8_t *buf, size_t length)
 {
   const uint8_t sync_bytes[2] = { UBX_SYNC_BYTE_1, UBX_SYNC_BYTE_2 };
-  struct ubx_header_s msg;
-
   uint8_t checksum[2] = {0};
 
-  msg.msg_class = class_id;
-  msg.msg_id = msg_id;
-  msg.length = length;
+  const struct ubx_header_s msg = {
+     .msg_class = class_id,
+     .msg_id = msg_id,
+     .length = length
+  };
 
   // TODO: Try commenting this out
   //     usart_wait_send_ready(UBLOX_UART);
 
-  usart_send_buf(UBLOX_UART, (uint8_t*)sync_bytes, sizeof sync_bytes);
-  usart_send_buf(UBLOX_UART, (uint8_t*)&msg, sizeof msg);
+  usart_send_buf(UBLOX_UART, (const uint8_t*)sync_bytes, sizeof sync_bytes);
+  usart_send_buf(UBLOX_UART, (const uint8_t*)&msg, sizeof msg);
   calculateCheckSum((uint8_t*)&msg, sizeof msg, checksum);
   if (length > 0) {
     usart_send_buf(UBLOX_UART, buf, length);
@@ -251,7 +250,7 @@ int ublox_get_rate(void)
 {
   int status = 0;
   struct ubx_header_s *head;
-  uint16_t *response;
+  //uint16_t *response;
 
   ublox_poll(MSG_CLASS_CFG, MSG_ID_CFG_RATE);
 
@@ -265,12 +264,12 @@ int ublox_get_rate(void)
     return status;
   }
 
-  assert(head->length == sizeof(response));
+  //assert(head->length == sizeof(response));
 
-  response = (uint16_t*) (head + 1);
+  // response = (uint16_t*) (head + 1);
 
-  dbg_print("Measuing rate is: %d ms, %d cycles, (time ref = %d)", 
-      response[0], response[1], response[2]);
+  //dbg_print("Measuing rate is: %d ms, %d cycles, (time ref = %d)", 
+      //response[0], response[1], response[2]);
 
   return 1;
 }

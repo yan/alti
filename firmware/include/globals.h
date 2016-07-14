@@ -39,16 +39,26 @@ struct protected_buffer_s {
   uint8_t data[WRITE_BUFFER_LEN];
 };
 
+struct coordinates_s {
+  int32_t lat, lon;
+};
+
+#define HOME_DZ_LEN 64
+
 /**
  * @brief Configuration of the altimeter that is persisted to non volatile
  * storage.
  */
 struct storage_header_s {
   char name[16];
+  char home_dz[HOME_DZ_LEN];
   struct alarm_s alarms[ALARM_LEN];
+  struct coordinates_s geofences[ALARM_LEN]; // TODO: create a define for the len
   uint32_t logged_jumps;
   uint32_t last_event;
 } __attribute__((packed));
+
+STRUCT_SIZE_LT(head, struct storage_header_s, STORAGE_PAGE_SIZE);
 
 
 struct ble_task_data_s {
@@ -56,7 +66,7 @@ struct ble_task_data_s {
   void *semphr;
 };
 
-struct globals {
+struct globals_s {
   /** @brief FreeRTOSConfig.h uses this to refer to the clock rate */
   uint32_t rcc_clock_freq;
   
@@ -103,7 +113,7 @@ struct globals {
 };
 
 
-extern struct globals g;
+extern struct globals_s g;
 
 #ifdef __cplusplus
 }
