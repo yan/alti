@@ -14,10 +14,10 @@ struct event_private_s {
   /** @brief The start address of the samples. */
   uint32_t start_address;
   uint32_t current_address;
-  struct {
+  // struct {
     uint16_t finished_logging : 1;
     uint16_t written : 1;
-  };
+  // };
 };
 /**
  * @brief The header for an 'event'. Likely a jump.
