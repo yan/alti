@@ -75,7 +75,19 @@ TEST_F(SettingsTest, GeoFence) {
 
   ASSERT_EQ(g.persisted_config.geofences[0].lat, packet.val32[0]);
   ASSERT_EQ(g.persisted_config.geofences[0].lon, packet.val32[1]);
+}
 
+TEST_F(SettingsTest, SingleHomeDzSet) {
+  std::string name = "HomeDz";
+
+  packet.type = SETTING_HOME_DZ_ONE;
+
+  memset(&packet.str, '\0', SETTING_VAL_SIZE);
+  memcpy(&packet.str, name.c_str(), name.length());
+
+  status = settings_apply(&packet);
+
+  ASSERT_STREQ(name.c_str(), g.persisted_config.home_dz);
 }
 
 }
