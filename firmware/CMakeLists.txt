@@ -12,13 +12,21 @@ option (stlib "Use the ST stm32 peripheral library" ON)
 set (BINARY_NAME ${PROJECT_NAME})
 
 set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g3") 
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g3") 
+
 # set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Os -O2 -Wextra")
 
 if (NOT test)
   set (STM32_DEV_TYPE STM32L1XX_HD)
+
+  set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pedantic")
+  set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D${STM32_DEV_TYPE}")
+  set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DENABLE_SEMIHOSTING=0")
+
   set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra -pedantic")
   set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -D${STM32_DEV_TYPE}")
   set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DENABLE_SEMIHOSTING=0")
+
   set (CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/support/cmake")
   set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -L${PROJECT_SOURCE_DIR}/support")
   set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -T${PROJECT_SOURCE_DIR}/support/stm32l15xxb.ld")
@@ -35,6 +43,7 @@ set (LIBRARIES aero)
 
 if (test)
   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-c++11-extensions -g3")
+  set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address")
 
   include (support/cmake/gtest.cmake)
 
@@ -65,11 +74,11 @@ else()
 
   if (stlib)
     include (Stm32PeriphLib)
-    set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DSTM32_STDPERIPH_LIB")
+    add_definitions("-DSTM32_STDPERIPH_LIB")
     set (LIBRARIES ${LIBRARIES} stm32periph)
   else () 
     include (Libopencm3)
-    set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DOPENCM3")
+    add_definitions("-DOPENCM3")
     set (LIBRARIES ${LIBRARIES} opencm3_stm32l1)
   endif ()
 
