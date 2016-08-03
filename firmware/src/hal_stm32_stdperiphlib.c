@@ -34,6 +34,10 @@ void pin_toggle(gpio_t port, pin_t pin)
   GPIO_ToggleBits(port, pin);
 }
 
+uint16_t pin_get(gpio_t port, pin_t pin)
+{
+  return GPIO_ReadInputData(port) & pin;
+}
 void pin_config(gpio_t port, pin_t pin, int options)
 {
   // int should_set = 0;

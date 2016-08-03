@@ -24,13 +24,30 @@
 #include <settings.h>
 
 const uint8_t kSensorPipe = PIPE_SENSOR_STREAM_SENSOR_DATA_TX;
-const uint8_t kConfigPipe = PIPE_AERO_CONFIG_AERO_CONFIG_TX_1;
+const uint8_t kConfigPipeTx = PIPE_AERO_CONFIG_AERO_CONFIG_TX_1;
+const uint8_t kConfigPipeRx = PIPE_AERO_CONFIG_AERO_CONFIG_RX_ACK_AUTO;
+
 
 static void handle_config(struct config_packet_s *config_msg );
+static void gps_start(void);
+static void gps_stop(void);
 
+static void gps_start(void)
+{
+  BaseType_t action = EVT_GPS_START;
+  xQueueSend(g.gps_queue_g, &action, portMAX_DELAY);
+}
+static void gps_stop(void)
+{
+  BaseType_t action = EVT_GPS_SLEEP;
+  xQueueSend(g.gps_queue_g, &action, portMAX_DELAY);
+}
 static void handle_config(struct config_packet_s *config_msg )
 {
-  struct event_s event;
+
+  if (config_msg == NULL) {
+    return;
+  }
 
   switch (config_msg->type) {
     case CONFIG_SETTING:
@@ -40,18 +57,21 @@ static void handle_config(struct config_packet_s *config_msg )
 
     case CONFIG_START_LOGGING:
       filter_init_state(&g.filter_state);
-      logger_start_event(&event);
+      gps_start();
+      logger_start_event(&g.current_event_g);
       config_msg->type = CONFIG_RESPONSE_OK;
       break;
 
     case CONFIG_STOP_LOGGING:
+      gps_stop();
+      logger_end_event(&g.current_event_g);
       config_msg->type = CONFIG_RESPONSE_OK;
-      logger_end_event(&event);
       break;
 
     case CONFIG_SET_EVENT:
     {
       struct event_s *p_event = NULL;
+      struct event_s event;
 
       config_msg->type = CONFIG_RESPONSE_FAIL;
 
@@ -80,36 +100,47 @@ static void handle_config(struct config_packet_s *config_msg )
     break;
     case CONFIG_LIST_EVENTS:
     {
+      struct event_s event;
       struct event_s *p_event = NULL;
-      struct sensor_packet_s packet;
 
-      if (PIPE_OPEN(kConfigPipe)) {
-        // First, send the event header
-        ble_tx(kConfigPipe, (void*)&event, EVENT_HEADER_SIZE);
-
-        // Then, send the samples
+      /**
+       * XXX: Should we go into GLOBAL_STATE_TRANSFERRING_DATA state?. Is that
+       * state even necessary?
+       */
+      if (PIPE_OPEN(kConfigPipeTx)) {
         while (logger_get_event(p_event, &event)) {
-          ble_tx(kConfigPipe, (void*)&packet, sizeof(packet));
+          ble_tx_head(kConfigPipeTx, CONFIG_RESPONSE_EVENT,
+              (uint8_t*)&event.header, sizeof(event.header));
 
           p_event = &event;
         }
       }
+
+      config_msg->type = CONFIG_RESPONSE_OK;
     }
     break;
 
     /**
      * Send all the samples of the most recent event via the config chan
+     *
+     * TODO: Check to make sure we're not currently logging the event
      */
     case CONFIG_GET_EVENTDATA:
 
-      if (PIPE_OPEN(kConfigPipe)) {
+      if (PIPE_OPEN(kConfigPipeTx)) {
         uint32_t i = 0;
-        struct sensor_packet_s packet;
+        struct event_s event;
+        struct sensor_packet_s sensors;
+
+        logger_get_event(NULL, &event);
 
         config_msg->event_data = event.header;
-        while (logger_read_sample(&event, i, &packet)) {
-          ble_tx(kConfigPipe, (void*)&packet, EVENT_HEADER_SIZE);
+        while (logger_read_sample(&event, i, &sensors)) {
+          ble_tx_head(kConfigPipeTx, CONFIG_RESPONSE_SAMPLE, (uint8_t*)&sensors,
+              sizeof(sensors));
         }
+
+        config_msg->type = CONFIG_RESPONSE_OK;
       }
     break;
 
@@ -118,11 +149,6 @@ static void handle_config(struct config_packet_s *config_msg )
   }
 }
 
-struct tx_packet_s {
-    uint8_t header;
-    struct sensor_packet_s body;
-} __attribute__((packed));
-
 void task_main(void *p)
 {
   (void) p;
@@ -130,13 +156,13 @@ void task_main(void *p)
   portBASE_TYPE status;
   enum global_state_e state = GLOBAL_STATE_RESET;
 
-  struct tx_packet_s tx_packet ={ 0xff, {0}} ;
-  struct event_s event;// = {0};
+  struct {
+      uint8_t header;
+      struct sensor_packet_s body;
+  } __attribute__((packed)) tx_packet;
 
-  memset(&event, '\0', sizeof(event));
-  // tx_packet.header = 0xff;
-
-  // struct event_header_s current_event;
+  memset(&tx_packet, '\0', sizeof(tx_packet));
+  tx_packet.header = 0xff;
 
   for (;;) {
     struct global_event_s evt;
@@ -180,14 +206,24 @@ void task_main(void *p)
       break;
 #endif
       case GLOBAL_EVT_SENSOR_COMPLETE: {
-        if (event.header.in_progress) {
-          logger_write_sample(&event, &tx_packet.body);
+
+        if (g.current_event_g.header.in_progress) {
+          status = logger_write_sample(&g.current_event_g, &tx_packet.body);
+
+          /* Writing failed because we filled up storage with just the current 
+           * event. Finish logging.
+           */
+          if (!status) {
+            gps_stop();
+            logger_end_event(&g.current_event_g);
+          }
         }
 
         filter_add_value(&g.filter_state, tx_packet.body.mbarc);
 
         if (PIPE_OPEN(kSensorPipe)) {
-          ble_tx(kSensorPipe, (void*)&tx_packet, sizeof(tx_packet));
+          ble_tx_head(kSensorPipe, CONFIG_RESPONSE_SAMPLE, (uint8_t*)&tx_packet,
+              sizeof(tx_packet));
         }
       }
       break;
@@ -199,18 +235,13 @@ void task_main(void *p)
 
       /* Bluetooth events */
       case GLOBAL_EVT_NRF8001_PIPES_CHANGED: {
-        BaseType_t action = EVT_GPS_SLEEP;
 
         if (PIPE_OPEN(kSensorPipe)) {
           state = GLOBAL_STATE_STREAMING;
 
-          logger_start_event(&event);
-
-          action = EVT_GPS_START;
-          xQueueSend(g.gps_queue_g, &action, portMAX_DELAY);
+          // gps_start();
         } else {
-          action = EVT_GPS_SLEEP;
-          xQueueSend(g.gps_queue_g, &action, portMAX_DELAY);
+          // gps_stop();
         }
       }
       break;
@@ -220,13 +251,21 @@ void task_main(void *p)
       // break;
 
       case GLOBAL_EVT_NRF8001_DATA_RECEIVED: {
-        struct config_packet_s *config_msg = (void*) &evt.payload.data;
+        struct nrf8001_datarx_s *rx_data =
+          (struct nrf8001_datarx_s*) &evt.payload.nrf8001_cmd.data;
 
-        /** TODO: Clean up status returning */
-        handle_config(config_msg);
+        /* TODO: Clean this up */
+        struct config_packet_s *config_msg =
+          (struct config_packet_s *) &rx_data->data;
 
-        if (PIPE_OPEN(kConfigPipe)) {
-          ble_tx(kConfigPipe, (void*)config_msg, sizeof(*config_msg));
+        if (rx_data->pipe == kConfigPipeRx) {
+          /** TODO: Clean up status returning */
+          handle_config(config_msg);
+
+          if (PIPE_OPEN(kConfigPipeTx)) {
+            ble_tx_head(kConfigPipeTx, CONFIG_RESPONSE_MSG,
+                (uint8_t*)config_msg, sizeof(*config_msg));
+          }
         }
       }
       break;

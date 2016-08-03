@@ -14,6 +14,11 @@ struct nrf8001_cmd_s {
   uint8_t data[30];
 } __attribute__((packed));
 
+struct nrf8001_datarx_s {
+  uint8_t pipe;
+  uint8_t data[20];
+} __attribute__((packed));
+
 /** @brief Connect interval, in 0.625ms */
 #define NRF8001_CONNECT_INTERVAL         255 // 160 ms
 /** @brief Connect timeout, in seconds */

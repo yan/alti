@@ -44,6 +44,8 @@ void pin_clear(gpio_t port, pin_t pin);
 
 void pin_toggle(gpio_t port, pin_t pin);
 
+uint16_t pin_get(gpio_t port, pin_t pin);
+
 void pin_config(gpio_t port, pin_t pin, int options);
 
 /** USART functions */

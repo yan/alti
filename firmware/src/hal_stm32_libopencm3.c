@@ -52,6 +52,11 @@ void pin_toggle(gpio_t port, pin_t pin)
   gpio_toggle(port, pin);
 }
 
+uint16_t pin_get(gpio_t port, pin_t pin)
+{
+    gpio_get(port, pin);
+}
+
 void pin_config(gpio_t port, pin_t pin, int options)
 {
   uint32_t mode;

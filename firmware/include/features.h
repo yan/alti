@@ -19,7 +19,7 @@
 #define CONFIG_USE_USART_ISR      ( 1 )
 
 /** Debugging counters that should generally be disabled */
-#define CONFIG_USE_COUNTERS       ( 0 )
+#define CONFIG_USE_COUNTERS       ( 1 )
 
 /* Low-pass filter sensor values */
 #define CONFIG_ENABLE_LP_FILTER   ( 0 )

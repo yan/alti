@@ -14,6 +14,8 @@
 #include <task_ble.h>
 #include <pins.h>
 #include <events.h>
+#include <spi.h>
+#include <globals.h>
 
 /** The order of includes is important */
 #include <aci_cmds.h>
@@ -42,8 +44,6 @@ enum nrf8001_state_e {
 } state = STATE_IDLE;
 
 
-int g_nrf_events_received = 0;
-
 struct nrf8001_state_s {
   enum nrf8001_state_e state;
   uint32_t events_received;
@@ -64,6 +64,10 @@ static void nrf8001_reset(void);
 void nrf8001_isr(void)
 {
   BaseType_t higher;
+  
+#if CONFIG_USE_COUNTERS
+  g.counters.vals[COUNTER_BLE_ISR]++;
+#endif // CONFIG_USE_COUNTERS
   xSemaphoreGiveFromISR(g.ble_data_g->semphr, &higher);
   portYIELD_FROM_ISR(higher);
 }
@@ -104,6 +108,7 @@ void config_nrf8001(void)
   config_nrf8001_pins();
   config_nrf8001_isr();
   nrf8001_reset();
+  memset(&g.nrf8001_nul, '\0', sizeof(g.nrf8001_nul));
 
   //pin_clear(NRF8001_REQN_GPIO, NRF8001_REQN);
 }
@@ -264,8 +269,9 @@ void nrf8001_handle_event(struct nrf8001_cmd_s *event)
 }
 
 /**
- * @brief Perform a SPI exchange of NRF8001 commands. Calling code must set
- * REQN low before sending and high afterwards.
+ * @brief Perform a SPI exchange of NRF8001 commands.
+ *
+ * This function assumes we have exclusive access to the SPI bus.
  */
 void nrf8001_exchange_cmds(struct nrf8001_cmd_s *out, struct nrf8001_cmd_s *in)
 {
@@ -301,3 +307,4 @@ void nrf8001_exchange_cmds(struct nrf8001_cmd_s *out, struct nrf8001_cmd_s *in)
 
   pin_set(NRF8001_REQN_GPIO, NRF8001_REQN);
 }
+

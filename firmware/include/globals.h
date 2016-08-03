@@ -13,6 +13,8 @@
 #include <features.h>
 #include <counters.h>
 #include <flash.h>
+#include <logger.h>
+#include <nrf8001.h>
 
 #if CONFIG_USE_GPS
 #include <ublox_isr.h>
@@ -32,10 +34,10 @@ extern "C" {
 struct protected_buffer_s {
   void *lock;
   unsigned int address;
-  struct {
+  // struct {
     unsigned int dirty : 1;
     unsigned int write_offset : sizeof(unsigned int) * 8 - 1;
-  };
+  // };
   uint8_t data[WRITE_BUFFER_LEN];
 };
 
@@ -66,6 +68,12 @@ struct ble_task_data_s {
   void *semphr;
 };
 
+
+struct port_lock_s {
+    uint32_t port;
+    void *semphr;
+};
+
 struct globals_s {
   /** @brief FreeRTOSConfig.h uses this to refer to the clock rate */
   uint32_t rcc_clock_freq;
@@ -82,9 +90,18 @@ struct globals_s {
   /** @brief */
   struct filter_state_s filter_state;
 
+  /** @brief Currently logged event */
+  struct event_s current_event_g;
+
+  /** @brief Semaphores to protect shared ports (SPI, etc) */
+  struct port_lock_s port_locks[2];
+
 #if CONFIG_USE_GPS
   /** @brief */
   void *gps_queue_g;
+
+  /** @brief */
+  void *gps_isr_semphr_g;
 #endif
 
 #if CONFIG_USE_COUNTERS
@@ -102,6 +119,9 @@ struct globals_s {
   /** @brief Data local to the BLE task */
   struct ble_task_data_s *ble_data_g;
 
+  /** @brief A null command that we will use as filler. XXX Probably redundant */
+  struct nrf8001_cmd_s nrf8001_nul;
+
   /** @brief Flash read/write buffer */
   struct protected_buffer_s flash_buffer;
 
@@ -111,6 +131,7 @@ struct globals_s {
   /** @brief Bitmasks of open and closed nRF8001 pipes */
   uint8_t pipes_open[8], pipes_closed[8];
 };
+
 
 
 extern struct globals_s g;

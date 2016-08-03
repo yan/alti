@@ -50,6 +50,10 @@ static void flash_write_buffer(uint8_t *data, size_t size)
 {
   pin_clear(ADESTO_FLASH_CS_GPIO, ADESTO_FLASH_CS);
 
+  spi_lock(ADESTO_FLASH_BUS);
+
+  spi_set_msb(ADESTO_FLASH_BUS);
+
   /* First, write it to the flash buffer */
   arch_spi_xfer(ADESTO_FLASH_BUS, ADESTO_WRITE_BUFFER_2);
 
@@ -66,6 +70,7 @@ static void flash_write_buffer(uint8_t *data, size_t size)
     arch_spi_xfer(ADESTO_FLASH_BUS, 0);
   }
 
+  spi_unlock(ADESTO_FLASH_BUS);
   /* And we're done */
   pin_set(ADESTO_FLASH_CS_GPIO, ADESTO_FLASH_CS);
 }
@@ -74,32 +79,40 @@ static void flash_commit_buffer(uint32_t address)
 {
   pin_clear(ADESTO_FLASH_CS_GPIO, ADESTO_FLASH_CS);
 
+  spi_lock(ADESTO_FLASH_BUS);
+  spi_set_msb(ADESTO_FLASH_BUS);
   arch_spi_xfer(ADESTO_FLASH_BUS, ADESTO_WRITE_BUFFER_2_TO_MEM_W_ER);
   arch_spi_xfer(ADESTO_FLASH_BUS, (address & 0xFF0000) >> 16);
   arch_spi_xfer(ADESTO_FLASH_BUS, (address & 0xFF00) >> 8);
   arch_spi_xfer(ADESTO_FLASH_BUS,  address & 0xFF);
+  spi_unlock(ADESTO_FLASH_BUS);
   
   pin_set(ADESTO_FLASH_CS_GPIO, ADESTO_FLASH_CS);
 }
 
 static void flash_read_status(struct status_register_s *dest)
 {
+  spi_lock(ADESTO_FLASH_BUS);
   spi_set_msb(ADESTO_FLASH_BUS);
 
   pin_clear(ADESTO_FLASH_CS_GPIO, ADESTO_FLASH_CS);
 
-  uint16_t returned;
+  union {
+    uint16_t val;
+    struct status_register_s reg;
+  } __attribute__((packed)) u;
 
   arch_spi_xfer(ADESTO_FLASH_BUS, ADESTO_AUX_STATUS_REGISTER_READ);
 
-  returned = spi_read_octets(ADESTO_FLASH_BUS, sizeof(*dest), BYTEORDER_MSB);
+  u.val = spi_read_octets(ADESTO_FLASH_BUS, sizeof(*dest), BYTEORDER_MSB);
 
-  returned = (returned & 0x00ff) << 8 | (returned & 0xff00) >> 8;
+  u.val = (u.val & 0x00ff) << 8 | (u.val & 0xff00) >> 8;
 
-  *dest = *(struct status_register_s*)&returned;
+  *dest = u.reg;
 
   pin_set(ADESTO_FLASH_CS_GPIO, ADESTO_FLASH_CS);
 
+  spi_unlock(ADESTO_FLASH_BUS);
 }
 static void busy_wait_for_ready(void)
 {
@@ -114,6 +127,8 @@ static void busy_wait_for_ready(void)
 
 void flash_read(uint32_t addr, uint8_t *data, size_t size)
 {
+
+  spi_lock(ADESTO_FLASH_BUS);
   spi_set_msb(ADESTO_FLASH_BUS);
 
   pin_clear(ADESTO_FLASH_CS_GPIO, ADESTO_FLASH_CS);
@@ -130,14 +145,13 @@ void flash_read(uint32_t addr, uint8_t *data, size_t size)
   spi_recv_buf(ADESTO_FLASH_BUS, data, size);
 
   pin_set(ADESTO_FLASH_CS_GPIO, ADESTO_FLASH_CS);
+  spi_unlock(ADESTO_FLASH_BUS);
 }
 
 void flash_write(uint32_t addr, uint8_t *data, size_t size)
 {
   // Make sure that the address is sector-aligned
   assert((addr & STORAGE_PAGE_MASK) == 0);
-
-  spi_set_msb(ADESTO_FLASH_BUS);
 
   flash_write_buffer(data, size);
   flash_commit_buffer(addr);

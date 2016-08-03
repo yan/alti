@@ -46,6 +46,33 @@ static void config_tasks(void)
 #endif
 }
 
+#if configSUPPORT_STATIC_ALLOCATION
+/* static memory allocation for the IDLE task */
+static StaticTask_t xIdleTaskTCBBuffer;
+static StackType_t xIdleStack[configMINIMAL_STACK_SIZE];
+ 
+void vApplicationGetIdleTaskMemory(StaticTask_t **ppxIdleTaskTCBBuffer, StackType_t **ppxIdleTaskStackBuffer, uint32_t *pulIdleTaskStackSize) {
+  *ppxIdleTaskTCBBuffer = &xIdleTaskTCBBuffer;
+  *ppxIdleTaskStackBuffer = &xIdleStack[0];
+  *pulIdleTaskStackSize = configMINIMAL_STACK_SIZE;
+}
+
+static StaticTask_t xTimerTaskTCBBuffer;
+static StackType_t xTimerStack[configTIMER_TASK_STACK_DEPTH];
+ 
+/* If static allocation is supported then the application must provide the
+   following callback function - which enables the application to optionally
+   provide the memory that will be used by the timer task as the task's stack
+   and TCB. */
+void vApplicationGetTimerTaskMemory(StaticTask_t  **ppxTimerTaskTCBBuffer,
+                                      StackType_t **ppxTimerTaskStackBuffer,
+                                      uint32_t     *pulTimerTaskStackSize)
+{
+  *ppxTimerTaskTCBBuffer = &xTimerTaskTCBBuffer;
+  *ppxTimerTaskStackBuffer = &xTimerStack[0];
+  *pulTimerTaskStackSize = configTIMER_TASK_STACK_DEPTH;
+}
+#endif
 
 static void config_ble_task(void)
 {
@@ -67,7 +94,7 @@ static void config_ble_task(void)
   assert(g.ble_data_g->semphr != NULL);
 
   status = xTaskCreate(task_ble, "ble", CONFIG_TASK_BLE_STACK_DEPTH,
-                       (void*) g.ble_data_g, CONFIG_TASK_BLE_PRIORITY, &ble_handle);
+                   (void*) g.ble_data_g, CONFIG_TASK_BLE_PRIORITY, &ble_handle);
 
   assert(status == pdPASS);
 
@@ -128,15 +155,28 @@ static void config_sensor_task(void)
 }
 
 #if CONFIG_USE_GPS
+
+#if configSUPPORT_STATIC_ALLOCATION
+uint8_t kGpsQueueStorage[CONFIG_TASK_GPS_QUEUE_LEN * sizeof(BaseType_t)];
+StaticQueue_t kGpsQueue;
+#endif
 static void config_gps_task(void)
 {
   BaseType_t status;
   TaskHandle_t gps_handle;
 
-  g.gps_queue_g = xQueueCreate(CONFIG_TASK_GPS_QUEUE_LEN,
-      sizeof(BaseType_t));
+#if configSUPPORT_STATIC_ALLOCATION
+  g.gps_queue_g = xQueueCreateStatic(CONFIG_TASK_GPS_QUEUE_LEN,
+      sizeof(BaseType_t), kGpsQueueStorage, &kGpsQueue);
+#else
+  g.gps_queue_g = xQueueCreate(CONFIG_TASK_BLE_QUEUE_LEN, sizeof(BaseType_t));
+#endif
+
+  // g.gps_queue_g = xQueueCreate(1, sizeof(BaseType_t));
+  // g.gps_isr_semphr_g = xSemaphoreCreateBinary();
 
   assert(g.gps_queue_g != NULL);
+  // assert(g.gps_isr_queue_g != NULL);
 
 #if ( configQUEUE_REGISTRY_SIZE > 0 )
   vQueueAddToRegistry(g.gps_queue_g, "gps");

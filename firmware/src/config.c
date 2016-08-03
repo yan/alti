@@ -23,6 +23,13 @@ void config_globals(void)
   /* Initialize the address to all 1's to ensure it's an invalid address */
   g.flash_buffer.address = ~0;
 
+  /* Initialize port locks. Currently only supports SPI1 and SPI2 */
+  g.port_locks[0].semphr = (SemaphoreHandle_t) xSemaphoreCreateMutex();
+  g.port_locks[0].port = (uint32_t) SPI1;
+
+  g.port_locks[1].semphr = (SemaphoreHandle_t) xSemaphoreCreateMutex();
+  g.port_locks[1].port = (uint32_t) SPI2;
+
 #if CONFIG_USE_USART_ISR
   g.usart_mutex_g = xSemaphoreCreateBinary();
   assert(g.usart_mutex_g != NULL);

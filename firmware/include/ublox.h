@@ -299,9 +299,22 @@ int ublox_set_measuring_rate(uint16_t ms);
 
 int ublox_get_rate(void);
 
-int ublox_reset(void);
+/**
+ * @brief Reset or update the state of the GNSS system.
+ */
+enum ublox_reset_type_e {
+  UBLOX_RESET_HW = 0,
+  UBLOX_RESET_CONTROLLED = 1,
+  UBLOX_RESET_SW = 2,
+  UBLOX_RESET_HW_WATCHDOG = 4,
+  UBLOX_GNSS_STOP = 8,
+  UBLOX_GNSS_START = 9
+};
+
+int ublox_reset(uint8_t reset_mode);
 
 int ublox_sleep(void);
+// #define ublox_sleep() ublox_reset(UBLOX_GNSS_STOP);
 
 int ublox_wake(void);
 

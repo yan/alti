@@ -5,8 +5,32 @@
 #include "util.h"
 #include "spi.h"
 #include "globals.h"
+#include <rtos.h>
 #include "hal.h"
 
+void spi_lock(spi_t port)
+{
+    for (unsigned i = 0; i < sizeof(g.port_locks)/sizeof(g.port_locks[0]); i++) {
+        if ((uint32_t) port == g.port_locks[i].port) {
+            xSemaphoreTake(g.port_locks[i].semphr, portMAX_DELAY);
+            return;
+        }
+    }
+
+    assert(pdFALSE);
+}
+
+void spi_unlock(spi_t port)
+{
+    for (unsigned i = 0; i < sizeof(g.port_locks)/sizeof(g.port_locks[0]); i++) {
+        if ((uint32_t) port == g.port_locks[i].port) {
+            xSemaphoreGive(g.port_locks[i].semphr);
+            return;
+        }
+    }
+
+    assert(pdFALSE);
+}
 
 /**
  * @brief

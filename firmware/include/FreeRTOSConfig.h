@@ -6,6 +6,7 @@ your application. */
 
 #include <globals.h>
 
+#define configSUPPORT_STATIC_ALLOCATION         0
 #define configUSE_PREEMPTION                    1
 #define configUSE_PORT_OPTIMISED_TASK_SELECTION 0
 #define configUSE_TICKLESS_IDLE                 0
@@ -111,7 +112,7 @@ your application. */
 #define CONFIG_TASK_ALERT_PRIORITY              ( DEFAULT_TASK_PRIORITY )
 
 // XXX: Reducing to 1 to attempt to fix multiple BLE transfers
-#define CONFIG_TASK_BLE_QUEUE_LEN               4 
+#define CONFIG_TASK_BLE_QUEUE_LEN               2 
 #define CONFIG_TASK_BLE_STACK_DEPTH             256
 #define CONFIG_TASK_BLE_PRIORITY                ( DEFAULT_TASK_PRIORITY + 1 )
 

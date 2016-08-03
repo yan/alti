@@ -22,8 +22,15 @@ uint32_t g_ticks = 0;
 
 BaseType_t usart_given = 0;
 
+enum ublox_state_e {
+  STARTING,
+  RUN,
+  SLEEP
+};
+
 struct ubx_state_s {
   usart_t port;
+  enum ublox_state_e state;
   struct {
     uint32_t waiting_for_ack : 1;
   } flags;
@@ -92,6 +99,10 @@ static void handle_ubx_message(struct ubx_state_s *state)
     struct ubx_nav_pvt_solution_s *body = (struct ubx_nav_pvt_solution_s*)content;;
     struct global_event_s evt;
 
+    if (state->state != RUN) {
+      return;
+    }
+
     RTC_TimeTypeDef time;
     RTC_GetTime(RTC_Format_BIN, &time);
 
@@ -129,16 +140,15 @@ void task_gps(void *p)
 {
   (void) p;
 
-  enum { STARTING, SLEEP, RUN } state = STARTING;
-
   enum gps_event_t event;
   BaseType_t status;
   struct ubx_state_s ubx_state = {
-    .port = UBLOX_UART
+    .port = UBLOX_UART,
+    .state = STARTING
   };
 
   config_gps();
-  // ublox_reset();
+  // ublox_reset(UBLOX_RESET_CONTROLLED);
   // ublox_set_measuring_rate(200);
 
   for (;;) {
@@ -150,7 +160,7 @@ void task_gps(void *p)
 
     switch (event) {
       case EVT_GPS_RESET:
-        ublox_reset();
+        ublox_reset(UBLOX_RESET_CONTROLLED);
         break;
 
       case EVT_GPS_START:
@@ -164,26 +174,27 @@ void task_gps(void *p)
           continue;
         } 
 #endif
-        if (state == RUN) {
+        if (ubx_state.state == RUN) {
           break;
         }
 
         ublox_set_measuring_rate(200);
+        ublox_reset(UBLOX_GNSS_START);
         ublox_start_updates(1);
         // delay_ms(1000);
         // ublox_wake();
 
-        state = RUN;
+        ubx_state.state = RUN;
 
         break;
 
       case EVT_GPS_SLEEP:
-        if (state != RUN) {
+        if (ubx_state.state != RUN) {
           break;
         }
 
         ublox_sleep();
-        state = SLEEP;
+        ubx_state.state = SLEEP;
         break;
 
       case EVT_GPS_CFG:
@@ -203,6 +214,5 @@ void task_gps(void *p)
         break;
     }
   }
-  (void) state;
 }
 #endif // CONFIG_USE_GPS

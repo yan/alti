@@ -29,7 +29,7 @@
 
 static void calculateCheckSum(uint8_t *in, size_t length, uint8_t* dest);
 static struct ubx_header_s *ublox_expect_response(uint8_t msg_class, uint8_t msg_id);
-static int    ublox_get_ack(void);
+// static int    ublox_get_ack(void);
 static int    ublox_update_port_settings(usart_t port, uint32_t baud);
 static void   ublox_send(uint8_t class_id, uint8_t msg_id, uint8_t *buf, size_t length);
 static void   usart_send_buf(usart_t port, const uint8_t *buf, size_t len);
@@ -102,6 +102,7 @@ static void ublox_send(uint8_t class_id, uint8_t msg_id, uint8_t *buf, size_t le
 }
 
 
+/*
 static int  ublox_get_ack(void)
 {
   int attempts;
@@ -120,6 +121,7 @@ static int  ublox_get_ack(void)
 
   return h->msg_id == MSG_ID_ACK_ACK;
 }
+*/
 
 /**
  * @brief Keep receiving UBX messages until we get one with correct msg_class
@@ -207,7 +209,7 @@ int ublox_init(uint32_t baudRate)
   int attempts = 0;
   int status = 0;
 
-  ublox_reset();
+  ublox_reset(UBLOX_RESET_CONTROLLED);
 
   delay_ms(300);
 
@@ -243,7 +245,8 @@ int ublox_start_updates(int rate)
 
   ublox_send(MSG_CLASS_CFG, MSG_ID_CFG_MSG, request, sizeof(request));
 
-  return ublox_get_ack();
+  return 1; // TODO: Fix ack
+  // return ublox_get_ack();
 }
 
 int ublox_get_rate(void)
@@ -308,7 +311,9 @@ int ublox_get(struct gps_sample_s *sample)
   return 1;
 }
 
-int ublox_reset(void)
+#define SOFT_RESET
+
+int ublox_reset(uint8_t reset_mode)
 {
 #if defined(SOFT_RESET)
 
@@ -318,7 +323,7 @@ int ublox_reset(void)
     uint8_t reserved;
   } __attribute__((packed)) request = {
     0xFFFF,
-    0x01,
+    reset_mode,
     0x00
   };
 
@@ -351,7 +356,7 @@ int ublox_set_measuring_rate(uint16_t ms)
 
   ublox_send(MSG_CLASS_CFG, MSG_ID_CFG_RATE, (uint8_t*)request, sizeof(request));
 
-  ublox_get_ack();
+  // ublox_get_ack();
 
   return 1;
 }
@@ -419,7 +424,7 @@ static int ublox_update_port_settings(usart_t port, uint32_t baud)
     arch_usart_set_baud(port, baud);
   }
 
-  return ublox_get_ack();
+  return 1; // ublox_get_ack();
 }
 
 /**
@@ -440,12 +445,13 @@ static int ublox_pm2(uint8_t mode)
   ublox_send(MSG_CLASS_CFG, MSG_ID_CFG_RXM, (uint8_t*)request, sizeof(request));
 
   // XXX Do we get acks?
-  return ublox_get_ack();
+  return 1;//ublox_get_ack();
 }
 
 int ublox_sleep(void)
 {
-  return ublox_pm2(4);
+  return ublox_reset(UBLOX_GNSS_STOP);
+  //return ublox_pm2(1);
 }
 
 int ublox_wake(void)

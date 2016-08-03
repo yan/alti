@@ -13,7 +13,6 @@ extern "C" {
  * Settings module is responsbile for configuring alarms and other settings
  * via the BLE link
  */
-
 /**
  * Various options we can configure
  */
@@ -23,12 +22,19 @@ enum setting_e {
   SETTING_FREEFALL_ALARM3,
   SETTING_GEOFENCE1,
   SETTING_GEOFENCE2,
-  SETTING_HOME_DZ_ONE,
+  SETTING_HOME_DZ,
+  SETTING_HOME_DZ_ONE = SETTING_HOME_DZ,
   SETTING_HOME_DZ_TWO,
   SETTING_DEVICENAME,
 
   SETTING_LAST
 };
+
+
+
+
+
+
 
 enum config_msg_e {
   CONFIG_SETTING,
@@ -38,8 +44,11 @@ enum config_msg_e {
   CONFIG_GET_EVENTDATA,
   CONFIG_LIST_EVENTS,
   CONFIG_FORMAT_STORAGE,
+  CONFIG_RESPONSE_MSG,
   CONFIG_RESPONSE_OK,
   CONFIG_RESPONSE_FAIL,
+  CONFIG_RESPONSE_EVENT,
+  CONFIG_RESPONSE_SAMPLE,
 
   CONFIG_LAST
 };

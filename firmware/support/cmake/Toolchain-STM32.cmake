@@ -23,7 +23,7 @@ set (CPPFLAGS "${CPPFLAGS} -D__NVIC_PRIO_BITS=4")
 
 set (ARCHFLAGS "-mthumb -mcpu=cortex-m3")
 set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${ARCHFLAGS} ${CPPFLAGS} -std=c11 -Wstrict-prototypes" CACHE INTERNAL "c compiler flags")
-set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${ARCHFLAGS} ${CPPFLAGS} -std=c++11" CACHE INTERNAL "cxx compiler flags")
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${ARCHFLAGS} ${CPPFLAGS} -std=c++11 -fno-rtti" CACHE INTERNAL "cxx compiler flags")
 
 
 set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --static -nostartfiles ")
