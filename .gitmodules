@@ -14,3 +14,6 @@
 	path = firmware/stm32l1_stdperiphlib
 	url = git@bitbucket.org:yan_i/stm32l1_stdperiphlib.git
 	ignore = dirty
+[submodule "firmware/freertos"]
+	path = firmware/freertos
+	url = git@github.com:yan/freertos.git
