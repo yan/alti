@@ -2,10 +2,6 @@
 	path = firmware/libopencm3
 	url = https://github.com/libopencm3/libopencm3.git
 	ignore = dirty
-[submodule "freertos"]
-	path = firmware/freertos
-	url = https://github.com/cjlano/freertos.git
-	ignore = dirty
 [submodule "client/ios/Alti/BlueCap"]
 	path = client/ios/Alti/BlueCap
 	url = https://github.com/troystribling/BlueCap.git
