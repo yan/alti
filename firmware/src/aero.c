@@ -78,23 +78,22 @@ static void config_ble_task(void)
 {
   BaseType_t status;
   TaskHandle_t ble_handle;
-  g.ble_data_g = pvPortMalloc(sizeof(struct ble_task_data_s));
 
-  assert(g.ble_data_g != NULL);
-
-  g.ble_data_g->in  = xQueueCreate(CONFIG_TASK_BLE_QUEUE_LEN,
+  g.ble_data_g.in  = xQueueCreate(CONFIG_TASK_BLE_QUEUE_LEN,
       sizeof(struct nrf8001_cmd_s));
-  g.ble_data_g->semphr = xSemaphoreCreateBinary();
+  g.ble_data_g.semphr = xSemaphoreCreateBinary();
+  g.ble_data_g.credits = NULL;
 
 #if ( configQUEUE_REGISTRY_SIZE > 0 )
-  vQueueAddToRegistry(g.ble_data_g->in, "ble");
+  vQueueAddToRegistry(g.ble_data_g.in, "ble");
+  vQueueAddToRegistry(g.ble_data_g.semphr, "ble_mutex");
 #endif
 
-  assert(g.ble_data_g->in != NULL);
-  assert(g.ble_data_g->semphr != NULL);
+  assert(g.ble_data_g.in != NULL);
+  assert(g.ble_data_g.semphr != NULL);
 
   status = xTaskCreate(task_ble, "ble", CONFIG_TASK_BLE_STACK_DEPTH,
-                   (void*) g.ble_data_g, CONFIG_TASK_BLE_PRIORITY, &ble_handle);
+                   (void*) &g.ble_data_g, CONFIG_TASK_BLE_PRIORITY, &ble_handle);
 
   assert(status == pdPASS);
 

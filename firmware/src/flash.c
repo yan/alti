@@ -27,7 +27,7 @@ struct status_register_s {
   uint8_t error : 1;
   uint8_t reserved : 1;
   uint8_t _ready : 1;
-};
+} __attribute__((packed));
 
 inline static void flash_reset(void);
 static void busy_wait_for_ready(void);
@@ -70,24 +70,25 @@ static void flash_write_buffer(uint8_t *data, size_t size)
     arch_spi_xfer(ADESTO_FLASH_BUS, 0);
   }
 
-  spi_unlock(ADESTO_FLASH_BUS);
   /* And we're done */
   pin_set(ADESTO_FLASH_CS_GPIO, ADESTO_FLASH_CS);
+
+  spi_unlock(ADESTO_FLASH_BUS);
 }
 
 static void flash_commit_buffer(uint32_t address)
 {
+  spi_lock(ADESTO_FLASH_BUS);
   pin_clear(ADESTO_FLASH_CS_GPIO, ADESTO_FLASH_CS);
 
-  spi_lock(ADESTO_FLASH_BUS);
   spi_set_msb(ADESTO_FLASH_BUS);
   arch_spi_xfer(ADESTO_FLASH_BUS, ADESTO_WRITE_BUFFER_2_TO_MEM_W_ER);
   arch_spi_xfer(ADESTO_FLASH_BUS, (address & 0xFF0000) >> 16);
   arch_spi_xfer(ADESTO_FLASH_BUS, (address & 0xFF00) >> 8);
   arch_spi_xfer(ADESTO_FLASH_BUS,  address & 0xFF);
-  spi_unlock(ADESTO_FLASH_BUS);
   
   pin_set(ADESTO_FLASH_CS_GPIO, ADESTO_FLASH_CS);
+  spi_unlock(ADESTO_FLASH_BUS);
 }
 
 static void flash_read_status(struct status_register_s *dest)

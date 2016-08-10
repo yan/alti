@@ -5,6 +5,7 @@ set (AERO_SRC
     logger.c
     buffered_io.c
     settings.c
+    task_ble.c
 )
 
 if (NOT test)
@@ -29,7 +30,6 @@ if (NOT test)
   set (AERO_SRC
     ${AERO_SRC}
     task_alert.c
-    task_ble.c
     task_gps.c
     task_main.c
     task_sensor.c)

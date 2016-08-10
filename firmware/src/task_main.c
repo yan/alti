@@ -113,6 +113,8 @@ static void handle_config(struct config_packet_s *config_msg )
               (uint8_t*)&event.header, sizeof(event.header));
 
           p_event = &event;
+
+          vTaskDelay(1 / portTICK_PERIOD_MS);
         }
       }
 
@@ -135,9 +137,13 @@ static void handle_config(struct config_packet_s *config_msg )
         logger_get_event(NULL, &event);
 
         config_msg->event_data = event.header;
-        while (logger_read_sample(&event, i, &sensors)) {
+        for (i = 0; logger_read_sample(&event, i, &sensors); i++) {
+          // memset(&sensors, '\xff', sizeof(sensors));
+          // sensors.ticks = 0x11223344;
           ble_tx_head(kConfigPipeTx, CONFIG_RESPONSE_SAMPLE, (uint8_t*)&sensors,
               sizeof(sensors));
+
+          vTaskDelay(1 / portTICK_PERIOD_MS);
         }
 
         config_msg->type = CONFIG_RESPONSE_OK;
@@ -156,13 +162,9 @@ void task_main(void *p)
   portBASE_TYPE status;
   enum global_state_e state = GLOBAL_STATE_RESET;
 
-  struct {
-      uint8_t header;
-      struct sensor_packet_s body;
-  } __attribute__((packed)) tx_packet;
+  struct sensor_packet_s sensors;
 
-  memset(&tx_packet, '\0', sizeof(tx_packet));
-  tx_packet.header = 0xff;
+  memset(&sensors, '\0', sizeof(sensors));
 
   for (;;) {
     struct global_event_s evt;
@@ -185,15 +187,25 @@ void task_main(void *p)
         state = GLOBAL_STATE_RESET;
         break;
 
+        /**
+         * Following states until GLOBAL_EVT_SENSOR_COMPLETE are used for
+         * aggregating the complete sensor state. After the last sensor, the 
+         * sensor task sends a GLOBAL_EVT_SENSOR_COMPLETE message, at which
+         * point we can either store, act on, or transmit the full sensor packet
+         *
+         * These are kicked off by the GLOBAL_EVT_SENSOR_GPS state. Eventually,
+         * these can be kicked off by a timer.
+         */
+
 #if CONFIG_USE_GPS
       case GLOBAL_EVT_SENSOR_GPS: {
         /* Capture the gps sample, and get the other sensors */
 
-        tx_packet.body.ticks = xTaskGetTickCount();
-        tx_packet.body.gps_sample = evt.payload.gps_sample;
+        sensors.ticks = xTaskGetTickCount();
+        sensors.gps_sample = evt.payload.gps_sample;
 
         BaseType_t type = SENSOR_REQUEST_AIR_PRESSURE 
-                         | SENSOR_REQUEST_ACCEL;
+                        | SENSOR_REQUEST_ACCEL;
         xQueueSend(g.sensor_queue_g, &type, 0);
       }
       break;
@@ -201,14 +213,20 @@ void task_main(void *p)
 
 #if CONFIG_USE_ACCEL
       case GLOBAL_EVT_SENSOR_ACCEL: {
-        tx_packet.body.accel_sample = evt.payload.accel_sample;
+        sensors.accel_sample = evt.payload.accel_sample;
       }
       break;
 #endif
+
+      case GLOBAL_EVT_SENSOR_BARO: {
+        sensors.mbarc =  evt.payload.baro_sample.mbarc;
+      }
+      break;
+
       case GLOBAL_EVT_SENSOR_COMPLETE: {
 
         if (g.current_event_g.header.in_progress) {
-          status = logger_write_sample(&g.current_event_g, &tx_packet.body);
+          status = logger_write_sample(&g.current_event_g, &sensors);
 
           /* Writing failed because we filled up storage with just the current 
            * event. Finish logging.
@@ -219,17 +237,12 @@ void task_main(void *p)
           }
         }
 
-        filter_add_value(&g.filter_state, tx_packet.body.mbarc);
+        filter_add_value(&g.filter_state, sensors.mbarc);
 
         if (PIPE_OPEN(kSensorPipe)) {
-          ble_tx_head(kSensorPipe, CONFIG_RESPONSE_SAMPLE, (uint8_t*)&tx_packet,
-              sizeof(tx_packet));
+          ble_tx_head(kSensorPipe, CONFIG_RESPONSE_SAMPLE, (uint8_t*)&sensors,
+              sizeof(sensors));
         }
-      }
-      break;
-
-      case GLOBAL_EVT_SENSOR_BARO: {
-        tx_packet.body.mbarc =  evt.payload.baro_sample.mbarc;
       }
       break;
 
@@ -239,9 +252,11 @@ void task_main(void *p)
         if (PIPE_OPEN(kSensorPipe)) {
           state = GLOBAL_STATE_STREAMING;
 
-          // gps_start();
+          gps_start();
         } else {
-          // gps_stop();
+            if (state == GLOBAL_STATE_STREAMING) {
+                gps_stop();
+            }
         }
       }
       break;
