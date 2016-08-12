@@ -106,23 +106,25 @@ void ble_tx(uint8_t pipe, uint8_t *data, size_t length)
  */
 void ble_tx_head(uint8_t pipe, uint8_t head, uint8_t *data, size_t length)
 {
-  int prefix_remaining = sizeof(head);
+  int prefix_len = sizeof(head);
+  uint8_t *prefix = &head;
 
   while (length > 0) {
-    size_t to_send = MIN(NRF8001_MAX_DATA_LENGTH, length + prefix_remaining);
+    size_t to_send = MIN(NRF8001_MAX_DATA_LENGTH, length + prefix_len);
 
-    to_send -= prefix_remaining;
+    ble_tx_helper(pipe, prefix, prefix_len, data, to_send - prefix_len);
 
-    ble_tx_helper(pipe, &head, prefix_remaining, data, to_send);
-
-    if (prefix_remaining) {
-      prefix_remaining = 0;
+    if (prefix_len) {
+      to_send -= prefix_len;
+      prefix_len = 0;
     }
 
     length -= to_send;
     data += to_send;
   }
 }
+
+#if !TESTING
 
 /**
  * @brief This task does nothing but send and receive messages between us and 
@@ -175,3 +177,9 @@ void task_ble(void *p)
 
   /* NOTREACHED */
 }
+
+#endif // TESTING
+
+#ifdef __cplusplus
+}
+#endif

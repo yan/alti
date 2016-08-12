@@ -113,6 +113,8 @@ static void handle_config(struct config_packet_s *config_msg )
               (uint8_t*)&event.header, sizeof(event.header));
 
           p_event = &event;
+
+          vTaskDelay(1 / portTICK_PERIOD_MS);
         }
       }
 
@@ -135,9 +137,13 @@ static void handle_config(struct config_packet_s *config_msg )
         logger_get_event(NULL, &event);
 
         config_msg->event_data = event.header;
-        while (logger_read_sample(&event, i, &sensors)) {
+        for (i = 0; logger_read_sample(&event, i, &sensors); i++) {
+          // memset(&sensors, '\xff', sizeof(sensors));
+          // sensors.ticks = 0x11223344;
           ble_tx_head(kConfigPipeTx, CONFIG_RESPONSE_SAMPLE, (uint8_t*)&sensors,
               sizeof(sensors));
+
+          vTaskDelay(1 / portTICK_PERIOD_MS);
         }
 
         config_msg->type = CONFIG_RESPONSE_OK;
