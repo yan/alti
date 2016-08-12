@@ -237,11 +237,11 @@ void task_main(void *p)
           }
         }
 
-        filter_add_value(&g.filter_state, tx_packet.body.mbarc);
+        filter_add_value(&g.filter_state, sensors.mbarc);
 
         if (PIPE_OPEN(kSensorPipe)) {
-          ble_tx_head(kSensorPipe, CONFIG_RESPONSE_SAMPLE, (uint8_t*)&tx_packet,
-              sizeof(tx_packet));
+          ble_tx_head(kSensorPipe, CONFIG_RESPONSE_SAMPLE, (uint8_t*)&sensors,
+              sizeof(sensors));
         }
       }
       break;
