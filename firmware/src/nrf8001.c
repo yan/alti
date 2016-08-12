@@ -51,7 +51,7 @@ struct nrf8001_state_s {
 } s_nrf8001_state = {
   .state = STATE_IDLE,
   .events_received = 0,
-  .setup_msg_idx = 0
+  .setup_msg_idx = 0,
 };
 
 struct nrf8001_cmd_s cmd_buf;

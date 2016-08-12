@@ -1,4 +1,4 @@
 
 #pragma once
 
-void hexDump(char *desc, void *addr, int len);
+void hexDump(const char *desc, void *addr, int len);
