@@ -68,7 +68,7 @@ void nrf8001_isr(void)
 #if CONFIG_USE_COUNTERS
   g.counters.vals[COUNTER_BLE_ISR]++;
 #endif // CONFIG_USE_COUNTERS
-  xSemaphoreGiveFromISR(g.ble_data_g->semphr, &higher);
+  xSemaphoreGiveFromISR(g.ble_data_g.semphr, &higher);
   portYIELD_FROM_ISR(higher);
 }
 

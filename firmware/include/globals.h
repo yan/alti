@@ -118,7 +118,7 @@ struct globals_s {
 #endif
 
   /** @brief Data local to the BLE task */
-  struct ble_task_data_s *ble_data_g;
+  struct ble_task_data_s ble_data_g;
 
   /** @brief A null command that we will use as filler. XXX Probably redundant */
   struct nrf8001_cmd_s nrf8001_nul;
