@@ -252,9 +252,11 @@ void task_main(void *p)
         if (PIPE_OPEN(kSensorPipe)) {
           state = GLOBAL_STATE_STREAMING;
 
-          // gps_start();
+          gps_start();
         } else {
-          // gps_stop();
+            if (state == GLOBAL_STATE_STREAMING) {
+                gps_stop();
+            }
         }
       }
       break;
