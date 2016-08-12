@@ -66,6 +66,7 @@ STRUCT_SIZE_LT(head, struct storage_header_s, STORAGE_PAGE_SIZE);
 struct ble_task_data_s {
   void *in;
   void *semphr;
+  void *credits;
 };
 
 

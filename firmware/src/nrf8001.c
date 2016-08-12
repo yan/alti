@@ -236,8 +236,26 @@ void nrf8001_handle_event(struct nrf8001_cmd_s *event)
         nrf8001_setup();
       } else if (event->data[0] == ACI_DEVICE_STANDBY) {
         s_nrf8001_state.state = STATE_STANDBY;
+
+        // entry->data[2] is the credits we have
         nrf8001_connect();
         dbg_print("Sent connection.\n");
+      }
+
+      if (g.ble_data_g.credits == NULL) {
+        g.ble_data_g.credits = xSemaphoreCreateCounting(4, 0);
+#if ( configQUEUE_REGISTRY_SIZE > 0 )
+        vQueueAddToRegistry(g.ble_data_g.credits, "credits");
+#endif
+      }
+      {
+          BaseType_t status;
+          uint8_t credits = event->data[2];
+          while (uxSemaphoreGetCount(g.ble_data_g.credits) < credits) {
+              g.counters.vals[COUNTER_CREDITS_RECEIVED]++;
+              status = xSemaphoreGive(g.ble_data_g.credits);
+              (void) status;
+          }
       }
       break;
 
@@ -262,7 +280,29 @@ void nrf8001_handle_event(struct nrf8001_cmd_s *event)
       handle_data_received(event);
       break;
 
+    case ACI_EVT_DATA_CREDIT: 
+        {
+            uint8_t credits = event->data[0];
+            BaseType_t status;
+
+            while (credits > 0) {
+                status = xSemaphoreGive(g.ble_data_g.credits);
+
+                assert(status != pdFAIL);
+
+                credits--;
+                g.counters.vals[COUNTER_CREDITS_RECEIVED] += event->data[0];
+            }
+        }
+        break;
+
+    case ACI_EVT_TIMING:
+        // What do we do with the timing event?
+        break;
+
     default:
+        assert(0);
+        (void) event->opcode;
       ;
       break;
   }
