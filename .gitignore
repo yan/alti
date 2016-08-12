@@ -1,4 +1,4 @@
-firmware/build/**
+firmware/build*
 firmware/pdf
 firmware/tags
 firmware/support/gtest
