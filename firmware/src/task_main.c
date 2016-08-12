@@ -246,11 +246,6 @@ void task_main(void *p)
       }
       break;
 
-      case GLOBAL_EVT_SENSOR_BARO: {
-        tx_packet.body.mbarc =  evt.payload.baro_sample.mbarc;
-      }
-      break;
-
       /* Bluetooth events */
       case GLOBAL_EVT_NRF8001_PIPES_CHANGED: {
 
