@@ -27,7 +27,7 @@ struct status_register_s {
   uint8_t error : 1;
   uint8_t reserved : 1;
   uint8_t _ready : 1;
-};
+} __attribute__((packed));
 
 inline static void flash_reset(void);
 static void busy_wait_for_ready(void);

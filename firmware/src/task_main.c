@@ -156,13 +156,9 @@ void task_main(void *p)
   portBASE_TYPE status;
   enum global_state_e state = GLOBAL_STATE_RESET;
 
-  struct {
-      uint8_t header;
-      struct sensor_packet_s body;
-  } __attribute__((packed)) tx_packet;
+  struct sensor_packet_s sensors;
 
-  memset(&tx_packet, '\0', sizeof(tx_packet));
-  tx_packet.header = 0xff;
+  memset(&sensors, '\0', sizeof(sensors));
 
   for (;;) {
     struct global_event_s evt;
@@ -185,15 +181,25 @@ void task_main(void *p)
         state = GLOBAL_STATE_RESET;
         break;
 
+        /**
+         * Following states until GLOBAL_EVT_SENSOR_COMPLETE are used for
+         * aggregating the complete sensor state. After the last sensor, the 
+         * sensor task sends a GLOBAL_EVT_SENSOR_COMPLETE message, at which
+         * point we can either store, act on, or transmit the full sensor packet
+         *
+         * These are kicked off by the GLOBAL_EVT_SENSOR_GPS state. Eventually,
+         * these can be kicked off by a timer.
+         */
+
 #if CONFIG_USE_GPS
       case GLOBAL_EVT_SENSOR_GPS: {
         /* Capture the gps sample, and get the other sensors */
 
-        tx_packet.body.ticks = xTaskGetTickCount();
-        tx_packet.body.gps_sample = evt.payload.gps_sample;
+        sensors.ticks = xTaskGetTickCount();
+        sensors.gps_sample = evt.payload.gps_sample;
 
         BaseType_t type = SENSOR_REQUEST_AIR_PRESSURE 
-                         | SENSOR_REQUEST_ACCEL;
+                        | SENSOR_REQUEST_ACCEL;
         xQueueSend(g.sensor_queue_g, &type, 0);
       }
       break;
@@ -201,14 +207,20 @@ void task_main(void *p)
 
 #if CONFIG_USE_ACCEL
       case GLOBAL_EVT_SENSOR_ACCEL: {
-        tx_packet.body.accel_sample = evt.payload.accel_sample;
+        sensors.accel_sample = evt.payload.accel_sample;
       }
       break;
 #endif
+
+      case GLOBAL_EVT_SENSOR_BARO: {
+        sensors.mbarc =  evt.payload.baro_sample.mbarc;
+      }
+      break;
+
       case GLOBAL_EVT_SENSOR_COMPLETE: {
 
         if (g.current_event_g.header.in_progress) {
-          status = logger_write_sample(&g.current_event_g, &tx_packet.body);
+          status = logger_write_sample(&g.current_event_g, &sensors);
 
           /* Writing failed because we filled up storage with just the current 
            * event. Finish logging.
