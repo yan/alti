@@ -11,10 +11,10 @@ option (stlib "Use the ST stm32 peripheral library" ON)
 
 set (BINARY_NAME ${PROJECT_NAME})
 
-set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g3") 
-set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g3") 
+#set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g3 -Wextra") 
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g3 -Wextra") 
 
-# set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Os -O2 -Wextra")
+set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g3 -Os -O2 -Wextra")
 
 if (NOT test)
   set (STM32_DEV_TYPE STM32L1XX_HD)
