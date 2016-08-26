@@ -50,7 +50,7 @@ public:
     }
 
     void receivedBytes(const QByteArray &arr) {
-        qDebug() << "Received " << arr.size() << " bytes";
+        // qDebug() << "Received " << arr.size() << " bytes";
         _buffer.append(arr);
 
         attempt();
@@ -94,11 +94,11 @@ private:
         HeaderType header;
         int bytesRead = 0;
 
-        qDebug() << _buffer.toHex();
+        // qDebug() << _buffer.toHex();
         bytesRead += s.readRawData(reinterpret_cast<char*>(&header), sizeof(header));
-        qDebug() << "Read " << bytesRead << " bytes (header = " << header << ")";
+        // qDebug() << "Read " << bytesRead << " bytes (header = " << header << ")";
         bytesRead += s.readRawData(reinterpret_cast<char*>(&obj), sizeof(T));
-        qDebug() << "Read " << bytesRead << " bytes";
+        // qDebug() << "Read " << bytesRead << " bytes";
 
         _buffer.remove(0, bytesRead);
         dest = obj;

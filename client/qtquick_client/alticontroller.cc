@@ -52,8 +52,27 @@ AltiController::AltiController(QObject *parent)
         storage_size += header.samples * header.sample_size + sizeof(header);
     });
 
+
     rx->onSensorPacket([](struct sensor_packet_s &packet) {
-        qDebug() << "Got sensor packet " << sizeof(packet);
+        (void) packet;
+        storage_size++;
+        if ((storage_size % 200) == 0) {
+            qDebug() << storage_size;
+        }
+//        qDebug() << "Got sensor packet "
+//                 << packet.ticks << " "
+//                 << packet.mbarc;
+//        qDebug() << packet.ticks << ","
+//                 << packet.mbarc << ","
+//                 << packet.gps_sample.accuracy << ","
+//                 << packet.gps_sample.ground_speed << ","
+//                 << packet.gps_sample.heading << ","
+//                 << packet.gps_sample.lat << ","
+//                 << packet.gps_sample.lon << ","
+//                 << packet.accel_sample.accel[0] << ","
+//                 << packet.accel_sample.accel[1] << ","
+//                 << packet.accel_sample.accel[2];
+
     });
 
 }
@@ -376,3 +395,24 @@ AltiController::getEvents(void)
     packet.type = CONFIG_LIST_EVENTS;
     sendConfigPacket(packet);
 }
+
+void
+
+AltiController::selectMostRecent(void)
+{
+    struct config_packet_s packet;
+    memset(&packet, '\0', sizeof(packet));
+    packet.type = CONFIG_SET_EVENT;
+    packet.event.event_id = 0; // Get the most recent
+    sendConfigPacket(packet);
+}
+
+void
+AltiController::dumpMostRecent(QString file)
+{
+    struct config_packet_s packet;
+    memset(&packet, '\0', sizeof(packet));
+    packet.type = CONFIG_GET_EVENTDATA;
+    sendConfigPacket(packet);
+}
+

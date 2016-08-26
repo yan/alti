@@ -48,7 +48,7 @@ Item {
             transformOrigin: Item.Top
             Layout.fillWidth: true
             Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
-            enabled: true
+            enabled: false
             title: qsTr("Logging")
 
             GridLayout {
@@ -74,6 +74,16 @@ Item {
                 Button {
                     id: btnStop
                     text: qsTr("Stop")
+                }
+
+                Button {
+                    id: btnSelectMostRecent
+                    text: qsTr("Select Last Event")
+                }
+
+                Button {
+                    id: btnRetrieveMostRecent
+                    text: qsTr("Dump Event")
                 }
 
 
@@ -132,6 +142,8 @@ Item {
     property alias busy: busy
     property alias btnFormat: btnFormat
     property alias btnListEvents: btnListEvents
+    property alias btnSelectMostRecent: btnSelectMostRecent
+    property alias btnRetrieveMostRecent: btnRetrieveMostRecent
     // property alias groupBox1: groupBox1
 
     /*

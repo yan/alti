@@ -5,6 +5,7 @@ Page1Form {
     connected.onEnabledChanged: {
         busy.visible = ! connected.enabled;
         busy.enabled = ! connected.enabled;
+        grpLogger.enabled = connected.enabled;
     }
 /*
     btnStop.onClicked: {

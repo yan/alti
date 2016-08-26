@@ -76,6 +76,18 @@ ApplicationWindow {
                 controller.getEvents();
             }
 
+            btnSelectMostRecent.onClicked: {
+                console.log("Selecting most recent event")
+                controller.selectMostRecent();
+            }
+
+            btnRetrieveMostRecent.onClicked: {
+                console.log("Dumping most recent")
+                controller.dumpMostRecent("/Users/user/tmp/jump.log")
+
+            }
+
+
         }
 
         Page {

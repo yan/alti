@@ -83,6 +83,9 @@ public slots:
     void startRecordingEvent(void);
     void stopRecordingEvent(void);
 
+    void selectMostRecent(void);
+    void dumpMostRecent(QString file);
+
     void formatStorage(void);
 
     void getEvents(void);

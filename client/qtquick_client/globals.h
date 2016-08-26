@@ -2,7 +2,6 @@
 #define GLOBALS_H
 
 #include <QBluetoothUuid>
-
 struct kAltiServiceUuids_t {
     using uuid_t = QBluetoothUuid;
 
