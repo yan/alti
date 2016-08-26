@@ -44,6 +44,10 @@ struct mag_sample_s {
 struct sensor_packet_s {
   uint32_t ticks;
 
+#if CONFIG_USE_TEMP
+  uint32_t temp;
+#endif // CONFIG_USE_TEMP
+
   ms5611_mbarc_t mbarc;
 
 #if CONFIG_USE_GPS

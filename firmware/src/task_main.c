@@ -29,6 +29,9 @@ const uint8_t kConfigPipeRx = PIPE_AERO_CONFIG_AERO_CONFIG_RX_ACK_AUTO;
 
 
 static void handle_config(struct config_packet_s *config_msg );
+
+#if CONFIG_USE_GPS
+
 static void gps_start(void);
 static void gps_stop(void);
 
@@ -42,6 +45,8 @@ static void gps_stop(void)
   BaseType_t action = EVT_GPS_SLEEP;
   xQueueSend(g.gps_queue_g, &action, portMAX_DELAY);
 }
+#endif // CONFIG_USE_GPS
+
 static void handle_config(struct config_packet_s *config_msg )
 {
 
@@ -57,13 +62,17 @@ static void handle_config(struct config_packet_s *config_msg )
 
     case CONFIG_START_LOGGING:
       filter_init_state(&g.filter_state);
+#if CONFIG_USE_GPS
       gps_start();
+#endif // CONFIG_USE_GPS
       logger_start_event(&g.current_event_g);
       config_msg->type = CONFIG_RESPONSE_OK;
       break;
 
     case CONFIG_STOP_LOGGING:
+#if CONFIG_USE_GPS
       gps_stop();
+#endif // CONFIG_USE_GPS
       logger_end_event(&g.current_event_g);
       config_msg->type = CONFIG_RESPONSE_OK;
       break;
@@ -114,7 +123,7 @@ static void handle_config(struct config_packet_s *config_msg )
 
           p_event = &event;
 
-          vTaskDelay(1 / portTICK_PERIOD_MS);
+          // vTaskDelay(5 / portTICK_PERIOD_MS);
         }
       }
 
@@ -143,7 +152,7 @@ static void handle_config(struct config_packet_s *config_msg )
           ble_tx_head(kConfigPipeTx, CONFIG_RESPONSE_SAMPLE, (uint8_t*)&sensors,
               sizeof(sensors));
 
-          vTaskDelay(1 / portTICK_PERIOD_MS);
+          // vTaskDelay(10 / portTICK_PERIOD_MS);
         }
 
         config_msg->type = CONFIG_RESPONSE_OK;
@@ -223,6 +232,13 @@ void task_main(void *p)
       }
       break;
 
+#if CONFIG_USE_TEMP
+      case GLOBAL_EVT_SENSOR_TEMP: {
+        sensors.temp = evt.payload.temp_sample;
+      }
+      break;
+#endif // CONFIG_USE_TEMP
+
       case GLOBAL_EVT_SENSOR_COMPLETE: {
 
         if (g.current_event_g.header.in_progress) {
@@ -232,7 +248,9 @@ void task_main(void *p)
            * event. Finish logging.
            */
           if (!status) {
+#if CONFIG_USE_GPS
             gps_stop();
+#endif // CONFIG_USE_GPS
             logger_end_event(&g.current_event_g);
           }
         }
@@ -249,15 +267,18 @@ void task_main(void *p)
       /* Bluetooth events */
       case GLOBAL_EVT_NRF8001_PIPES_CHANGED: {
 
-        if (PIPE_OPEN(kSensorPipe)) {
-          state = GLOBAL_STATE_STREAMING;
-
-          gps_start();
-        } else {
-            if (state == GLOBAL_STATE_STREAMING) {
-                gps_stop();
-            }
-        }
+        // if (PIPE_OPEN(kSensorPipe)) {
+        //   state = GLOBAL_STATE_STREAMING;
+// #if CONFIG_USE_GPS
+        //   gps_start();
+// #endif // CONFIG_USE_GPS
+        // } else {
+        //     if (state == GLOBAL_STATE_STREAMING) {
+// #if CONFIG_USE_GPS
+        //         gps_stop();
+// #endif // CONFIG_USE_GPS
+        //     }
+        // }
       }
       break;
 

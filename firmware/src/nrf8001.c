@@ -35,6 +35,7 @@ static void nrf8001_setup(void);
 static void handle_pipe_status(struct nrf8001_cmd_s *evt);
 static void handle_connected(struct nrf8001_cmd_s *evt);
 static void handle_data_received(struct nrf8001_cmd_s *evt);
+static void nrf8001_got_credits(uint8_t credits);
 
 enum nrf8001_state_e {
   STATE_IDLE,
@@ -209,6 +210,22 @@ static void handle_connected(struct nrf8001_cmd_s *evt)
     (void) evt;
 #endif
 }
+
+static void nrf8001_got_credits(uint8_t credits)
+{
+    BaseType_t status;
+
+    for (; credits > 0; credits--) {
+        status = xSemaphoreGive(g.ble_data_g.credits);
+
+        assert(status != pdFAIL);
+
+#if CONFIG_USE_COUNTERS
+        g.counters.vals[COUNTER_CREDITS_RECEIVED] += 1;
+#endif
+    }
+}
+
 /**
  *
  *
@@ -217,7 +234,8 @@ void nrf8001_handle_event(struct nrf8001_cmd_s *event)
 {
   assert(event != NULL);
 
-  dbg_print("Event = %x, response opcode: %x, status = %x\n", event->opcode, event->data[0], event->data[1]);
+  dbg_print("Event = %x, response opcode: %x, status = %x\n", event->opcode,
+          event->data[0], event->data[1]);
 
   switch (event->opcode) {
     case ACI_EVT_CMD_RSP:
@@ -242,20 +260,9 @@ void nrf8001_handle_event(struct nrf8001_cmd_s *event)
         dbg_print("Sent connection.\n");
       }
 
-      if (g.ble_data_g.credits == NULL) {
-        g.ble_data_g.credits = xSemaphoreCreateCounting(4, 0);
-#if ( configQUEUE_REGISTRY_SIZE > 0 )
-        vQueueAddToRegistry(g.ble_data_g.credits, "credits");
-#endif
-      }
-      {
-          BaseType_t status;
-          uint8_t credits = event->data[2];
-          while (uxSemaphoreGetCount(g.ble_data_g.credits) < credits) {
-              g.counters.vals[COUNTER_CREDITS_RECEIVED]++;
-              status = xSemaphoreGive(g.ble_data_g.credits);
-              (void) status;
-          }
+      BaseType_t existing_credits = uxSemaphoreGetCount(g.ble_data_g.credits);
+      if (event->data[2] > existing_credits) {
+          nrf8001_got_credits(event->data[2] - existing_credits);
       }
       break;
 
@@ -281,19 +288,7 @@ void nrf8001_handle_event(struct nrf8001_cmd_s *event)
       break;
 
     case ACI_EVT_DATA_CREDIT: 
-        {
-            uint8_t credits = event->data[0];
-            BaseType_t status;
-
-            while (credits > 0) {
-                status = xSemaphoreGive(g.ble_data_g.credits);
-
-                assert(status != pdFAIL);
-
-                credits--;
-                g.counters.vals[COUNTER_CREDITS_RECEIVED] += event->data[0];
-            }
-        }
+      nrf8001_got_credits(event->data[0]);
         break;
 
     case ACI_EVT_TIMING:
@@ -321,8 +316,6 @@ void nrf8001_exchange_cmds(struct nrf8001_cmd_s *out, struct nrf8001_cmd_s *in)
   int bytes_to_xfer = 0, i;
   uint8_t *out_ptr = (uint8_t*) out;
 
-  spi_lock(BT_STORE);
-
   pin_clear(NRF8001_REQN_GPIO, NRF8001_REQN);
 
   /* Make sure the tail end of *out is zero. If out->length is 0, this will 
@@ -348,7 +341,5 @@ void nrf8001_exchange_cmds(struct nrf8001_cmd_s *out, struct nrf8001_cmd_s *in)
   }
 
   pin_set(NRF8001_REQN_GPIO, NRF8001_REQN);
-
-  spi_unlock(BT_STORE);
 }
 

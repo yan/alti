@@ -45,7 +45,6 @@ void pin_config(gpio_t port, pin_t pin, int options)
   GPIO_InitTypeDef init = {
     .GPIO_OType = GPIO_OType_PP,
     .GPIO_Pin = pin,
-    // .GPIO_Mode = options == PINMODE_INPUT ? GPIO_Mode_IN : GPIO_Mode_OUT,
     .GPIO_PuPd = GPIO_PuPd_DOWN,
     //.GPIO_PuPd = GPIO_PuPd_NOPULL,
     .GPIO_Speed = GPIO_Speed_10MHz
@@ -365,6 +364,7 @@ void arch_config_uart(usart_t port, int baud)
   USART_InitStruct.USART_Parity = USART_Parity_No;
   USART_InitStruct.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
   USART_InitStruct.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
+
   USART_Init(port, &USART_InitStruct);
 
   /* Clear all flags */
@@ -400,7 +400,9 @@ void arch_enable_usart_interrupt(usart_t port)
   NVIC_Init(&NVIC_InitStruct);
 
   // TODO: move this to a utility function
+#if CONFIG_USE_GPS
   memset(&g.usart_isr_state, '\0', sizeof(g.usart_isr_state));
+#endif // CONFIG_USE_GPS
 
   USART_ITConfig(port, USART_IT_RXNE, ENABLE);
 }

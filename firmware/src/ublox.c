@@ -211,7 +211,7 @@ int ublox_init(uint32_t baudRate)
 
   ublox_reset(UBLOX_RESET_CONTROLLED);
 
-  delay_ms(300);
+  delay_ms(200);
 
   status = ublox_update_port_settings(UBLOX_MAX7_BUS, baudRate);
 

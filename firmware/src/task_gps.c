@@ -148,8 +148,6 @@ void task_gps(void *p)
   };
 
   config_gps();
-  // ublox_reset(UBLOX_RESET_CONTROLLED);
-  // ublox_set_measuring_rate(200);
 
   for (;;) {
     status = xQueueReceive(g.gps_queue_g, &event, portMAX_DELAY);

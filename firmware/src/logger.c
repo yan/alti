@@ -72,6 +72,11 @@ static inline int logger_read_event(uint32_t address, struct event_s *event) {
   }
 
   *event = stored_event.header;
+  event->_private.start_address = address;
+  event->_private.current_address = address + STORED_EVENT_HEADER_SIZE;
+  event->_private.finished_logging = 1;
+  event->_private.written = 1;
+  // };
 
   return 1;
 }
@@ -172,11 +177,17 @@ void logger_start_event(struct event_s *event)
  */
 void logger_end_event(struct event_s *event)
 {
-  // 1. Go to the address stored in the private section of |event|
-  // 2. Write the final event header
-  // 3. Update the initial page with the new free offset
+  /*  1. Go to the address stored in the private section of |event|
+   *  2. Write the final event header
+   *  3. Update the initial page with the new free offset
+   */
   if (event == NULL) {
     return;
+  }
+
+  /* If the event was already finished, do nothing */
+  if (!event->header.in_progress && event->_private.written) {
+      return;
   }
 
   xSemaphoreTake(g.flash_buffer.lock, portMAX_DELAY);

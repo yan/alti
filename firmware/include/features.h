@@ -2,6 +2,8 @@
 #ifndef __FEATURES_H
 #define __FEATURES_H
 
+/* Enable gathering of temperature (Leave always enabled) */
+#define CONFIG_USE_TEMP           ( 0 )
 
 /* Enable GPS support */
 #define CONFIG_USE_GPS            ( 1 )

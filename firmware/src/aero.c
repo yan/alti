@@ -82,11 +82,12 @@ static void config_ble_task(void)
   g.ble_data_g.in  = xQueueCreate(CONFIG_TASK_BLE_QUEUE_LEN,
       sizeof(struct nrf8001_cmd_s));
   g.ble_data_g.semphr = xSemaphoreCreateBinary();
-  g.ble_data_g.credits = NULL;
+  g.ble_data_g.credits = xSemaphoreCreateCounting(4, 0);
 
 #if ( configQUEUE_REGISTRY_SIZE > 0 )
   vQueueAddToRegistry(g.ble_data_g.in, "ble");
   vQueueAddToRegistry(g.ble_data_g.semphr, "ble_mutex");
+  vQueueAddToRegistry(g.ble_data_g.credits, "credits");
 #endif
 
   assert(g.ble_data_g.in != NULL);
@@ -204,8 +205,8 @@ aero_main(int argc, char *argv[])
   arch_config_io();
 
   config_globals();
-  config_tasks();
   config_flash();
+  config_tasks();
   config_load_persistent();
 
   vTaskStartScheduler();

@@ -23,6 +23,7 @@ typedef enum event_type_e {
   GLOBAL_EVT_SENSOR_GYRO,
   GLOBAL_EVT_SENSOR_MAG,
   GLOBAL_EVT_SENSOR_BARO,
+  GLOBAL_EVT_SENSOR_TEMP,
   GLOBAL_EVT_SENSOR_GPS,
   GLOBAL_EVT_SENSOR_COMPLETE,
 
@@ -57,6 +58,9 @@ typedef union {
 
   /** @brief Barometric sensor data */
   struct baro_sample_s baro_sample;
+
+  /** @brief Temperature in Celsius */
+  uint32_t temp_sample;
 
 #if CONFIG_USE_GPS
   /** @brief A sample of GPS position data */

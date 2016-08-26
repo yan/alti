@@ -60,6 +60,10 @@ if (test)
   endif ()
 else()
   #set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DTESTING=0")
+  if (test_native)
+      add_definitions("-DTESTING_NATIVE=1")
+  endif ()
+
   add_definitions("-DTESTING=0")
 
   if (NOT CMAKE_CROSSCOMPILING)

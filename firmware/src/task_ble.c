@@ -31,6 +31,8 @@ int ble_send_cmd(struct nrf8001_cmd_s *cmd)
 {
 
   if (xQueueSend(g.ble_data_g.in, cmd, portMAX_DELAY) == pdPASS) {
+    spi_lock(BT_STORE);
+
     pin_clear(NRF8001_REQN_GPIO, NRF8001_REQN);
     return 1;
   }
@@ -71,10 +73,11 @@ static void ble_tx_helper(uint8_t pipe, uint8_t *prefix, size_t prefix_len,
     // cmd.data[i+1] = 0;
   // }
 
-  BaseType_t status;
-  
+#if CONFIG_USE_COUNTERS
   g.counters.vals[COUNTER_CREDITS_TAKEN] += 1;
+#endif // CONFIG_USE_COUNTERS
 
+  BaseType_t status;
   status = xSemaphoreTake(g.ble_data_g.credits, portMAX_DELAY);
   if (status == pdFAIL) {
       assert(0);
@@ -166,9 +169,15 @@ void task_ble(void *p)
         outgoing_p = &outgoing;
     } else {
         outgoing_p = &g.nrf8001_nul;
+        /** If we got an outgoing message, we locked the bus then. If we didn't
+         * we lock it now.
+         */
+        spi_lock(BT_STORE);
     }
 
     nrf8001_exchange_cmds(outgoing_p, &incoming);
+
+    spi_unlock(BT_STORE);
 
     if (incoming.length > 0) {
       nrf8001_handle_event(&incoming);

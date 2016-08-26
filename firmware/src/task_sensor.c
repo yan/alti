@@ -54,8 +54,13 @@ void task_sensor(void *p)
 
       evt.type = GLOBAL_EVT_SENSOR_BARO;
       evt.payload.baro_sample.mbarc = result;
-
       xQueueSend(g.main_queue_g, &evt, portMAX_DELAY);
+
+#if CONFIG_USE_TEMP
+      evt.type = GLOBAL_EVT_SENSOR_TEMP;
+      evt.payload.temp_sample = ms5611_get_last_temp();
+      xQueueSend(g.main_queue_g, &evt, portMAX_DELAY);
+#endif // CONFIG_USE_TEMP
     }
 
 #if CONFIG_USE_ACCEL

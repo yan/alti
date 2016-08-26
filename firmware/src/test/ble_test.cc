@@ -40,6 +40,13 @@ class BleTest : public ::testing::Test {
 
 void pin_clear(int, int);
 
+void spi_lock(void *ptr);
+
+void spi_lock(void *ptr)
+{
+    (void) ptr;
+}
+
 int xQueueSend(void *queue, void *cmd, int delay);
 
 int xQueueSend(void *queue, void *cmd, int delay)
